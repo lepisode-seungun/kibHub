@@ -1,9 +1,9 @@
-<main class="hall-of-fame-page">
+<main class="flex flex-col min-h-screen bg-[#09090B]">
   <app-hero-banner />
 
   <!-- Hall of Fame Cards Section -->
   <section class="hall-of-fame" id="hall-of-fame">
-    <h2 class="section-title">명예의전당</h2>
+    <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">명예의전당</h2>
 
     @for (row of cardRows; track $index) {
       <div class="card-row">
@@ -11,20 +11,20 @@
           <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
             <div class="card-thumbnail" [style.background]="card.thumbnailGradient">
               <div class="card-thumbnail-overlay">
-                <svg class="card-thumbnail-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
             </div>
-            <div class="card-info">
-              <div class="card-badges">
+            <div class="flex flex-col gap-3 px-1">
+              <div class="flex gap-1.5 items-center">
                 @if (card.badgeText) {
                   <span class="badge badge--accent">{{ card.badgeText }}</span>
                 }
                 <span class="badge badge--outline">{{ card.statusText }}</span>
               </div>
-              <h3 class="card-name">{{ card.bootcampName }}</h3>
-              <p class="card-summary">{{ card.summary }}</p>
+              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
+              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0">{{ card.summary }}</p>
             </div>
           </article>
         }
@@ -32,8 +32,8 @@
     }
 
     <!-- Loading Spinner -->
-    <div class="loading-area">
-      <svg class="block-spinner" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+    <div class="flex flex-col justify-center items-center py-10 w-full">
+      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
         <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
           <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
           <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
@@ -61,51 +61,44 @@
     <div class="hof-modal-overlay" tabindex="-1" (click)="closeCard()" (keydown.escape)="closeCard()">
       <div class="hof-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeCard()">
         <!-- 모달 헤더 -->
-        <div class="hof-modal-header">
-          <h2 class="hof-modal-title">명예의 전당</h2>
-          <button class="hof-modal-close" (click)="closeCard()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="#A1A1AA">
-              <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
-            </svg>
+        <div class="flex justify-between items-center w-full">
+          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">명예의 전당</h2>
+          <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 transition-opacity duration-150 hover:opacity-70" (click)="closeCard()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>
           </button>
         </div>
 
         <!-- 모달 카드 -->
         <div class="hof-modal-card">
-          <!-- 왕관 뱃지 -->
           <div class="hof-crown-badge">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)">
-              <path d="M2 19h20v3H2v-3zM5 9l3.5 5 3.5-7 3.5 7L19 9l1 9H4l1-9z"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)"><path d="M2 19h20v3H2v-3zM5 9l3.5 5 3.5-7 3.5 7L19 9l1 9H4l1-9z"/></svg>
           </div>
 
-          <!-- 상단 정보 -->
-          <div class="hof-modal-info">
+          <div class="flex gap-5 w-full">
             <div class="hof-modal-thumb" [style.background]="selectedCard()!.thumbnailGradient"></div>
-            <div class="hof-modal-meta">
-              <h3 class="hof-modal-work-title">{{ selectedCard()!.title }}</h3>
-              <div class="hof-modal-details">
-                <div class="hof-detail-item">
-                  <span class="hof-detail-label">수강생명</span>
-                  <span class="hof-detail-value">{{ selectedCard()!.studentName }}</span>
+            <div class="flex flex-col gap-3 flex-1">
+              <h3 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">{{ selectedCard()!.title }}</h3>
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">수강생명</span>
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.studentName }}</span>
                 </div>
-                <div class="hof-detail-item">
-                  <span class="hof-detail-label">기수</span>
-                  <span class="hof-detail-value">{{ selectedCard()!.cohort }}</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">기수</span>
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.cohort }}</span>
                 </div>
-                <div class="hof-detail-item">
-                  <span class="hof-detail-label">런칭 플랫폼</span>
-                  <span class="hof-detail-value">{{ selectedCard()!.platform }}</span>
-                  <span class="hof-detail-link">바로가기 &gt;</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">런칭 플랫폼</span>
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.platform }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-accent cursor-pointer hover:opacity-80">바로가기 &gt;</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 작품 소개 -->
-          <div class="hof-modal-desc-card">
-            <span class="hof-desc-label">작품 소개</span>
-            <p class="hof-desc-text">{{ selectedCard()!.description }}</p>
+          <div class="flex flex-col gap-3 p-5 w-full bg-zinc-800/50 rounded-xl box-border">
+            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">작품 소개</span>
+            <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-300 m-0">{{ selectedCard()!.description }}</p>
           </div>
         </div>
       </div>

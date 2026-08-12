@@ -1,79 +1,77 @@
-<main class="detail-page">
+<main class="w-full min-h-screen bg-[#090909] flex flex-col items-center px-[100px] py-20 gap-10 box-border">
   <!-- 헤더: 뒤로가기 + 타이틀 -->
-  <div class="detail-top">
-    <button class="back-arrow" (click)="goBack()" aria-label="뒤로가기">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFFFFF"/>
-      </svg>
+  <div class="flex items-center gap-2.5 w-full max-w-[1400px]">
+    <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFFFFF"/></svg>
     </button>
-    <h1 class="detail-top-title">수강생 포트폴리오</h1>
+    <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0 flex-1">수강생 포트폴리오</h1>
   </div>
 
   <!-- 콘텐츠 영역 -->
-  <div class="detail-content">
+  <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
     <!-- 작품 정보 카드 -->
     <div class="work-info-card">
-      <div class="work-info-top">
-        <div class="work-thumb" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
-        <div class="work-meta">
-          <h2 class="work-title">식혜의 모험</h2>
-          <div class="work-meta-row">
-            <div class="meta-item">
-              <span class="meta-label">수강생명</span>
-              <span class="meta-value">고예림</span>
+      <div class="flex gap-6">
+        <div class="w-[136px] h-[102px] rounded-md shrink-0" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+        <div class="flex flex-col justify-center gap-3 flex-1">
+          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">식혜의 모험</h2>
+          <div class="flex flex-wrap gap-6">
+            <div class="flex items-start gap-2">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">수강생명</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">고예림</span>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">기수</span>
-              <span class="meta-value">케나즈 아카데미 초급반 13기</span>
+            <div class="flex items-start gap-2">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">기수</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">케나즈 아카데미 초급반 13기</span>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">장르</span>
-              <span class="meta-value">판타지</span>
+            <div class="flex items-start gap-2">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">장르</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">판타지</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="work-desc-box">
-        <span class="work-desc-label">작품 소개</span>
-        <p class="work-desc-text">
+      <div class="flex flex-col gap-2 p-5 bg-zinc-800/50 rounded-xl">
+        <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">작품 소개</span>
+        <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-300 m-0">
           케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다.
         </p>
       </div>
     </div>
 
     <!-- 작품 뷰어 -->
-    <div class="work-viewer">
+    <div class="flex flex-col items-center gap-10 w-full">
       <!-- 기획서 섹션 -->
       <div class="section-divider">
         <hr class="divider-line" />
-        <span class="divider-title">기획서</span>
+        <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">기획서</span>
         <hr class="divider-line" />
       </div>
 
-      <div class="work-image-wrap">
-        <div class="work-image-placeholder" style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 1411px;"></div>
+      <div class="w-full max-w-[800px]">
+        <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 1411px; border-radius: 8px;"></div>
       </div>
 
       <!-- 원고 섹션 -->
       <div class="section-divider">
         <hr class="divider-line" />
-        <span class="divider-title">원고</span>
+        <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">원고</span>
         <hr class="divider-line" />
       </div>
 
       <div class="work-image-wrap work-image-wrap--masked">
-        <div class="work-image-placeholder" style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px;"></div>
+        <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px;"></div>
         <div class="work-image-mask"></div>
       </div>
 
       <!-- 더보기 버튼 -->
-      <button class="more-btn" (click)="openManuscriptViewer()">원고보기</button>
+      <button class="w-full max-w-[800px] h-12 bg-transparent border border-zinc-600 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 cursor-pointer transition-colors duration-200 hover:bg-white/5 hover:border-accent hover:text-white" (click)="openManuscriptViewer()">원고보기</button>
     </div>
 
     <!-- 하단: 문의하기 -->
-    <div class="bottom-divider">
+    <div class="section-divider">
       <hr class="divider-line" />
-      <button class="list-btn" (click)="openInquiryModal()">문의하기</button>
+      <button class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 bg-transparent border-none cursor-pointer whitespace-nowrap px-5 transition-colors duration-150 hover:text-accent" (click)="openInquiryModal()">문의하기</button>
       <hr class="divider-line" />
     </div>
   </div>
@@ -82,43 +80,30 @@
   @if (isViewerOpen()) {
     <div class="viewer-overlay" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
       <div class="viewer-container">
-        <!-- 헤더 -->
-        <div class="viewer-header">
-          <h2 class="viewer-title">명예의 전당</h2>
-          <button class="viewer-close-btn" (click)="closeViewer()" aria-label="닫기">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+        <div class="flex justify-between items-center w-full">
+          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">명예의 전당</h2>
+          <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 transition-opacity duration-150 hover:opacity-70" (click)="closeViewer()" aria-label="닫기">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
         </div>
 
-        <!-- 본문 -->
         <div class="viewer-body">
-          <!-- 왼쪽 화살표 -->
           <button class="viewer-arrow viewer-arrow-left" (click)="prevPage()" aria-label="이전">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/>
-            </svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
           </button>
 
-          <!-- 원고 카드 -->
           <div class="viewer-card">
-            <div class="viewer-page-info">
-              <span class="viewer-current-page">{{ currentViewerPage() }}회</span>
-              <span class="viewer-total-page">/{{ totalPages }}회</span>
+            <div class="flex items-center gap-1 pb-4">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ currentViewerPage() }}회</span>
+              <span class="font-suit font-medium text-lg leading-[150%] tracking-tight text-zinc-500">/{{ totalPages }}회</span>
             </div>
             <div class="viewer-image-scroll">
-              <div class="viewer-image"
-                [style.background]="manuscriptImages[currentViewerPage() - 1].gradient">
-              </div>
+              <div class="viewer-image" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
             </div>
           </div>
 
-          <!-- 오른쪽 화살표 -->
           <button class="viewer-arrow viewer-arrow-right" (click)="nextPage()" aria-label="다음">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/>
-            </svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
           </button>
         </div>
       </div>
@@ -129,82 +114,67 @@
   @if (isInquiryOpen()) {
     <div class="iq-overlay" tabindex="-1" (click)="onInquiryOverlayClick($event)" (keydown.escape)="closeInquiryModal()">
       <div class="iq-modal">
-        <!-- 헤더 -->
-        <div class="iq-header">
-          <div class="iq-header-title-row">
-            <span class="iq-header-title">문의하기</span>
-          </div>
-          <button class="iq-close-btn" (click)="closeInquiryModal()" aria-label="닫기">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+        <div class="flex justify-between items-center px-6 py-5 border-b border-zinc-700">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">문의하기</span>
+          <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0" (click)="closeInquiryModal()" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
         </div>
 
-        <!-- 본문 폼 -->
-        <div class="iq-body">
+        <div class="flex flex-col gap-6 p-6">
           <!-- 제목 -->
-          <div class="iq-form-group">
-            <div class="iq-label-row">
-              <span class="iq-label">제목</span>
-              <span class="iq-required-dot"></span>
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">제목</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             </div>
-            <input class="iq-input" type="text" placeholder="입력해주세요." [(ngModel)]="inquiryTitle" />
+            <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="text" placeholder="입력해주세요." [(ngModel)]="inquiryTitle" />
           </div>
 
           <!-- 이메일 -->
-          <div class="iq-form-group-with-hint">
-            <div class="iq-form-group">
-              <div class="iq-label-row">
-                <span class="iq-label">이메일</span>
-                <span class="iq-required-dot"></span>
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-1">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">이메일</span>
+                <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
               </div>
-              <input class="iq-input" type="email" placeholder="입력해주세요." [(ngModel)]="inquiryEmail" />
+              <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="email" placeholder="입력해주세요." [(ngModel)]="inquiryEmail" />
             </div>
-            <div class="iq-hint">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 1.33a6.67 6.67 0 100 13.34A6.67 6.67 0 008 1.33zm.67 10H7.33V10h1.34v1.33zm0-2.66H7.33V4.67h1.34v4z" fill="#A1A1AA" fill-opacity="0.5"/>
-              </svg>
-              <span class="iq-hint-text">이메일 주소로 답장이 갈 예정으로 올바른 이메일을 작성해주세요.</span>
+            <div class="flex items-center gap-1">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.33a6.67 6.67 0 100 13.34A6.67 6.67 0 008 1.33zm.67 10H7.33V10h1.34v1.33zm0-2.66H7.33V4.67h1.34v4z" fill="#A1A1AA" fill-opacity="0.5"/></svg>
+              <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-500">이메일 주소로 답장이 갈 예정으로 올바른 이메일을 작성해주세요.</span>
             </div>
           </div>
 
           <!-- 내용 -->
-          <div class="iq-form-group">
-            <div class="iq-label-row">
-              <span class="iq-label">내용</span>
-              <span class="iq-required-dot"></span>
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">내용</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             </div>
-            <textarea class="iq-textarea" placeholder="입력해주세요." [(ngModel)]="inquiryContent"></textarea>
+            <textarea class="w-full min-h-[200px] p-4 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none resize-y placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" placeholder="입력해주세요." [(ngModel)]="inquiryContent"></textarea>
           </div>
 
           <!-- 개인정보 동의 -->
           <div class="iq-consent-box" [class.iq-consent-box--checked]="inquiryConsent()" (click)="openPrivacyModal()" (keydown.enter)="openPrivacyModal()" tabindex="0" role="button">
-            <div class="iq-consent-row">
-              <div class="iq-consent-check-area">
+            <div class="flex justify-between items-center w-full">
+              <div class="flex items-center gap-2">
                 @if (inquiryConsent()) {
-                  <svg class="iq-checkbox-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9984 21.6004C14.5445 21.6004 16.9863 20.589 18.7867 18.7886C20.587 16.9883 21.5984 14.5465 21.5984 12.0004C21.5984 9.45431 20.587 7.01252 18.7867 5.21217C16.9863 3.41182 14.5445 2.40039 11.9984 2.40039C9.45236 2.40039 7.01056 3.41182 5.21021 5.21217C3.40986 7.01252 2.39844 9.45431 2.39844 12.0004C2.39844 14.5465 3.40986 16.9883 5.21021 18.7886C7.01056 20.589 9.45236 21.6004 11.9984 21.6004ZM16.6268 9.82959C16.6963 9.73394 16.7463 9.62553 16.7739 9.51056C16.8015 9.39559 16.8062 9.27631 16.7877 9.15954C16.7692 9.04276 16.7279 8.93076 16.6661 8.82995C16.6043 8.72914 16.5233 8.64149 16.4276 8.57199C16.332 8.5025 16.2236 8.45252 16.1086 8.42492C15.9936 8.39732 15.8744 8.39264 15.7576 8.41113C15.6408 8.42963 15.5288 8.47095 15.428 8.53273C15.3272 8.59451 15.2395 8.67554 15.17 8.77119L10.9904 14.5192L8.73444 12.2632C8.65138 12.1773 8.55203 12.1088 8.44221 12.0616C8.33238 12.0145 8.21427 11.9898 8.09477 11.9888C7.97527 11.9878 7.85677 12.0106 7.74618 12.0559C7.6356 12.1012 7.53514 12.1681 7.45068 12.2526C7.36622 12.3372 7.29944 12.4377 7.25424 12.5483C7.20904 12.659 7.18632 12.7775 7.18741 12.897C7.18851 13.0165 7.21339 13.1346 7.26061 13.2444C7.30783 13.3541 7.37644 13.4534 7.46244 13.5364L10.4624 16.5364C10.5544 16.6284 10.6652 16.6994 10.7872 16.7444C10.9092 16.7895 11.0396 16.8076 11.1693 16.7974C11.2989 16.7873 11.4249 16.7491 11.5384 16.6856C11.6519 16.6221 11.7503 16.5348 11.8268 16.4296L16.6268 9.82959Z" fill="#956DFF"/>
-                  </svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.9984 21.6004C14.5445 21.6004 16.9863 20.589 18.7867 18.7886C20.587 16.9883 21.5984 14.5465 21.5984 12.0004C21.5984 9.45431 20.587 7.01252 18.7867 5.21217C16.9863 3.41182 14.5445 2.40039 11.9984 2.40039C9.45236 2.40039 7.01056 3.41182 5.21021 5.21217C3.40986 7.01252 2.39844 9.45431 2.39844 12.0004C2.39844 14.5465 3.40986 16.9883 5.21021 18.7886C7.01056 20.589 9.45236 21.6004 11.9984 21.6004ZM16.6268 9.82959C16.6963 9.73394 16.7463 9.62553 16.7739 9.51056C16.8015 9.39559 16.8062 9.27631 16.7877 9.15954C16.7692 9.04276 16.7279 8.93076 16.6661 8.82995C16.6043 8.72914 16.5233 8.64149 16.4276 8.57199C16.332 8.5025 16.2236 8.45252 16.1086 8.42492C15.9936 8.39732 15.8744 8.39264 15.7576 8.41113C15.6408 8.42963 15.5288 8.47095 15.428 8.53273C15.3272 8.59451 15.2395 8.67554 15.17 8.77119L10.9904 14.5192L8.73444 12.2632C8.65138 12.1773 8.55203 12.1088 8.44221 12.0616C8.33238 12.0145 8.21427 11.9898 8.09477 11.9888C7.97527 11.9878 7.85677 12.0106 7.74618 12.0559C7.6356 12.1012 7.53514 12.1681 7.45068 12.2526C7.36622 12.3372 7.29944 12.4377 7.25424 12.5483C7.20904 12.659 7.18632 12.7775 7.18741 12.897C7.18851 13.0165 7.21339 13.1346 7.26061 13.2444C7.30783 13.3541 7.37644 13.4534 7.46244 13.5364L10.4624 16.5364C10.5544 16.6284 10.6652 16.6994 10.7872 16.7444C10.9092 16.7895 11.0396 16.8076 11.1693 16.7974C11.2989 16.7873 11.4249 16.7491 11.5384 16.6856C11.6519 16.6221 11.7503 16.5348 11.8268 16.4296L16.6268 9.82959Z" fill="#956DFF"/></svg>
                 } @else {
-                  <svg class="iq-checkbox-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9.6" stroke="#A1A1AA" stroke-width="1.6"/>
-                  </svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.6" stroke="#A1A1AA" stroke-width="1.6"/></svg>
                 }
-                <span class="iq-consent-label">[필수] 개인정보 수집 및 이용 동의</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">[필수] 개인정보 수집 및 이용 동의</span>
               </div>
-              <button class="iq-consent-arrow-btn" (click)="openPrivacyModal(); $event.stopPropagation()" type="button">&gt;</button>
+              <button class="bg-transparent border-none cursor-pointer font-suit font-medium text-base text-zinc-500 p-0" (click)="openPrivacyModal(); $event.stopPropagation()" type="button">&gt;</button>
             </div>
-            <span class="iq-consent-desc">문의 접수 및 답변을 위해 이메일, 문의 내용을 수집합니다.</span>
+            <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-500">문의 접수 및 답변을 위해 이메일, 문의 내용을 수집합니다.</span>
           </div>
         </div>
 
-        <!-- 푸터 -->
-        <div class="iq-footer">
-          <div class="iq-footer-actions">
-            <button class="iq-btn-cancel" (click)="closeInquiryModal()">취소</button>
-            <button class="iq-btn-submit" [class.iq-btn-submit--disabled]="!canSubmitInquiry()" [disabled]="!canSubmitInquiry()" (click)="submitInquiry()">전송</button>
-          </div>
+        <div class="flex justify-center gap-3 px-6 py-5 border-t border-zinc-700">
+          <button class="flex-1 h-12 bg-zinc-700 border border-white/10 rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-zinc-600" (click)="closeInquiryModal()">취소</button>
+          <button class="flex-1 h-12 bg-accent border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-opacity duration-150 hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="!canSubmitInquiry()" (click)="submitInquiry()">전송</button>
         </div>
       </div>
     </div>
@@ -214,55 +184,37 @@
   @if (isPrivacyOpen()) {
     <div class="prv-overlay" tabindex="-1" (click)="onPrivacyOverlayClick($event)" (keydown.escape)="closePrivacyModal()">
       <div class="prv-modal">
-        <!-- 헤더 -->
-        <div class="prv-header">
-          <span class="prv-header-title">개인정보 수집 및 이용 동의</span>
-          <button class="prv-close-btn" (click)="closePrivacyModal()" aria-label="닫기">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+        <div class="flex justify-between items-center px-6 py-5 border-b border-zinc-700">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">개인정보 수집 및 이용 동의</span>
+          <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0" (click)="closePrivacyModal()" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
         </div>
 
-        <!-- 본문 -->
-        <div class="prv-body">
-          <div class="prv-content-box">
-            <div class="prv-section">
-              <h3 class="prv-section-title">수집목적</h3>
-              <p class="prv-section-text">
-                문의 접수 및 답변, 서비스 이용 관련 안내를 위해 개인정보를 수집합니다.
-                수집된 정보는 문의 처리 외의 목적으로 사용되지 않으며, 처리 완료 후 관련 법령에 따라 보관 또는 파기됩니다.
-              </p>
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <div class="flex flex-col gap-6 p-5 bg-zinc-800/50 rounded-xl">
+            <div class="flex flex-col gap-2">
+              <h3 class="font-suit font-bold text-base leading-[150%] tracking-tight text-white m-0">수집목적</h3>
+              <p class="font-suit font-medium text-sm leading-[160%] tracking-tight text-zinc-300 m-0">문의 접수 및 답변, 서비스 이용 관련 안내를 위해 개인정보를 수집합니다. 수집된 정보는 문의 처리 외의 목적으로 사용되지 않으며, 처리 완료 후 관련 법령에 따라 보관 또는 파기됩니다.</p>
             </div>
-            <div class="prv-section">
-              <h3 class="prv-section-title">수집항목</h3>
-              <p class="prv-section-text">
-                이메일 주소, 문의 제목, 문의 내용
-              </p>
+            <div class="flex flex-col gap-2">
+              <h3 class="font-suit font-bold text-base leading-[150%] tracking-tight text-white m-0">수집항목</h3>
+              <p class="font-suit font-medium text-sm leading-[160%] tracking-tight text-zinc-300 m-0">이메일 주소, 문의 제목, 문의 내용</p>
             </div>
-            <div class="prv-section">
-              <h3 class="prv-section-title">보유 및 이용기간</h3>
-              <p class="prv-section-text">
-                수집된 개인정보는 문의 처리 완료 후 3개월간 보관되며, 이후 지체 없이 파기합니다.
-                단, 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 보관합니다.
-              </p>
+            <div class="flex flex-col gap-2">
+              <h3 class="font-suit font-bold text-base leading-[150%] tracking-tight text-white m-0">보유 및 이용기간</h3>
+              <p class="font-suit font-medium text-sm leading-[160%] tracking-tight text-zinc-300 m-0">수집된 개인정보는 문의 처리 완료 후 3개월간 보관되며, 이후 지체 없이 파기합니다. 단, 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 보관합니다.</p>
             </div>
-            <div class="prv-section">
-              <h3 class="prv-section-title">동의 거부권 및 불이익</h3>
-              <p class="prv-section-text">
-                개인정보 수집 및 이용에 대한 동의를 거부할 수 있습니다.
-                다만, 동의를 거부하실 경우 문의 접수가 제한될 수 있습니다.
-              </p>
+            <div class="flex flex-col gap-2">
+              <h3 class="font-suit font-bold text-base leading-[150%] tracking-tight text-white m-0">동의 거부권 및 불이익</h3>
+              <p class="font-suit font-medium text-sm leading-[160%] tracking-tight text-zinc-300 m-0">개인정보 수집 및 이용에 대한 동의를 거부할 수 있습니다. 다만, 동의를 거부하실 경우 문의 접수가 제한될 수 있습니다.</p>
             </div>
           </div>
         </div>
 
-        <!-- 푸터 -->
-        <div class="prv-footer">
-          <div class="prv-footer-actions">
-            <button class="prv-btn-cancel" (click)="closePrivacyModal()">취소</button>
-            <button class="prv-btn-agree" (click)="agreePrivacy()">동의</button>
-          </div>
+        <div class="flex justify-center gap-3 px-6 py-5 border-t border-zinc-700">
+          <button class="flex-1 h-12 bg-zinc-700 border border-white/10 rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-zinc-600" (click)="closePrivacyModal()">취소</button>
+          <button class="flex-1 h-12 bg-accent border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-opacity duration-150 hover:opacity-85" (click)="agreePrivacy()">동의</button>
         </div>
       </div>
     </div>

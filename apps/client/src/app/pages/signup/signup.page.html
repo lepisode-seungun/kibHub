@@ -1,4 +1,4 @@
-<main class="login-page">
+<main class="flex w-full h-screen bg-[#202020] overflow-hidden">
   <!-- Left Panel - Branding -->
   <div class="login-left">
     <div class="sphere sphere-sm-logo"></div>
@@ -6,91 +6,89 @@
     <div class="sphere sphere-md"></div>
     <div class="sphere sphere-sm"></div>
     <div class="left-gradient-bottom"></div>
-    <div class="left-content">
-      <div class="left-logo">
-        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="left-logo-img" />
+    <div class="absolute left-[75px] top-[270px] z-[2] flex flex-col gap-[50px]">
+      <div>
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="h-11 brightness-0 invert" />
       </div>
-      <div class="left-tagline">
-        <span class="tagline-line1">Craft stories, create value.</span>
-        <span class="tagline-line2">from growth to success for<br>webtoon creators.</span>
+      <div class="flex flex-col gap-1">
+        <span class="font-['Prompt'] font-medium text-[21.6px] leading-[33px] tracking-tight text-[#E9E9E9]">Craft stories, create value.</span>
+        <span class="font-['Prompt'] font-light text-[21.6px] leading-[33px] tracking-tight text-[#E9E9E9]/70">from growth to success for<br>webtoon creators.</span>
       </div>
     </div>
   </div>
 
   <!-- Right Panel - Signup Form -->
-  <div class="signup-right">
-    <div class="signup-form-wrap">
-      <h1 class="signup-heading">회원가입</h1>
+  <div class="flex-1 flex flex-col justify-center items-center bg-white rounded-l-[40px] relative overflow-y-auto max-[960px]:rounded-none">
+    <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5 py-10">
+      <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-tight text-zinc-800 text-center m-0">회원가입</h1>
 
       <!-- Profile Photo -->
-      <div class="profile-upload">
-        <div class="profile-circle">
-          <span class="profile-initial">N</span>
+      <div class="flex justify-center w-full">
+        <div class="w-[88px] h-[88px] rounded-full bg-zinc-100 flex items-center justify-center cursor-pointer">
+          <span class="font-suit font-bold text-2xl text-zinc-400">N</span>
         </div>
       </div>
 
       <!-- Form Fields -->
-      <div class="signup-fields">
+      <div class="flex flex-col gap-6 w-full">
         <!-- 이메일 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">이메일</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이메일</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             <span class="tooltip-wrap" data-tooltip="이메일은 본인에게만 노출되며, 로그인 시 사용되니 신중하게 작성해주세요.">
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
-          <div class="input-with-btn">
-            <input type="email" class="form-input form-input-flex" placeholder="입력해주세요." (input)="onInput('email', $event)" />
+          <div class="flex gap-2 w-full">
+            <input type="email" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('email', $event)" />
             <button class="verify-btn">인증</button>
           </div>
         </div>
 
         <!-- 비밀번호 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">비밀번호</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">비밀번호</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             <span class="tooltip-wrap" data-tooltip="비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력해주세요.">
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
-          <input type="password" class="form-input" placeholder="입력해주세요." (input)="onInput('password', $event)" />
+          <input type="password" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('password', $event)" />
         </div>
 
         <!-- 비밀번호 확인 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">비밀번호 확인</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">비밀번호 확인</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input type="password" class="form-input" placeholder="입력해주세요." (input)="onInput('passwordConfirm', $event)" />
+          <input type="password" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('passwordConfirm', $event)" />
         </div>
 
         <!-- 이름 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">이름</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이름</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('name', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('name', $event)" />
         </div>
 
         <!-- 연락처 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">연락처</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">연락처</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             <span class="tooltip-wrap" data-tooltip="연락처는 본인에게만 노출되며, 비밀번호 찾기에 활용되니 신중하게 작성해주세요.">
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
-          <div class="input-with-dropdown">
+          <div class="flex gap-2 w-full">
             <div class="country-select" role="button" tabindex="0" (click)="toggleCountryDropdown()" (keydown.enter)="toggleCountryDropdown()">
-              <span class="country-code">{{ countryCode() }}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ countryCode() }}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M7 10l5 5 5-5z"/></svg>
               @if (showCountryDropdown()) {
                 <div class="country-dropdown">
                   @for (code of countryCodes; track code) {
@@ -99,70 +97,65 @@
                 </div>
               }
             </div>
-            <input type="tel" class="form-input form-input-phone" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
+            <input type="tel" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
           </div>
         </div>
 
         <!-- 생년월일 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">생년월일</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">생년월일</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             <span class="tooltip-wrap" data-tooltip="생년월일은 본인에게만 노출되며, 본인 확인에 활용되니 정확하게 작성해주세요.">
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
-          <input type="date" class="form-input" (input)="onInput('birthday', $event)" />
+          <input type="date" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 focus:border-accent box-border" (input)="onInput('birthday', $event)" />
         </div>
 
         <!-- 닉네임 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">닉네임</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">닉네임</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('nickname', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('nickname', $event)" />
         </div>
 
         <!-- 소개 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">소개</span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">소개</span>
           </div>
-          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('intro', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('intro', $event)" />
         </div>
       </div>
 
       <!-- Terms -->
       <div class="signup-terms-section">
-        <div class="terms-check-row">
-          <button class="terms-checkbox" (click)="toggleTerms()">
+        <div class="flex items-start gap-3 w-full">
+          <button class="flex items-center justify-center w-[18px] h-[18px] bg-transparent border-none cursor-pointer p-0 mt-0.5 shrink-0" (click)="toggleTerms()">
             @if (agreeTerms()) {
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" fill="#A1A1AA"/>
-                <path d="M9.5 15.5L6 12l-1 1 4.5 4.5 9-9-1-1z" fill="#FFFFFF"/>
-              </svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#A1A1AA"/><path d="M9.5 15.5L6 12l-1 1 4.5 4.5 9-9-1-1z" fill="#FFFFFF"/></svg>
             } @else {
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" stroke="#A1A1AA" stroke-width="1.5" fill="none"/>
-              </svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="2.5" width="19" height="19" rx="3.5" stroke="#A1A1AA" stroke-width="1.5" fill="none"/></svg>
             }
           </button>
-          <div class="terms-text-col">
-            <div class="terms-main">
-              <span class="terms-required">[필수]</span>
-              <span class="terms-label">서비스 이용약관 및 개인정보 처리 방침 동의</span>
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-bold text-sm leading-[150%] tracking-tight text-accent">[필수]</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">서비스 이용약관 및 개인정보 처리 방침 동의</span>
             </div>
-            <div class="terms-links">
-              <a class="terms-link" routerLink="/">개인정보처리방침 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="terms-link" routerLink="/">이용약관 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <div class="flex items-center gap-3">
+              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/">개인정보처리방침 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/">이용약관 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Submit -->
-      <button class="signup-btn" (click)="onSignup()">회원가입</button>
+      <button class="w-full h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" (click)="onSignup()">회원가입</button>
     </div>
   </div>
 </main>
