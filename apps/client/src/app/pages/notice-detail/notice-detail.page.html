@@ -1,7 +1,7 @@
-<div class="nd-wrapper">
+<div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="nd-tab-nav">
-    <div class="nd-tab-nav-inner">
+    <div class="flex">
       @for (tab of detailTabs; track tab) {
         <button
           class="nd-tab-item"
@@ -15,37 +15,35 @@
 
   <!-- ===== 메인 ===== -->
   <main class="nd-page">
-    <div class="nd-content-card">
+    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px] rounded-3xl">
       <!-- 제목 행 -->
-      <div class="nd-title-row">
+      <div class="flex items-center gap-2 w-full">
         @if (isPinned) {
-          <svg class="nd-pin-icon" width="24" height="24" viewBox="0 0 24 24" fill="#7A48FF">
+          <svg class="shrink-0" width="24" height="24" viewBox="0 0 24 24" fill="#7A48FF">
             <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
           </svg>
         }
-        <div class="nd-title-info">
-          <span class="nd-title">{{ noticeTitle }}</span>
-          <span class="nd-date">{{ noticeDate }}</span>
+        <div class="flex justify-between items-end gap-6 flex-1">
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-800">{{ noticeTitle }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500 shrink-0">{{ noticeDate }}</span>
         </div>
       </div>
 
       <!-- 구분선 -->
-      <div class="nd-divider"></div>
+      <hr class="w-full border-none border-t border-zinc-100" />
 
       <!-- 본문 -->
-      <div class="nd-body">
-        <p class="nd-body-text">{{ noticeContent }}</p>
-
-        <!-- 이미지 영역 -->
-        <div class="nd-image-placeholder"></div>
+      <div class="flex flex-col gap-6 w-full">
+        <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-500 m-0">{{ noticeContent }}</p>
+        <div class="w-[456px] h-[504px] bg-gradient-to-br from-zinc-100 to-zinc-200 rounded-xl nd-image-responsive"></div>
       </div>
 
       <!-- 첨부파일 -->
-      <div class="nd-files">
+      <div class="flex flex-wrap items-start gap-6 w-full max-w-[1400px]">
         @for (file of attachFiles; track file.name) {
-          <div class="nd-file-chip">
-            <span class="nd-file-name">{{ file.name }}</span>
-            <button class="nd-file-download" aria-label="다운로드">
+          <div class="flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full transition-colors duration-150 hover:border-zinc-300 box-border">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>
+            <button class="flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 shrink-0 transition-transform duration-150 hover:translate-y-0.5" aria-label="다운로드">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
@@ -57,8 +55,8 @@
     </div>
 
     <!-- 목록 버튼 -->
-    <div class="nd-list-btn-wrap">
-      <button class="nd-list-btn" (click)="goToList()">목록으로</button>
+    <div class="flex justify-center w-full max-w-[1400px]">
+      <button class="flex justify-center items-center w-[300px] h-12 px-3 py-2 border border-zinc-200 rounded-xl bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 transition-all duration-150 hover:bg-zinc-100 hover:border-zinc-300 box-border" (click)="goToList()">목록으로</button>
     </div>
   </main>
 </div>

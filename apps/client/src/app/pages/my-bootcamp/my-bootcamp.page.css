@@ -1,46 +1,7 @@
-:host {
-  display: block;
-  --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
-}
+/* [TW-KEEP] 툴팁 ::before + 동적 뱃지 바인딩 + 탭/카드 hover */
+:host { display: block; }
 
-.mb-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: #FFFFFF;
-}
-
-.mb-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 60px 100px;
-  gap: 20px;
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-/* ===== 타이틀 ===== */
-.mb-title-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.mb-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  margin: 0;
-}
-
+/* 도움말 툴팁 */
 .mb-help-wrapper {
   position: relative;
   display: flex;
@@ -53,11 +14,8 @@
   transition: fill 0.15s;
 }
 
-.mb-help-wrapper:hover .mb-help-icon {
-  fill: #71717A;
-}
+.mb-help-wrapper:hover .mb-help-icon { fill: #71717A; }
 
-/* ===== 도움말 툴팁 ===== */
 .mb-help-tooltip {
   display: flex;
   flex-direction: column;
@@ -102,44 +60,9 @@
   pointer-events: auto;
 }
 
-.mb-tooltip-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-}
-
-.mb-tooltip-label {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
-
-.mb-tooltip-desc {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-}
-
-/* ===== 탭 필터 ===== */
-.mb-tabs {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
+/* 탭 필터 */
 .mb-tab {
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 8px 16px;
   height: 40px;
@@ -147,7 +70,7 @@
   border-radius: 123123px;
   background: transparent;
   cursor: pointer;
-  font-family: var(--font-family);
+  font-family: 'SUIT', sans-serif;
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;
@@ -157,9 +80,7 @@
   box-sizing: border-box;
 }
 
-.mb-tab:hover {
-  border-color: #A1A1AA;
-}
+.mb-tab:hover { border-color: #A1A1AA; }
 
 .mb-tab-active {
   background: #7A48FF;
@@ -172,21 +93,10 @@
   border-color: #6938e0;
 }
 
-/* ===== 카드 그리드 ===== */
-.mb-grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  align-content: flex-start;
-  gap: 20px;
-  width: 100%;
-}
-
+/* 카드 */
 .mb-card {
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
   align-items: flex-start;
   width: 412px;
   border: 1px solid #E5E7EB;
@@ -200,83 +110,20 @@
   box-shadow: 0 2px 12px rgba(122, 72, 255, 0.08);
 }
 
-.mb-card-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-  gap: 12px;
-  width: 100%;
-}
-
-/* 카드 헤더 */
-.mb-card-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-/* 상태 뱃지 */
+/* 동적 뱃지 */
 .mb-badge {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2px 8px;
   border-radius: 6px;
-  font-family: var(--font-family);
+  font-family: 'SUIT', sans-serif;
   font-weight: 500;
   font-size: 14px;
   line-height: 150%;
   letter-spacing: -0.04em;
 }
 
-.mb-badge-applied {
-  background: #F2EDFF;
-  color: #7A48FF;
-}
-
-.mb-badge-active {
-  background: #FFF7ED;
-  color: #F97316;
-}
-
-.mb-badge-closed {
-  background: #FAFAFA;
-  border: 1px solid #F4F4F5;
-  color: #52525B;
-}
-
-.mb-arrow {
-  flex-shrink: 0;
-}
-
-/* 카드 정보 */
-.mb-card-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.mb-card-name {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  flex: 1;
-}
-
-.mb-card-date {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-}
+.mb-badge-applied { background: #F2EDFF; color: #7A48FF; }
+.mb-badge-active { background: #FFF7ED; color: #F97316; }
+.mb-badge-closed { background: #FAFAFA; border: 1px solid #F4F4F5; color: #52525B; }

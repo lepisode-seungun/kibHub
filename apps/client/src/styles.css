@@ -1,6 +1,10 @@
 /* ===== SUIT Font Import ===== */
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
 
+/* @tailwind base — Preflight 비활성 (기존 CSS Reset 유지) */
+@tailwind components;
+@tailwind utilities;
+
 /* ===== CSS Reset & Base ===== */
 *,
 *::before,

@@ -1,57 +1,57 @@
-<main class="about-page">
-  <div class="about-card">
+<main class="flex justify-center items-start min-h-[calc(100vh-72px)] px-5 py-20 max-md:px-4 max-md:py-10 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-tertiary">
+  <div class="flex flex-col w-[700px] max-w-full drop-shadow-[2px_6px_31px_rgba(0,0,0,0.04)] rounded-2xl overflow-hidden">
     <!-- Header -->
-    <div class="about-card-header">
-      <div class="about-header-row">
-        <h1 class="about-title">킵허브 소개</h1>
+    <div class="flex flex-col items-center px-8 pt-8 gap-6 bg-bg-card max-md:px-4">
+      <div class="flex justify-center items-center w-full h-[30px]">
+        <h1 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">킵허브 소개</h1>
       </div>
     </div>
 
     <!-- Body -->
-    <div class="about-card-body">
-      <div class="about-info-section">
+    <div class="flex flex-col items-center p-8 gap-6 bg-bg-card shadow-[2px_6px_31px_rgba(0,0,0,0.04)] min-h-[248px] max-md:px-4 max-md:py-6">
+      <div class="flex flex-col w-full p-6 border-t border-b border-zinc-700">
         <!-- 상호명 -->
-        <div class="info-row">
-          <span class="info-label">상호명</span>
-          <span class="info-value">킵허브</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">상호명</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">킵허브</span>
         </div>
         <!-- 대표자명 -->
-        <div class="info-row">
-          <span class="info-label">대표자명</span>
-          <span class="info-value">XXX</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">대표자명</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">XXX</span>
         </div>
         <!-- 주소 -->
-        <div class="info-row">
-          <span class="info-label">주소</span>
-          <span class="info-value">광주광역시 북구 용주로 30번길 33</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">주소</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">광주광역시 북구 용주로 30번길 33</span>
         </div>
         <!-- 연락처 -->
-        <div class="info-row">
-          <span class="info-label">연락처</span>
-          <span class="info-value">010-1234-1234</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">연락처</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">010-1234-1234</span>
         </div>
         <!-- 이메일 -->
-        <div class="info-row">
-          <span class="info-label">이메일</span>
-          <span class="info-value">NEWON&#64;NAVER.COM</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">이메일</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">NEWON&#64;NAVER.COM</span>
         </div>
         <!-- 사업자등록번호 -->
-        <div class="info-row">
-          <span class="info-label">사업자등록번호</span>
-          <span class="info-value">123-45-67890</span>
+        <div class="flex items-center gap-2.5 py-3">
+          <span class="w-[110px] min-w-[110px] max-md:w-[90px] max-md:min-w-[90px] font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-400 text-right">사업자등록번호</span>
+          <span class="font-suit font-medium text-base max-md:text-sm leading-[150%] tracking-tight text-zinc-200">123-45-67890</span>
         </div>
       </div>
 
       <!-- 하단 링크 -->
-      <div class="about-links">
-        <a class="about-link" routerLink="/privacy">
-          <span>개인정보처리방침</span>
+      <div class="flex gap-3 w-full">
+        <a class="flex items-center gap-1 no-underline transition-opacity duration-200 hover:opacity-70" routerLink="/privacy">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">개인정보처리방침</span>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
           </svg>
         </a>
-        <a class="about-link" routerLink="/terms">
-          <span>이용약관</span>
+        <a class="flex items-center gap-1 no-underline transition-opacity duration-200 hover:opacity-70" routerLink="/terms">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">이용약관</span>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
           </svg>
