@@ -1,7 +1,7 @@
-<div class="asf-wrapper">
+<div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="asf-tab-nav">
-    <div class="asf-tab-nav-inner">
+    <div class="flex gap-6">
       @for (tab of detailTabs; track tab) {
         <button
           class="asf-tab-item"
@@ -16,125 +16,91 @@
   <!-- ===== 메인 콘텐츠 ===== -->
   <main class="asf-page">
     <!-- 상단 바 -->
-    <div class="asf-topbar">
-      <div class="asf-topbar-left">
-        <button class="asf-back-btn" (click)="goBack()" aria-label="뒤로 가기">
+    <div class="flex justify-between items-center w-[1400px] max-w-full">
+      <div class="flex items-center gap-3">
+        <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
           </svg>
         </button>
-        <h1 class="asf-page-title">강의</h1>
+        <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">강의</h1>
       </div>
     </div>
 
     <!-- 폼 컨테이너 -->
     <div class="asf-form-card">
       <!-- 일정명 -->
-      <div class="asf-form-group">
-        <div class="asf-label-row">
-          <span class="asf-label">일정명</span>
-          <span class="asf-required-dot"></span>
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-1">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">일정명</span>
+          <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
         </div>
-        <input class="asf-input" type="text" placeholder="입력해주세요." [(value)]="title" />
+        <input class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-150 placeholder:text-zinc-400 focus:border-accent box-border" type="text" placeholder="입력해주세요." [(value)]="title" />
       </div>
 
       <!-- 내용 -->
-      <div class="asf-form-group">
-        <div class="asf-label-row">
-          <span class="asf-label">내용</span>
-          <span class="asf-required-dot"></span>
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-1">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">내용</span>
+          <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
         </div>
         <div class="asf-editor">
           <div class="asf-editor-toolbar">
-            <button class="asf-tb-btn" aria-label="폰트">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="이탤릭">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="볼드">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="밑줄">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="링크">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="이모지">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="이미지">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="목록">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="번호 목록">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="좌측정렬">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="가운데정렬">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>
-            </button>
-            <button class="asf-tb-btn" aria-label="우측정렬">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>
-            </button>
+            <button class="asf-tb-btn" aria-label="폰트"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M9.93 13.5h4.14L12 7.98zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="이탤릭"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="볼드"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="밑줄"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="링크"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="이모지"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="이미지"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="목록"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="번호 목록"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="좌측정렬"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="가운데정렬"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg></button>
+            <button class="asf-tb-btn" aria-label="우측정렬"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3F3F46"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg></button>
           </div>
-          <div class="asf-editor-divider"></div>
-          <div class="asf-editor-body" contenteditable="true">
-            <span class="asf-editor-placeholder">입력해주세요.</span>
+          <div class="w-full h-0 border border-zinc-200"></div>
+          <div class="p-4 min-h-[326px] font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none" contenteditable="true">
+            <span class="text-zinc-500 pointer-events-none">입력해주세요.</span>
           </div>
         </div>
       </div>
 
       <!-- 파일업로드 + 파일 리스트 -->
-      <div class="asf-files-section">
-        <!-- 파일업로드 -->
-        <div class="asf-upload-group">
-          <span class="asf-label">파일업로드</span>
+      <div class="flex flex-col gap-6 w-full">
+        <div class="flex flex-col gap-2 w-full">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">파일업로드</span>
           <div class="asf-upload-dropzone" (click)="fileInput.click()" role="button" tabindex="0" (keydown.enter)="fileInput.click()">
-            <button class="asf-upload-btn" type="button">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
-                <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
-              </svg>
+            <button class="flex items-center px-3 py-2 gap-1 h-10 border border-zinc-200 rounded-xl bg-transparent cursor-pointer font-suit font-semibold text-sm text-zinc-500" type="button">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
               <span>파일 선택</span>
             </button>
-            <span class="asf-upload-hint">파일을 드래그 앤 드롭하거나 파일 선택 버튼을 클릭해주세요.</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500 text-center">파일을 드래그 앤 드롭하거나 파일 선택 버튼을 클릭해주세요.</span>
           </div>
           <input #fileInput type="file" multiple hidden (change)="onFileSelect($event)" />
         </div>
 
         <!-- 업로드된 파일 리스트 -->
-        <div class="asf-file-list">
+        <div class="flex flex-col gap-3 w-full">
           @for (file of uploadedFiles; track $index) {
-            <div class="asf-file-row">
-              <span class="asf-file-name">{{ file.name }} [{{ file.extension }}, {{ file.size }}]</span>
-              <div class="asf-file-actions">
+            <div class="flex justify-between items-center px-5 py-2 w-full h-14 border border-zinc-200 rounded-xl box-border">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700">{{ file.name }} [{{ file.extension }}, {{ file.size }}]</span>
+              <div class="flex items-center">
                 @if (file.status === 'uploading') {
                   <svg class="asf-file-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="#956DFF" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
                   </svg>
                 } @else {
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#956DFF">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#956DFF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                 }
               </div>
             </div>
-            @if ($last) {
-              <!-- 마지막 파일: 삭제 버튼 표시 -->
-            }
           }
           @if (uploadedFiles.length > 0) {
-            <div class="asf-file-row asf-file-row-delete">
-              <span class="asf-file-name">{{ uploadedFiles[uploadedFiles.length - 1].name }} [{{ uploadedFiles[uploadedFiles.length - 1].extension }}, {{ uploadedFiles[uploadedFiles.length - 1].size }}]</span>
-              <button class="asf-file-delete-btn" (click)="removeFile(uploadedFiles.length - 1)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="#F87171">
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
+            <div class="flex justify-between items-center px-5 py-2 w-full h-14 border border-zinc-200 rounded-xl box-border">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700">{{ uploadedFiles[uploadedFiles.length - 1].name }} [{{ uploadedFiles[uploadedFiles.length - 1].extension }}, {{ uploadedFiles[uploadedFiles.length - 1].size }}]</span>
+              <button class="flex items-center gap-2 bg-transparent border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-red-400 p-0" (click)="removeFile(uploadedFiles.length - 1)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#F87171"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                 <span>삭제</span>
               </button>
             </div>
@@ -143,9 +109,9 @@
       </div>
 
       <!-- 버튼 행 -->
-      <div class="asf-btn-row">
-        <button class="asf-cancel-btn" (click)="onCancel()">취소</button>
-        <button class="asf-submit-btn" (click)="onSubmit()">제출</button>
+      <div class="flex justify-center gap-3 w-full">
+        <button class="flex-1 flex justify-center items-center px-3 py-2 h-12 bg-white border border-zinc-200 rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 box-border" (click)="onCancel()">취소</button>
+        <button class="flex-1 flex justify-center items-center px-3 py-2 h-12 bg-accent border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-opacity duration-150 hover:opacity-85" (click)="onSubmit()">제출</button>
       </div>
     </div>
   </main>

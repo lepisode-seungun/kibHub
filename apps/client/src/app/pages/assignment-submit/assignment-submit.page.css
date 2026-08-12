@@ -1,11 +1,7 @@
+/* [TW-KEEP] 탭 + 에디터 구조 + 드롭존 + spinner + 반응형 */
 :host { display: block; }
 
-.asf-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== 탭 네비게이션 ===== */
+/* 탭 */
 .asf-tab-nav {
   box-sizing: border-box;
   display: flex;
@@ -15,11 +11,6 @@
   height: 60px;
   background: #FFFFFF;
   border-bottom: 1px solid #F4F4F5;
-}
-
-.asf-tab-nav-inner {
-  display: flex;
-  gap: 24px;
 }
 
 .asf-tab-item {
@@ -46,7 +37,7 @@
   border-bottom-color: #7A48FF;
 }
 
-/* ===== 메인 콘텐츠 ===== */
+/* 메인 */
 .asf-page {
   display: flex;
   flex-direction: column;
@@ -57,44 +48,7 @@
   min-height: calc(100vh - 72px - 60px);
 }
 
-/* 상단 바 */
-.asf-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 1400px;
-  max-width: 100%;
-}
-
-.asf-topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.asf-back-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.asf-page-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #1F2937;
-  margin: 0;
-}
-
-/* ===== 폼 카드 ===== */
+/* 카드 */
 .asf-form-card {
   box-sizing: border-box;
   display: flex;
@@ -110,57 +64,7 @@
   border-radius: 16px;
 }
 
-/* 폼 그룹 */
-.asf-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
-.asf-label-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.asf-label {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-}
-
-.asf-required-dot {
-  width: 6px;
-  height: 6px;
-  background: #7A48FF;
-  border-radius: 50%;
-}
-
-.asf-input {
-  box-sizing: border-box;
-  width: 100%;
-  height: 48px;
-  padding: 8px 12px;
-  border: 1px solid #E4E4E7;
-  border-radius: 12px;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-.asf-input::placeholder { color: #A1A1AA; }
-.asf-input:focus { border-color: #7A48FF; }
-
-/* ===== 에디터 ===== */
+/* 에디터 */
 .asf-editor {
   display: flex;
   flex-direction: column;
@@ -197,44 +101,7 @@
 
 .asf-tb-btn:hover { opacity: 1; }
 
-.asf-editor-divider {
-  width: 100%;
-  height: 0;
-  border: 1px solid #E4E4E7;
-}
-
-.asf-editor-body {
-  padding: 16px;
-  min-height: 326px;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  outline: none;
-}
-
-.asf-editor-placeholder {
-  color: #71717A;
-  pointer-events: none;
-}
-
-/* ===== 파일 업로드 ===== */
-.asf-files-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-}
-
-.asf-upload-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
+/* 드롭존 */
 .asf-upload-dropzone {
   box-sizing: border-box;
   display: flex;
@@ -253,149 +120,20 @@
   transition: border-color 0.15s;
 }
 
-.asf-upload-dropzone:hover {
-  border-color: #7A48FF;
-}
+.asf-upload-dropzone:hover { border-color: #7A48FF; }
 
-.asf-upload-btn {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  gap: 4px;
-  height: 40px;
-  border: 1px solid #E4E4E7;
-  border-radius: 12px;
-  background: none;
-  cursor: pointer;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  color: #71717A;
-}
-
-.asf-upload-hint {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-  text-align: center;
-}
-
-/* ===== 파일 리스트 ===== */
-.asf-file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.asf-file-row {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 20px;
-  gap: 8px;
-  width: 100%;
-  height: 56px;
-  border: 1px solid #E4E4E7;
-  border-radius: 12px;
-}
-
-.asf-file-name {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #3F3F46;
-}
-
-.asf-file-actions {
-  display: flex;
-  align-items: center;
-}
-
-.asf-file-spinner {
-  animation: spin 1s linear infinite;
-}
-
+/* Spinner */
+.asf-file-spinner { animation: spin 1s linear infinite; }
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.asf-file-row-delete {
-  display: none;
-}
-
-.asf-file-delete-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #F87171;
-  padding: 0;
-}
-
-/* ===== 버튼 행 ===== */
-.asf-btn-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.asf-cancel-btn,
-.asf-submit-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
-  height: 48px;
-  border-radius: 12px;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  cursor: pointer;
-  flex: 1;
-  transition: opacity 0.15s;
-}
-
-.asf-cancel-btn {
-  box-sizing: border-box;
-  background: #FFFFFF;
-  border: 1px solid #E4E4E7;
-  color: #52525B;
-}
-
-.asf-cancel-btn:hover { background: #F9FAFB; }
-
-.asf-submit-btn {
-  background: #7A48FF;
-  border: none;
-  color: #FFFFFF;
-}
-
-.asf-submit-btn:hover { opacity: 0.85; }
-
-/* ===== 반응형 ===== */
+/* 반응형 */
 @media (max-width: 1600px) {
   .asf-tab-nav { padding: 0 100px; }
   .asf-page { padding: 60px 100px; }
-  .asf-topbar, .asf-form-card { width: 100%; }
+  .asf-form-card { width: 100%; }
 }
 
 @media (max-width: 768px) {

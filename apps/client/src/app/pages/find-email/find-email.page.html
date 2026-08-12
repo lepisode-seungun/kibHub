@@ -1,4 +1,4 @@
-<main class="login-page">
+<main class="flex w-full h-screen bg-[#202020] overflow-hidden">
   <!-- Left Panel - Branding -->
   <div class="login-left">
     <div class="sphere sphere-sm-logo"></div>
@@ -6,26 +6,26 @@
     <div class="sphere sphere-md"></div>
     <div class="sphere sphere-sm"></div>
     <div class="left-gradient-bottom"></div>
-    <div class="left-content">
-      <div class="left-logo">
-        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="left-logo-img" />
+    <div class="absolute left-[75px] top-[270px] z-[2] flex flex-col gap-[50px]">
+      <div>
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="h-11 brightness-0 invert" />
       </div>
-      <div class="left-tagline">
-        <span class="tagline-line1">Craft stories, create value.</span>
-        <span class="tagline-line2">from growth to success for<br>webtoon creators.</span>
+      <div class="flex flex-col gap-1">
+        <span class="font-['Prompt'] font-medium text-[21.6px] leading-[33px] tracking-tight text-[#E9E9E9]">Craft stories, create value.</span>
+        <span class="font-['Prompt'] font-light text-[21.6px] leading-[33px] tracking-tight text-[#E9E9E9]/70">from growth to success for<br>webtoon creators.</span>
       </div>
     </div>
   </div>
 
   <!-- Right Panel -->
-  <div class="find-right">
+  <div class="flex-1 flex flex-col justify-center items-center bg-white rounded-l-[40px] relative overflow-y-auto max-[960px]:rounded-none">
     <!-- Top nav -->
-    <div class="find-topbar">
-      <div class="topbar-left">
-        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="topbar-logo" />
+    <div class="flex justify-between items-center w-full px-10 py-2.5 absolute top-0 left-0 z-[5] box-border">
+      <div>
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="h-8" />
       </div>
-      <div class="topbar-right">
-        <span class="lang-label">KR</span>
+      <div class="flex items-center gap-1 cursor-pointer">
+        <span class="font-suit font-bold text-sm leading-6 text-zinc-800">KR</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M7 10l5 5 5-5" stroke="#27272A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -33,28 +33,28 @@
     </div>
 
     <!-- Form -->
-    <div class="find-form-wrap">
-      <h1 class="find-heading">이메일 찾기</h1>
+    <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5">
+      <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-tight text-zinc-800 text-center m-0">이메일 찾기</h1>
 
-      <div class="find-fields">
+      <div class="flex flex-col gap-6 w-full">
         <!-- 이름 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">이름</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이름</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('name', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('name', $event)" />
         </div>
 
         <!-- 연락처 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">연락처</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">연락처</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <div class="input-with-dropdown">
+          <div class="flex gap-2 w-full">
             <button type="button" class="country-select" (click)="toggleCountryDropdown()">
-              <span class="country-code">{{ countryCode() }}</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ countryCode() }}</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>
@@ -66,22 +66,22 @@
                 </div>
               }
             </button>
-            <input type="tel" class="form-input form-input-phone" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
+            <input type="tel" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
           </div>
         </div>
 
         <!-- 생년월일 -->
-        <div class="form-group">
-          <div class="form-label-row">
-            <span class="form-label">생년월일</span>
-            <span class="required-dot"></span>
+        <div class="flex flex-col gap-2 w-full">
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">생년월일</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
         </div>
       </div>
 
       <!-- Submit -->
-      <button class="find-btn" (click)="onFindEmail()">이메일 찾기</button>
+      <button class="w-full h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" (click)="onFindEmail()">이메일 찾기</button>
     </div>
   </div>
 </main>
