@@ -1,0 +1,190 @@
+/* ===== Home Banner ===== */
+
+:host {
+  display: block;
+}
+
+.home-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1920 / 440;
+  min-height: 260px;
+  overflow: hidden;
+  background: #0C0B10;
+}
+
+/* ===== Full Background SVG ===== */
+.banner-bg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== Text + Controls Overlay ===== */
+.banner-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 100px;
+  gap: 24px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== Text Content ===== */
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.banner-title {
+  font-family: var(--font-family);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FAFAFA;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.banner-subtitle {
+  font-family: var(--font-family);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+  margin: 0;
+}
+
+/* ===== Slider Controls ===== */
+.banner-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.banner-pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.banner-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.2);
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.banner-arrow:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.banner-page-current {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+.banner-page-sep {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.banner-page-total {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Progress Bar */
+.banner-progress-track {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.banner-progress-bar {
+  height: 100%;
+  background: #FFFFFF;
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1440px) {
+  .banner-overlay {
+    padding: 60px 60px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .banner-overlay {
+    padding: 40px 40px;
+  }
+
+  .banner-title {
+    font-size: 28px;
+  }
+
+  .banner-subtitle {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-overlay {
+    padding: 32px 20px;
+  }
+
+  .banner-title {
+    font-size: 22px;
+  }
+
+  .banner-subtitle {
+    font-size: 14px;
+  }
+
+  .banner-pagination {
+    gap: 8px;
+  }
+}

@@ -1,0 +1,97 @@
+<main class="kd-page">
+  <!-- 히어로 배너 -->
+  <section class="kd-hero" id="kd-hero">
+    <div class="kd-hero-content">
+      <h1 class="kd-hero-title">부트캠프</h1>
+    </div>
+    <p class="kd-hero-sub">전문가가 알려주는 실전 노하우!</p>
+  </section>
+
+  <!-- 부트캠프 카드 그리드 -->
+  <section class="kd-grid-section" id="kd-grid">
+    <div class="kd-grid-header">
+      <h2 class="kd-grid-title">부트캠프</h2>
+    </div>
+
+    <!-- 1행 -->
+    <div class="kd-row">
+      @for (card of bootcampCards.slice(0, 4); track card.id) {
+        <a class="kd-card" [routerLink]="['/k-digital', card.id]">
+          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
+          <div class="kd-card-info">
+            <div class="kd-badge-row">
+              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              @if (card.deadline) {
+                <span class="kd-deadline-badge">{{ card.deadline }}</span>
+              }
+            </div>
+            <h3 class="kd-card-name">{{ card.name }}</h3>
+            <p class="kd-card-summary">{{ card.summary }}</p>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- 2행 -->
+    <div class="kd-row">
+      @for (card of bootcampCards.slice(4, 8); track card.id) {
+        <a class="kd-card" [routerLink]="['/k-digital', card.id]">
+          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
+          <div class="kd-card-info">
+            <div class="kd-badge-row">
+              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              @if (card.deadline) {
+                <span class="kd-deadline-badge">{{ card.deadline }}</span>
+              }
+            </div>
+            <h3 class="kd-card-name">{{ card.name }}</h3>
+            <p class="kd-card-summary">{{ card.summary }}</p>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- 3행 -->
+    <div class="kd-row">
+      @for (card of bootcampCards.slice(8, 12); track card.id) {
+        <a class="kd-card" [routerLink]="['/k-digital', card.id]">
+          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
+          <div class="kd-card-info">
+            <div class="kd-badge-row">
+              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              @if (card.deadline) {
+                <span class="kd-deadline-badge">{{ card.deadline }}</span>
+              }
+            </div>
+            <h3 class="kd-card-name">{{ card.name }}</h3>
+            <p class="kd-card-summary">{{ card.summary }}</p>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-area">
+      <svg class="block-spinner" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+        <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+          <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
+          <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
+          <animate id="a3" fill="freeze" attributeName="x" begin="a7.end" dur="0.2s" values="13;1"/>
+          <animate id="a4b" fill="freeze" attributeName="y" begin="a10.end" dur="0.2s" values="13;1"/>
+        </rect>
+        <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+          <animate id="a5" fill="freeze" attributeName="y" begin="a1.end" dur="0.2s" values="13;1"/>
+          <animate id="a6" fill="freeze" attributeName="x" begin="a2.end" dur="0.2s" values="1;13"/>
+          <animate id="a7b" fill="freeze" attributeName="y" begin="a3.end" dur="0.2s" values="1;13"/>
+          <animate id="a8" fill="freeze" attributeName="x" begin="a4b.end" dur="0.2s" values="13;1"/>
+        </rect>
+        <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+          <animate id="a4" fill="freeze" attributeName="x" begin="a5.end" dur="0.2s" values="13;1"/>
+          <animate id="a7" fill="freeze" attributeName="y" begin="a6.end" dur="0.2s" values="13;1"/>
+          <animate id="a10" fill="freeze" attributeName="x" begin="a7b.end" dur="0.2s" values="1;13"/>
+          <animate id="a12" fill="freeze" attributeName="y" begin="a8.end" dur="0.2s" values="1;13"/>
+        </rect>
+      </svg>
+    </div>
+  </section>
+</main>

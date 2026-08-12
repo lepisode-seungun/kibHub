@@ -1,0 +1,77 @@
+/* ===== Hero Banner ===== */
+
+:host {
+  display: block;
+}
+
+.hero-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1920 / 440;
+  overflow: hidden;
+  background: #100B09;
+}
+
+/* ===== Figma Full Banner SVG Background ===== */
+.banner-bg-svg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  min-width: 1920px;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== Floating Cards (image-only, matching Figma rects) ===== */
+.floating-card {
+  position: absolute;
+  z-index: 10;
+  width: 10.125%;    /* 194.4 / 1920 */
+  aspect-ratio: 194.4 / 127.8;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.floating-card:hover {
+  box-shadow: 0 24px 48px rgba(122, 72, 255, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.3);
+  z-index: 20;
+  transform: scale(1.06) translateY(-6px) !important;
+}
+
+/* Exact positions from Figma SVG rect coordinates (x/1920, y/440) */
+.floating-card[data-pos="0"] { left: 25.26%; top: 18.18%; opacity: 0.6; }
+.floating-card[data-pos="0"]:hover { opacity: 1; }
+
+.floating-card[data-pos="1"] { left: 13.65%; top: 35.45%; }
+
+.floating-card[data-pos="2"] { left: 21.79%; top: 73%; opacity: 0.3; }
+.floating-card[data-pos="2"]:hover { opacity: 1; }
+
+.floating-card[data-pos="3"] { left: 64.58%; top: 18.18%; opacity: 0.6; }
+.floating-card[data-pos="3"]:hover { opacity: 1; }
+
+.floating-card[data-pos="4"] { left: 76.18%; top: 35.45%; }
+
+.floating-card[data-pos="5"] { left: 68.11%; top: 73%; opacity: 0.3; }
+.floating-card[data-pos="5"]:hover { opacity: 1; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1440px) {
+  .floating-card[data-pos="0"],
+  .floating-card[data-pos="3"] {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .floating-card { display: none; }
+  .hero-banner { aspect-ratio: auto; height: 300px; }
+}

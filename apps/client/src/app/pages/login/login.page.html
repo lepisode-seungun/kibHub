@@ -1,0 +1,105 @@
+<main class="login-page">
+  <!-- Left Panel - Branding -->
+  <div class="login-left">
+    <!-- Holographic Spheres -->
+    <div class="sphere sphere-sm-logo"></div>
+    <div class="sphere sphere-lg"></div>
+    <div class="sphere sphere-md"></div>
+    <div class="sphere sphere-sm"></div>
+
+    <!-- Logo & Tagline -->
+    <div class="left-content">
+      <div class="left-logo">
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="left-logo-img" />
+      </div>
+      <div class="left-tagline">
+        <span class="tagline-line1">Craft stories, create value.</span>
+        <span class="tagline-line2">from growth to success for<br>webtoon creators.</span>
+      </div>
+    </div>
+
+    <!-- Bottom gradient -->
+    <div class="left-gradient-bottom"></div>
+  </div>
+
+  <!-- Right Panel - Login Form -->
+  <div class="login-right">
+    <!-- Top nav -->
+    <div class="login-topbar">
+      <div class="topbar-left">
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="topbar-logo" />
+      </div>
+      <div class="topbar-right">
+        <span class="lang-label">KR</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M7 10l5 5 5-5" stroke="#27272A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="login-form-wrap">
+      <h1 class="login-heading">로그인</h1>
+
+      <div class="login-fields">
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="login-email">이메일</label>
+          <input id="login-email" type="email" class="form-input" placeholder="입력해주세요." (input)="onEmailInput($event)" (keydown.enter)="onLogin()" />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="form-group-inner">
+            <div class="form-label-row">
+              <label class="form-label" for="login-password">비밀번호</label>
+              <span class="tooltip-wrap" data-tooltip="비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력해주세요.">
+                <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+              </span>
+            </div>
+            <input id="login-password" type="password" class="form-input" placeholder="입력해주세요." (input)="onPasswordInput($event)" (keydown.enter)="onLogin()" />
+          </div>
+          @if (showPasswordError()) {
+            <div class="password-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="#F87171" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span>비밀번호 불일치</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="login-options">
+        <div class="login-options-left">
+          <button class="checkbox-btn" [class.checked]="autoLogin()" (click)="toggleAutoLogin()">
+            @if (autoLogin()) {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#7A48FF">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            }
+          </button>
+          <span class="option-text">자동로그인</span>
+        </div>
+        <div class="login-options-right">
+          <a class="option-link" routerLink="/find-email">이메일 찾기</a>
+          <a class="option-link" routerLink="/find-password">비밀번호 찾기</a>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <div class="login-actions">
+        <button class="login-btn" (click)="onLogin()">이메일로 로그인</button>
+
+        <div class="signup-row">
+          <span class="signup-text">계정이 없으신가요?</span>
+          <a class="signup-link" routerLink="/signup">회원가입 하기</a>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <p class="login-terms">회원가입 하시면 KIPhub 이용약관, 개인정보 수집 및 이용에 동의하신것으로 간주합니다</p>
+    </div>
+  </div>
+</main>

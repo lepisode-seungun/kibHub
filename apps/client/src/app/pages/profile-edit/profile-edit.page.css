@@ -1,0 +1,358 @@
+:host {
+  display: block;
+  --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.pe-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 100px;
+  gap: 40px;
+  min-height: calc(100vh - 72px);
+  background: #151419;
+}
+
+/* 상단 바 */
+.pe-topbar {
+  display: flex;
+  align-items: center;
+  gap: 172px;
+  width: 500px;
+}
+
+.pe-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.pe-back-btn:hover { opacity: 0.6; }
+
+.pe-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* 폼 컨테이너 */
+.pe-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 500px;
+}
+
+/* 아바타 */
+.pe-avatar {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  background: #3F3F46;
+  border: 1px solid #52525B;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.pe-avatar-initial {
+  font-family: 'Pretendard', var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  color: #E4E4E7;
+}
+
+.pe-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pe-avatar-error {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 150%;
+  color: #EF4444;
+}
+
+/* 호버 오버레이 */
+.pe-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 33px;
+  background: #27272A;
+  border: 1px solid #52525B;
+  border-radius: 50px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.pe-avatar:hover .pe-avatar-overlay {
+  opacity: 1;
+}
+
+.pe-avatar-overlay-text {
+  font-family: 'Pretendard', var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+/* 폼 필드 */
+.pe-fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.pe-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.pe-label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 42px;
+}
+
+.pe-label {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+.pe-required-dot {
+  width: 6px;
+  height: 6px;
+  background: #7A48FF;
+  border-radius: 50%;
+}
+
+.pe-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  padding: 8px 12px;
+  background: #27272A;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+
+.pe-input::placeholder { color: #71717A; }
+.pe-input:focus { box-shadow: 0 0 0 1px #7A48FF; }
+
+/* 연락처 행 */
+.pe-phone-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.pe-dropdown {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  width: 102px;
+  min-width: 102px;
+  height: 48px;
+  background: #27272A;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.pe-dropdown span {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #71717A;
+}
+
+.pe-input-phone {
+  flex: 1;
+}
+
+/* SNS 섹션 */
+.pe-sns-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.pe-sns-title {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+.pe-sns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pe-sns-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.pe-sns-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  background: #27272A;
+  border-radius: 12px;
+}
+
+.pe-input-sns {
+  flex: 1;
+}
+
+/* 소개 textarea */
+.pe-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  background: #27272A;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  outline: none;
+  resize: vertical;
+  transition: box-shadow 0.15s;
+}
+
+.pe-textarea::placeholder { color: #71717A; }
+.pe-textarea:focus { box-shadow: 0 0 0 1px #7A48FF; }
+
+/* 버튼 행 */
+.pe-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.pe-cancel-btn,
+.pe-save-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  flex: 1;
+  transition: opacity 0.15s;
+}
+
+.pe-cancel-btn { background: #3F3F46; }
+.pe-cancel-btn:hover { opacity: 0.8; }
+
+.pe-save-btn { background: #7A48FF; }
+.pe-save-btn:hover { opacity: 0.85; }
+
+/* 회원탈퇴 */
+.pe-withdraw-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.pe-withdraw-row:hover { opacity: 0.7; }
+
+.pe-withdraw-text {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #52525B;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+  .pe-page { padding: 40px 20px; }
+  .pe-topbar { width: 100%; gap: 40px; }
+  .pe-form-container { width: 100%; }
+}

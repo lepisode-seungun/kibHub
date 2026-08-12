@@ -1,0 +1,209 @@
+<div class="ad-wrapper">
+  <!-- ===== 탭 네비게이션 ===== -->
+  <nav class="ad-tab-nav">
+    <div class="ad-tab-nav-inner">
+      @for (tab of detailTabs; track tab) {
+        <button
+          class="ad-tab-item"
+          [class.ad-tab-item-active]="activeDetailTab() === tab"
+          (click)="selectDetailTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+  </nav>
+
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <main class="ad-page">
+    <!-- 상단 바 -->
+    <div class="ad-topbar">
+      <div class="ad-topbar-left">
+        <button class="ad-back-btn" (click)="goBack()" aria-label="뒤로 가기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
+          </svg>
+        </button>
+        <h1 class="ad-page-title">과제</h1>
+      </div>
+      <button class="ad-next-btn" (click)="goNext()">
+        <span>다음</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#71717A"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ===== 강의 섹션 ===== -->
+    <div class="ad-lecture-section">
+      <div class="ad-lecture-video-wrap">
+        <div class="ad-lecture-video-player">
+          <div class="ad-video-backdrop"></div>
+          <div class="ad-video-controls">
+            <div class="ad-vc-timeline">
+              <span class="ad-vc-time">{{ currentTime }}</span>
+              <div class="ad-vc-progress-bar">
+                <div class="ad-vc-progress-bg"></div>
+                <div class="ad-vc-progress-fill" [style.width.%]="progress"></div>
+                <div class="ad-vc-progress-thumb" [style.left.%]="progress"></div>
+              </div>
+              <span class="ad-vc-time">{{ totalTime }}</span>
+            </div>
+            <div class="ad-vc-main-controls">
+              <button class="ad-vc-ctrl-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+              </button>
+              <button class="ad-vc-play-btn" (click)="togglePlay()">
+                @if (isPlaying()) {
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#FFFFFF"/></svg>
+                } @else {
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7z" fill="#FFFFFF"/></svg>
+                }
+              </button>
+              <button class="ad-vc-ctrl-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ad-lecture-sidebar">
+        <span class="ad-ls-course-label">{{ courseLabel }}</span>
+        <div class="ad-ls-badge-row">
+          <div class="ad-ls-badges">
+            <span class="ad-ls-badge ad-ls-badge-type">강의</span>
+            <span class="ad-ls-badge ad-ls-badge-category">{{ category }}</span>
+          </div>
+          <div class="ad-ls-duration">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span>{{ duration }}</span>
+          </div>
+        </div>
+        <h2 class="ad-ls-title">{{ lectureTitle }}</h2>
+        <div class="ad-ls-divider"></div>
+        <div class="ad-ls-description-wrap">
+          <p class="ad-ls-description">{{ lectureDescription }}</p>
+        </div>
+
+        <!-- 학습자료 -->
+        <div class="ad-ls-materials">
+          <div class="ad-ls-materials-header" (click)="toggleMaterial()">
+            <span class="ad-ls-materials-title">학습자료</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.ad-ls-mat-open]="isMaterialOpen()">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+          </div>
+          @if (isMaterialOpen()) {
+            <div class="ad-ls-materials-body">
+              <div class="ad-ls-files-grid">
+                @for (file of learningFiles; track file.name) {
+                  <div class="ad-ls-file-chip">
+                    <span class="ad-ls-file-name">{{ file.name }}</span>
+                    <button class="ad-ls-file-download" aria-label="다운로드">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 과제 제출 섹션 ===== -->
+    <section class="ad-submission-section">
+      <div class="as-container">
+        <!-- 헤더 -->
+        <div class="as-header">
+          <div class="as-header-left">
+            <h2 class="as-title">과제 제출</h2>
+            <span class="as-count">({{ submissions.length }})</span>
+          </div>
+          <button class="as-submit-btn" (click)="navigateToSubmit()">과제 제출</button>
+        </div>
+
+        <!-- 필터 바 -->
+        <div class="as-filter-bar">
+          <span class="as-total">전체 {{ submissions.length }}</span>
+          <div class="as-filter-right">
+            <div class="as-dropdown">
+              <span class="as-dropdown-text">정렬</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+                <path d="M7 10l5 5 5-5z"/>
+              </svg>
+            </div>
+            <div class="as-search-input">
+              <input type="text" placeholder="검색어를 입력해주세요." />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+                <circle cx="10.5" cy="10.5" r="7" stroke="#A1A1AA" stroke-width="2" fill="none"/>
+                <path d="M15.5 15.5L20 20" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 과제 제출 리스트 -->
+        @for (item of submissions; track item.id) {
+          <div class="as-item" [class.as-item-reply]="item.isReply">
+            @if (item.isReply) {
+              <div class="as-reply-line">
+                <svg width="18" height="21" viewBox="0 0 18 21" fill="none">
+                  <path d="M1 0V14C1 17.866 4.134 21 8 21H18" stroke="#E4E4E7" stroke-width="1"/>
+                </svg>
+              </div>
+            }
+            <div class="as-item-card" [class.as-item-card-reply]="item.isReply" (click)="navigateToSubmission(item.id)" style="cursor:pointer">
+              <!-- 제목 행 -->
+              <div class="as-item-title-row">
+                <span class="as-item-title">{{ item.title }}</span>
+              </div>
+              <!-- 정보 행 -->
+              <div class="as-item-info-row">
+                <div class="as-item-info-left">
+                  <div class="as-item-meta-group">
+                    <span class="as-item-badge" [class.as-badge-feedback]="item.badge === '피드백'" [class.as-badge-submit]="item.badge === '과제제출'">{{ item.badge }}</span>
+                    <span class="as-item-divider"></span>
+                    @if (item.isInstructor) {
+                      <div class="as-instructor-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#7A48FF">
+                          <path d="M13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2h10V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2" opacity=".5"/>
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6h4c2.828 0 4.243 0 5.121.879C20 7.757 20 9.172 20 12v1.056c0 2.405 0 3.608-.597 4.575c-.598.966-1.674 1.504-3.825 2.58c-1.756.878-2.634 1.317-3.578 1.317s-1.822-.439-3.578-1.317c-2.151-1.076-3.227-1.614-3.825-2.58C4 16.664 4 15.46 4 13.056V12c0-2.828 0-4.243.879-5.121C5.757 6 7.172 6 10 6m2 4c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354c-.085.064-.19.088-.4.135l-.19.044c-.738.167-1.107.25-1.195.532s.164.577.667 1.165l.13.152c.143.167.215.25.247.354s.021.215 0 .438l-.02.203c-.076.785-.114 1.178.115 1.352c.23.174.576.015 1.267-.303l.178-.082c.197-.09.295-.135.399-.135s.202.045.399.135l.178.082c.691.319 1.037.477 1.267.303s.191-.567.115-1.352l-.02-.203c-.021-.223-.032-.334 0-.438s.104-.187.247-.354l.13-.152c.503-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.195-.532l-.19-.044c-.21-.047-.315-.07-.4-.135c-.084-.064-.138-.16-.246-.354l-.098-.176C12.474 10.34 12.284 10 12 10" />
+                        </svg>
+                      </div>
+                    }
+                    <span class="as-item-author">{{ item.author }}</span>
+                    <span class="as-item-divider"></span>
+                    <span class="as-item-date">{{ item.date }}</span>
+                    <span class="as-item-divider"></span>
+                    <div class="as-item-file">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
+                        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+                      </svg>
+                      <span>{{ item.fileName }}</span>
+                    </div>
+                  </div>
+                  <div class="as-item-comment">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA" opacity="0.5">
+                      <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                    <span>댓글</span>
+                    <span>{{ item.commentCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- 더보기 버튼 -->
+        <div class="as-loadmore-wrap">
+          <button class="as-loadmore-btn">더보기</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

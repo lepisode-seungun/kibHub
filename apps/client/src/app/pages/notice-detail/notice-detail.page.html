@@ -1,0 +1,64 @@
+<div class="nd-wrapper">
+  <!-- ===== 탭 네비게이션 ===== -->
+  <nav class="nd-tab-nav">
+    <div class="nd-tab-nav-inner">
+      @for (tab of detailTabs; track tab) {
+        <button
+          class="nd-tab-item"
+          [class.nd-tab-item-active]="activeDetailTab() === tab"
+          (click)="selectDetailTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+  </nav>
+
+  <!-- ===== 메인 ===== -->
+  <main class="nd-page">
+    <div class="nd-content-card">
+      <!-- 제목 행 -->
+      <div class="nd-title-row">
+        @if (isPinned) {
+          <svg class="nd-pin-icon" width="24" height="24" viewBox="0 0 24 24" fill="#7A48FF">
+            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
+          </svg>
+        }
+        <div class="nd-title-info">
+          <span class="nd-title">{{ noticeTitle }}</span>
+          <span class="nd-date">{{ noticeDate }}</span>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="nd-divider"></div>
+
+      <!-- 본문 -->
+      <div class="nd-body">
+        <p class="nd-body-text">{{ noticeContent }}</p>
+
+        <!-- 이미지 영역 -->
+        <div class="nd-image-placeholder"></div>
+      </div>
+
+      <!-- 첨부파일 -->
+      <div class="nd-files">
+        @for (file of attachFiles; track file.name) {
+          <div class="nd-file-chip">
+            <span class="nd-file-name">{{ file.name }}</span>
+            <button class="nd-file-download" aria-label="다운로드">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 목록 버튼 -->
+    <div class="nd-list-btn-wrap">
+      <button class="nd-list-btn" (click)="goToList()">목록으로</button>
+    </div>
+  </main>
+</div>

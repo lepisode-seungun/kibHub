@@ -1,0 +1,315 @@
+<main class="bootcamp-intro">
+  <!-- Hero Banner (홈과 공유) -->
+  <app-home-banner />
+
+  <!-- 부트캠프 목록 섹션 -->
+  <section class="bootcamp-list-section" id="bootcamp-list">
+    <!-- 섹션 헤더 -->
+    <div class="section-header">
+      <h1 class="section-title">부트캠프 목록</h1>
+      <svg class="section-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="#FFFFFF"/>
+      </svg>
+    </div>
+
+    <!-- 카드 목록 -->
+    <div class="cards-row">
+      @for (card of bootcampCards; track card.id) {
+        <article class="bootcamp-card">
+          <!-- 썸네일 -->
+          <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
+
+          <!-- 카드 정보 -->
+          <div class="card-info">
+            <!-- 뱃지 행 -->
+            <div class="badge-row">
+              <span
+                class="status-badge"
+                [class.status-badge--recruiting]="card.status === 'recruiting'"
+                [class.status-badge--closed]="card.status === 'closed'"
+              >{{ card.statusText }}</span>
+              @if (card.deadline) {
+                <span class="deadline-badge">{{ card.deadline }}</span>
+              }
+            </div>
+
+            <!-- 부트캠프명 -->
+            <h3 class="card-name">{{ card.name }}</h3>
+
+            <!-- 요약설명 -->
+            <p class="card-summary">{{ card.summary }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- 아카데미 소개 섹션 -->
+  <section class="academy-section" id="academy-intro">
+    <!-- 좌측: 텍스트 영역 -->
+    <div class="academy-left">
+      <span class="academy-label">Introducing Our Academy</span>
+
+      <div class="academy-text-block">
+        <h2 class="academy-headline">
+          " 상상하는 모든 이야기를 현실로 "<br />
+          글로벌 웹툰 작가에 도전하세요!
+        </h2>
+
+        <p class="academy-description">
+          상상으로만 펼쳐나가던 나의 세상.
+          어디서 부터 어떻게 기획을 하고 만들어나갈지 막막했던 이야기
+          진학을 고민하는 학생, 비전을 고민하는 직장인,
+          마음 속에 꿈을 품었던 그 누구라도 도전할 수 있습니다.
+          웹툰의 기초, 프로그램 사용법부터 기획, 제작, 완성까지 !
+          모듈화로 진행되는 코스를 통해 반복 학습은 물론
+          단계를 밟아 차근차근 배워나갑니다.
+          국내 정식 연재부터 글로벌 연재의 기회를 잡아보세요.
+        </p>
+      </div>
+    </div>
+
+    <!-- 우측: 비주얼 영역 (710×589.28 비율 컨테이너) -->
+    <div class="academy-right">
+      <!-- 데코 카드 배경 (상단 44.85%) -->
+      <div class="deco-card-bg"></div>
+
+      <!-- 점선 타원 궤도 (LINE) -->
+      <div class="deco-orbit"></div>
+      <!-- KIPhub 데코 로고 — 궤도 상단 바로 위 -->
+      <img class="deco-logo" src="/icons/kiphub-deco-logo.svg" alt="KIPhub" />
+
+      <!-- 장식 별 (Star 2) -->
+      <svg class="deco-star" width="19" height="19" viewBox="0 0 19 19" fill="white">
+        <path d="M9.5 0l2.47 6.53L19 9.5l-7.03 2.97L9.5 19l-2.47-6.53L0 9.5l7.03-2.97L9.5 0z"/>
+      </svg>
+
+      <!-- 특징 배너 -->
+      <div class="feature-banner">
+        <span class="feature-banner-text">웹툰 실무 전문 커리큘럼ㆍ현업 전문가 맞춤 피드백ㆍ글로벌 진출 올인원 서포트</span>
+      </div>
+
+      <!-- 코너 다이아몬드 4개 -->
+      <span class="corner-dot corner-dot--tl"></span>
+      <span class="corner-dot corner-dot--tr"></span>
+      <span class="corner-dot corner-dot--bl"></span>
+      <span class="corner-dot corner-dot--br"></span>
+
+      <!-- 마우스 커서 (Polygon 1) -->
+      <img class="deco-cursor" src="/icons/cursor-pointer.svg" alt="" />
+
+      <!-- 이미지 그리드 -->
+      <div class="academy-grid">
+        <div class="academy-grid-row">
+          <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+          <div class="grid-img" style="flex: 195; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+          <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+        </div>
+        <div class="academy-grid-row">
+          <div class="grid-img" style="flex: 236; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+          <div class="grid-img" style="flex: 217; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+          <div class="grid-img" style="flex: 130; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);"></div>
+        </div>
+        <!-- 4방향 페이드 -->
+        <div class="grid-fade grid-fade--top"></div>
+        <div class="grid-fade grid-fade--left"></div>
+        <div class="grid-fade grid-fade--right"></div>
+        <div class="grid-fade grid-fade--bottom"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 비디오 프리뷰 섹션 -->
+  <section class="video-preview-section" id="video-preview">
+    <div class="video-card">
+      <!-- 재생 버튼 -->
+      <button class="play-btn" aria-label="영상 재생">
+        <svg class="play-circle" width="81" height="81" viewBox="0 0 81 81" fill="none">
+          <circle cx="40.385" cy="40.385" r="39.385" stroke="#FFFFFF" stroke-width="2"/>
+        </svg>
+        <svg class="play-icon" width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <polygon points="5,0 30,15 5,30" fill="#D9D9D9"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- History 섹션 -->
+  <section class="history-section" id="history">
+    <!-- 왼쪽: 이미지 쇼케이스 -->
+    <div class="history-left">
+      <div class="history-progress-bar"></div>
+      <div class="history-showcase">
+        <!-- 쇼케이스 이미지 -->
+        <div class="showcase-image">
+          <img class="showcase-img" [src]="showcaseImageSrc" alt="웹툰 아카데미 클래스 모집" />
+        </div>
+        <!-- 페이지네이션 -->
+        <div class="showcase-pagination">
+          <button class="pagination-arrow pagination-arrow--prev" aria-label="이전" (click)="prevShowcase()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#52525B"/>
+            </svg>
+          </button>
+          <span class="pagination-current">{{ showcaseCurrent }}</span>
+          <span class="pagination-divider">/</span>
+          <span class="pagination-total">{{ showcaseTotal }}</span>
+          <button class="pagination-arrow pagination-arrow--next" aria-label="다음" (click)="nextShowcase()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="#52525B"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 타임라인 -->
+    <div class="history-right">
+      <!-- 섹션 헤더 -->
+      <div class="history-header">
+        <span class="history-label">History</span>
+        <h2 class="history-title">"진정한 문화의 확산은 교육입니다."</h2>
+      </div>
+
+      <!-- 타임라인 그룹들 -->
+      <div class="timeline-scroll">
+        <!-- 2024 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2024</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
+                  <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
+                  <span class="entry-date">2024. 01 ~ 2024. 06</span>
+                </div>
+              </div>
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
+                  <span class="entry-date">2024. 03 ~ 2024. 08</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2023</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
+                  <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
+                  <span class="entry-date">2023. 01 ~ 2023. 06</span>
+                </div>
+              </div>
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ WEBTOON</span>
+                  <span class="entry-desc">웹툰 실무</span>
+                  <span class="entry-date">2023. 03 ~ 2023. 08</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2022 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2022</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
+                  <span class="entry-date">2022. 08 ~ 2022. 12</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2021 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2021</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
+                  <span class="entry-date">2021. 08 ~ 2021. 12</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 스크롤 트랙 -->
+        <div class="timeline-scrollbar">
+          <div class="scrollbar-track"></div>
+          <div class="scrollbar-thumb"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partner 섹션 -->
+  <section class="partner-section" id="partner">
+    <div class="partner-header">
+      <span class="partner-label">Partner</span>
+      <h2 class="partner-title">글로벌 파트너사와 글로벌 웹툰 인재를 육성합니다.</h2>
+    </div>
+    <div class="partner-logos-wrapper">
+      <!-- 1행 — 왼쪽으로 흐름 -->
+      <div class="partner-marquee">
+        <div class="partner-marquee-track marquee-left">
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
+          <!-- 복제 (무한루프용) -->
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
+        </div>
+      </div>
+      <!-- 2행 — 오른쪽으로 흐름 -->
+      <div class="partner-marquee">
+        <div class="partner-marquee-track marquee-right">
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
+          <!-- 복제 -->
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
+          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
+        </div>
+      </div>
+      <!-- 좌우 페이드 -->
+      <div class="partner-fade partner-fade--left"></div>
+      <div class="partner-fade partner-fade--right"></div>
+    </div>
+  </section>
+
+</main>

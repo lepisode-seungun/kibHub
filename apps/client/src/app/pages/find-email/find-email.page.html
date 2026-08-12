@@ -1,0 +1,87 @@
+<main class="login-page">
+  <!-- Left Panel - Branding -->
+  <div class="login-left">
+    <div class="sphere sphere-sm-logo"></div>
+    <div class="sphere sphere-lg"></div>
+    <div class="sphere sphere-md"></div>
+    <div class="sphere sphere-sm"></div>
+    <div class="left-gradient-bottom"></div>
+    <div class="left-content">
+      <div class="left-logo">
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="left-logo-img" />
+      </div>
+      <div class="left-tagline">
+        <span class="tagline-line1">Craft stories, create value.</span>
+        <span class="tagline-line2">from growth to success for<br>webtoon creators.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="find-right">
+    <!-- Top nav -->
+    <div class="find-topbar">
+      <div class="topbar-left">
+        <img src="/icons/kiphub-logo.svg" alt="KIPhub" class="topbar-logo" />
+      </div>
+      <div class="topbar-right">
+        <span class="lang-label">KR</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M7 10l5 5 5-5" stroke="#27272A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="find-form-wrap">
+      <h1 class="find-heading">이메일 찾기</h1>
+
+      <div class="find-fields">
+        <!-- 이름 -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <span class="form-label">이름</span>
+            <span class="required-dot"></span>
+          </div>
+          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('name', $event)" />
+        </div>
+
+        <!-- 연락처 -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <span class="form-label">연락처</span>
+            <span class="required-dot"></span>
+          </div>
+          <div class="input-with-dropdown">
+            <button type="button" class="country-select" (click)="toggleCountryDropdown()">
+              <span class="country-code">{{ countryCode() }}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+                <path d="M7 10l5 5 5-5z"/>
+              </svg>
+              @if (showCountryDropdown()) {
+                <div class="country-dropdown">
+                  @for (code of countryCodes; track code) {
+                    <button type="button" class="country-option" (click)="selectCountryCode(code); $event.stopPropagation()">{{ code }}</button>
+                  }
+                </div>
+              }
+            </button>
+            <input type="tel" class="form-input form-input-phone" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
+          </div>
+        </div>
+
+        <!-- 생년월일 -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <span class="form-label">생년월일</span>
+            <span class="required-dot"></span>
+          </div>
+          <input type="text" class="form-input" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button class="find-btn" (click)="onFindEmail()">이메일 찾기</button>
+    </div>
+  </div>
+</main>

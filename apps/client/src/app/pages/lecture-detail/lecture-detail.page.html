@@ -1,0 +1,159 @@
+<main class="lecture-page">
+  <!-- ===== 상단 바 ===== -->
+  <div class="lecture-topbar">
+    <div class="lecture-topbar-left">
+      <button class="lecture-back-btn" (click)="goBack()" aria-label="뒤로 가기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
+        </svg>
+      </button>
+      <h1 class="lecture-page-title">강의</h1>
+    </div>
+    <button class="lecture-next-btn" (click)="goNextLecture()">
+      <span>다음 강의</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#71717A"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ===== 메인 영역 ===== -->
+  <div class="lecture-main">
+    <!-- 좌측: 비디오 플레이어 -->
+    <div class="lecture-video-wrap">
+      <div class="lecture-video-player">
+        <div class="video-backdrop"></div>
+
+        <!-- 비디오 컨트롤 -->
+        <div class="video-controls">
+          <!-- 타임라인 -->
+          <div class="vc-timeline">
+            <span class="vc-time">{{ currentTime }}</span>
+            <div class="vc-progress-bar">
+              <div class="vc-progress-bg"></div>
+              <div class="vc-progress-fill" [style.width.%]="progress"></div>
+              <div class="vc-progress-thumb" [style.left.%]="progress"></div>
+            </div>
+            <span class="vc-time">{{ totalTime }}</span>
+          </div>
+
+          <!-- 볼륨 -->
+          <div class="vc-volume">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M3 9v6h4l5 5V4L7 9H3z" fill="#FFFFFF"/>
+              <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="#FFFFFF"/>
+            </svg>
+            <div class="vc-volume-bar">
+              <div class="vc-volume-bg"></div>
+              <div class="vc-volume-fill" [style.width.%]="volume"></div>
+            </div>
+          </div>
+
+          <!-- 재생 컨트롤 -->
+          <div class="vc-main-controls">
+            <!-- 되감기 -->
+            <button class="vc-ctrl-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF">
+                <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/>
+              </svg>
+            </button>
+            <!-- 재생/일시정지 -->
+            <button class="vc-play-btn" (click)="togglePlay()">
+              @if (isPlaying()) {
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#FFFFFF"/>
+                </svg>
+              } @else {
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 5v14l11-7z" fill="#FFFFFF"/>
+                </svg>
+              }
+            </button>
+            <!-- 빨리감기 -->
+            <button class="vc-ctrl-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF">
+                <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 기타 -->
+          <div class="vc-others">
+            <button class="vc-ctrl-btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF">
+                <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+              </svg>
+            </button>
+            <button class="vc-ctrl-btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 우측: 강의 상세 사이드바 -->
+    <div class="lecture-sidebar">
+      <!-- 과정명 -->
+      <span class="ls-course-label">{{ courseLabel }}</span>
+
+      <!-- 뱃지 + 시간 -->
+      <div class="ls-badge-row">
+        <div class="ls-badges">
+          <span class="ls-badge ls-badge-type">{{ lectureType }}</span>
+          <span class="ls-badge ls-badge-category">{{ category }}</span>
+        </div>
+        <div class="ls-duration">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
+          <span>{{ duration }}</span>
+        </div>
+      </div>
+
+      <!-- 강의 제목 -->
+      <div class="ls-title-row">
+        <h2 class="ls-title">{{ lectureTitle }}</h2>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="ls-divider"></div>
+
+      <!-- 강의 내용 (스크롤 영역) -->
+      <div class="ls-description-wrap">
+        <div class="ls-description-scroll">
+          <p class="ls-description">{{ description }}</p>
+        </div>
+      </div>
+
+      <!-- 학습자료 -->
+      <div class="ls-materials">
+        <div class="ls-materials-header" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
+          <span class="ls-materials-title">학습자료</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.ls-mat-open]="isMaterialOpen()">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+          </svg>
+        </div>
+        @if (isMaterialOpen()) {
+          <div class="ls-materials-body">
+            <div class="ls-files-grid">
+              @for (file of learningFiles; track file.name) {
+                <div class="ls-file-chip">
+                  <span class="ls-file-name">{{ file.name }}</span>
+                  <button class="ls-file-download" aria-label="다운로드">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</main>

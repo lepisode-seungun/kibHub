@@ -1,0 +1,39 @@
+<section class="home-banner" id="home-banner">
+  <!-- Full Background SVG -->
+  <img
+    class="banner-bg"
+    src="home-banner-illustration.svg"
+    alt=""
+    aria-hidden="true"
+  />
+
+  <!-- Text + Controls Overlay -->
+  <div class="banner-overlay">
+    <div class="banner-content">
+      <h2 class="banner-title">{{ activeSlide.title }}</h2>
+      <p class="banner-subtitle">{{ activeSlide.subtitle }}</p>
+    </div>
+
+    <!-- Slider Controls -->
+    <div class="banner-controls">
+      <div class="banner-pagination">
+        <button class="banner-arrow" aria-label="이전 슬라이드" (click)="prevSlide()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="banner-page-current">{{ currentSlide() + 1 }}</span>
+        <span class="banner-page-sep">/</span>
+        <span class="banner-page-total">{{ totalSlides }}</span>
+        <button class="banner-arrow" aria-label="다음 슬라이드" (click)="nextSlide()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="banner-progress-track">
+        <div class="banner-progress-bar" [style.width.%]="progressPercent"></div>
+      </div>
+    </div>
+  </div>
+</section>

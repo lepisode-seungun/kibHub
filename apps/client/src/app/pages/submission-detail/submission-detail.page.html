@@ -1,0 +1,115 @@
+<div class="sd-wrapper">
+  <!-- ===== 탭 네비게이션 ===== -->
+  <nav class="sd-tab-nav">
+    <div class="sd-tab-nav-inner">
+      @for (tab of detailTabs; track tab) {
+        <button
+          class="sd-tab-item"
+          [class.sd-tab-item-active]="activeDetailTab() === tab"
+          (click)="selectDetailTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+  </nav>
+
+  <!-- ===== 메인 ===== -->
+  <main class="sd-page">
+    <!-- 상단 바 -->
+    <div class="sd-topbar">
+      <div class="sd-topbar-left">
+        <button class="sd-back-btn" (click)="goBack()" aria-label="뒤로 가기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
+          </svg>
+        </button>
+        <h1 class="sd-page-title">과제제출 상세</h1>
+      </div>
+    </div>
+
+    <!-- 콘텐츠 카드 -->
+    <div class="sd-content-card">
+      <!-- 과정명 -->
+      <span class="sd-course-label">{{ courseLabel }}</span>
+
+      <!-- 배지 + 메타 -->
+      <div class="sd-badge-row">
+        <span class="sd-badge-type">{{ badge }}</span>
+        <span class="sd-meta-divider"></span>
+        <span class="sd-meta-text">{{ author }}</span>
+        <span class="sd-meta-divider"></span>
+        <span class="sd-meta-text">{{ date }}</span>
+        <span class="sd-meta-divider"></span>
+        <div class="sd-meta-file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+          </svg>
+          <span>{{ fileName }}</span>
+        </div>
+      </div>
+
+      <!-- 제목 + 더보기 -->
+      <div class="sd-title-row">
+        <h2 class="sd-title">{{ assignmentTitle }}</h2>
+        <div class="sd-more-wrap">
+          <button class="sd-more-btn" aria-label="더보기" (click)="toggleMore()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
+              <circle cx="12" cy="5" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="12" cy="19" r="2"/>
+            </svg>
+          </button>
+          @if (isMoreOpen()) {
+            <div class="sd-more-backdrop" (click)="closeMore()"></div>
+            <div class="sd-more-dropdown">
+              @if (isAuthor) {
+                <button class="sd-more-item" (click)="onEdit()">수정</button>
+                <button class="sd-more-item" (click)="onDelete()">삭제</button>
+              }
+              @if (isInstructor) {
+                <button class="sd-more-item" (click)="onRegisterFeedback()">피드백 등록</button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="sd-divider"></div>
+
+      <!-- 설명 콘텐츠 (스크롤) -->
+      <div class="sd-description-wrap">
+        <div class="sd-description-scroll">
+          <p class="sd-description">{{ description }}</p>
+        </div>
+      </div>
+
+      <!-- 학습자료 -->
+      <div class="sd-materials">
+        <div class="sd-materials-header" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
+          <span class="sd-materials-title">학습자료</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.sd-mat-open]="isMaterialOpen()">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+          </svg>
+        </div>
+        @if (isMaterialOpen()) {
+          <div class="sd-materials-body">
+            <div class="sd-files-grid">
+              @for (file of learningFiles; track file.name) {
+                <div class="sd-file-chip">
+                  <span class="sd-file-name">{{ file.name }}</span>
+                  <button class="sd-file-download" aria-label="다운로드">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

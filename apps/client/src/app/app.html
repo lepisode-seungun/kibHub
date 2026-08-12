@@ -1,0 +1,5 @@
+<app-header />
+@if (!isHome() && !isLogin()) {
+  <app-sub-header />
+}
+<router-outlet></router-outlet>

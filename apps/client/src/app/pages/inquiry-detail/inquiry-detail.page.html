@@ -1,0 +1,117 @@
+<main class="iq-page">
+  <!-- 콘텐츠 영역 -->
+  <section class="iq-content">
+    <div class="iq-content-inner">
+
+      <!-- 문의 카드 -->
+      <div class="iq-card">
+        <!-- 상단 메타: 뱃지 + 날짜 + 더보기 -->
+        <div class="iq-meta-row">
+          <div class="iq-meta-left">
+            <span class="iq-badge" [class.iq-badge-waiting]="inquiry.status === '대기'" [class.iq-badge-done]="inquiry.status === '완료'">
+              {{ inquiry.status }}
+            </span>
+            <span class="iq-date">{{ inquiry.date }}</span>
+          </div>
+          <div class="iq-more-wrap">
+            <button class="iq-more-btn" aria-label="더보기" (click)="toggleMore()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
+                <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
+              </svg>
+            </button>
+            @if (isMoreOpen()) {
+              <div class="iq-dropdown-overlay" tabindex="-1" (click)="closeMore()" (keydown.escape)="closeMore()"></div>
+              <div class="iq-dropdown">
+                <button class="iq-dropdown-item" (click)="goToEdit()">수정</button>
+                <button class="iq-dropdown-item iq-dropdown-danger" (click)="openDelete()">삭제</button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- 제목 -->
+        <h2 class="iq-title">{{ inquiry.title }}</h2>
+
+        <!-- 구분선 -->
+        <div class="iq-divider"></div>
+
+        <!-- 내용 -->
+        <p class="iq-body">{{ inquiry.content }}</p>
+
+        <!-- 첨부파일 -->
+        @if (inquiry.attachments.length > 0) {
+          <div class="iq-attachments">
+            @for (file of inquiry.attachments; track $index) {
+              <div class="iq-file-pill">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA">
+                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V10l-6-5zm4 16H8V7h6.5v4.5H19v9.5z"/>
+                </svg>
+                <span class="iq-file-name">{{ file.name }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- 답변 영역 -->
+      @if (inquiry.reply) {
+        <div class="iq-reply-card">
+          <div class="iq-reply-inner">
+            <!-- 답변 헤더 -->
+            <div class="iq-reply-header">
+              <span class="iq-reply-title">{{ inquiry.reply.title }}</span>
+              <div class="iq-reply-date-row">
+                <span class="iq-reply-date-label">답변일</span>
+                <span class="iq-reply-date-value">{{ inquiry.reply.date }}</span>
+              </div>
+            </div>
+            <!-- 답변 내용 -->
+            <p class="iq-reply-body">{{ inquiry.reply.content }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- 목록으로 버튼 -->
+      <button class="iq-back-btn" (click)="goToList()">목록으로</button>
+
+    </div>
+  </section>
+</main>
+
+<!-- 삭제 확인 모달 -->
+@if (isDeleteOpen()) {
+  <div class="iq-del-overlay" tabindex="-1" (click)="closeDelete()" (keydown.escape)="closeDelete()">
+    <div class="iq-del-modal" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()" tabindex="-1">
+      <!-- 헤더 -->
+      <div class="iq-del-header">
+        <span class="iq-del-title">삭제</span>
+        <button class="iq-del-close" aria-label="닫기" (click)="closeDelete()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+      <!-- 본문 -->
+      <div class="iq-del-body">
+        <div class="iq-del-info">
+          <div class="iq-del-info-row iq-del-info-top">
+            <span class="iq-del-info-label">문의 제목</span>
+            <span class="iq-del-info-divider"></span>
+            <span class="iq-del-info-value">{{ inquiry.title }}</span>
+          </div>
+          <div class="iq-del-info-row iq-del-info-bottom">
+            <span class="iq-del-info-label">작성일</span>
+            <span class="iq-del-info-divider"></span>
+            <span class="iq-del-info-value">{{ inquiry.date }}</span>
+          </div>
+        </div>
+        <p class="iq-del-warning">해당 문의를 삭제 하시겠습니까?<br>삭제 후에는 복구할 수 없습니다.</p>
+      </div>
+      <!-- 하단 버튼 -->
+      <div class="iq-del-footer">
+        <button class="iq-del-btn-cancel" (click)="closeDelete()">취소</button>
+        <button class="iq-del-btn-confirm" (click)="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+}

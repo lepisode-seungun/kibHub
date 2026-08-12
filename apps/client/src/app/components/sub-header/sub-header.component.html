@@ -1,0 +1,13 @@
+<nav class="sub-header" aria-label="카테고리 메뉴">
+  <div class="sub-header-inner">
+    @for (tab of tabs; track tab.id) {
+      <a
+        class="nav-tab"
+        [class.nav-tab--active]="activeTabId() === tab.id"
+        [routerLink]="tab.route"
+      >
+        <span class="tab-text">{{ tab.label }}</span>
+      </a>
+    }
+  </div>
+</nav>

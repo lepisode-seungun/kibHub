@@ -1,0 +1,14 @@
+<section class="hero-banner">
+  <!-- Figma Original Full Banner SVG as Background -->
+  <img
+    src="trophy.svg"
+    alt="수강생 명예의 전당 배너"
+    class="banner-bg-svg"
+  />
+
+  <!-- Real Data Cards Overlay (image only, matching Figma) -->
+  @for (card of floatingCards; track card.id; let i = $index) {
+    <article class="floating-card" [attr.data-pos]="i" [style.background]="card.thumbnailGradient">
+    </article>
+  }
+</section>

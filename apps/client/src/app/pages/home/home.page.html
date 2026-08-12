@@ -1,0 +1,294 @@
+<main class="home">
+  <!-- Hero Banner -->
+  <app-home-banner />
+
+  <!-- Recent Comments Section -->
+  <section class="recent-comments" id="recent-comments">
+    <h2 class="section-title">Recent comments</h2>
+    <div class="carousel-wrapper">
+      <button class="carousel-arrow carousel-arrow--left" aria-label="이전" (click)="scrollLeft()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="cards-track" #track>
+        @for (card of commentCards; track card.id) {
+          <article class="comment-card">
+            <div class="card-content">
+              <div class="card-header">
+                <div class="user-info">
+                  <div class="avatar"><span class="avatar-initial">{{ card.userName.charAt(0) }}</span></div>
+                  <span class="user-name">{{ card.userName }}</span>
+                </div>
+                <div class="like-info">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span class="like-count">{{ card.commentLikes }}</span>
+                </div>
+              </div>
+              <div class="card-body"><p class="comment-text">{{ card.comment }}</p></div>
+              <div class="card-footer">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M10.0005 4.81073C9.72529 4.41325 9.35292 4.09281 8.91885 3.8799C8.54885 3.69073 8.14885 3.6124 7.69385 3.5749C7.25052 3.53906 6.70469 3.53906 6.02719 3.53906H3.83385C3.27802 3.53906 2.71969 3.6299 2.33135 4.03323C1.94719 4.43156 1.87552 4.98323 1.87552 5.4974V12.9032C1.87385 13.1066 1.87219 13.4066 1.93885 13.6832C2.02469 14.0391 2.23052 14.4057 2.67219 14.6299C2.86385 14.7282 3.05802 14.7607 3.23469 14.7757C3.39969 14.7891 3.59635 14.7891 3.80969 14.7891H6.19302C7.08135 14.7891 7.62135 14.9791 8.05885 15.3024C8.52802 15.6499 8.93052 16.1857 9.48052 17.0107C9.5376 17.0963 9.61492 17.1665 9.70563 17.2151C9.79635 17.2636 9.89764 17.289 10.0005 17.289C10.1034 17.289 10.2047 17.2636 10.2954 17.2151C10.3861 17.1665 10.4634 17.0963 10.5205 17.0107C11.0705 16.1857 11.4739 15.6499 11.9422 15.3024C12.3797 14.9791 12.9197 14.7891 13.8089 14.7891H16.1905C16.4047 14.7891 16.6014 14.7891 16.7655 14.7757C16.9613 14.7645 17.153 14.7149 17.3297 14.6299C17.7705 14.4057 17.9772 14.0382 18.063 13.6832C18.1297 13.4066 18.1272 13.1057 18.1255 12.9024V5.4974C18.1255 4.98323 18.0539 4.43073 17.6697 4.03323C17.2805 3.6299 16.7222 3.53906 16.1672 3.53906H13.9739C13.2964 3.53906 12.7497 3.53906 12.3072 3.5749C11.8522 3.6124 11.4514 3.69156 11.0822 3.8799C10.6481 4.09281 10.2758 4.41325 10.0005 4.81073Z" fill="#71717A"/>
+                </svg>
+                <span class="post-title">{{ card.postTitle }}</span>
+              </div>
+            </div>
+            <div class="card-thumbnail">
+              <div class="thumbnail-image" [style.background]="card.thumbnailGradient"></div>
+              <div class="thumbnail-overlay-top"></div>
+              <div class="thumbnail-overlay-left"></div>
+            </div>
+          </article>
+        }
+      </div>
+      <button class="carousel-arrow carousel-arrow--right" aria-label="다음" (click)="scrollRight()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="carousel-fade"></div>
+    </div>
+  </section>
+
+  <!-- Content Gallery Section -->
+  <section class="content-gallery" id="content-gallery">
+    <div class="gallery-inner">
+      <!-- Category Filter Tabs -->
+      <div class="filter-row">
+        @for (cat of categories; track cat.id) {
+          <button
+            class="filter-tab"
+            [class.filter-tab--active]="activeCategory() === cat.id"
+            (click)="selectCategory(cat.id)">
+            <span class="filter-icon" [style.background]="cat.iconBg">
+              <!-- Stars icon for 'all' -->
+              @if (cat.id === 'all') {
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.829l.645-1.936zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.58.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.734 1.734 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69a1.734 1.734 0 0 0-1.097-1.097l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.734 1.734 0 0 0 3.407 2.31l.387-1.162z"/></svg>
+              }
+              @if (cat.id === 'webtoon') {
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><rect x="2" y="1" width="12" height="4" rx="1"/><rect x="2" y="6" width="12" height="4" rx="1"/><rect x="2" y="11" width="12" height="4" rx="1"/></svg>
+              }
+              @if (cat.id === 'art') {
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5" cy="6" r="1.5"/><path d="M1.5 11l3-3 2.5 2.5L10 8l4.5 5.5H2.5z"/></svg>
+              }
+              @if (cat.id === 'writing') {
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M2 2h12v12H2V2zm2 3h8M4 8h8M4 11h5"/></svg>
+              }
+            </span>
+            <span class="filter-label">{{ cat.label }}</span>
+          </button>
+        }
+
+        <!-- Divider -->
+        <div class="filter-divider"></div>
+
+        <!-- Search Bar -->
+        <div class="gallery-search">
+          <span class="search-placeholder">{{ searchPlaceholder }}</span>
+          <div class="search-icon-circle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="content-grid">
+        @for (card of filteredContentCards(); track card.id) {
+          <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" style="cursor:pointer">
+            <div class="gallery-card-inner">
+              <!-- Top: User + Rank -->
+              <div class="gallery-card-top">
+                <div class="gallery-user">
+                  <div class="gallery-avatar"></div>
+                  <span class="gallery-username">{{ card.userName }}</span>
+                </div>
+                @if (card.rank) {
+                  <div class="gallery-rank-marker">
+                    <img class="rank-glass" src="rank-marker.svg" alt="" />
+                    <span class="rank-glass-number">{{ card.rank }}</span>
+                  </div>
+                }
+              </div>
+              <!-- Bottom: Title + Feedback -->
+              <div class="gallery-card-bottom">
+                <h3 class="gallery-card-title">{{ card.title }}</h3>
+
+                @if (card.featured && card.comment) {
+                  <!-- Featured: actual comment -->
+                  <div class="gallery-comment-box">
+                    <div class="gallery-comment-content">
+                      <span class="quote-mark">"</span>
+                      <span class="quote-body">{{ card.comment }}</span>
+                      <span class="quote-mark">"</span>
+                    </div>
+                  </div>
+                  <div class="gallery-comment-meta">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#52525B" opacity="0.5"/>
+                      <circle cx="8" cy="10.5" r="1" fill="#52525B"/><circle cx="12" cy="10.5" r="1" fill="#52525B"/><circle cx="16" cy="10.5" r="1" fill="#52525B"/>
+                    </svg>
+                    <span class="comment-author">{{ card.commenter }}</span>
+                    <span class="comment-time">{{ card.commentTime }}</span>
+                  </div>
+                  <div class="gallery-comment-arrow"></div>
+                } @else {
+                  <!-- Default: empty feedback prompt -->
+                  <div class="gallery-feedback-box">
+                    <svg class="feedback-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"/>
+                    </svg>
+                    <span class="feedback-placeholder">첫 피드백을 남겨보세요.</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Best Mentor Section -->
+  <section class="best-mentor" id="best-mentor">
+    <!-- Header: Logo + Title + Help -->
+    <div class="mentor-header">
+      <div class="mentor-logo">
+        <img src="/icons/kiphub-logo.svg" alt="KIPHUB" class="kiphub-logo-img" />
+      </div>
+      <h2 class="mentor-title">Best Mentor</h2>
+      <svg class="mentor-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+      </svg>
+    </div>
+
+    <!-- Cards Carousel -->
+    <div class="mentor-carousel-wrapper">
+      <div class="mentor-cards-track" #mentorTrack>
+        @for (mentor of mentorCards; track mentor.id) {
+          <article class="mentor-card">
+            <!-- Decorative Top -->
+            <div class="mentor-card-deco">
+              <div class="mentor-deco-ellipse"></div>
+            </div>
+            <!-- Avatar + Name -->
+            <div class="mentor-profile">
+              <div class="mentor-avatar">
+                <span class="mentor-avatar-initial">{{ mentor.userName.charAt(0) }}</span>
+              </div>
+              <span class="mentor-name">{{ mentor.userName }}</span>
+            </div>
+            <!-- Comment Area -->
+            <div class="mentor-comment-area">
+              <!-- Triangle Pointer -->
+              <div class="mentor-triangle"></div>
+              <!-- Comment Box -->
+              <div class="mentor-comment-box">
+                <div class="mentor-comment-inner">
+                  <!-- Best Comment Badge -->
+                  <div class="mentor-badge-row">
+                    <div class="mentor-badge-icon">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                        <path d="M2 21l3.6-1.4c.6.4 1.2.7 1.9.9.7.2 1.4.3 2.1.3 1.3 0 2.5-.3 3.6-.9 1.1-.6 2-1.5 2.6-2.6.6-1.1.9-2.3.9-3.6 0-1.3-.3-2.5-.9-3.6-.6-1.1-1.5-2-2.6-2.6-1.1-.6-2.3-.9-3.6-.9-1.3 0-2.5.3-3.6.9-1.1.6-2 1.5-2.6 2.6C2.8 12.2 2.5 13.4 2.5 14.7c0 1 .2 1.9.5 2.8L2 21z"/>
+                      </svg>
+                    </div>
+                    <span class="mentor-badge-text">Best Comment</span>
+                  </div>
+                  <!-- Comment Text -->
+                  <p class="mentor-comment-text">{{ mentor.comment }}</p>
+                </div>
+              </div>
+            </div>
+            <!-- Footer: Content Title + Likes -->
+            <div class="mentor-card-footer">
+              <div class="mentor-footer-left">
+                <span class="mentor-content-title">{{ mentor.contentTitle }}</span>
+              </div>
+              <div class="mentor-footer-right">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <span class="mentor-likes">{{ mentor.likes }}</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+      <!-- Right Fade -->
+      <div class="mentor-carousel-fade"></div>
+      <!-- Right Arrow -->
+      <button class="mentor-arrow" aria-label="다음" (click)="scrollMentorRight()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- More Content Section -->
+  <section class="more-content" id="more-content">
+    <div class="content-grid">
+      @for (card of filteredMoreContentCards(); track card.id) {
+        <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" style="cursor:pointer">
+          <div class="gallery-card-inner">
+            <div class="gallery-card-top">
+              <div class="gallery-user">
+                <div class="gallery-avatar"></div>
+                <span class="gallery-username">{{ card.userName }}</span>
+              </div>
+              @if (card.rank) {
+                <div class="gallery-rank-marker">
+                  <img class="rank-glass" src="rank-marker.svg" alt="" />
+                  <span class="rank-glass-number">{{ card.rank }}</span>
+                </div>
+              }
+            </div>
+            <div class="gallery-card-bottom">
+              <h3 class="gallery-card-title">{{ card.title }}</h3>
+              @if (card.featured && card.comment) {
+                <div class="gallery-comment-box">
+                  <div class="gallery-comment-content">
+                    <span class="quote-mark">"</span>
+                    <span class="quote-body">{{ card.comment }}</span>
+                    <span class="quote-mark">"</span>
+                  </div>
+                </div>
+                <div class="gallery-comment-meta">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#52525B" opacity="0.5"/>
+                    <circle cx="8" cy="10.5" r="1" fill="#52525B"/><circle cx="12" cy="10.5" r="1" fill="#52525B"/><circle cx="16" cy="10.5" r="1" fill="#52525B"/>
+                  </svg>
+                  <span class="comment-author">{{ card.commenter }}</span>
+                  <span class="comment-time">{{ card.commentTime }}</span>
+                </div>
+                <div class="gallery-comment-arrow"></div>
+              } @else {
+                <div class="gallery-feedback-box">
+                  <svg class="feedback-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"/>
+                  </svg>
+                  <span class="feedback-placeholder">첫 피드백을 남겨보세요.</span>
+                </div>
+              }
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+    <!-- Loading Spinner -->
+    <div class="loading-area">
+      <svg class="loading-spinner" width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <rect x="1" y="1" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0s"/>
+        </rect>
+        <rect x="1" y="13" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.5">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.4s"/>
+        </rect>
+        <rect x="13" y="13" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.3">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.8s"/>
+        </rect>
+      </svg>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,442 @@
+<!-- ===== 수강 신청 모달 ===== -->
+@if (isModalOpen()) {
+  <div class="af-overlay" tabindex="-1" (click)="onOverlayClick($event)" (keydown.escape)="closeModal()">
+    <div class="af-modal" role="dialog" aria-modal="true" aria-labelledby="af-title">
+
+      <!-- 헤더 -->
+      <div class="af-header">
+        <div class="af-header-inner">
+          <h2 class="af-title" id="af-title">지원하기</h2>
+        </div>
+        <button class="af-close" (click)="closeModal()" aria-label="닫기">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 8L24 24M24 8L8 24" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 폼 그룹 1: 이름 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap">
+            <span class="af-label">이름</span>
+            <span class="af-required"></span>
+          </div>
+        </div>
+        <input class="af-input" type="text" placeholder="입력해주세요." [(ngModel)]="form.applicantName" name="applicantName">
+      </div>
+
+      <!-- 폼 그룹 2: 연락처 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap">
+            <span class="af-label">연락처</span>
+            <span class="af-required"></span>
+          </div>
+        </div>
+        <div class="af-input-row">
+          <select class="af-select af-select-country" [class.af-selected]="form.countryCode" [(ngModel)]="form.countryCode" name="countryCode">
+            <option value="" disabled selected>국가번호</option>
+            <option value="+82">🇰🇷 +82</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+49">🇩🇪 +49</option>
+          </select>
+          <input class="af-input af-input-flex" type="tel" placeholder="전화번호를 입력해주세요." [(ngModel)]="form.phone" name="phone">
+        </div>
+      </div>
+
+      <!-- 폼 그룹 3: 이메일 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap">
+            <span class="af-label">이메일</span>
+            <span class="af-required"></span>
+          </div>
+        </div>
+        <input class="af-input" type="email" placeholder="이메일을 입력해주세요." [(ngModel)]="form.email" name="email">
+      </div>
+
+      <!-- 폼 그룹 4: 주소 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap">
+            <span class="af-label">주소</span>
+            <span class="af-required"></span>
+          </div>
+        </div>
+        <div class="af-input-row">
+          <input class="af-input af-input-flex" type="text" placeholder="주소를 입력해주세요." [(ngModel)]="form.address" name="address" readonly>
+          <button class="af-btn-outline" (click)="onSearchAddress()">주소검색</button>
+        </div>
+        <input class="af-input" type="text" placeholder="상세주소를 입력해주세요." [(ngModel)]="form.addressDetail" name="addressDetail">
+      </div>
+
+      <!-- 폼 그룹 5: 포트폴리오 -->
+      <div class="af-form-group">
+        <span class="af-label">포트폴리오</span>
+
+        <!-- 업로드 버튼 영역 -->
+        <div class="af-portfolio-upload-row">
+          <!-- URL 업로드 -->
+          <div class="af-upload-box" role="button" tabindex="0" (click)="openUrlForm()" (keydown.enter)="openUrlForm()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.36 12C14.44 11.34 14.5 10.68 14.5 10C14.5 9.32 14.44 8.66 14.36 8H17.74C17.9 8.64 18 9.31 18 10C18 10.69 17.9 11.36 17.74 12M12.59 17.56C13.19 16.45 13.65 15.25 13.97 14H16.92C15.95 15.67 14.41 16.93 12.59 17.56ZM12.34 12H7.66C7.56 11.34 7.5 10.68 7.5 10C7.5 9.32 7.56 8.65 7.66 8H12.34C12.43 8.65 12.5 9.32 12.5 10C12.5 10.68 12.43 11.34 12.34 12ZM10 17.96C9.17 16.76 8.5 15.43 8.09 14H11.91C11.5 15.43 10.83 16.76 10 17.96ZM6 6H3.08C4.04 4.33 5.57 3.06 7.4 2.44C6.8 3.55 6.35 4.75 6 6ZM3.08 14H6C6.35 15.25 6.8 16.45 7.4 17.56C5.58 16.93 4.04 15.67 3.08 14ZM2.26 12C2.1 11.36 2 10.69 2 10C2 9.31 2.1 8.64 2.26 8H5.64C5.56 8.66 5.5 9.32 5.5 10C5.5 10.68 5.56 11.34 5.64 12M10 2.03C10.83 3.23 11.5 4.57 11.91 6H8.09C8.5 4.57 9.17 3.23 10 2.03ZM16.92 6H13.97C13.66 4.76 13.19 3.57 12.59 2.44C14.43 3.07 15.96 4.34 16.92 6ZM10 0C4.47 0 0 4.5 0 10C0 12.65 1.05 15.2 2.93 17.07C3.86 18 4.96 18.74 6.17 19.24C7.39 19.74 8.69 20 10 20C12.65 20 15.2 18.95 17.07 17.07C18.95 15.2 20 12.65 20 10C20 8.69 19.74 7.39 19.24 6.17C18.74 4.96 18 3.86 17.07 2.93C16.14 2 15.04 1.26 13.83 0.76C12.61 0.26 11.31 0 10 0Z" fill="#A1A1AA"/>
+            </svg>
+            <div class="af-upload-label">
+              <span>URL 추가</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="#A1A1AA"/>
+              </svg>
+            </div>
+          </div>
+          <!-- 파일 업로드 -->
+          <div class="af-upload-box" role="button" tabindex="0" (click)="openFileForm()" (keydown.enter)="openFileForm()">
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 19C2.47 19 1.96 18.79 1.59 18.41C1.21 18.04 1 17.53 1 17V1H10L15 6V17C15 17.53 14.79 18.04 14.41 18.41C14.04 18.79 13.53 19 13 19H3Z" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 1V6H15" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 13H11" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 9H7" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="af-upload-label">
+              <span>파일 추가</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" fill="#A1A1AA"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 파일 가이드 -->
+        <div class="af-file-guide">
+          <p>압축 형식(zip) 파일을 제외한 모든 유형의 파일을 등록할 수 있습니다.</p>
+          <p>파일 1개당 크기는 20MB를 초과할 수 없으며, 최대 10개 까지 등록할 수 있습니다.</p>
+        </div>
+
+        <!-- 첨부 파일 목록 -->
+        <div class="af-file-list">
+          @for (file of form.portfolioFiles; track $index) {
+            <div class="af-file-item">
+              <div class="af-file-info">
+                <span class="af-file-label">{{ file.type === 'url' ? 'URL추가' : '파일추가' }}</span>
+                <span class="af-file-name">{{ file.name }}</span>
+              </div>
+              <button class="af-file-remove" (click)="removeFile($index)" aria-label="삭제">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 6L18 18M18 6L6 18" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 폼 그룹 6: Q1 지원 동기 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap">
+            <span class="af-q-label">Q</span>
+            <span class="af-label">부트캠프에 지원하게 된 동기는 무엇인가요?</span>
+          </div>
+        </div>
+        <textarea class="af-textarea" placeholder="입력해주세요." [(ngModel)]="form.motivation" name="motivation"></textarea>
+      </div>
+
+      <!-- 폼 그룹 7: Q2 동의 -->
+      <div class="af-form-group">
+        <div class="af-label-row">
+          <div class="af-label-wrap-col">
+            <div class="af-label-wrap">
+              <span class="af-q-label">Q</span>
+              <span class="af-label">해당 부트캠프는 오프라인 현장 강의에 참석해야 합니다. 이에 동의하십니까?</span>
+            </div>
+          </div>
+        </div>
+        <textarea class="af-textarea" placeholder="입력해주세요." [(ngModel)]="form.agreement" name="agreement"></textarea>
+      </div>
+
+      <!-- 개인정보 동의 -->
+      <div class="af-privacy-box" (click)="onPrivacyClick()" (keydown.enter)="onPrivacyClick()" tabindex="0" role="checkbox" [attr.aria-checked]="form.privacyAgreed">
+        <div class="af-privacy-row">
+          @if (form.privacyAgreed) {
+            <svg class="af-checkbox-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M9.6 19.2C12.1461 19.2 14.5879 18.1886 16.3882 16.3882C18.1886 14.5879 19.2 12.1461 19.2 9.6C19.2 7.05392 18.1886 4.61212 16.3882 2.81178C14.5879 1.01143 12.1461 0 9.6 0C7.05392 0 4.61212 1.01143 2.81178 2.81178C1.01143 4.61212 0 7.05392 0 9.6C0 12.1461 1.01143 14.5879 2.81178 16.3882C4.61212 18.1886 7.05392 19.2 9.6 19.2ZM14.2284 7.4292C14.2979 7.33355 14.3479 7.22514 14.3755 7.11017C14.4031 6.9952 14.4078 6.87592 14.3893 6.75914C14.3708 6.64237 14.3294 6.53037 14.2677 6.42956C14.2059 6.32875 14.1249 6.2411 14.0292 6.1716C13.9335 6.1021 13.8251 6.05213 13.7102 6.02453C13.5952 5.99693 13.4759 5.99225 13.3591 6.01074C13.2424 6.02924 13.1304 6.07056 13.0296 6.13234C12.9288 6.19412 12.8411 6.27515 12.7716 6.3708L8.592 12.1188L6.336 9.8628C6.25294 9.77688 6.15359 9.70836 6.04377 9.66125C5.93394 9.61413 5.81583 9.58936 5.69633 9.58838C5.57683 9.5874 5.45833 9.61023 5.34775 9.65553C5.23716 9.70084 5.13671 9.76771 5.05224 9.85225C4.96778 9.9368 4.901 10.0373 4.8558 10.1479C4.8106 10.2586 4.78788 10.3771 4.78898 10.4966C4.79007 10.6161 4.81495 10.7342 4.86217 10.844C4.90939 10.9537 4.978 11.053 5.064 11.136L8.064 14.136C8.15595 14.228 8.26675 14.299 8.38877 14.344C8.5108 14.3891 8.64113 14.4072 8.77081 14.397C8.90049 14.3869 9.02643 14.3488 9.13995 14.2852C9.25348 14.2217 9.35188 14.1344 9.4284 14.0292L14.2284 7.4292Z" fill="#956DFF"/>
+            </svg>
+          } @else {
+            <svg class="af-checkbox-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="9.6" cy="9.6" r="8.8" stroke="#A1A1AA" stroke-width="1.6"/>
+            </svg>
+          }
+          <span class="af-privacy-label">[필수] 개인정보 수집 및 이용 동의</span>
+          <span class="af-privacy-arrow">&gt;</span>
+        </div>
+        <p class="af-privacy-desc">수집된 개인정보는 지원 처리 목적으로만 사용됩니다.</p>
+      </div>
+
+      <!-- 하단 버튼 -->
+      <div class="af-btn-row">
+        <button class="af-btn-cancel" (click)="closeModal()">취소</button>
+        <button class="af-btn-submit" (click)="onSubmit()">확인</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== 개인정보 수집 동의 모달 ===== -->
+@if (isPrivacyOpen()) {
+  <div class="bd-prv-overlay" tabindex="-1" (click)="onPrivacyOverlayClick($event)" (keydown.escape)="closePrivacyModal()">
+    <div class="bd-prv-modal">
+      <!-- 헤더 -->
+      <div class="bd-prv-header">
+        <span class="bd-prv-header-title">개인정보 수집 및 이용 동의</span>
+        <button class="bd-prv-close-btn" (click)="closePrivacyModal()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 본문 -->
+      <div class="bd-prv-body">
+        <div class="bd-prv-content-box">
+          <div class="bd-prv-section">
+            <h3 class="bd-prv-section-title">수집목적</h3>
+            <p class="bd-prv-section-text">
+              지원 접수 및 선발 과정 진행, 서비스 이용 관련 안내를 위해 개인정보를 수집합니다.
+              수집된 정보는 지원 처리 외의 목적으로 사용되지 않으며, 처리 완료 후 관련 법령에 따라 보관 또는 파기됩니다.
+            </p>
+          </div>
+          <div class="bd-prv-section">
+            <h3 class="bd-prv-section-title">수집항목</h3>
+            <p class="bd-prv-section-text">
+              이름, 연락처, 이메일 주소, 주소, 포트폴리오
+            </p>
+          </div>
+          <div class="bd-prv-section">
+            <h3 class="bd-prv-section-title">보유 및 이용기간</h3>
+            <p class="bd-prv-section-text">
+              수집된 개인정보는 지원 처리 완료 후 3개월간 보관되며, 이후 지체 없이 파기합니다.
+              단, 관련 법령에 의해 보존이 필요한 경우 해당 기간 동안 보관합니다.
+            </p>
+          </div>
+          <div class="bd-prv-section">
+            <h3 class="bd-prv-section-title">동의 거부권 및 불이익</h3>
+            <p class="bd-prv-section-text">
+              개인정보 수집 및 이용에 대한 동의를 거부할 수 있습니다.
+              다만, 동의를 거부하실 경우 지원 접수가 제한될 수 있습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 푸터 -->
+      <div class="bd-prv-footer">
+        <div class="bd-prv-footer-actions">
+          <button class="bd-prv-btn-cancel" (click)="closePrivacyModal()">취소</button>
+          <button class="bd-prv-btn-agree" (click)="agreePrivacy()">동의</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- URL 추가 서브 모달 (수강 신청 모달 위에 표시) -->
+@if (isUrlFormOpen) {
+  <div class="af-url-overlay" tabindex="-1" (click)="closeUrlForm()" (keydown.escape)="closeUrlForm()">
+    <div class="af-url-form" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
+      <div class="af-url-form-header">
+        <span class="af-url-form-title">포트폴리오 URL 추가</span>
+        <button class="af-close" (click)="closeUrlForm()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6L18 18M18 6L6 18" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="af-url-form-body">
+        <input class="af-input" type="url" placeholder="http://" [(ngModel)]="urlInput" name="urlInput">
+      </div>
+      <div class="af-url-form-footer">
+        <div class="af-url-btn-row">
+          <button class="af-url-btn-cancel" (click)="closeUrlForm()">취소</button>
+          <button class="af-url-btn-submit" (click)="submitUrl()">등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- 파일 추가 서브 모달 -->
+@if (isFileFormOpen) {
+  <div class="af-url-overlay" tabindex="-1" (click)="closeFileForm()" (keydown.escape)="closeFileForm()">
+    <div class="af-url-form" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
+      <div class="af-url-form-header">
+        <span class="af-url-form-title">포트폴리오 파일 추가</span>
+        <button class="af-close" (click)="closeFileForm()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6L18 18M18 6L6 18" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="af-url-form-body">
+        <div class="af-file-select-row">
+          <input class="af-input af-input-flex" type="text" [value]="pendingFiles.length ? pendingFiles[pendingFiles.length - 1].name : ''" placeholder="파일을 선택해주세요." readonly>
+          <label class="af-btn-file-select" for="af-pending-file-input">파일선택</label>
+          <input id="af-pending-file-input" type="file" multiple hidden (change)="onPendingFileSelect($event)">
+        </div>
+      </div>
+      <div class="af-url-form-footer">
+        <div class="af-url-btn-row">
+          <button class="af-url-btn-cancel" (click)="closeFileForm()">취소</button>
+          <button class="af-url-btn-submit" (click)="submitFiles()">등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<main class="bd-page">
+  <!-- 히어로 배너 -->
+  <section class="bd-hero" id="bd-hero">
+    <img class="bd-hero-bg" src="/images/bd-hero-bg.svg" alt="" aria-hidden="true">
+    <div class="bd-hero-content">
+      <h1 class="bd-hero-title">{{ title }}</h1>
+      <p class="bd-hero-subtitle">{{ subtitle }}</p>
+      <button class="bd-hero-cta" (click)="onApply()">지원하기</button>
+    </div>
+  </section>
+
+  <!-- 교육 소개 -->
+  <section class="bd-edu-info" id="bd-edu-info">
+    <div class="bd-edu-inner">
+      <h2 class="bd-section-title">교육 소개</h2>
+      <div class="bd-info-bar">
+        <div class="bd-info-item">
+          <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#A1A1AA"></path>
+          </svg>
+          <span class="bd-info-label">기수</span>
+          <span class="bd-info-value">{{ cohort }}</span>
+        </div>
+        <div class="bd-info-item">
+          <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" fill="#A1A1AA"></path>
+          </svg>
+          <span class="bd-info-label">모집기간</span>
+          <span class="bd-info-value">{{ recruitPeriod }}</span>
+        </div>
+        <div class="bd-info-item">
+          <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"></path>
+          </svg>
+          <span class="bd-info-label">교육기간</span>
+          <span class="bd-info-value">{{ eduPeriod }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 탭 바 -->
+  <section class="bd-tab-bar" id="bd-tab-bar">
+    <div class="bd-tab-inner">
+      @for (tab of tabs; track tab) {
+        <button
+          class="bd-tab-btn"
+          [class.bd-tab--active]="activeTab === tab"
+          (click)="selectTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- 콘텐츠 영역 -->
+  <section class="bd-content" id="bd-content">
+    <div class="bd-content-inner">
+      <!-- 에디터 작성 -->
+      <div class="bd-block">
+        <h3 class="bd-block-title">에디터 작성</h3>
+        <p class="bd-block-desc">{{ description }}</p>
+        <div class="bd-editor-placeholder">
+          <span class="bd-editor-text">에디터</span>
+        </div>
+      </div>
+
+      <!-- 커리큘럼 -->
+      <div class="bd-block">
+        <div class="bd-block-header">
+          <h3 class="bd-block-title">커리큘럼</h3>
+          <hr class="bd-divider">
+        </div>
+        <h4 class="bd-block-subtitle">에디터 작성</h4>
+        <p class="bd-block-desc">{{ description }}</p>
+        <div class="bd-editor-placeholder">
+          <span class="bd-editor-text">에디터</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 강사 소개 -->
+  <section class="bd-instructors" id="bd-instructors">
+    <div class="bd-instructors-inner">
+      <h2 class="bd-section-title">강사 소개</h2>
+      <div class="bd-instructor-slider-wrap">
+        <button class="bd-slider-arrow bd-slider-arrow-left" (click)="scrollInstructors('left')" aria-label="이전">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 6L9 12L15 18" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="bd-instructor-slider" #instructorSlider>
+          @for (inst of instructors; track $index) {
+            <div class="bd-instructor-card">
+              <div class="bd-instructor-photo"></div>
+              <div class="bd-instructor-info">
+                <div class="bd-instructor-meta">
+                  <span class="bd-instructor-name">{{ inst.name }}</span>
+                  <span class="bd-instructor-summary">{{ inst.summary }}</span>
+                </div>
+                <hr class="bd-instructor-divider">
+                <div class="bd-instructor-work">
+                  <span class="bd-work-badge">{{ inst.badge }}</span>
+                  <span class="bd-work-content">{{ inst.work }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <button class="bd-slider-arrow bd-slider-arrow-right" (click)="scrollInstructors('right')" aria-label="다음">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6L15 12L9 18" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 부트캠프 소개 섹션 -->
+  <section class="bd-intro-section">
+    <div class="bd-intro-inner">
+      <!-- 타이틀 + 구분선 -->
+      <div class="bd-intro-header">
+        <h4 class="bd-intro-title">부트캠프 소개</h4>
+        <div class="bd-intro-divider"></div>
+      </div>
+
+      <!-- 스텝 아이콘 -->
+      <div class="bd-intro-steps">
+        <img src="/images/bd-steps.svg" alt="" height="63">
+      </div>
+
+      <!-- 에디터 작성 -->
+      <div class="bd-intro-editor">
+        <span class="bd-intro-editor-title">에디터 작성</span>
+        <span class="bd-intro-editor-desc">부트캠프 후기 작성</span>
+      </div>
+    </div>
+  </section>
+
+</main>

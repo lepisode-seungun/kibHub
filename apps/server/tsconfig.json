@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "outDir": "../../dist/apps/server",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@prisma/generated/*": ["prisma/generated/*"]
+    }
+  },
+  "include": ["src/**/*", "../../prisma/generated/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,74 @@
+<main class="mb-page">
+  <section class="mb-content">
+    <!-- 타이틀 -->
+    <div class="mb-title-row">
+      <h1 class="mb-title">내 부트캠프</h1>
+      <div class="mb-help-wrapper">
+        <svg class="mb-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        </svg>
+        <div class="mb-help-tooltip">
+          <div class="mb-tooltip-item">
+            <span class="mb-tooltip-label">수강중</span>
+            <span class="mb-tooltip-desc">부트캠프에 합격하여, 강의를 시청할 수 있습니다.</span>
+          </div>
+          <div class="mb-tooltip-item">
+            <span class="mb-tooltip-label">신청완료</span>
+            <span class="mb-tooltip-desc">부트캠프 신청이 완료되어, 합격 발표 대기 중입니다.</span>
+          </div>
+          <div class="mb-tooltip-item">
+            <span class="mb-tooltip-label">수강 대기</span>
+            <span class="mb-tooltip-desc">부트캠프에 합격하였으며, 부트캠프 개강을 대기 중입니다.</span>
+          </div>
+          <div class="mb-tooltip-item">
+            <span class="mb-tooltip-label">수료</span>
+            <span class="mb-tooltip-desc">부트캠프가 종료되어 더 이상 부트캠프에 접근 할 수 없습니다.</span>
+          </div>
+          <div class="mb-tooltip-item">
+            <span class="mb-tooltip-label">불합격</span>
+            <span class="mb-tooltip-desc">신청해주신 부트캠프에 최종 불합격하였습니다.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 필터 -->
+    <div class="mb-tabs">
+      @for (tab of tabs; track tab) {
+        <button
+          class="mb-tab"
+          [class.mb-tab-active]="activeTab() === tab"
+          (click)="selectTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="mb-grid">
+      @for (item of filteredItems; track item.id) {
+        <div class="mb-card" [routerLink]="['/my-bootcamp', item.id]">
+          <div class="mb-card-inner">
+            <div class="mb-card-header">
+              <span class="mb-badge"
+                [class.mb-badge-applied]="item.status === '신청 완료'"
+                [class.mb-badge-active]="item.status === '수강 중'"
+                [class.mb-badge-closed]="item.status === '마감'">
+                {{ item.status }}
+              </span>
+              <svg class="mb-arrow" width="16" height="16" viewBox="0 0 24 24" fill="#27272A">
+                <path d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"/>
+              </svg>
+            </div>
+            <div class="mb-card-info">
+              <span class="mb-card-name">{{ item.name }}</span>
+            </div>
+            @if (item.dateRange) {
+              <span class="mb-card-date">{{ item.dateRange }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</main>
