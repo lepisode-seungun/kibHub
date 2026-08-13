@@ -2,8 +2,7 @@
   <div class="flex items-center h-[60px] max-w-[1920px] mx-auto px-[238px] 2xl:px-[100px] xl:px-10 md:px-5 md:overflow-x-auto md:scrollbar-none">
     @for (tab of tabs; track tab.id) {
       <a
-        class="nav-tab"
-        [class.nav-tab--active]="activeTabId() === tab.id"
+        [ngClass]="activeTabId() === tab.id ? 'nav-tab nav-tab--active' : 'nav-tab'"
         [routerLink]="tab.route"
       >
         <span class="font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap">{{ tab.label }}</span>

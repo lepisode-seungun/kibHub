@@ -156,7 +156,7 @@
           </div>
 
           <!-- 개인정보 동의 -->
-          <div class="iq-consent-box" [class.iq-consent-box--checked]="inquiryConsent()" (click)="openPrivacyModal()" (keydown.enter)="openPrivacyModal()" tabindex="0" role="button">
+          <div [ngClass]="inquiryConsent() ? 'iq-consent-box iq-consent-box--checked' : 'iq-consent-box'" (click)="openPrivacyModal()" (keydown.enter)="openPrivacyModal()" tabindex="0" role="button">
             <div class="flex justify-between items-center w-full">
               <div class="flex items-center gap-2">
                 @if (inquiryConsent()) {

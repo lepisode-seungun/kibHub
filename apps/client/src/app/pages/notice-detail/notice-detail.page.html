@@ -4,8 +4,7 @@
     <div class="flex">
       @for (tab of detailTabs; track tab) {
         <button
-          class="nd-tab-item"
-          [class.nd-tab-item-active]="activeDetailTab() === tab"
+          [ngClass]="activeDetailTab() === tab ? 'nd-tab-item nd-tab-item-active' : 'nd-tab-item'"
           (click)="selectDetailTab(tab)">
           {{ tab }}
         </button>

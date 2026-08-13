@@ -20,7 +20,7 @@
           <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
           <div class="flex flex-col gap-3 px-1">
             <div class="flex gap-1.5 items-center">
-              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
               @if (card.deadline) {
                 <span class="flex items-center justify-center px-2 py-0.5 border border-zinc-500 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">{{ card.deadline }}</span>
               }
@@ -39,7 +39,7 @@
           <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
           <div class="flex flex-col gap-3 px-1">
             <div class="flex gap-1.5 items-center">
-              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
               @if (card.deadline) {
                 <span class="flex items-center justify-center px-2 py-0.5 border border-zinc-500 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">{{ card.deadline }}</span>
               }
@@ -58,7 +58,7 @@
           <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
           <div class="flex flex-col gap-3 px-1">
             <div class="flex gap-1.5 items-center">
-              <span class="kd-status-badge" [class.kd-status--recruiting]="card.status === 'recruiting'" [class.kd-status--closed]="card.status === 'closed'">{{ card.statusText }}</span>
+              <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
               @if (card.deadline) {
                 <span class="flex items-center justify-center px-2 py-0.5 border border-zinc-500 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">{{ card.deadline }}</span>
               }
