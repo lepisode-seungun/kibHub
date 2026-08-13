@@ -7,7 +7,7 @@
           <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
         </svg>
       </button>
-      <h1 class="lecture-page-title">강의</h1>
+      <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">강의</h1>
     </div>
     <button class="lecture-next-btn" (click)="goNextLecture()">
       <span>다음 강의</span>
@@ -97,7 +97,7 @@
     <!-- 우측: 강의 상세 사이드바 -->
     <div class="lecture-sidebar">
       <!-- 과정명 -->
-      <span class="ls-course-label">{{ courseLabel }}</span>
+      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel }}</span>
 
       <!-- 뱃지 + 시간 -->
       <div class="ls-badge-row">
@@ -115,7 +115,7 @@
 
       <!-- 강의 제목 -->
       <div class="ls-title-row">
-        <h2 class="ls-title">{{ lectureTitle }}</h2>
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 break-keep">{{ lectureTitle }}</h2>
       </div>
 
       <!-- 구분선 -->
@@ -124,15 +124,15 @@
       <!-- 강의 내용 (스크롤 영역) -->
       <div class="ls-description-wrap">
         <div class="ls-description-scroll">
-          <p class="ls-description">{{ description }}</p>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description }}</p>
         </div>
       </div>
 
       <!-- 학습자료 -->
       <div class="ls-materials">
         <div class="ls-materials-header" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
-          <span class="ls-materials-title">학습자료</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.ls-mat-open]="isMaterialOpen()">
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">학습자료</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isMaterialOpen() ? 'none' : 'rotate(180deg)'" style="transition: transform 0.2s">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
           </svg>
         </div>
@@ -141,7 +141,7 @@
             <div class="ls-files-grid">
               @for (file of learningFiles; track file.name) {
                 <div class="ls-file-chip">
-                  <span class="ls-file-name">{{ file.name }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>
                   <button class="ls-file-download" aria-label="다운로드">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

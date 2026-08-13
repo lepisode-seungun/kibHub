@@ -35,8 +35,7 @@
     <div class="mbd-tab-nav-inner">
       @for (tab of detailTabs; track tab) {
         <button
-          class="mbd-tab-item"
-          [class.mbd-tab-item-active]="activeDetailTab() === tab"
+          [ngClass]="activeDetailTab() === tab ? 'mbd-tab-item mbd-tab-item-active' : 'mbd-tab-item'"
           (click)="selectDetailTab(tab)">
           {{ tab }}
         </button>
@@ -70,7 +69,7 @@
             </div>
             <div class="mbd-course-toggle">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A"
-                [class.mbd-toggle-open]="section.isExpanded">
+                [style.transform]="section.isExpanded ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
                 <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
               </svg>
             </div>
@@ -136,8 +135,7 @@
       <div class="at-filter-chips">
         @for (chip of lectureFilterChips; track chip) {
           <button
-            class="at-chip"
-            [class.at-chip-active]="activeLectureFilter() === chip"
+            [ngClass]="activeLectureFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
             (click)="selectLectureFilter(chip)">
             {{ chip }}
           </button>
@@ -205,8 +203,7 @@
       <div class="at-filter-chips">
         @for (chip of assignmentFilterChips; track chip) {
           <button
-            class="at-chip"
-            [class.at-chip-active]="activeAssignmentFilter() === chip"
+            [ngClass]="activeAssignmentFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
             (click)="selectAssignmentFilter(chip)">
             {{ chip }}
           </button>
@@ -295,7 +292,7 @@
                   <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
                 </svg>
               }
-              <span class="nt-item-title" [class.nt-title-pinned]="notice.isPinned">{{ notice.title }}</span>
+              <span [ngClass]="notice.isPinned ? 'nt-item-title nt-title-pinned' : 'nt-item-title'">{{ notice.title }}</span>
             </div>
             <p class="nt-item-desc">{{ notice.description }}</p>
             <span class="nt-item-date">{{ notice.date }}</span>
@@ -312,8 +309,7 @@
         </button>
         @for (page of [1, 2, 3, 4, 5]; track page) {
           <button
-            class="nt-page-btn"
-            [class.nt-page-active]="currentNoticePage() === page"
+            [ngClass]="currentNoticePage() === page ? 'nt-page-btn nt-page-active' : 'nt-page-btn'"
             (click)="goToNoticePage(page)">
             {{ page }}
           </button>

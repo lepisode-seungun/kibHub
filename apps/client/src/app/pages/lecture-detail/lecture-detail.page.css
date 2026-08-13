@@ -49,15 +49,8 @@
   opacity: 0.6;
 }
 
-.lecture-page-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #1F2937;
-  margin: 0;
-}
+/* lecture-page-title -> TW inline */
+
 
 .lecture-next-btn {
   box-sizing: border-box;
@@ -308,15 +301,8 @@
   border-radius: 16px;
 }
 
-/* 과정명 */
-.ls-course-label {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-}
+/* ls-course-label -> TW inline */
+
 
 /* 뱃지 행 */
 .ls-badge-row {
@@ -381,17 +367,8 @@
   width: 100%;
 }
 
-.ls-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  margin: 0;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-}
+/* ls-title -> TW inline */
+
 
 /* 구분선 */
 .ls-divider {
@@ -430,15 +407,8 @@
   border-radius: 3px;
 }
 
-.ls-description {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #52525B;
-  margin: 0;
-}
+/* ls-description -> TW inline */
+
 
 /* ===== 학습자료 ===== */
 .ls-materials {
@@ -465,26 +435,11 @@
   background: #ECECED;
 }
 
-.ls-materials-title {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-}
+/* ls-materials-title -> TW inline */
 
-.ls-materials-header svg {
-  transition: transform 0.2s ease;
-}
 
-.ls-mat-open {
-  transform: rotate(0deg) !important;
-}
+/* ls-mat-open -> [style.transform] inline */
 
-.ls-materials-header svg:not(.ls-mat-open) {
-  transform: rotate(180deg);
-}
 
 .ls-materials-body {
   padding: 12px;
@@ -518,18 +473,8 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-.ls-file-name {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #3F3F46;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-}
+/* ls-file-name -> TW inline */
+
 
 .ls-file-download {
   display: flex;
