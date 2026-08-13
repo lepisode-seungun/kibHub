@@ -111,25 +111,8 @@
   width: 280px;
 }
 
-.pf-user-name {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-  text-align: center;
-}
+/* user-name, user-bio -> TW inline */
 
-.pf-user-bio {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-  text-align: center;
-}
 
 /* 팔로잉/팔로워 */
 .pf-follow-stats {
@@ -151,23 +134,8 @@
   flex: 1;
 }
 
-.pf-follow-num {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-}
+/* follow-num, follow-label -> TW inline */
 
-.pf-follow-label {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
 
 .pf-follow-divider {
   width: 0;
@@ -226,14 +194,8 @@
   width: 280px;
 }
 
-.pf-section-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-}
+/* section-title -> TW inline */
+
 
 .pf-activity-grid {
   display: flex;
@@ -255,29 +217,11 @@
   flex: 1;
 }
 
-.pf-activity-num {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-}
+/* activity-num, activity-label -> TW inline */
 
-.pf-activity-label {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
 
-.pf-activity-label-wrap {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
+/* activity-label-wrap -> TW inline */
+
 
 .pf-activity-divider {
   width: 0;
@@ -316,13 +260,8 @@
   flex-shrink: 0;
 }
 
-.pf-sns-text {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
-  color: #A1A1AA;
-}
+/* sns-text -> TW inline */
+
 
 /* 워터마크 */
 .pf-watermark {
@@ -708,15 +647,8 @@
   gap: 32px;
 }
 
-.pf-content-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-  margin: 0;
-}
+/* content-title -> TW inline */
+
 
 .pf-content-toolbar {
   display: flex;
@@ -746,13 +678,8 @@
   color: #71717A;
 }
 
-.pf-dropdown-chevron {
-  transition: transform 0.2s;
-}
+/* dropdown-chevron -> [style.transform] inline */
 
-.pf-dropdown-chevron-open {
-  transform: rotate(180deg);
-}
 
 .pf-dropdown-panel {
   position: absolute;
