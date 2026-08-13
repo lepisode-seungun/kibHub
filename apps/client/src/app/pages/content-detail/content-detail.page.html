@@ -40,7 +40,7 @@
           </div>
           <!-- 아코디언 토글 버튼 -->
           <button class="detail-collapse-btn" (click)="toggleDesc()" [attr.aria-label]="isDescOpen() ? '접기' : '펼치기'">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" [class.rotated]="isDescOpen()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" [style.transform]="isDescOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
               <path d="M7 10l5 5 5-5" stroke="#71717A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
@@ -82,7 +82,7 @@
     <!-- Action Buttons -->
     <div class="detail-actions">
       <div class="detail-action-group">
-        <button class="detail-action-btn" [class.active]="isBookmarked()" (click)="toggleBookmark()">
+        <button [ngClass]="isBookmarked() ? 'detail-action-btn active' : 'detail-action-btn'" (click)="toggleBookmark()">
           @if (isBookmarked()) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
@@ -111,7 +111,7 @@
     </div>
 
     <!-- Image Viewer -->
-    <div class="detail-images" [class.feedback-cursor]="commentMode() === 'feedback'">
+    <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'">
       @for (img of images; track $index) {
         <div class="detail-image-frame" role="button" tabindex="0" (click)="onImageClick($event); openManuscriptViewer($index)" (keydown.enter)="onImageClick($event); openManuscriptViewer($index)">
           <div class="detail-image" [style.background]="img.gradient"></div>
@@ -191,7 +191,7 @@
         </button>
 
         <!-- 마커 추가 버튼 -->
-        <button class="floating-add" [class.floating-add-active]="commentMode() === 'feedback'" (click)="enterFeedbackMode()">
+        <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="enterFeedbackMode()">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF">
             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
           </svg>
@@ -225,7 +225,7 @@
     </button>
 
     <!-- Sidebar (Right) - 댓글 -->
-    <div class="detail-right" [class.sidebar-closed]="!isSidebarOpen()">
+    <div [ngClass]="!isSidebarOpen() ? 'detail-right sidebar-closed' : 'detail-right'">
       <!-- 댓글 헤더 -->
       <div class="sidebar-header">
         <span class="sidebar-title">댓글</span>
@@ -256,7 +256,7 @@
       <!-- 마커 + 입력 -->
       <div class="compose-body">
         <div class="compose-marker-col">
-          <button class="compose-marker-btn" [class.marker-btn-active]="commentMode() === 'feedback'" aria-label="마커 피드백" (click)="toggleCommentMode()">
+          <button [ngClass]="commentMode() === 'feedback' ? 'compose-marker-btn marker-btn-active' : 'compose-marker-btn'" aria-label="마커 피드백" (click)="toggleCommentMode()">
             <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M28.0244 26.2316L34.2772 32.3603L34.6386 33.6793L35 34.9982L33.6753 34.6645L32.3506 34.3308L26.0978 28.2022L24.5175 29.8185C23.9769 30.3714 23.1006 30.3714 22.56 29.8185L22.4533 29.7093C22.2105 29.461 22.0767 29.1433 22.0521 28.8187C19.662 29.2196 17.1243 28.4774 15.281 26.5921C12.2409 23.4827 12.2409 18.4414 15.281 15.332C18.3211 12.2227 23.2501 12.2227 26.2902 15.332C28.1346 17.2184 28.86 19.8159 28.4665 22.2617C28.7828 22.2876 29.092 22.4243 29.334 22.6718L29.4407 22.781C29.9813 23.3338 29.9813 24.2302 29.4407 24.7831L28.0244 26.2316Z" [attr.fill]="commentMode() === 'feedback' ? '#A148FF' : '#FAFAFA'"/>
             </svg>
@@ -293,17 +293,17 @@
     <!-- 댓글 필터 바 -->
     <div class="comment-filter-bar">
       <div class="filter-tabs">
-        <button class="filter-tab" [class.active]="activeCommentTab() === 'all'" (click)="setCommentTab('all')">
+        <button [ngClass]="activeCommentTab() === 'all' ? 'filter-tab active' : 'filter-tab'" (click)="setCommentTab('all')">
           <span>전체</span>
-          <span class="filter-count" [class.active]="activeCommentTab() === 'all'">{{ allCount }}</span>
+          <span [ngClass]="activeCommentTab() === 'all' ? 'filter-count active' : 'filter-count'">{{ allCount }}</span>
         </button>
-        <button class="filter-tab" [class.active]="activeCommentTab() === 'feedback'" (click)="setCommentTab('feedback')">
+        <button [ngClass]="activeCommentTab() === 'feedback' ? 'filter-tab active' : 'filter-tab'" (click)="setCommentTab('feedback')">
           <span>피드백 댓글</span>
-          <span class="filter-count" [class.active]="activeCommentTab() === 'feedback'">{{ feedbackCount }}</span>
+          <span [ngClass]="activeCommentTab() === 'feedback' ? 'filter-count active' : 'filter-count'">{{ feedbackCount }}</span>
         </button>
-        <button class="filter-tab" [class.active]="activeCommentTab() === 'general'" (click)="setCommentTab('general')">
+        <button [ngClass]="activeCommentTab() === 'general' ? 'filter-tab active' : 'filter-tab'" (click)="setCommentTab('general')">
           <span>일반 댓글</span>
-          <span class="filter-count" [class.active]="activeCommentTab() === 'general'">{{ generalCount }}</span>
+          <span [ngClass]="activeCommentTab() === 'general' ? 'filter-count active' : 'filter-count'">{{ generalCount }}</span>
         </button>
       </div>
       <div class="filter-right">
