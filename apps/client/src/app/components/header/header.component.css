@@ -384,13 +384,7 @@
   color: #FFFFFF;
 }
 
-.lang-chevron {
-  transition: transform 0.2s ease;
-}
-
-.lang-chevron--open {
-  transform: rotate(180deg);
-}
+/* lang-chevron -> [style.transform] inline */\n
 
 /* ===== Language Dropdown Panel ===== */
 .lang-dropdown {
