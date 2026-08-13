@@ -62,7 +62,7 @@
       <!-- Options -->
       <div class="flex justify-between items-center w-full">
         <div class="flex items-center gap-2">
-          <button class="checkbox-btn" [class.checked]="autoLogin()" (click)="toggleAutoLogin()">
+          <button [ngClass]="autoLogin() ? 'checkbox-btn checked' : 'checkbox-btn'" (click)="toggleAutoLogin()">
             @if (autoLogin()) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#7A48FF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
             }

@@ -24,9 +24,7 @@
             <!-- 뱃지 행 -->
             <div class="badge-row">
               <span
-                class="status-badge"
-                [class.status-badge--recruiting]="card.status === 'recruiting'"
-                [class.status-badge--closed]="card.status === 'closed'"
+                [ngClass]="card.status === 'recruiting' ? 'status-badge status-badge--recruiting' : (card.status === 'closed' ? 'status-badge status-badge--closed' : 'status-badge')"
               >{{ card.statusText }}</span>
               @if (card.deadline) {
                 <span class="deadline-badge">{{ card.deadline }}</span>

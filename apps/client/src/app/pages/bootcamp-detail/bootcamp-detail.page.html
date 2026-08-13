@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="af-input-row">
-          <select class="af-select af-select-country" [class.af-selected]="form.countryCode" [(ngModel)]="form.countryCode" name="countryCode">
+          <select [ngClass]="form.countryCode ? 'af-select af-select-country af-selected' : 'af-select af-select-country'" [(ngModel)]="form.countryCode" name="countryCode">
             <option value="" disabled selected>국가번호</option>
             <option value="+82">🇰🇷 +82</option>
             <option value="+1">🇺🇸 +1</option>
@@ -303,8 +303,8 @@
   <section class="bd-hero" id="bd-hero">
     <img class="bd-hero-bg" src="/images/bd-hero-bg.svg" alt="" aria-hidden="true">
     <div class="bd-hero-content">
-      <h1 class="bd-hero-title">{{ title }}</h1>
-      <p class="bd-hero-subtitle">{{ subtitle }}</p>
+      <h1 class="font-suit font-bold text-[32px] leading-[150%] tracking-tight text-zinc-50 m-0 text-center">{{ title }}</h1>
+      <p class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-400 text-center m-0">{{ subtitle }}</p>
       <button class="bd-hero-cta" (click)="onApply()">지원하기</button>
     </div>
   </section>
@@ -344,8 +344,7 @@
     <div class="bd-tab-inner">
       @for (tab of tabs; track tab) {
         <button
-          class="bd-tab-btn"
-          [class.bd-tab--active]="activeTab === tab"
+          [ngClass]="activeTab === tab ? 'bd-tab-btn bd-tab--active' : 'bd-tab-btn'"
           (click)="selectTab(tab)">
           {{ tab }}
         </button>
@@ -396,8 +395,8 @@
               <div class="bd-instructor-photo"></div>
               <div class="bd-instructor-info">
                 <div class="bd-instructor-meta">
-                  <span class="bd-instructor-name">{{ inst.name }}</span>
-                  <span class="bd-instructor-summary">{{ inst.summary }}</span>
+                  <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">{{ inst.name }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">{{ inst.summary }}</span>
                 </div>
                 <hr class="bd-instructor-divider">
                 <div class="bd-instructor-work">

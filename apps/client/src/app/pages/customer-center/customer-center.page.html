@@ -20,8 +20,7 @@
         <div class="cc-tabs">
           @for (tab of tabs; track tab) {
             <button
-              class="cc-tab"
-              [class.cc-tab-active]="activeTab() === tab"
+              [ngClass]="activeTab() === tab ? 'cc-tab cc-tab-active' : 'cc-tab'"
               (click)="selectTab(tab)">
               {{ tab }}
             </button>
@@ -72,7 +71,7 @@
               </svg>
             </button>
             @for (p of pageNumbers; track p) {
-              <button class="cc-page-btn" [class.cc-page-active]="currentPage === p" (click)="goToPage(p)">{{ p }}</button>
+              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
             <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -89,7 +88,7 @@
           @for (item of items; track item.id) {
             <div class="cc-list-item" (click)="openItem(item)" role="button" tabindex="0" (keydown.enter)="openItem(item)">
               @if (item.status) {
-                <span class="cc-badge" [class.cc-badge-waiting]="item.status === '대기'" [class.cc-badge-done]="item.status === '완료'">
+                <span [ngClass]="item.status === '대기' ? 'cc-badge cc-badge-waiting' : (item.status === '완료' ? 'cc-badge cc-badge-done' : 'cc-badge')">
                   {{ item.status }}
                 </span>
               }
@@ -110,7 +109,7 @@
               </svg>
             </button>
             @for (p of pageNumbers; track p) {
-              <button class="cc-page-btn" [class.cc-page-active]="currentPage === p" (click)="goToPage(p)">{{ p }}</button>
+              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
             <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -125,7 +124,7 @@
       @if (items.length > 0 && activeTab() === 'FAQ') {
         <div class="cc-faq-list">
           @for (item of items; track item.id) {
-            <div class="cc-faq-item" [class.cc-faq-expanded]="expandedFaqId === item.id" (click)="toggleFaq(item.id)" role="button" tabindex="0" (keydown.enter)="toggleFaq(item.id)">
+            <div [ngClass]="expandedFaqId === item.id ? 'cc-faq-item cc-faq-expanded' : 'cc-faq-item'" (click)="toggleFaq(item.id)" role="button" tabindex="0" (keydown.enter)="toggleFaq(item.id)">
               <div class="cc-faq-row">
                 <div class="cc-faq-q-badge">
                   <span class="cc-faq-q">Q</span>
@@ -178,7 +177,7 @@
               </svg>
             </button>
             @for (p of pageNumbers; track p) {
-              <button class="cc-page-btn" [class.cc-page-active]="currentPage === p" (click)="goToPage(p)">{{ p }}</button>
+              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
             <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

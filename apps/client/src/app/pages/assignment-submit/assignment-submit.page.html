@@ -4,8 +4,7 @@
     <div class="flex gap-6">
       @for (tab of detailTabs; track tab) {
         <button
-          class="asf-tab-item"
-          [class.asf-tab-item-active]="activeDetailTab() === tab"
+          [ngClass]="activeDetailTab() === tab ? 'asf-tab-item asf-tab-item-active' : 'asf-tab-item'"
           (click)="selectDetailTab(tab)">
           {{ tab }}
         </button>
