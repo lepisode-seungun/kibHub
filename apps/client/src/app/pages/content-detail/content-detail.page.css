@@ -624,10 +624,7 @@
   border-color: #A148FF;
 }
 
-/* Feedback Cursor on Images */
-.detail-images.feedback-cursor {
-  cursor: crosshair;
-}
+/* feedback-cursor -> [style.cursor] inline */\n
 
 .detail-image-frame {
   position: relative;
