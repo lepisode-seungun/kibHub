@@ -8,59 +8,65 @@
         <!-- ===== 섹션 1: 세부 정보 ===== -->
         <div class="cu-card">
           <div class="cu-card-header" role="button" tabindex="0" (click)="toggleDetail()" (keydown.enter)="toggleDetail()">
-            <div class="cu-card-header-left">
-              <span class="cu-card-title">콘텐츠 업로드</span>
-              <span class="cu-required-dot"></span>
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">콘텐츠 업로드</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
             </div>
             <div class="cu-card-toggle">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.cu-toggle-open]="isDetailOpen()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isDetailOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
                 <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
               </svg>
             </div>
           </div>
           @if (isDetailOpen()) {
             <div class="cu-card-body">
-              <div class="cu-form-group-list">
+              <div class="flex flex-col gap-6">
 
                 <!-- 일정명 -->
-                <div class="cu-form-group">
-                  <div class="cu-label-row">
-                    <span class="cu-label">일정명</span>
-                    <span class="cu-required-dot"></span>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">일정명</span>
+                    <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
-                  <div class="cu-category-chips">
+                  <div class="flex flex-wrap gap-3">
                     @for (cat of categories; track cat.name) {
                       <button
-                        class="cu-chip"
-                        [class.cu-chip-active]="selectedCategory() === cat.name"
+                        [ngClass]="selectedCategory() === cat.name
+                          ? 'cu-chip cu-chip-active'
+                          : 'cu-chip'"
                         (click)="selectCategory(cat.name)">
-                        <span class="cu-chip-check" [class.cu-chip-check-active]="selectedCategory() === cat.name">
+                        <span class="flex items-center justify-center w-5 h-5 rounded-full border transition-all duration-150"
+                              [ngClass]="selectedCategory() === cat.name
+                                ? 'bg-[#956DFF] border-[#956DFF]'
+                                : 'bg-zinc-800 border-zinc-700'">
                           @if (selectedCategory() === cat.name) {
                             <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                               <path d="M3 8L6.5 11.5L13 5" stroke="#E4DAFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                           }
                         </span>
-                        <span class="cu-chip-text" [class.cu-chip-text-active]="selectedCategory() === cat.name">{{ cat.name }}</span>
+                        <span class="font-suit font-bold text-base leading-[150%] tracking-tight"
+                              [ngClass]="selectedCategory() === cat.name ? 'text-zinc-800' : 'text-zinc-500'">{{ cat.name }}</span>
                       </button>
                     }
                   </div>
                 </div>
 
                 <!-- 카테고리 -->
-                <div class="cu-form-group">
-                  <div class="cu-label-row">
-                    <span class="cu-label">카테고리</span>
-                    <span class="cu-required-dot"></span>
-                    <svg class="cu-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">카테고리</span>
+                    <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
+                    <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                     </svg>
                   </div>
-                  <div class="cu-segment-row">
+                  <div class="flex items-center gap-2">
                     @for (cat of categories.slice(0, 3); track cat.name) {
                       <button
-                        class="cu-segment"
-                        [class.cu-segment-active]="selectedCategory() === cat.name"
+                        [ngClass]="selectedCategory() === cat.name
+                          ? 'cu-segment cu-segment-active'
+                          : 'cu-segment'"
                         (click)="selectCategory(cat.name)">
                         <span class="cu-segment-icon" [style.background]="cat.color" [style.opacity]="selectedCategory() === cat.name ? '1' : '0.5'">
                           @if (cat.icon === 'layers') {
@@ -79,51 +85,52 @@
                             </svg>
                           }
                         </span>
-                        <span class="cu-segment-label" [class.cu-segment-label-active]="selectedCategory() === cat.name">{{ cat.name }}</span>
+                        <span class="px-3 font-suit font-semibold text-base leading-5 tracking-tight"
+                              [ngClass]="selectedCategory() === cat.name ? 'text-white' : 'text-zinc-500'">{{ cat.name }}</span>
                       </button>
                     }
                   </div>
                 </div>
 
                 <!-- 제목 -->
-                <div class="cu-form-group">
-                  <div class="cu-label-row">
-                    <span class="cu-label">제목</span>
-                    <span class="cu-required-dot"></span>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">제목</span>
+                    <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
-                  <div class="cu-input-wrap">
+                  <div class="flex items-center w-full">
                     <input class="cu-input" type="text" placeholder="입력해주세요." (input)="onTitleInput($event)"/>
                   </div>
                 </div>
 
                 <!-- 내용 -->
-                <div class="cu-form-group">
-                  <div class="cu-label-row">
-                    <span class="cu-label">내용</span>
-                    <span class="cu-required-dot"></span>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">내용</span>
+                    <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
                   <textarea class="cu-textarea" placeholder="입력해주세요." rows="5" (input)="onDescriptionInput($event)"></textarea>
                 </div>
 
                 <!-- 첨부파일 -->
-                <div class="cu-form-group">
-                  <div class="cu-label-row">
-                    <span class="cu-label">첨부파일</span>
-                    <svg class="cu-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">첨부파일</span>
+                    <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                     </svg>
                   </div>
-                  <div class="cu-attach-row">
+                  <div class="flex items-center gap-2">
                     <button class="cu-attach-btn" (click)="onFileSelect()">
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
                         <path d="M5.83333 11.6875C5.59722 11.6875 5.39944 11.6075 5.24 11.4475C5.08056 11.2875 5.00056 11.0897 5 10.8542V8.83333C5 8.61111 5.04167 8.39917 5.125 8.1975C5.20833 7.99583 5.32639 7.81889 5.47917 7.66667L12.6458 0.5C12.8125 0.333333 13 0.208333 13.2083 0.125C13.4167 0.0416666 13.625 0 13.8333 0C14.0556 0 14.2675 0.0416666 14.4692 0.125C14.6708 0.208333 14.8547 0.333333 15.0208 0.5L16.1875 1.6875C16.3403 1.85417 16.4583 2.03833 16.5417 2.24C16.625 2.44167 16.6667 2.64639 16.6667 2.85417C16.6667 3.06194 16.6286 3.26694 16.5525 3.46917C16.4764 3.67139 16.3547 3.85528 16.1875 4.02083L9.02083 11.1875C8.86806 11.3403 8.69111 11.4619 8.49 11.5525C8.28889 11.6431 8.07695 11.6881 7.85417 11.6875H5.83333ZM13.8333 4.02083L15.0208 2.85417L13.8542 1.6875L12.6667 2.85417L13.8333 4.02083ZM1.66667 16.6875C1.20833 16.6875 0.816111 16.5244 0.49 16.1983C0.163889 15.8722 0.000555556 15.4797 0 15.0208V3.35417C0 2.89583 0.163333 2.50361 0.49 2.1775C0.816667 1.85139 1.20889 1.68806 1.66667 1.6875H7.08333C7.27778 1.6875 7.4375 1.73611 7.5625 1.83333C7.6875 1.93056 7.78472 2.05556 7.85417 2.20833C7.92361 2.36111 7.94778 2.51389 7.92667 2.66667C7.90556 2.81944 7.82583 2.96528 7.6875 3.10417L3.8125 6.97917C3.65972 7.13194 3.54167 7.30917 3.45833 7.51083C3.375 7.7125 3.33333 7.92417 3.33333 8.14583V11.6875C3.33333 12.1458 3.49667 12.5381 3.82333 12.8642C4.15 13.1903 4.54222 13.3536 5 13.3542H8.52083C8.74306 13.3542 8.955 13.3125 9.15667 13.2292C9.35833 13.1458 9.53528 13.0278 9.6875 12.875L13.5833 8.97917C13.7222 8.84028 13.8681 8.76028 14.0208 8.73917C14.1736 8.71806 14.3264 8.7425 14.4792 8.8125C14.6319 8.8825 14.7569 8.97972 14.8542 9.10417C14.9514 9.22861 15 9.38833 15 9.58333V15.0208C15 15.4792 14.8369 15.8717 14.5108 16.1983C14.1847 16.525 13.7922 16.6881 13.3333 16.6875H1.66667Z" fill="#F2EDFF"/>
                       </svg>
-                      <span>앨범 선택</span>
+                      <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">앨범 선택</span>
                     </button>
                     @if (selectedAlbumName()) {
-                      <span class="cu-attach-hint" style="color: #AF91FF;">{{ selectedAlbumName() }}</span>
+                      <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#AF91FF]">{{ selectedAlbumName() }}</span>
                     } @else {
-                      <span class="cu-attach-hint">앨범을 선택해주세요.</span>
+                      <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">앨범을 선택해주세요.</span>
                     }
                   </div>
                 </div>
@@ -136,15 +143,15 @@
         <!-- ===== 섹션 2: 콘텐츠 ===== -->
         <div class="cu-card">
           <div class="cu-card-header" role="button" tabindex="0" (click)="toggleContent()" (keydown.enter)="toggleContent()">
-            <div class="cu-card-header-left">
-              <span class="cu-card-title">콘텐츠 업로드</span>
-              <span class="cu-required-dot"></span>
-              <svg class="cu-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">콘텐츠 업로드</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
+              <svg class="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
               </svg>
             </div>
             <div class="cu-card-toggle">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.cu-toggle-open]="isContentOpen()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isContentOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
                 <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
               </svg>
             </div>
@@ -159,33 +166,30 @@
                   </svg>
                   <span>파일 선택</span>
                 </button>
-                <span class="cu-upload-hint">최대 30장까지 업로드 가능하며, 총 용량은 30MB를 초과할 수 없습니다.</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-center text-zinc-400">최대 30장까지 업로드 가능하며, 총 용량은 30MB를 초과할 수 없습니다.</span>
               </div>
 
               <!-- 구분선 -->
-              <div class="cu-content-divider"></div>
+              <div class="w-full border border-zinc-800"></div>
 
               <!-- 콘텐츠 아이템 리스트 -->
-              <div class="cu-content-list">
+              <div class="flex flex-col gap-6">
                 @for (item of contentItems(); track item.id) {
                   <div class="cu-content-item">
                     <!-- 드래그 핸들 -->
-                    <div class="cu-drag-handle">
+                    <div class="flex items-center justify-center w-8 h-8 cursor-grab shrink-0">
                       <svg width="32" height="32" viewBox="0 0 32 32" fill="#A1A1AA">
-                        <circle cx="12" cy="10" r="1.5"/>
-                        <circle cx="20" cy="10" r="1.5"/>
-                        <circle cx="12" cy="16" r="1.5"/>
-                        <circle cx="20" cy="16" r="1.5"/>
-                        <circle cx="12" cy="22" r="1.5"/>
-                        <circle cx="20" cy="22" r="1.5"/>
+                        <circle cx="12" cy="10" r="1.5"/><circle cx="20" cy="10" r="1.5"/>
+                        <circle cx="12" cy="16" r="1.5"/><circle cx="20" cy="16" r="1.5"/>
+                        <circle cx="12" cy="22" r="1.5"/><circle cx="20" cy="22" r="1.5"/>
                       </svg>
                     </div>
                     <!-- 썸네일 -->
-                    <div class="cu-item-thumb"></div>
+                    <div class="w-12 h-12 bg-zinc-700 rounded shrink-0"></div>
                     <!-- 파일 정보 -->
-                    <div class="cu-item-info">
-                      <span class="cu-item-name">{{ item.fileName }}</span>
-                      <span class="cu-item-size">{{ item.size }}</span>
+                    <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
+                      <span class="font-suit font-bold text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ item.fileName }}</span>
+                      <span class="font-suit font-bold text-sm leading-[150%] tracking-tight text-zinc-500">{{ item.size }}</span>
                     </div>
                     <!-- 이동 버튼 -->
                     <button class="cu-item-move-btn" aria-label="이동">
@@ -196,7 +200,7 @@
                       </svg>
                     </button>
                     <!-- 상태 아이콘 -->
-                    <div class="cu-item-status">
+                    <div class="flex items-center justify-center w-5 h-5 shrink-0">
                       @if (item.status === 'uploading') {
                         <svg class="cu-spinner" width="20" height="20" viewBox="0 0 20 20" fill="none">
                           <circle cx="10" cy="10" r="8" stroke="#CAB6FF" stroke-width="2.67" stroke-linecap="round" stroke-dasharray="25 25"/>
@@ -223,12 +227,12 @@
         <!-- ===== 섹션 3: 썸네일 업로드 ===== -->
         <div class="cu-card">
           <div class="cu-card-header" role="button" tabindex="0" (click)="toggleThumbnail()" (keydown.enter)="toggleThumbnail()">
-            <div class="cu-card-header-left">
-              <span class="cu-card-title">썸네일 업로드</span>
-              <span class="cu-required-dot"></span>
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">썸네일 업로드</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
             </div>
             <div class="cu-card-toggle">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [class.cu-toggle-open]="isThumbnailOpen()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isThumbnailOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
                 <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
               </svg>
             </div>
@@ -241,13 +245,13 @@
                   @if (croppedThumbnailUrl()) {
                     <img [src]="croppedThumbnailUrl()" alt="썸네일" class="cu-thumb-img" />
                   } @else {
-                    <span class="cu-thumb-logo">KIPhub</span>
+                    <span class="font-suit font-bold text-[25px] leading-[150%] tracking-tight text-white" style="text-shadow: 0 0 17px rgba(0,0,0,0.6); z-index:1">KIPhub</span>
                   }
                 </div>
                 <!-- 오른쪽 정보 -->
-                <div class="cu-thumb-info">
-                  <span class="cu-thumb-hint">최소 100px X 100px 사이즈의 이미지파일을 등록해주세요.</span>
-                  <div class="cu-thumb-actions">
+                <div class="flex flex-col justify-center gap-3 flex-1 min-w-0">
+                  <span class="font-suit font-bold text-base leading-[150%] tracking-tight text-zinc-500">최소 100px X 100px 사이즈의 이미지파일을 등록해주세요.</span>
+                  <div class="flex flex-wrap gap-3">
                     <button class="cu-thumb-action-btn" (click)="openThumbSelectModal()">이미지 업로드</button>
                     <button class="cu-thumb-action-btn" (click)="onThumbnailDelete()">이미지 삭제</button>
                   </div>
@@ -262,13 +266,13 @@
       <!-- ===== 오른쪽 미리보기 ===== -->
       <div class="cu-right">
         <div class="cu-preview-card">
-          <span class="cu-preview-title">미리보기</span>
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">미리보기</span>
           <div class="cu-preview-body">
-            <div class="cu-preview-placeholder">
+            <div class="flex flex-col items-center gap-3 p-10">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="#3F3F46">
                 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
               </svg>
-              <span>콘텐츠를 업로드하면 여기에 미리보기가 표시됩니다.</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-600 text-center">콘텐츠를 업로드하면 여기에 미리보기가 표시됩니다.</span>
             </div>
           </div>
         </div>
@@ -302,8 +306,8 @@
     @if (isThumbModalOpen()) {
       <div class="tm-modal tm-modal-inline">
         <div class="tm-header">
-          <div class="tm-header-row">
-            <span class="tm-title">썸네일 선택</span>
+          <div class="flex justify-center items-center w-full">
+            <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">썸네일 선택</span>
             <button class="tm-close" aria-label="닫기" (click)="closeThumbModal()">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -312,7 +316,7 @@
           </div>
         </div>
         <div class="tm-body">
-          <div class="tm-list">
+          <div class="flex flex-col gap-6 w-full">
             @for (item of thumbCandidates(); track item.id) {
               <div
                 class="tm-item"
@@ -322,9 +326,9 @@
                 (click)="selectThumb(item.id)"
                 (keydown.enter)="selectThumb(item.id)">
                 <img [src]="item.dataUrl" alt="썸네일" class="tm-item-thumb" [class.tm-item-thumb-lg]="selectedThumbId() === item.id" style="object-fit: cover;" />
-                <div class="tm-item-info">
-                  <span class="tm-item-name">{{ item.name }}</span>
-                  <span class="tm-item-size">{{ item.size }}</span>
+                <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ item.name }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ item.size }}</span>
                 </div>
                 @if (selectedThumbId() === item.id) {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="#AF91FF">
@@ -352,8 +356,8 @@
     @if (isCropModalOpen()) {
       <div class="tm-modal tm-modal-inline tm-modal-crop">
         <div class="tm-header">
-          <div class="tm-header-row">
-            <span class="tm-title">썸네일 편집</span>
+          <div class="flex justify-center items-center w-full">
+            <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">썸네일 편집</span>
             <button class="tm-close" aria-label="닫기" (click)="closeCropModal()">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -362,15 +366,15 @@
           </div>
         </div>
         <div class="tm-body">
-          <span class="crop-hint">원하는 부분을 선택하고, 저장 버튼을 눌러 썸네일을 설정해주세요.</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 self-start">원하는 부분을 선택하고, 저장 버튼을 눌러 썸네일을 설정해주세요.</span>
           <div class="crop-container">
             <img #cropImage [src]="cropImageSrc()" alt="크롭 이미지" class="crop-image" />
           </div>
           <div class="tm-item" style="width: 100%;">
             <div class="tm-item-thumb"></div>
-            <div class="tm-item-info">
-              <span class="tm-item-name">{{ selectedFileName() }}</span>
-              <span class="tm-item-size">{{ selectedFileSize() }}</span>
+            <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ selectedFileName() }}</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ selectedFileSize() }}</span>
             </div>
           </div>
         </div>
@@ -388,8 +392,8 @@
   <div class="tm-overlay" (click)="closeAlbumModal()"></div>
   <div class="tm-modal am-modal">
     <div class="tm-header">
-      <div class="tm-header-row">
-        <span class="tm-title">앨범 선택</span>
+      <div class="flex justify-center items-center w-full">
+        <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">앨범 선택</span>
         <button class="tm-close" aria-label="닫기" (click)="closeAlbumModal()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -405,12 +409,12 @@
             <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" fill="#E4E4E7" opacity="0.5"/>
             <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z" fill="#E4E4E7" opacity="0"/>
           </svg>
-          <span class="am-empty-text">나의 콘텐츠를 앨범으로 분류하여 저장해보세요.</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">나의 콘텐츠를 앨범으로 분류하여 저장해보세요.</span>
           <button class="am-add-btn" (click)="addNewAlbum()">+ 새앨범 추가</button>
         </div>
       } @else {
         <!-- 앨범 목록 -->
-        <div class="am-list">
+        <div class="flex flex-col gap-3 w-full">
           @for (album of albums(); track album.id) {
             <div
               class="am-item"
@@ -424,9 +428,9 @@
                   <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-12.5 4.5l2.5-3.01L12.5 17l4.5 6H5l3.5-4.5zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/>
                 </svg>
               </div>
-              <div class="am-item-info">
-                <span class="am-item-name">{{ album.name }}</span>
-                <span class="am-item-count">{{ album.count }}개</span>
+              <div class="flex flex-col justify-center gap-2.5 flex-1 min-w-0">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ album.name }}</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ album.count }}개</span>
               </div>
               @if (selectedAlbumId() === album.id) {
                 <button class="am-remove-btn" (click)="removeAlbum(album.id); $event.stopPropagation()" aria-label="앨범 제외">
