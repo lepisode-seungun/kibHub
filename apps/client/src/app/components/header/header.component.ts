@@ -71,11 +71,16 @@ export class HeaderComponent {
   }
 
   toggleLangSheet(): void {
-    this.isLangSheetOpen.update(v => !v);
+    this.closeSidebar();
+    setTimeout(() => {
+      this.isLangSheetOpen.set(true);
+      document.body.style.overflow = 'hidden';
+    }, 300);
   }
 
   closeLangSheet(): void {
     this.isLangSheetOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   toggleBootcamp(): void {
