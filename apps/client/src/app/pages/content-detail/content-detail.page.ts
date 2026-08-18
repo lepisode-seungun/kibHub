@@ -29,6 +29,7 @@ export class ContentDetailPage implements OnInit {
   isDescOpen = signal(false);
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
   isSidebarOpen = signal(true);
+  isMobileCommentOpen = signal(false);
   commentMode = signal<'general' | 'feedback'>('general');
   isLoggedIn = this.authService.isLoggedIn;
   pendingMarker = signal<{top: number; left: number} | null>(null);
