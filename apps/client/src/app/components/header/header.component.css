@@ -7,6 +7,20 @@
   z-index: 1000;
 }
 
+/* Mobile GNB - hidden by default, shown at <=768px */
+.mobile-gnb {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  background: #090909;
+}
+
+@media (max-width: 768px) {
+  .mobile-gnb {
+    display: flex;
+  }
+}
+
 .header {
   box-sizing: border-box;
   width: 100%;
@@ -505,6 +519,10 @@
 }
 
 @media (max-width: 768px) {
+  .header {
+    display: none;
+  }
+
   .header-inner {
     padding: 0 20px;
   }

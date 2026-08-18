@@ -34,6 +34,8 @@ export class HeaderComponent {
   isBootcampOpen = signal(false);
   isBootcampRoute = signal(false);
   isHomeRoute = signal(false);
+  isMobileSearchOpen = signal(false);
+  currentUrl = signal('/');
 
   private bootcampPrefixes = ['/bootcamp-intro', '/k-digital', '/student-portfolio', '/hall-of-fame', '/bootcamp-detail'];
   private homePrefixes = ['/', '/content'];
@@ -49,6 +51,7 @@ export class HeaderComponent {
       this.isHomeRoute.set(
         url === '/' || this.homePrefixes.some(prefix => prefix !== '/' && url.startsWith(prefix))
       );
+      this.currentUrl.set(url);
     });
   }
 
@@ -58,6 +61,10 @@ export class HeaderComponent {
 
   closeSidebar(): void {
     this.isSidebarOpen.set(false);
+  }
+
+  toggleMobileSearch(): void {
+    this.isMobileSearchOpen.update(v => !v);
   }
 
   toggleBootcamp(): void {
