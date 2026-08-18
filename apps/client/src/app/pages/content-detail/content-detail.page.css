@@ -222,21 +222,9 @@
   gap: 12px;
 }
 
-.detail-tag {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
+/* detail-tag -> TW inline */
 
-.detail-dot {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  color: #71717A;
-}
+/* detail-dot -> TW inline */
 
 .detail-tag-icon {
   display: flex;
@@ -481,14 +469,7 @@
   background: #0F0E11;
 }
 
-.sidebar-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
+/* sidebar-title -> TW inline */
 
 /* Comment Compose */
 .comment-compose {
@@ -529,14 +510,7 @@
   box-sizing: border-box;
 }
 
-.compose-username {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
+/* compose-username -> TW inline */
 
 .compose-me-badge,
 .comment-me-badge {
@@ -565,12 +539,7 @@
   gap: 6px;
 }
 
-.mode-label {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 13px;
-  color: #A1A1AA;
-}
+/* mode-label -> TW inline */
 
 .mode-close-btn {
   background: none;
@@ -1091,14 +1060,7 @@
   box-sizing: border-box;
 }
 
-.comment-item-name {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
+/* comment-item-name -> TW inline */
 
 .comment-more-btn {
   background: none;
@@ -1109,24 +1071,9 @@
   align-items: center;
 }
 
-.comment-item-text {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #D4D4D8;
-  margin: 0;
-}
+/* comment-item-text -> TW inline */
 
-.comment-item-time {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
+/* comment-item-time -> TW inline */
 
 .comment-item-actions {
   display: flex;

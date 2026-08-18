@@ -56,10 +56,10 @@
           <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
         </div>
         <div class="detail-tags">
-          <span class="detail-tag">글</span>
-          <span class="detail-dot">·</span>
-          <span class="detail-tag">{{ category }}</span>
-          <span class="detail-dot">·</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">글</span>
+          <span class="font-suit font-medium text-sm text-zinc-500">·</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ category }}</span>
+          <span class="font-suit font-medium text-sm text-zinc-500">·</span>
           <span class="detail-tag-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
               <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
@@ -73,8 +73,8 @@
             </svg>
             <span>{{ commentCount }}</span>
           </span>
-          <span class="detail-dot">·</span>
-          <span class="detail-tag">{{ dateStr }}</span>
+          <span class="font-suit font-medium text-sm text-zinc-500">·</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ dateStr }}</span>
         </div>
       </div>
     }
@@ -228,7 +228,7 @@
     <div [ngClass]="!isSidebarOpen() ? 'detail-right sidebar-closed' : 'detail-right'">
       <!-- 댓글 헤더 -->
       <div class="sidebar-header">
-        <span class="sidebar-title">댓글</span>
+        <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-200">댓글</span>
       </div>
 
     <!-- 댓글 입력 영역 -->
@@ -238,11 +238,11 @@
       <div class="compose-user-row">
         <div class="compose-user-left">
           <div class="comment-avatar">N</div>
-          <span class="compose-username">고식혜</span>
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">고식혜</span>
           <span class="compose-me-badge">나</span>
         </div>
         <div class="compose-mode-badge">
-          <span class="mode-label">{{ commentMode() === 'feedback' ? '피드백 댓글' : '일반 댓글' }}</span>
+          <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-400">{{ commentMode() === 'feedback' ? '피드백 댓글' : '일반 댓글' }}</span>
           @if (commentMode() === 'general') {
             <button class="mode-close-btn" (click)="exitCommentMode()" aria-label="닫기">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -374,7 +374,7 @@
               <div class="comment-item-header">
                 <div class="comment-item-user">
                   <div class="comment-item-avatar">{{ comment.avatar }}</div>
-                  <span class="comment-item-name">{{ comment.userName }}</span>
+                  <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ comment.userName }}</span>
                   @if (comment.isMe) {
                     <span class="comment-me-badge">나</span>
                   }
@@ -395,8 +395,8 @@
                   }
                 </div>
               </div><!-- /comment-item-header -->
-              <p class="comment-item-text">{{ comment.content }}</p>
-              <span class="comment-item-time">{{ comment.time }}</span>
+              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.time }}</span>
               <div class="comment-item-actions">
                 <div class="comment-actions-left">
                   <button class="action-pill">답글 쓰기</button>
@@ -431,14 +431,14 @@
                 <div class="comment-item-header">
                   <div class="comment-item-user">
                     <div class="comment-item-avatar">{{ reply.avatar }}</div>
-                    <span class="comment-item-name">{{ reply.userName }}</span>
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ reply.userName }}</span>
                     @if (reply.isMe) {
                       <span class="comment-me-badge">나</span>
                     }
                   </div>
                 </div>
-                <p class="comment-item-text">{{ reply.content }}</p>
-                <span class="comment-item-time">{{ reply.time }}</span>
+                <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ reply.content }}</p>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ reply.time }}</span>
                 @if (reply.images && reply.images > 0) {
                   <div class="reply-images">
                     @for (i of [1,2,3,4,5]; track i) {
