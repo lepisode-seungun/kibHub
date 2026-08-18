@@ -41,13 +41,7 @@
   box-sizing: border-box;
 }
 
-/* ===== Text Content ===== */
-.banner-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
+/* banner-content -> TW inline */
 
 .banner-title {
   font-family: var(--font-family);
@@ -72,14 +66,7 @@
   margin: 0;
 }
 
-/* ===== Slider Controls ===== */
-.banner-controls {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
-}
+/* banner-controls -> TW inline */
 
 .banner-pagination {
   display: flex;
@@ -107,32 +94,7 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.banner-page-current {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-}
-
-.banner-page-sep {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.2);
-}
-
-.banner-page-total {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.2);
-}
+/* banner-page-current, banner-page-sep, banner-page-total -> TW inline */
 
 /* Progress Bar */
 .banner-progress-track {
