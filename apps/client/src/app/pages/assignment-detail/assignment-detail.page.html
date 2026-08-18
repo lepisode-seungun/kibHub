@@ -1,7 +1,7 @@
 <div class="ad-wrapper">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="ad-tab-nav">
-    <div class="ad-tab-nav-inner">
+    <div class="flex">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'ad-tab-item ad-tab-item-active' : 'ad-tab-item'"
@@ -15,14 +15,14 @@
   <!-- ===== 메인 콘텐츠 ===== -->
   <main class="ad-page">
     <!-- 상단 바 -->
-    <div class="ad-topbar">
-      <div class="ad-topbar-left">
+    <div class="flex items-center justify-between w-full max-w-[1400px] h-12">
+      <div class="flex items-center gap-3">
         <button class="ad-back-btn" (click)="goBack()" aria-label="뒤로 가기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
           </svg>
         </button>
-        <h1 class="ad-page-title">과제</h1>
+        <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">과제</h1>
       </div>
       <button class="ad-next-btn" (click)="goNext()">
         <span>다음</span>
@@ -33,7 +33,7 @@
     </div>
 
     <!-- ===== 강의 섹션 ===== -->
-    <div class="ad-lecture-section">
+    <div class="flex gap-5 w-full max-w-[1400px]">
       <div class="ad-lecture-video-wrap">
         <div class="ad-lecture-video-player">
           <div class="ad-video-backdrop"></div>

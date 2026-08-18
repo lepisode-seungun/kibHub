@@ -21,11 +21,7 @@
   border-bottom: 1px solid #F4F4F5;
 }
 
-.ad-tab-nav-inner {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-}
+/* ad-tab-nav-inner -> TW inline */
 
 .ad-tab-item {
   display: flex;
@@ -73,23 +69,7 @@
   background: #FFFFFF;
 }
 
-/* ===== 상단 바 ===== */
-.ad-topbar {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1400px;
-  height: 48px;
-}
-
-.ad-topbar-left {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
+/* ad-topbar, ad-topbar-left, ad-page-title -> TW inline */
 
 .ad-back-btn {
   display: flex;
@@ -106,16 +86,6 @@
 
 .ad-back-btn:hover {
   opacity: 0.6;
-}
-
-.ad-page-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #1F2937;
-  margin: 0;
 }
 
 .ad-next-btn {
@@ -401,14 +371,7 @@
   transform: translateY(2px);
 }
 
-/* ===== 강의 섹션 ===== */
-.ad-lecture-section {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  width: 100%;
-  max-width: 1400px;
-}
+/* ad-lecture-section -> TW inline */
 
 .ad-lecture-video-wrap {
   flex: 1;
