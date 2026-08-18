@@ -111,3 +111,11 @@
 @media (max-width: 960px) {
   .login-left { display: none; }
 }
+
+@media (max-width: 768px) {
+  :host {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+}
