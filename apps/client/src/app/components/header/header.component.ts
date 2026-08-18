@@ -145,19 +145,20 @@ export class HeaderComponent {
     }
   }
 
-  showLogoutModal(): void {
+  async showLogoutModal(): Promise<void> {
     this.closeSidebar();
+    await this.authService.logout();
     this.isLogoutModalOpen.set(true);
   }
 
   closeLogoutModal(): void {
     this.isLogoutModalOpen.set(false);
+    this.router.navigate(['/']);
   }
 
-  async confirmLogout(): Promise<void> {
+  goToLogin(): void {
     this.isLogoutModalOpen.set(false);
-    await this.authService.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
   /* ===== 알림 패널 ===== */
