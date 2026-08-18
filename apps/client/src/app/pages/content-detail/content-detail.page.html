@@ -17,7 +17,7 @@
           <div class="detail-author-row">
             <div class="detail-avatar"></div>
             <div class="detail-author-info">
-              <h1 class="detail-title">{{ title }}</h1>
+              <h1 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ title }}</h1>
               <div class="detail-meta-row">
                 <div class="detail-meta-left">
                   <span class="detail-role-badge">
@@ -27,7 +27,7 @@
                     </svg>
                     <span>강사</span>
                   </span>
-                  <span class="detail-author-name">{{ authorName }}</span>
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300">{{ authorName }}</span>
                 </div>
                 <button class="detail-follow-btn">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -52,8 +52,8 @@
     @if (isDescOpen()) {
       <div class="detail-description accordion-content">
         <div class="detail-description-inner">
-          <h2 class="detail-desc-title">크리스마스 트리가 있는 녹차밭</h2>
-          <p class="detail-desc-text">{{ description }}</p>
+          <h2 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-300 m-0">크리스마스 트리가 있는 녹차밭</h2>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
         </div>
         <div class="detail-tags">
           <span class="detail-tag">글</span>
