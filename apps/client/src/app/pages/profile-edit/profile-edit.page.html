@@ -33,13 +33,13 @@
 
       <!-- 폼 필드 -->
       <div class="flex flex-col justify-center items-center gap-6 w-full">
-        <!-- 닉네임 -->
+        <!-- 이름 -->
         <div class="flex flex-col gap-2 w-full">
           <div class="flex items-center gap-1 h-[42px]">
-            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">닉네임</span>
+            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">이름</span>
             <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="text" placeholder="입력해주세요." [(value)]="nickname" />
+          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="text" placeholder="입력해주세요." />
         </div>
 
         <!-- 연락처 -->
@@ -59,21 +59,28 @@
           </div>
         </div>
 
-        <!-- 이메일주소 -->
+        <!-- 생년월일 -->
         <div class="flex flex-col gap-2 w-full">
           <div class="flex items-center gap-1 h-[42px]">
-            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">이메일주소</span>
+            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">생년월일</span>
             <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="email" placeholder="입력해주세요." />
+          <div class="flex items-center gap-2 w-full">
+            <input class="flex-1 h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" />
+            <span class="font-suit font-medium text-base text-zinc-500">.</span>
+            <input class="w-[72px] h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="2" placeholder="MM" />
+            <span class="font-suit font-medium text-base text-zinc-500">.</span>
+            <input class="w-[72px] h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="2" placeholder="DD" />
+          </div>
         </div>
 
-        <!-- 비밀번호 -->
+        <!-- 닉네임 -->
         <div class="flex flex-col gap-2 w-full">
           <div class="flex items-center gap-1 h-[42px]">
-            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">비밀번호</span>
+            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">닉네임</span>
+            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="password" placeholder="입력해주세요." />
+          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="text" placeholder="입력해주세요." [(value)]="nickname" />
         </div>
 
         <!-- SNS -->

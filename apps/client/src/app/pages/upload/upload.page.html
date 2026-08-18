@@ -1,4 +1,4 @@
-<div class="upload-overlay" (click)="close()"></div>
+<div class="upload-overlay" (click)="close()" (keydown.escape)="close()" tabindex="-1" role="button" aria-label="모달 닫기"></div>
 <div class="upload-modal">
   <!-- 헤더 -->
   <div class="flex justify-between items-center px-8 pt-8 w-full bg-bg-card box-border">

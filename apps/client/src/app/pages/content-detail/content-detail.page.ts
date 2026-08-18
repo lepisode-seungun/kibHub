@@ -25,7 +25,7 @@ export class ContentDetailPage implements OnInit {
   bookmarkCount = 314;
   commentCount = 30;
   dateStr = '2024. 7. 10 13:23';
-  isBookmarked = signal(true);
+  isBookmarked = signal(false);
   isDescOpen = signal(false);
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
   isSidebarOpen = signal(true);
@@ -151,6 +151,10 @@ export class ContentDetailPage implements OnInit {
   }
 
   toggleBookmark(): void {
+    if (!this.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
     if (this.isBookmarked()) {
       // 이미 추가된 상태면 해제
       this.isBookmarked.set(false);
