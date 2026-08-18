@@ -109,6 +109,8 @@ export class HeaderComponent {
     this.searchValue = '';
     const input = document.querySelector<HTMLInputElement>('.search-input');
     if (input) input.value = '';
+    this.isMobileSearchOpen.set(false);
+    document.body.style.overflow = '';
     this.router.navigate(['/search'], { queryParams: { q: query } });
   }
 

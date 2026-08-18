@@ -54,6 +54,7 @@
 }
 
 @media (max-width: 768px) {
-  .search-page { padding: 32px 20px; }
-  .result-card { width: calc(50% - 12px); }
+  .search-page { padding: 40px 24px; gap: 20px; }
+  .search-page > div:first-child > div:first-child { display: none; }
+  .result-card { width: 100%; height: 320px; aspect-ratio: unset; padding: 10px; }
 }
