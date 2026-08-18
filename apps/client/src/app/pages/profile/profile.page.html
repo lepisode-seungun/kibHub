@@ -340,7 +340,14 @@
 
     <!-- 콘텐츠 섹션 -->
     <div class="pf-content-section">
-      <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ selectedAlbumName() }}</h2>
+      <div class="flex items-center gap-2">
+        <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ selectedAlbumName() }}</h2>
+        <span class="pf-help-tooltip" [attr.data-tooltip]="activeTab() === 'all' ? '내 작품을 앨범으로 묶어서 관리해보세요.' : '마음에 든 피드백과 콘텐츠를 책갈피에 넣어두고,\n다시 볼 수 있습니다.'">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" class="cursor-pointer">
+            <path d="M7.5 0C3.36 0 0 3.36 0 7.5C0 11.64 3.36 15 7.5 15C11.64 15 15 11.64 15 7.5C15 3.36 11.64 0 7.5 0ZM8.25 12.75H6.75V11.25H8.25V12.75ZM9.8025 6.9375L9.1275 7.6275C8.5875 8.175 8.25 8.625 8.25 9.75H6.75V9.375C6.75 8.55 7.0875 7.8 7.6275 7.2525L8.5575 6.3075C8.835 6.0375 9 5.6625 9 5.25C9 4.425 8.325 3.75 7.5 3.75C6.675 3.75 6 4.425 6 5.25H4.5C4.5 3.5925 5.8425 2.25 7.5 2.25C9.1575 2.25 10.5 3.5925 10.5 5.25C10.5 5.91 10.23 6.51 9.8025 6.9375Z" fill="#A1A1AA"/>
+          </svg>
+        </span>
+      </div>
       <div class="pf-content-toolbar">
         <button class="pf-dropdown" (click)="toggleSort()">
           <span class="pf-dropdown-text">{{ sortLabel }}</span>

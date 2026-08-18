@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -151,7 +151,13 @@ export class ContentDetailPage implements OnInit {
   }
 
   toggleBookmark(): void {
-    this.isBookmarked.update(v => !v);
+    if (this.isBookmarked()) {
+      // 이미 추가된 상태면 해제
+      this.isBookmarked.set(false);
+    } else {
+      // 미추가 상태면 모달 열기 (버튼 상태는 아직 변경 안 함)
+      this.openBookmarkModal();
+    }
   }
 
   toggleDesc(): void {
@@ -342,5 +348,77 @@ export class ContentDetailPage implements OnInit {
 
   nextCommentImage(): void {
     this.commentImageIndex.update(i => i < this.commentImageList().length - 1 ? i + 1 : 0);
+  }
+
+  /* ===== 책갈피 추가 모달 ===== */
+  isBookmarkModalOpen = signal(false);
+  bookmarkSaved = signal(false);
+  /** 현재 편집(삭제) 대상으로 선택된 카테고리 ID. null이면 아무것도 선택 안 됨 */
+  selectedEditId = signal<number | null>(null);
+  bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnail: string}[]>([
+    { id: 1, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+    { id: 2, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'private', thumbnail: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+    { id: 3, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+    { id: 4, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  ]);
+  hasSelectedCategories = computed(() => this.bookmarkCategories().some(c => c.selected));
+  newCategoryName = '';
+
+  openBookmarkModal(): void {
+    this.isBookmarkModalOpen.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeBookmarkModal(): void {
+    this.isBookmarkModalOpen.set(false);
+    this.bookmarkSaved.set(false);
+    this.selectedEditId.set(null);
+    this.newCategoryName = '';
+    document.body.style.overflow = '';
+  }
+
+  /** 로우 클릭: 카테고리 선택/해제 토글 + 편집 상태 토글 */
+  toggleRowEdit(id: number): void {
+    this.toggleBookmarkCategory(id);
+    this.selectedEditId.update(v => v === id ? null : id);
+  }
+
+  removeBookmarkCategory(id: number, event: Event): void {
+    event.stopPropagation();
+    this.bookmarkCategories.update(cats => cats.filter(c => c.id !== id));
+    this.selectedEditId.set(null);
+  }
+
+  toggleBookmarkCategory(id: number): void {
+    this.bookmarkCategories.update(cats =>
+      cats.map(c => c.id === id ? { ...c, selected: !c.selected } : c)
+    );
+  }
+
+  onNewCategoryInput(event: Event): void {
+    this.newCategoryName = (event.target as HTMLInputElement).value;
+  }
+
+  addNewCategory(): void {
+    const name = this.newCategoryName.trim() || `새 카테고리 ${this.bookmarkCategories().length + 1}`;
+    this.bookmarkCategories.update(cats => [
+      ...cats,
+      { id: Date.now(), name, count: 0, selected: true, visibility: 'public' as const, thumbnail: 'linear-gradient(135deg, #3F3F46, #52525B)' }
+    ]);
+    this.newCategoryName = '';
+  }
+
+  confirmBookmark(): void {
+    const selected = this.bookmarkCategories().filter(c => c.selected);
+    console.log('책갈피 추가:', selected.map(c => c.name));
+    this.bookmarkSaved.set(true);
+    this.isBookmarked.set(true);
+    this.closeBookmarkModal();
+  }
+
+  onBookmarkOverlayClick(event: Event): void {
+    if ((event.target as HTMLElement).classList.contains('bm-overlay')) {
+      this.closeBookmarkModal();
+    }
   }
 }

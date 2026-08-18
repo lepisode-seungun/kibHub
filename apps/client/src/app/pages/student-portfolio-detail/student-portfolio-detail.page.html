@@ -65,14 +65,14 @@
       </div>
 
       <!-- 더보기 버튼 -->
-      <button class="w-full max-w-[800px] h-12 bg-transparent border border-zinc-600 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 cursor-pointer transition-colors duration-200 hover:bg-white/5 hover:border-accent hover:text-white" (click)="openManuscriptViewer()">원고보기</button>
+      <button style="width: 200px; height: 48px; border-radius: 12px; background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%); border: 1px solid rgba(255,255,255,0.12); font-family: 'SUIT Variable', sans-serif; font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: -0.04em; color: #FFFFFF; cursor: pointer; transition: opacity 0.15s;" (click)="openManuscriptViewer()">원고보기</button>
     </div>
 
     <!-- 하단: 문의하기 -->
-    <div class="section-divider">
-      <hr class="divider-line" />
-      <button class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 bg-transparent border-none cursor-pointer whitespace-nowrap px-5 transition-colors duration-150 hover:text-accent" (click)="openInquiryModal()">문의하기</button>
-      <hr class="divider-line" />
+    <div style="display: flex; align-items: center; width: 100%; margin-top: 60px;">
+      <div style="flex: 1; height: 1px; background: #3F3F46;"></div>
+      <button style="width: 300px; height: 48px; background: #27272A; border: none; border-radius: 24px; font-family: 'SUIT Variable', sans-serif; font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: -0.04em; color: #FFFFFF; cursor: pointer; transition: background 0.15s; flex-shrink: 0;" (click)="openInquiryModal()">문의하기</button>
+      <div style="flex: 1; height: 1px; background: #3F3F46;"></div>
     </div>
   </div>
 

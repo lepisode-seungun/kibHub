@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
@@ -13,7 +13,7 @@ interface LearningFile {
   templateUrl: './lecture-detail.page.html',
   styleUrls: ['./lecture-detail.page.css'],
 })
-export class LectureDetailPage {
+export class LectureDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -47,11 +47,18 @@ export class LectureDetailPage {
       this.bootcampId = params.get('bootcampId') || '';
       this.lectureId = params.get('lectureId') || '';
     });
+    this.route.queryParamMap.subscribe((qp) => {
+      this.returnTab = qp.get('tab') || '';
+    });
   }
+
+  returnTab = '';
 
   goBack(): void {
     if (this.bootcampId) {
-      this.router.navigate(['/my-bootcamp', this.bootcampId]);
+      this.router.navigate(['/my-bootcamp', this.bootcampId], {
+        queryParams: this.returnTab ? { tab: this.returnTab } : {},
+      });
     } else {
       this.router.navigate(['/my-bootcamp']);
     }

@@ -1,4 +1,4 @@
-import { Component, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import Cropper from 'cropperjs';
@@ -31,7 +31,7 @@ interface ThumbCandidate {
   templateUrl: './content-upload.page.html',
   styleUrls: ['./content-upload.page.css'],
 })
-export class ContentUploadPage {
+export class ContentUploadPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 

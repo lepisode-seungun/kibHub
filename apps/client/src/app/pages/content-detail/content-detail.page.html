@@ -113,7 +113,7 @@
     <!-- Image Viewer -->
     <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'">
       @for (img of images; track $index) {
-        <div class="detail-image-frame" role="button" tabindex="0" (click)="onImageClick($event); openManuscriptViewer($index)" (keydown.enter)="onImageClick($event); openManuscriptViewer($index)">
+        <div class="detail-image-frame" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" (click)="onImageClick($event); openManuscriptViewer($index)" (keydown.enter)="onImageClick($event); openManuscriptViewer($index)">
           <div class="detail-image" [style.background]="img.gradient"></div>
           <!-- 임시 마커 표시 -->
           @if (commentMode() === 'feedback' && pendingMarker() && $index === 0) {
@@ -169,7 +169,7 @@
             </svg>
             <span>마커 숨기기</span>
           </button>
-          <button class="floating-btn">
+          <button class="floating-btn" (click)="openBookmarkModal()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8">
               <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
             </svg>
@@ -691,8 +691,8 @@
 
 <!-- ===== 공유 모달 ===== -->
 @if (isShareModalOpen()) {
-  <div class="share-overlay" (click)="isShareModalOpen.set(false)">
-    <div class="share-modal" (click)="$event.stopPropagation()">
+  <div class="share-overlay" (click)="isShareModalOpen.set(false)" (keydown.escape)="isShareModalOpen.set(false)" tabindex="-1" role="button" aria-label="모달 닫기">
+    <div class="share-modal" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="-1">
       <!-- 헤더 -->
       <div class="share-header">
         <span class="share-title">공유하기</span>
@@ -751,6 +751,82 @@
             <span class="share-sns-label">URL</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 책갈피 추가 모달 ===== -->
+@if (isBookmarkModalOpen()) {
+  <div class="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-blur-[30px] z-[1100]" tabindex="-1" (click)="onBookmarkOverlayClick($event)" (keydown.escape)="closeBookmarkModal()">
+    <!-- 껍데기 -->
+    <div class="flex flex-col items-start p-0 relative w-[700px] h-[712px] bg-bg-card rounded-2xl overflow-hidden">
+
+      <!-- 헤더 -->
+      <div class="flex flex-col items-center pt-8 px-8 gap-6 w-full h-[62px] bg-bg-card shrink-0 box-border">
+        <div class="flex flex-row justify-center items-center w-full h-[30px]">
+          <div class="flex flex-row items-center gap-2 flex-1">
+            <span class="h-[30px] font-suit font-bold text-xl leading-[150%] flex items-center text-center tracking-tight text-white">책갈피</span>
+          </div>
+          <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-70" (click)="closeBookmarkModal()" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 콘텐츠 영역 -->
+      <div class="flex flex-col items-start p-8 gap-6 w-full h-[550px] min-h-[300px] bg-bg-card shrink-0 box-border overflow-y-auto">
+        @for (cat of bookmarkCategories(); track cat.id) {
+          <!-- 카테고리 카드 -->
+          <div
+            [class]="selectedEditId() === cat.id
+              ? 'box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] rounded-xl shrink-0 cursor-pointer transition-all duration-150 border border-accent bg-[rgba(122,72,255,0.04)] hover:bg-[rgba(122,72,255,0.08)]'
+              : 'box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] bg-zinc-800 border border-zinc-700 rounded-xl shrink-0 cursor-pointer transition-all duration-150 hover:bg-[rgba(122,72,255,0.06)] hover:border-[#956DFF]'"
+            (click)="toggleRowEdit(cat.id)" role="button" tabindex="0" (keydown.enter)="toggleRowEdit(cat.id)"
+          >
+            <!-- 썸네일 -->
+            <div class="flex justify-center items-center w-[60px] h-[60px] rounded shrink-0" [style.background]="cat.thumbnail"></div>
+
+            <!-- 카테고리 정보 -->
+            <div class="flex flex-col justify-center items-start gap-2.5 flex-1 min-w-0">
+              <span class="w-full h-6 font-suit font-medium text-base leading-[150%] flex items-center tracking-tight text-zinc-50 overflow-hidden text-ellipsis whitespace-nowrap">{{ cat.name }}</span>
+              <div class="flex flex-row items-center gap-2.5 w-full h-[22px]">
+                <span class="h-[21px] font-suit font-medium text-sm leading-[150%] flex items-center tracking-tight text-zinc-500 shrink-0">총 {{ cat.count }}개의 콘텐츠</span>
+                @if (cat.visibility === 'private') {
+                  <div class="flex flex-row items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 17a2 2 0 100-4 2 2 0 000 4z" fill="#71717A"/>
+                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z" fill="#71717A"/>
+                    </svg>
+                    <span class="h-[18px] font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-500">비공개</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- 마이너스 삭제 버튼 -->
+            @if (selectedEditId() === cat.id) {
+              <button class="flex items-center justify-center w-8 h-8 bg-transparent border-none cursor-pointer p-0 shrink-0 rounded-md transition-transform duration-150 hover:scale-110 active:scale-95" (click)="removeBookmarkCategory(cat.id, $event)" aria-label="삭제">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="3" fill="#F87171"/>
+                  <path d="M8 12h8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- 푸터 -->
+      <div class="box-border flex flex-row justify-between items-center px-8 pt-5 pb-8 gap-2.5 w-full h-[100px] bg-bg-card border-t border-zinc-800 rounded-b-2xl shrink-0">
+        <button class="box-border flex justify-center items-center px-3 py-[9px] gap-2.5 h-12 border border-[#956DFF] rounded-xl bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-[#956DFF] transition-colors duration-150 hover:bg-[rgba(149,109,255,0.08)]" (click)="addNewCategory()">+ 카테고리 추가</button>
+        <button
+          [class]="hasSelectedCategories()
+            ? 'flex justify-center items-center px-3 gap-1 w-[100px] h-12 rounded-xl border-none font-suit font-medium text-base leading-[150%] tracking-tight bg-accent text-white cursor-pointer transition-colors duration-150 hover:bg-accent-hover'
+            : 'flex justify-center items-center px-3 gap-1 w-[100px] h-12 rounded-xl border-none font-suit font-medium text-base leading-[150%] tracking-tight bg-zinc-700 text-zinc-500 cursor-default'"
+          [disabled]="!hasSelectedCategories()"
+          (click)="hasSelectedCategories() && confirmBookmark()"
+        >추가</button>
       </div>
     </div>
   </div>

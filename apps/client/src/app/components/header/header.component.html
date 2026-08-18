@@ -14,8 +14,8 @@
 
       <!-- Navigation -->
       <nav class="nav" aria-label="주 메뉴">
-        <a routerLink="/" routerLinkActive="nav-item--active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">홈</a>
-        <a routerLink="/hall-of-fame" routerLinkActive="nav-item--active" class="nav-item">명예의전당</a>
+        <a routerLink="/" [ngClass]="isHomeRoute() ? 'nav-item nav-item--active' : 'nav-item'">홈</a>
+        <a routerLink="/bootcamp-intro" [ngClass]="isBootcampRoute() ? 'nav-item nav-item--active' : 'nav-item'">부트캠프</a>
       </nav>
     </div>
 
@@ -26,6 +26,8 @@
         <input
           type="text"
           class="search-input"
+          name="header-search"
+          autocomplete="off"
           [placeholder]="searchPlaceholder"
           (input)="onSearch($event)"
           (keydown)="onSearchKeyDown($event)"
@@ -92,7 +94,7 @@
 
         <!-- Dropdown Panel -->
         @if (isLangOpen()) {
-          <div class="lang-dropdown">
+          <div class="absolute top-[calc(100%+8px)] right-0 lg:right-auto lg:left-0 flex flex-col items-start p-6 gap-6 w-[280px] max-w-[calc(100vw-40px)] bg-[#18181B] border border-[rgba(63,63,70,0.12)] shadow-lg rounded-lg z-[100] box-border" style="animation: dropdown-fade-in 0.15s ease;">
             @for (lang of languages; track lang.code; let i = $index) {
               @if (i > 0) {
                 <span class="lang-divider"></span>
@@ -138,7 +140,7 @@
     @if (isLoggedIn()) {
       <!-- ===== 로그인 상태 ===== -->
       <!-- 알림 -->
-      <a class="drawer-footer-item" (click)="openNotification()">
+      <button class="drawer-footer-item drawer-logout-btn" (click)="openNotification()">
         <div class="drawer-footer-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="#A1A1AA" opacity="0.5"/>
@@ -149,7 +151,7 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
         </svg>
-      </a>
+      </button>
 
       <div class="drawer-divider"></div>
 
@@ -307,7 +309,7 @@
 
 <!-- ===== 알림 모달 ===== -->
 @if (isNotificationOpen()) {
-  <div class="noti-overlay" (click)="closeNotification()"></div>
+  <div class="noti-overlay" (click)="closeNotification()" (keydown.enter)="closeNotification()" role="button" tabindex="-1"></div>
   <div class="noti-modal">
     <!-- 헤더 -->
     <div class="noti-header">

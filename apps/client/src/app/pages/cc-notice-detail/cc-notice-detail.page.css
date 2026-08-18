@@ -1,0 +1,32 @@
+:host { display: block; }
+
+.ccnd-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 260px;
+  gap: 60px;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  background: #151419;
+  box-sizing: border-box;
+}
+
+/* 반응형 */
+@media (max-width: 1440px) {
+  .ccnd-page { padding: 60px 100px; }
+}
+
+@media (max-width: 1200px) {
+  .ccnd-page { padding: 40px 40px; }
+  .ccnd-image-responsive {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 456 / 504;
+  }
+}
+
+@media (max-width: 768px) {
+  .ccnd-page { padding: 20px; }
+}

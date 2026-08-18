@@ -4,9 +4,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { SubHeaderComponent } from './components/sub-header/sub-header.component';
+import { SignupCompleteModalComponent } from './components/signup-complete-modal/signup-complete-modal.component';
 
 @Component({
-  imports: [RouterModule, HeaderComponent, SubHeaderComponent],
+  imports: [RouterModule, HeaderComponent, SubHeaderComponent, SignupCompleteModalComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -16,11 +17,14 @@ export class App {
 
   private router = inject(Router);
 
-  /** 현재 라우트가 홈('/')인지 추적 */
+  /** 현재 라우트가 홈('/') 또는 홈 상세페이지('/content/...')인지 추적 */
   isHome = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map((e) => e.urlAfterRedirects === '/')
+      map((e) => {
+        const url = e.urlAfterRedirects.split('?')[0];
+        return url === '/' || url.startsWith('/content/');
+      })
     ),
     { initialValue: true }
   );

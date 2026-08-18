@@ -78,6 +78,14 @@
           </div>
           <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
         </div>
+
+        <!-- 에러 메시지 -->
+        @if (findError()) {
+          <div class="flex items-center gap-1 w-full">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#F87171" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171] flex-1">{{ findError() }}</span>
+          </div>
+        }
       </div>
 
       <!-- Submit -->

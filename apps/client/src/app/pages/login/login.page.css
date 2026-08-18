@@ -101,3 +101,29 @@
 @media (max-width: 960px) {
   .login-left { display: none; }
 }
+
+/* Login Input */
+.login-input {
+  width: 100%;
+  height: 48px;
+  padding: 8px 12px;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #27272A;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.login-input::placeholder {
+  color: #A1A1AA;
+}
+
+.login-input:focus {
+  border-color: #7A48FF;
+}

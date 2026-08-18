@@ -19,7 +19,6 @@
   align-items: center;
   gap: 0;
   width: 100%;
-  max-width: 800px;
 }
 
 .divider-line {
@@ -27,6 +26,26 @@
   border: none;
   border-top: 1px solid #3F3F46;
   margin: 0;
+}
+
+/* 문의하기 버튼 */
+.inquiry-btn {
+  font-family: 'SUIT Variable', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #A1A1AA;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0 20px;
+  transition: color 0.15s;
+}
+
+.inquiry-btn:hover {
+  color: #7A48FF;
 }
 
 /* 원고 이미지 마스크 */

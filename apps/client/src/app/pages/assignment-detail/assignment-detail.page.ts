@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
@@ -25,7 +25,7 @@ interface Submission {
   templateUrl: './assignment-detail.page.html',
   styleUrls: ['./assignment-detail.page.css'],
 })
-export class AssignmentDetailPage {
+export class AssignmentDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -77,11 +77,18 @@ export class AssignmentDetailPage {
       this.bootcampId = params.get('bootcampId') || '';
       this.assignmentId = params.get('assignmentId') || '';
     });
+    this.route.queryParamMap.subscribe((qp) => {
+      this.returnTab = qp.get('tab') || '';
+    });
   }
+
+  returnTab = '';
 
   goBack(): void {
     if (this.bootcampId) {
-      this.router.navigate(['/my-bootcamp', this.bootcampId]);
+      this.router.navigate(['/my-bootcamp', this.bootcampId], {
+        queryParams: this.returnTab ? { tab: this.returnTab } : {},
+      });
     } else {
       this.router.navigate(['/my-bootcamp']);
     }
@@ -95,7 +102,9 @@ export class AssignmentDetailPage {
     this.activeDetailTab.set(tab);
     if (tab === '학습목록' || tab === '강의' || tab === '공지사항') {
       if (this.bootcampId) {
-        this.router.navigate(['/my-bootcamp', this.bootcampId]);
+        this.router.navigate(['/my-bootcamp', this.bootcampId], {
+          queryParams: { tab },
+        });
       }
     }
   }

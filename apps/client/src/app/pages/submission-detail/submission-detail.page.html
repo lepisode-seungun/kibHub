@@ -59,7 +59,7 @@
             </svg>
           </button>
           @if (isMoreOpen()) {
-            <div class="sd-more-backdrop" (click)="closeMore()"></div>
+            <div class="sd-more-backdrop" (click)="closeMore()" (keydown.escape)="closeMore()" tabindex="-1"></div>
             <div class="sd-more-dropdown">
               @if (isAuthor) {
                 <button class="sd-more-item" (click)="onEdit()">수정</button>

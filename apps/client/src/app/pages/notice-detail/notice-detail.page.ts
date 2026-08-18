@@ -38,11 +38,18 @@ export class NoticeDetailPage implements OnInit {
       this.bootcampId = params.get('bootcampId') || '';
       this.noticeId = params.get('noticeId') || '';
     });
+    this.route.queryParamMap.subscribe((qp) => {
+      this.returnTab = qp.get('tab') || '';
+    });
   }
+
+  returnTab = '';
 
   goBack(): void {
     if (this.bootcampId) {
-      this.router.navigate(['/my-bootcamp', this.bootcampId]);
+      this.router.navigate(['/my-bootcamp', this.bootcampId], {
+        queryParams: this.returnTab ? { tab: this.returnTab } : {},
+      });
     } else {
       this.router.navigate(['/my-bootcamp']);
     }
@@ -50,7 +57,9 @@ export class NoticeDetailPage implements OnInit {
 
   goToList(): void {
     if (this.bootcampId) {
-      this.router.navigate(['/my-bootcamp', this.bootcampId]);
+      this.router.navigate(['/my-bootcamp', this.bootcampId], {
+        queryParams: this.returnTab ? { tab: this.returnTab } : {},
+      });
     }
   }
 

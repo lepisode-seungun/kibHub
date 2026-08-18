@@ -332,7 +332,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 12px;
-  width: 332px;
+  width: calc((100% - 72px) / 4); /* 4열: 3 gaps × 24px = 72px */
   cursor: pointer;
   text-decoration: none;
   color: inherit;
@@ -484,7 +484,7 @@
     padding: 30px 40px;
   }
   .mbd-lecture-card {
-    width: calc(50% - 12px);
+    width: calc((100% - 48px) / 3); /* 3열 */
   }
 }
 
@@ -499,7 +499,7 @@
     padding: 20px 20px;
   }
   .mbd-lecture-card {
-    width: 100%;
+    width: calc(50% - 12px); /* 2열 */
   }
   .mbd-tab-nav-inner {
     gap: 16px;
@@ -648,7 +648,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 12px;
-  width: 332px;
+  width: calc((100% - 72px) / 4); /* 4열: 3 gaps × 24px = 72px */
   cursor: pointer;
   transition: transform 0.15s;
 }
@@ -773,7 +773,7 @@
     width: 100%;
   }
   .at-card {
-    width: 100%;
+    width: calc(50% - 12px); /* 2열 */
   }
   .at-filter-bar {
     flex-direction: column;
@@ -781,6 +781,11 @@
     gap: 12px;
     height: auto;
   }
+}
+
+@media (max-width: 640px) {
+  .at-card { width: 100%; }
+  .mbd-lecture-card { width: 100%; }
 }
 
 /* ===== 공지사항 탭 ===== */

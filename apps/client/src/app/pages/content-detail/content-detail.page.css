@@ -628,6 +628,7 @@
 
 .detail-image-frame {
   position: relative;
+  cursor: inherit;
 }
 
 /* Pending Marker (임시 마커) */
@@ -2496,3 +2497,4 @@
   right: 0;
   left: auto;
 }
+

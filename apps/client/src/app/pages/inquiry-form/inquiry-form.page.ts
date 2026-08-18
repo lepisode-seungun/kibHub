@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -29,8 +29,7 @@ export class InquiryFormPage {
     { name: '첨부파일명', ext: 'hwp', size: '93KB', status: 'done' },
     { name: '첨부파일명', ext: 'hwp', size: '93KB', status: 'done' },
   ];
-
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   removeFile(index: number): void {
     this.files.splice(index, 1);

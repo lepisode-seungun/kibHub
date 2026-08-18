@@ -1,0 +1,178 @@
+<!-- ===== 회원가입 완료 모달 ===== -->
+@if (modalService.showModal()) {
+  <div class="fixed inset-0 bg-black/60 z-[2000] flex items-center justify-center p-4">
+    <div class="relative w-[550px] max-w-full flex flex-col bg-white" style="border-radius: 24px; height: 920px; max-height: 95vh; min-height: 600px; overflow: hidden;">
+
+      <!-- 다크 배경 SVG (absolute) -->
+      <svg class="absolute inset-x-0 top-0 w-full pointer-events-none z-0" viewBox="0 0 550 479" preserveAspectRatio="none" style="height: 58%;">
+        <path d="M0 0H550V378.373C550 433.602 505.228 478.373 450 478.373H100C44.7715 478.373 0 433.602 0 378.373V0Z" fill="#04011C"/>
+      </svg>
+
+      <!-- 샤이닝 효과 (absolute, 하단) -->
+      <div class="absolute bottom-[96px] inset-x-0 z-[2] pointer-events-none" style="height: 80.52px; background: linear-gradient(0deg, #FFFFFF 0%, rgba(255,255,255,0) 79.32%);"></div>
+
+      <!-- 컨페티 -->
+      <svg class="absolute z-[3] pointer-events-none" style="top: 80px; left: 60px;" width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.35938 0L8.35937 7.60123L2.57738 5.25761L0 -3.3226e-07L8.35938 0Z" fill="#FC4FFF"/>
+      </svg>
+      <svg class="absolute z-[3] pointer-events-none" style="top: 95px; left: 355px;" width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 3.22656L4.16331 -0.00182097L5.33539 3.61206L3.55038 7.01228L0 3.22656Z" fill="#68D2FF"/>
+      </svg>
+      <svg class="absolute z-[3] pointer-events-none" style="top: 120px; right: 80px;" width="6" height="5" viewBox="0 0 6 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0H5.47159L3.78458 3.44134L0 4.97535V0Z" fill="#FFD568"/>
+      </svg>
+
+
+      <!-- 닫기 버튼 -->
+      <button class="absolute top-3 right-5 z-10 w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer hover:opacity-70"
+        (click)="goToHome()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="#FFFFFF">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+
+      <!-- 메인 콘텐츠 -->
+      <div class="relative z-[1] flex flex-col items-center flex-1 px-12 pt-[50px] pb-8 overflow-y-auto">
+
+        <!-- 로고 + Congratulation -->
+        <svg width="94" height="32" viewBox="0 0 94 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M23.0469 28.8036V11.6562H30.0574C33.9179 11.6562 36.2982 14.0602 36.2864 17.5536C36.2982 21.0944 33.8706 23.4273 29.939 23.4273H27.0732V28.8036H23.0469ZM27.0732 20.2299H29.2048C31.1114 20.2418 32.1179 19.176 32.1179 17.5536C32.1179 15.9549 31.1114 14.9247 29.2048 14.9247H27.0732V20.2299Z" fill="white"/>
+          <path d="M20.4404 11.6562V28.8036H16.4141V11.6562H20.4404Z" fill="white"/>
+          <path d="M0 28.8036V11.6562H4.02632V18.9747H4.26316L10.0184 11.6562H14.8026L8.66842 19.3063L14.8974 28.8036H10.0658L5.73158 22.0063L4.02632 24.1141V28.8036H0Z" fill="white"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M78.4809 26.305H83.9507C84.2505 26.509 84.5144 26.509 84.5144 26.8088C84.5144 27.1087 84.2745 27.3366 83.9747 27.3366H79.9084L79.8979 27.357C79.8779 27.3956 79.8604 27.4293 79.8604 27.4805C79.8604 27.6245 79.9803 27.7444 80.1243 27.7444H82.6312C82.9311 27.7444 83.171 27.9723 83.171 28.2722C83.171 28.5721 82.9311 28.8 82.6312 28.8H68.9089C68.5491 28.8 68.2132 28.752 67.8774 28.704C67.7475 28.6867 67.6176 28.6569 67.4923 28.6281C67.4438 28.617 67.3962 28.6061 67.3496 28.5961C66.9657 28.5481 66.6179 28.4282 66.282 28.2362C65.9942 28.0683 65.7183 27.8644 65.4664 27.6005C64.7947 26.8928 64.3868 25.9092 64.1829 24.7337C64.1589 24.6497 64.1469 24.5658 64.1349 24.4818C63.871 24.8416 63.6191 25.1655 63.3553 25.4894C62.2637 26.8448 61.1722 27.8164 60.0806 28.3202H60.0446L59.3009 28.5721L58.3293 28.6441H58.2574C57.3338 28.5361 56.6141 28.0443 56.1463 27.2287C55.9516 26.8771 55.8032 26.472 55.6968 26.0209L55.4465 26.8126L55.3746 26.9086C55.1587 27.2205 54.9308 27.4844 54.6909 27.6763C54.4989 27.8322 54.271 28.0001 54.0071 28.1801L53.8992 28.252L53.1315 28.444H53.0715C52.2559 28.5039 51.5122 28.288 50.9004 27.7722L50.8765 27.7482L50.8525 27.7243C50.5886 27.4724 50.3727 27.1845 50.1927 26.8486L50.1568 26.8126V26.7767C49.8929 26.1529 49.7729 25.5412 49.8689 24.9534L49.9049 24.3297V24.2697C49.9768 23.9098 50.1687 22.8063 50.4806 20.9351V20.9111V20.8871C50.6965 19.8915 50.8884 18.86 51.0204 17.7924C51.0204 17.6125 51.0084 17.4685 50.9964 17.3606C50.9844 17.3246 50.9844 17.2646 50.9844 17.2646H50.8405L50.0008 17.6844C48.8013 18.2962 47.5298 19.3398 46.2104 20.8271L46.1264 21.163C46.0545 21.0071 45.9705 20.8632 45.8866 20.7192L46.6302 16.4729C48.1296 15.2854 49.629 14.5657 51.1164 14.3978H51.1403H51.1643C51.6561 14.3738 52.1239 14.4578 52.5438 14.6737C52.9756 14.8896 53.2994 15.2135 53.5513 15.6213C53.8512 16.0891 53.9232 16.7248 53.9112 17.3846V17.4086L53.7792 18.704V18.728C53.6233 19.6156 53.3354 21.3069 52.9156 23.8139V23.8379C52.7717 24.5216 52.7357 24.9894 52.7357 25.2773C52.7477 25.4692 52.8076 25.6011 52.8076 25.6011L52.9516 25.6491H53.0595C53.2755 25.6371 53.5034 25.5892 53.7313 25.5172L53.7792 25.5292L55.5051 24.6495C55.4958 24.4968 55.4896 24.3409 55.4865 24.1819V24.1339V24.086C55.9783 20.2116 56.9139 16.841 58.3054 13.9622L58.6532 13.2665L59.3129 13.6743C59.8767 14.0222 60.2605 14.6819 60.5604 15.4496L60.6564 15.7015L60.5604 15.9534C59.253 19.4439 58.5692 22.3947 58.4853 24.8297L58.6052 25.5134L58.7972 25.7533L58.9771 25.7293L59.5768 25.3694C62.2997 23.0424 64.1469 19.5159 65.0705 14.6939L65.2505 13.7703L66.0901 14.2021C67.0377 14.6819 67.6735 15.4136 67.6735 16.4451V16.5651L67.6375 16.685C67.4455 17.2368 67.2776 17.7646 67.1457 18.2684C66.8098 19.5399 66.6419 20.6434 66.6779 21.579V21.603V21.627C66.6299 23.0664 66.7858 24.1939 67.0977 25.0216L67.1097 25.0456V25.0696C67.2056 25.4294 67.3636 25.6093 67.5655 25.7053H67.7814C67.9973 25.6933 68.2252 25.6453 68.4651 25.5494C68.5659 25.5023 68.6931 25.444 68.8403 25.3764C68.9566 25.3231 69.0841 25.2646 69.2208 25.2015C69.8086 22.6106 70.3124 20.2955 70.7202 18.2924C70.8641 17.5847 70.9961 16.9249 71.116 16.2892C72.2076 11.2273 72.9752 7.55685 73.4311 5.25381C73.8149 3.28663 74.1388 1.72728 74.3907 0.563765L74.5106 0H75.6381L75.854 0.275885C76.3938 0.971595 76.7177 1.75127 76.8496 2.60292V2.72287L76.8256 2.84282C75.7941 7.86872 74.9904 11.923 74.4266 15.0057C75.7701 14.5259 77.1015 14.346 78.421 14.502L78.8888 14.5259L78.9967 14.5739C80.1123 15.0417 80.9279 15.8334 81.4077 16.9369C81.8875 18.0285 82.0195 19.3599 81.8875 20.9073V20.9313L81.8036 21.543V21.591C81.4437 22.9704 80.736 24.1699 79.7524 25.1895H81.6836C81.9475 25.1895 82.1634 25.3934 82.1634 25.6573C82.1634 25.9212 81.9475 26.1251 81.6836 26.1251H78.6969L78.6489 26.1611C78.6009 26.2091 78.4809 26.305 78.4809 26.305ZM77.4014 17.2728C75.5182 17.4647 74.3187 18.0885 73.635 19.0481L73.443 19.9237L72.2435 25.2135L72.0876 25.8972L72.1596 25.9212C72.9992 25.8013 73.7669 25.6093 74.4746 25.3574C74.5681 25.3319 74.6555 25.2944 74.7412 25.2576C74.7765 25.2425 74.8115 25.2275 74.8465 25.2135C76.5977 24.5178 77.8932 23.4022 78.7568 21.8909L78.9488 21.4351C79.2006 20.0556 79.1527 19.084 78.9128 18.4243C78.6849 17.8246 78.289 17.4647 77.6533 17.2728H77.4014ZM85.2805 26.8192C85.2805 26.6312 85.4325 26.4788 85.6205 26.4788C85.8086 26.4788 85.9606 26.6312 85.9606 26.8192C85.9606 27.0073 85.8086 27.1589 85.6205 27.1589C85.4325 27.1589 85.2805 27.0073 85.2805 26.8192ZM83.4098 25.8541C83.5933 25.8541 83.7423 25.7051 83.7423 25.5212C83.7423 25.3385 83.5933 25.1895 83.4098 25.1895C83.2263 25.1895 83.0773 25.3384 83.0773 25.5212C83.0773 25.7051 83.2263 25.8541 83.4098 25.8541ZM46.4408 1.23153C45.6252 1.0636 44.8095 1.56739 44.6056 2.37106L41.5469 14.534L45.8771 15.4216L47.6763 3.00679C47.7963 2.17914 47.2565 1.39946 46.4408 1.23153ZM40.8392 17.1967C40.7312 17.6286 40.7912 18.0844 41.0311 18.4682C41.271 18.852 41.6548 19.1159 42.0866 19.1999L43.514 19.4878C43.9459 19.5717 44.4017 19.4878 44.7735 19.2239C45.1454 18.972 45.3853 18.5762 45.4572 18.1323L45.7571 16.1292L41.3549 15.2296L40.8512 17.1847L40.8392 17.1967ZM41.0706 19.9198L44.1533 20.5556L44.1653 20.5436L44.2012 20.5796C45.1129 21.3592 45.5207 22.5827 45.2808 23.7462C45.0049 25.0897 44.1893 26.3612 42.9658 27.3328C41.8142 28.2564 40.4708 28.7602 39.2953 28.7122H39.0434L39.1154 28.4723C39.1154 28.4723 39.1873 28.2324 39.1873 27.6326C39.1873 26.9514 39.0691 26.2917 38.9548 25.6534L38.9354 25.5455L38.9261 25.4938C38.749 24.5146 38.5675 23.5112 38.7915 22.4268C39.0314 21.2513 39.883 20.3037 41.0226 19.9198H41.0706ZM44.1533 24.5259C44.2852 24.2141 44.3932 23.9022 44.4531 23.5903L44.4771 23.6023C44.6451 22.7866 44.3812 21.923 43.7814 21.3352L41.1425 20.7955C40.3628 21.0953 39.7751 21.7911 39.6072 22.6067C39.5232 22.9786 39.5112 23.3504 39.5232 23.7103C39.6671 24.6459 40.2549 24.4659 40.4108 24.1661C40.4441 24.1065 40.4755 24.0491 40.5056 23.9941C40.7363 23.5729 40.8865 23.2987 41.1305 23.3624C41.4768 23.4512 41.4419 23.8094 41.4101 24.1355C41.399 24.25 41.3882 24.3605 41.3944 24.4539C41.4184 24.8138 41.8982 25.1497 42.2701 24.31C42.5579 23.6503 43.2536 23.6023 43.2177 44.42C43.1697 25.2816 43.7934 25.1856 44.0813 24.6579C44.1053 24.6099 44.1293 24.5619 44.1533 24.5259Z" fill="white"/>
+        </svg>
+        <span class="mt-5 font-bold text-[28px] leading-[150%] tracking-tight text-[#ECEFEF]"
+          style="font-family: 'Gmarket Sans TTF', 'GmarketSansMedium', sans-serif;">Congratulation</span>
+
+        <!-- 카드를 아래로 밀기 -->
+        <div class="flex-1"></div>
+
+        <!-- 프로필 카드 래퍼 -->
+        <div class="relative" style="width: 343px;">
+          <!-- 빛줄기 바깥 (343px, opacity 0.4) -->
+          <div class="absolute z-0 pointer-events-none" style="top: 0; left: 0; right: 0; bottom: 50px; opacity: 0.4; background: linear-gradient(180deg, rgba(217,217,217,0) 0%, #D9D9D9 100%);"></div>
+          <!-- 초록 컨페티 -->
+          <svg class="absolute z-[3] pointer-events-none" style="top: 2px; left: 20px;" width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5041 1.28265L8.35937 7.60123L2.57738 5.25761L0 -3.3226e-07L5.5041 1.28265Z" fill="#3DFF7D"/>
+          </svg>
+          <!-- 빛줄기 안쪽 (317px) -->
+          <div class="absolute z-0 pointer-events-none" style="top: 0; left: 50%; transform: translateX(-50%); bottom: 50px; width: 317px; background: linear-gradient(180deg, rgba(217,217,217,0) 0%, #D9D9D9 100%);"></div>
+
+          <!-- 장식: 왼쪽 원 + 큐브 아이콘 -->
+          <div class="absolute z-[2] pointer-events-none flex items-center justify-center" style="left: -50px; top: 110px; width: 85px; height: 84px;">
+            <svg class="absolute inset-0" width="85" height="84" viewBox="0 0 85 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="84" height="84" rx="42" transform="matrix(1 -6.66684e-09 0.0821808 0.996617 -3.30469 0)" fill="url(#deco_left_m)"/>
+              <rect x="0.633076" y="0.583021" width="82.83" height="82.83" rx="41.415" transform="matrix(1 -6.66684e-09 0.0821808 0.996617 -3.3526 0.00197215)" stroke="#3F4351" stroke-opacity="0.24" stroke-width="1.17"/>
+              <defs>
+                <linearGradient id="deco_left_m" x1="42" y1="0" x2="42" y2="84" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#4A4070"/>
+                  <stop offset="1" stop-color="#0D0A2A"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <svg class="relative" width="54" height="48" viewBox="0 0 66 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.66306" y="0.443876" width="38.5026" height="37.9451" transform="matrix(0.885402 -0.464826 0.536017 0.844207 3.63235 23.2108)" stroke="white" stroke-width="2.34" stroke-dasharray="7.02 7.02"/>
+              <rect width="5.2088" height="5.1377" transform="matrix(0.885402 -0.464826 0.536017 0.844207 0 21.4077)" fill="#623ACC"/>
+              <rect width="5.2088" height="5.1377" transform="matrix(0.885402 -0.464826 0.536017 0.844207 36.1641 2.42332)" fill="#623ACC"/>
+              <rect width="5.2088" height="5.1377" transform="matrix(0.885402 -0.464826 0.536017 0.844207 57.7578 36.4311)" fill="#623ACC"/>
+              <rect width="5.2088" height="5.1377" transform="matrix(0.885402 -0.464826 0.536017 0.844207 21.5938 55.4155)" fill="#623ACC"/>
+              <rect width="19.2351" height="19.3075" rx="4.68" transform="matrix(0.504143 -0.821682 1.03401 -0.00286214 20.6016 40.478)" fill="url(#cube_bg1_m)"/>
+              <rect width="19.2351" height="19.3075" rx="4.68" transform="matrix(0.504143 -0.821682 1.03401 -0.00286214 17.4688 35.5483)" fill="url(#cube_bg2_m)"/>
+              <defs>
+                <linearGradient id="cube_bg1_m" x1="9.61757" y1="0" x2="9.61757" y2="19.3075" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="white" stop-opacity="0.77"/>
+                  <stop offset="1" stop-color="#3D3D3D" stop-opacity="0.44"/>
+                </linearGradient>
+                <linearGradient id="cube_bg2_m" x1="1.62818" y1="-1.32614e-07" x2="24.6579" y2="5.53054" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="white" stop-opacity="0"/>
+                  <stop offset="1" stop-color="#B89FB5"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- 장식: 오른쪽 원 + 펜 아이콘 -->
+          <div class="absolute z-[2] pointer-events-none flex items-center justify-center" style="right: -50px; top: 110px; width: 92px; height: 85px;">
+            <svg class="absolute inset-0" width="92" height="85" viewBox="0 0 92 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="91.1627" height="83.9627" rx="41.9813" transform="matrix(0.971577 0.236723 -0.282658 0.959221 13.5703 -8.71875)" fill="url(#deco_right_m)"/>
+              <rect x="0.372017" y="0.64581" width="90.0827" height="82.8827" rx="41.4413" transform="matrix(0.971577 0.236723 -0.282658 0.959221 13.7634 -8.78048)" stroke="#3F4351" stroke-opacity="0.24" stroke-width="1.08"/>
+              <defs>
+                <linearGradient id="deco_right_m" x1="45.5814" y1="0" x2="45.5814" y2="83.9627" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#92B0D9" stop-opacity="0.24"/>
+                  <stop offset="1" stop-color="#12102B" stop-opacity="0.24"/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <img src="/icons/pen.svg" class="relative" width="40" height="37" alt="" />
+          </div>
+
+          <!-- 프로필 카드 -->
+          <div class="relative z-[1] mx-auto w-[302px] flex flex-col items-center box-border"
+            style="padding: 50px 33.6px; gap: 58px; background: #1C1B20; border: 0.84px solid rgba(63,63,70,0.12); border-radius: 6.72px; box-shadow: 0px 8.4px 12.6px -2.52px rgba(0,0,0,0.1), 0px 3.36px 5.04px -1.68px rgba(0,0,0,0.05);">
+
+          <!-- 아바타 -->
+          <div class="relative flex items-center justify-center shrink-0"
+            style="width: 84px; height: 84px; border-radius: 42px; background: #3F3F46; border: 0.84px solid #52525B;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="#E0E0E0">
+              <path d="M7 7.67C6.08 7.67 5.3 7.34 4.65 6.69C4 6.04 3.67 5.25 3.67 4.33C3.67 3.42 4 2.63 4.65 1.98C5.3 1.33 6.08 1 7 1C7.92 1 8.7 1.33 9.35 1.98C10 2.63 10.33 3.42 10.33 4.33C10.33 5.25 10 6.04 9.35 6.69C8.7 7.34 7.92 7.67 7 7.67ZM0.33 14V11.67C0.33 11.2 0.45 10.76 0.7 10.37C0.94 9.97 1.26 9.67 1.67 9.46C2.53 9.03 3.4 8.71 4.29 8.49C5.18 8.28 6.08 8.17 7 8.17C7.92 8.17 8.82 8.28 9.71 8.49C10.6 8.71 11.47 9.03 12.33 9.46C12.74 9.67 13.06 9.97 13.3 10.37C13.54 10.76 13.67 11.2 13.67 11.67V14H0.33Z"/>
+            </svg>
+            <!-- 점 장식 -->
+            <!-- 좌상단 먼 곳 (큰 점) -->
+            <svg class="absolute" style="top: -40px; left: -35px;" width="5" height="4" viewBox="0 0 5 4" fill="none"><ellipse cx="2.038" cy="1.853" rx="2.038" ry="1.853" fill="#D9D9D9" fill-opacity="0.24"/></svg>
+            <!-- 상단 중앙 약간 왼쪽 (큰 점) -->
+            <svg class="absolute" style="top: -28px; left: 18px;" width="5" height="4" viewBox="0 0 5 4" fill="none"><ellipse cx="2.038" cy="1.853" rx="2.038" ry="1.853" fill="#D9D9D9"/></svg>
+            <!-- 우상단 바깥 (작은 점) -->
+            <svg class="absolute" style="top: -22px; right: -15px;" width="2" height="2" viewBox="0 0 2 2" fill="none"><ellipse cx="0.793" cy="0.591" rx="0.793" ry="0.591" fill="#D9D9D9"/></svg>
+            <!-- 원 안쪽 좌측 상단 (작은 점) -->
+            <svg class="absolute" style="top: 23px; left: 28px;" width="2" height="2" viewBox="0 0 2 2" fill="none"><ellipse cx="0.793" cy="0.591" rx="0.793" ry="0.591" fill="#D9D9D9"/></svg>
+            <!-- 원 안쪽 우측 상단 (작은 점) -->
+            <svg class="absolute" style="top: 23px; right: 24px;" width="2" height="2" viewBox="0 0 2 2" fill="none"><ellipse cx="0.793" cy="0.591" rx="0.793" ry="0.591" fill="#D9D9D9" fill-opacity="0.24"/></svg>
+            <!-- 우측 바깥 중하단 (작은 점) -->
+            <svg class="absolute" style="top: 55px; right: -18px;" width="2" height="2" viewBox="0 0 2 2" fill="none"><ellipse cx="0.793" cy="0.591" rx="0.793" ry="0.591" fill="#D9D9D9" fill-opacity="0.24"/></svg>
+          </div>
+
+          <!-- 이름 + 소개 -->
+          <div class="flex flex-col items-start w-full" style="gap: 9px;">
+            <span class="font-suit font-extrabold text-white" style="font-size: 20px; line-height: 25px;">{{ modalService.nickname() || 'Newon' }}</span>
+            <span class="font-suit font-medium text-white" style="font-size: 13.4px; line-height: 150%; letter-spacing: -0.04em;">{{ modalService.intro() || 'Photographer and artist' }}</span>
+          </div>
+
+          <!-- 통계 -->
+          <div class="flex items-center w-full" style="gap: 20px;">
+            <div class="flex-1 flex flex-col items-start" style="gap: 3px;">
+              <span class="font-suit font-bold text-white" style="font-size: 15px; line-height: 150%; letter-spacing: -0.04em;">0</span>
+              <span class="font-suit font-medium text-[#71717A]" style="font-size: 12px; line-height: 150%; letter-spacing: -0.04em;">팔로잉</span>
+            </div>
+            <div style="width: 0; height: 20px; border-left: 0.84px solid rgba(243,244,246,0.12);"></div>
+            <div class="flex-1 flex flex-col items-start" style="gap: 3px;">
+              <span class="font-suit font-bold text-white" style="font-size: 15px; line-height: 150%; letter-spacing: -0.04em;">0</span>
+              <span class="font-suit font-medium text-[#71717A]" style="font-size: 12px; line-height: 150%; letter-spacing: -0.04em;">팔로워</span>
+            </div>
+            <div style="width: 0; height: 20px; border-left: 0.84px solid rgba(243,244,246,0.12);"></div>
+            <div class="flex-1 flex flex-col items-start" style="gap: 3px;">
+              <span class="font-suit font-bold text-white" style="font-size: 15px; line-height: 150%; letter-spacing: -0.04em;">0</span>
+              <span class="font-suit font-medium text-[#71717A]" style="font-size: 12px; line-height: 150%; letter-spacing: -0.04em;">콘텐츠</span>
+            </div>
+          </div>
+
+          <!-- 프로필 설정 버튼 -->
+          <button class="w-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-90"
+            style="height: 39px; gap: 3px; background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%); border: 0.84px solid rgba(255,255,255,0.12); border-radius: 999px;"
+            (click)="goToProfile()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            <span class="font-suit font-medium text-white" style="font-size: 12px; line-height: 150%; letter-spacing: -0.04em;">프로필 설정</span>
+          </button>
+          </div>
+
+        </div>
+
+
+
+        <!-- 확인 버튼 -->
+        <button class="mt-4 w-[453px] max-w-full h-14 flex items-center justify-center bg-[#7A48FF] border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]"
+          (click)="goToHome()">확인</button>
+      </div>
+    </div>
+  </div>
+}

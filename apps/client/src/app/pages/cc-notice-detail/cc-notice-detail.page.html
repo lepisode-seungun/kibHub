@@ -1,0 +1,43 @@
+<main class="flex flex-col items-start w-full relative">
+  <!-- ===== 메인 콘텐츠 ===== -->
+  <section class="ccnd-page">
+    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px] rounded-3xl">
+      <!-- 제목 행 -->
+      <div class="flex items-center gap-2 w-full">
+        @if (isPinned) {
+          <svg class="shrink-0" width="14" height="20" viewBox="0 0 14 20" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10.87C14 10.4 13.66 10.02 13.2 9.89C12.5678 9.71507 12.0103 9.33773 11.6129 8.81577C11.2156 8.29381 11.0003 7.65599 11 7V2H12C12.55 2 13 1.55 13 1C13 0.45 12.55 0 12 0H2C1.45 0 1 0.45 1 1C1 1.55 1.45 2 2 2H3V7C3 8.38 2.07 9.54 0.8 9.89C0.34 10.02 0 10.4 0 10.87V11C0 11.55 0.45 12 1 12H5.98L6 19C6 19.55 6.45 20 7 20C7.55 20 8 19.55 8 19L7.98 12H13C13.55 12 14 11.55 14 11V10.87Z" fill="#7A48FF"/>
+          </svg>
+        }
+        <div class="flex justify-between items-start gap-6 flex-1">
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ noticeTitle }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#71717A] shrink-0">{{ noticeDate }}</span>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="w-full h-0 border-t border-[#27272A]"></div>
+
+      <!-- 본문 -->
+      <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-[#A1A1AA] m-0 w-full">{{ noticeContent }}</p>
+
+      <!-- 이미지 -->
+      <div class="w-[456px] h-[504px] bg-gradient-to-br from-[#27272A] to-[#18181B] rounded-xl ccnd-image-responsive"></div>
+
+      <!-- 첨부파일 -->
+      <div class="flex flex-row flex-wrap items-start gap-6 w-full">
+        @for (file of attachFiles; track file.name) {
+          <div class="flex items-center px-3 py-2 gap-2 border border-[#27272A] rounded-full box-border">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zm4 16H8V7h6.5v4.5H19V21z" fill="#A1A1AA"/>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#D4D4D8] whitespace-nowrap">{{ file.name }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 목록 버튼 -->
+    <button class="flex justify-center items-center w-[332px] h-10 px-[108px] py-4 bg-[#3F3F46] border border-[rgba(228,232,232,0.12)] rounded-3xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-all duration-150 hover:bg-[#52525B] active:scale-[0.98] box-border" (click)="goToList()">목록으로</button>
+  </section>
+</main>

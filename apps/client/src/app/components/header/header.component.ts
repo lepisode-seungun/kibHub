@@ -1,6 +1,7 @@
 import { Component, signal, computed, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { SearchService } from '../../services/search.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -31,6 +32,25 @@ export class HeaderComponent {
 
   isSidebarOpen = signal(false);
   isBootcampOpen = signal(false);
+  isBootcampRoute = signal(false);
+  isHomeRoute = signal(false);
+
+  private bootcampPrefixes = ['/bootcamp-intro', '/k-digital', '/student-portfolio', '/hall-of-fame', '/bootcamp-detail'];
+  private homePrefixes = ['/', '/content'];
+
+  constructor() {
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+    ).subscribe((e) => {
+      const url = e.urlAfterRedirects.split('?')[0];
+      this.isBootcampRoute.set(
+        this.bootcampPrefixes.some(prefix => url.startsWith(prefix))
+      );
+      this.isHomeRoute.set(
+        url === '/' || this.homePrefixes.some(prefix => prefix !== '/' && url.startsWith(prefix))
+      );
+    });
+  }
 
   toggleSidebar(): void {
     this.isSidebarOpen.update(v => !v);
@@ -51,14 +71,22 @@ export class HeaderComponent {
 
   onSearchKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter' && this.searchValue.trim()) {
-      this.router.navigate(['/search'], { queryParams: { q: this.searchValue.trim() } });
+      this.navigateSearch();
     }
   }
 
   onSearchClick(): void {
     if (this.searchValue.trim()) {
-      this.router.navigate(['/search'], { queryParams: { q: this.searchValue.trim() } });
+      this.navigateSearch();
     }
+  }
+
+  private navigateSearch(): void {
+    const query = this.searchValue.trim();
+    this.searchValue = '';
+    const input = document.querySelector<HTMLInputElement>('.search-input');
+    if (input) input.value = '';
+    this.router.navigate(['/search'], { queryParams: { q: query } });
   }
 
   isLangOpen = signal(false);

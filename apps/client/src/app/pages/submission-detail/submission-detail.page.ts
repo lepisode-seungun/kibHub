@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
@@ -13,7 +13,7 @@ interface LearningFile {
   templateUrl: './submission-detail.page.html',
   styleUrls: ['./submission-detail.page.css'],
 })
-export class SubmissionDetailPage {
+export class SubmissionDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 

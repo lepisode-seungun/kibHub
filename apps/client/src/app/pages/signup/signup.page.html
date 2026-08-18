@@ -36,14 +36,50 @@
           <div class="flex items-center gap-1">
             <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이메일</span>
             <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
-            <span class="tooltip-wrap" data-tooltip="이메일은 본인에게만 노출되며, 로그인 시 사용되니 신중하게 작성해주세요.">
+            <span class="tooltip-wrap" data-tooltip="인증 이메일은 내 접속 ID로 활용됩니다.">
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
+
+          <!-- 이메일 입력 + 인증 버튼 -->
           <div class="flex gap-2 w-full">
-            <input type="email" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('email', $event)" />
-            <button class="verify-btn">인증</button>
+            <input type="email" [class]="emailCheckSuccess()
+              ? 'flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none box-border bg-zinc-50'
+              : 'flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border'"
+              placeholder="입력해주세요." [value]="email" [readonly]="emailCheckSuccess()" (input)="onInput('email', $event)" />
+            <button
+              [class]="email.length > 0
+                ? 'w-[68px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0'
+                : 'w-[68px] h-12 bg-[#E4E4E7] border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-[#A1A1AA] cursor-default shrink-0'"
+              [disabled]="email.length === 0"
+              (click)="checkEmailDuplicate()"
+            >인증</button>
           </div>
+
+          <!-- 에러: 이미 가입된 이메일 -->
+          @if (emailCheckError()) {
+            <div class="flex items-center gap-1">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11.3307 4.66406L4.66406 11.3307" stroke="#F87171" stroke-width="1.33333" stroke-linecap="round"/><path d="M4.66406 4.66406L11.3307 11.3307" stroke="#F87171" stroke-width="1.33333" stroke-linecap="round"/></svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ emailCheckError() }}</span>
+            </div>
+          }
+
+          <!-- 인증 성공: 인증번호 입력 폼 -->
+          @if (emailCheckSuccess()) {
+            <div class="flex gap-2 w-full">
+              <input type="text" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="인증번호를 입력해주세요." (input)="verificationCode = $any($event.target).value" />
+              <button class="w-[79px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0">인증하기</button>
+            </div>
+
+            <!-- 인증번호 발송 안내 -->
+            <div class="flex items-center justify-center gap-1 w-full">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="5.5" stroke="#93C5FD" stroke-width="0.875"/>
+                <path d="M8 5.5V8L9.5 9" stroke="#93C5FD" stroke-width="0.875" stroke-linecap="round"/>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#93C5FD]">인증번호 발송이 완료되었습니다.</span>
+            </div>
+          }
         </div>
 
         <!-- 비밀번호 -->
@@ -153,6 +189,13 @@
           </div>
         </div>
       </div>
+
+      <!-- Error Message -->
+      @if (signupError()) {
+        <div class="w-full px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
+          <span class="font-suit font-medium text-sm text-red-500">{{ signupError() }}</span>
+        </div>
+      }
 
       <!-- Submit -->
       <button class="w-full h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" (click)="onSignup()">회원가입</button>

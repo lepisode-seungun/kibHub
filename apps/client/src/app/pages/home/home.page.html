@@ -283,16 +283,25 @@
       }
     </div>
     <!-- Loading Spinner -->
-    <div class="flex flex-col justify-center items-center w-full py-10">
-      <svg class="w-8 h-8" width="32" height="32" viewBox="0 0 24 24" fill="none">
-        <rect x="1" y="1" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.8">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0s"/>
+    <div class="loading-area">
+      <svg class="block-spinner" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+        <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+          <animate id="ha1" fill="freeze" attributeName="x" begin="0;ha12.end" dur="0.2s" values="1;13"/>
+          <animate id="ha2" fill="freeze" attributeName="y" begin="ha4.end" dur="0.2s" values="1;13"/>
+          <animate id="ha3" fill="freeze" attributeName="x" begin="ha7.end" dur="0.2s" values="13;1"/>
+          <animate id="ha4b" fill="freeze" attributeName="y" begin="ha10.end" dur="0.2s" values="13;1"/>
         </rect>
-        <rect x="1" y="13" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.5">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.4s"/>
+        <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+          <animate id="ha5" fill="freeze" attributeName="y" begin="ha1.end" dur="0.2s" values="13;1"/>
+          <animate id="ha6" fill="freeze" attributeName="x" begin="ha2.end" dur="0.2s" values="1;13"/>
+          <animate id="ha7b" fill="freeze" attributeName="y" begin="ha3.end" dur="0.2s" values="1;13"/>
+          <animate id="ha8" fill="freeze" attributeName="x" begin="ha4b.end" dur="0.2s" values="13;1"/>
         </rect>
-        <rect x="13" y="13" width="10" height="10" rx="1" fill="#7A48FF" opacity="0.3">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" begin="0.8s"/>
+        <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+          <animate id="ha4" fill="freeze" attributeName="x" begin="ha5.end" dur="0.2s" values="13;1"/>
+          <animate id="ha7" fill="freeze" attributeName="y" begin="ha6.end" dur="0.2s" values="13;1"/>
+          <animate id="ha10" fill="freeze" attributeName="x" begin="ha7b.end" dur="0.2s" values="1;13"/>
+          <animate id="ha12" fill="freeze" attributeName="y" begin="ha8.end" dur="0.2s" values="1;13"/>
         </rect>
       </svg>
     </div>

@@ -98,7 +98,7 @@
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
-  width: 412px;
+  width: calc((100% - 60px) / 4); /* 4열: 3 gaps × 20px = 60px */
   border: 1px solid #E5E7EB;
   border-radius: 12px;
   cursor: pointer;
@@ -127,3 +127,18 @@
 .mb-badge-applied { background: #F2EDFF; color: #7A48FF; }
 .mb-badge-active { background: #FFF7ED; color: #F97316; }
 .mb-badge-closed { background: #FAFAFA; border: 1px solid #F4F4F5; color: #52525B; }
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  :host { padding: 0; }
+  .mb-card { width: calc((100% - 40px) / 3); } /* 3열 */
+}
+
+@media (max-width: 900px) {
+  .mb-card { width: calc((100% - 20px) / 2); } /* 2열 */
+}
+
+@media (max-width: 640px) {
+  .mb-card { width: 100%; } /* 1열 */
+}
+

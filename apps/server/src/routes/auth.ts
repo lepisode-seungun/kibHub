@@ -59,11 +59,29 @@ router.post('/register', async (req: Request, res: Response) => {
         id: user.id,
         email: user.email,
         nickname: user.nickname,
-        initial: user.nickname.charAt(0).toUpperCase(),
+        initial: 'N',
       },
     });
   } catch (error) {
     console.error('Register error:', error);
+    res.status(500).json({ error: '서버 에러가 발생했습니다.' });
+  }
+});
+
+/** POST /api/auth/check-email — 이메일 중복 확인 */
+router.post('/check-email', async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      res.status(400).json({ error: '이메일을 입력해주세요.' });
+      return;
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    res.json({ available: !existing });
+  } catch (error) {
+    console.error('Check email error:', error);
     res.status(500).json({ error: '서버 에러가 발생했습니다.' });
   }
 });
@@ -98,7 +116,7 @@ router.post('/login', async (req: Request, res: Response) => {
         id: user.id,
         email: user.email,
         nickname: user.nickname,
-        initial: user.nickname.charAt(0).toUpperCase(),
+        initial: 'N',
       },
     });
   } catch (error) {
@@ -124,7 +142,7 @@ router.get('/me', authMiddleware, async (req: Request, res: Response) => {
     res.json({
       user: {
         ...user,
-        initial: user.nickname.charAt(0).toUpperCase(),
+        initial: 'N',
       },
     });
   } catch (error) {

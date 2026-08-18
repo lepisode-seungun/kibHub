@@ -601,3 +601,18 @@
     padding: 32px 20px;
   }
 }
+
+/* ===== Loading Spinner ===== */
+.loading-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+  width: 100%;
+}
+
+.block-spinner {
+  width: 32px;
+  height: 32px;
+}

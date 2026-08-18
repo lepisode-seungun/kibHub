@@ -91,6 +91,27 @@ export class AuthService {
     }
   }
 
+  /** 이메일 중복 확인 */
+  async checkEmail(email: string): Promise<{ available: boolean; error?: string }> {
+    try {
+      const res = await fetch('/api/auth/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return { available: false, error: data.error };
+      }
+
+      return { available: data.available };
+    } catch {
+      return { available: false, error: '서버에 연결할 수 없습니다.' };
+    }
+  }
+
   /** 로그아웃 */
   async logout(): Promise<void> {
     try {

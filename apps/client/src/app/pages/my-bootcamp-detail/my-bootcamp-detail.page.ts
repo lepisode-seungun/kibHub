@@ -1,4 +1,4 @@
-import { Component, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -30,7 +30,7 @@ interface CourseSection {
   templateUrl: './my-bootcamp-detail.page.html',
   styleUrls: ['./my-bootcamp-detail.page.css'],
 })
-export class MyBootcampDetailPage {
+export class MyBootcampDetailPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -169,10 +169,20 @@ export class MyBootcampDetailPage {
 
   ngOnInit(): void {
     this.bootcampId = this.route.snapshot.paramMap.get('id') || '';
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (tab && this.detailTabs.includes(tab)) {
+      this.activeDetailTab.set(tab);
+    }
   }
 
   selectDetailTab(tab: string): void {
     this.activeDetailTab.set(tab);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   toggleSection(section: CourseSection): void {
@@ -180,11 +190,15 @@ export class MyBootcampDetailPage {
   }
 
   navigateToLecture(cardId: number): void {
-    this.router.navigate(['/my-bootcamp', this.bootcampId, 'lecture', cardId]);
+    this.router.navigate(['/my-bootcamp', this.bootcampId, 'lecture', cardId], {
+      queryParams: { tab: this.activeDetailTab() },
+    });
   }
 
   navigateToAssignment(cardId: number): void {
-    this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', cardId]);
+    this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', cardId], {
+      queryParams: { tab: this.activeDetailTab() },
+    });
   }
 
   goBack(): void {
@@ -214,7 +228,9 @@ export class MyBootcampDetailPage {
   }
 
   navigateToNotice(noticeId: number): void {
-    this.router.navigate(['/my-bootcamp', this.bootcampId, 'notice', noticeId]);
+    this.router.navigate(['/my-bootcamp', this.bootcampId, 'notice', noticeId], {
+      queryParams: { tab: this.activeDetailTab() },
+    });
   }
 }
 

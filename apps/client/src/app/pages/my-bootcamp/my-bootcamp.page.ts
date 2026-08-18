@@ -27,7 +27,7 @@ export class MyBootcampPage {
   allItems: BootcampItem[] = [
     { id: 1, name: '케나즈 아카데미 초급반 13기', status: '신청 완료', dateRange: '2025.01.20 - 2026.01.20' },
     { id: 2, name: '케나즈 아카데미 초급반 13기', status: '마감', dateRange: '2025.01.20 - 2026.01.20' },
-    { id: 3, name: '케나즈 아카데미 초급반 13기', status: '수강 중', dateRange: '' },
+    { id: 3, name: '케나즈 아카데미 초급반 13기', status: '수강 중', dateRange: '2025.01.20 - 2026.01.20' },
     { id: 4, name: '케나즈 아카데미 초급반 13기', status: '마감', dateRange: '2025.01.20 - 2026.01.20' },
     { id: 5, name: '케나즈 아카데미 초급반 13기', status: '수강 중', dateRange: '2025.01.20 - 2026.01.20' },
     { id: 6, name: '케나즈 아카데미 초급반 13기', status: '마감', dateRange: '2025.01.20 - 2026.01.20' },

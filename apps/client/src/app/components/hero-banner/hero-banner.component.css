@@ -2,12 +2,14 @@
 
 :host {
   display: block;
+  flex-shrink: 0;
 }
 
 .hero-banner {
   position: relative;
   width: 100%;
   aspect-ratio: 1920 / 440;
+  min-height: 260px;
   overflow: hidden;
   background: #100B09;
 }
@@ -19,8 +21,9 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  min-width: 1920px;
+  min-width: 100%;
   height: 100%;
+  max-width: none; /* override Tailwind preflight img { max-width: 100% } */
   object-fit: cover;
   object-position: center;
   pointer-events: none;

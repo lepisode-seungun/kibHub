@@ -32,7 +32,8 @@ export class SubHeaderComponent {
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
       map((e) => {
-        const tab = this.tabs.find((t) => t.route === e.urlAfterRedirects);
+        const url = e.urlAfterRedirects.split('?')[0];
+        const tab = this.tabs.find((t) => url === t.route || url.startsWith(t.route + '/'));
         return tab?.id ?? '';
       })
     ),
@@ -40,8 +41,8 @@ export class SubHeaderComponent {
   );
 
   private getInitialTab(): string {
-    const url = this.router.url;
-    const tab = this.tabs.find((t) => t.route === url);
+    const url = this.router.url.split('?')[0];
+    const tab = this.tabs.find((t) => url === t.route || url.startsWith(t.route + '/'));
     return tab?.id ?? '';
   }
 }

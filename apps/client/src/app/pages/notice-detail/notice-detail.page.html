@@ -14,7 +14,7 @@
 
   <!-- ===== 메인 ===== -->
   <main class="nd-page">
-    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px] rounded-3xl">
+    <div class="flex flex-col items-center gap-6 w-full max-w-[1400px]">
       <!-- 제목 행 -->
       <div class="flex items-center gap-2 w-full">
         @if (isPinned) {
@@ -51,11 +51,10 @@
           </div>
         }
       </div>
-    </div>
-
-    <!-- 목록 버튼 -->
-    <div class="flex justify-center w-full max-w-[1400px]">
-      <button class="flex justify-center items-center w-[300px] h-12 px-3 py-2 border border-zinc-200 rounded-xl bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 transition-all duration-150 hover:bg-zinc-100 hover:border-zinc-300 box-border" (click)="goToList()">목록으로</button>
+      <!-- 목록 버튼 -->
+      <div class="flex justify-center w-full mt-10">
+        <button class="flex justify-center items-center w-[300px] h-12 px-3 py-2 border border-zinc-300 rounded-xl bg-white cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700 transition-all duration-150 hover:bg-zinc-50 hover:border-zinc-400 active:scale-[0.98] box-border" (click)="goToList()">목록으로</button>
+      </div>
     </div>
   </main>
 </div>

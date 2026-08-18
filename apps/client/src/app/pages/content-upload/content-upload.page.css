@@ -36,7 +36,8 @@
   flex-direction: column;
   gap: 40px;
   width: 860px;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 /* ===== 카드 구조 ===== */
@@ -333,8 +334,10 @@
   flex: 1;
   min-width: 0;
   position: sticky;
-  top: 80px;
+  top: 0;
   align-self: flex-start;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .cu-preview-card {
@@ -742,13 +745,20 @@
 /* [TW-KEEP] responsive */
 @media (max-width: 1600px) {
   .cu-main { padding: 60px 100px; }
-  .cu-columns { width: 100%; flex-direction: column; }
-  .cu-left { width: 100%; }
-  .cu-right { position: static; }
+  .cu-columns { width: 100%; } /* row 유지 */
+  .cu-left { width: 60%; }
+}
+
+@media (max-width: 1200px) {
+  .cu-main { padding: 40px 60px; }
+  .cu-left { width: 55%; }
 }
 
 @media (max-width: 768px) {
   .cu-main { padding: 40px 20px; }
+  .cu-columns { flex-direction: column; }
+  .cu-left { width: 100%; }
+  .cu-right { position: static; }
   .cu-card-header { padding: 16px; }
   .cu-card-body { padding: 16px; }
   .cu-footer-cancel, .cu-footer-submit { width: 100%; max-width: 400px; }

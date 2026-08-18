@@ -198,8 +198,8 @@ export const appRoutes: Route[] = [
   {
     path: 'notice/:id',
     loadComponent: () =>
-      import('./pages/notice-detail/notice-detail.page').then(
-        (m) => m.NoticeDetailPage
+      import('./pages/cc-notice-detail/cc-notice-detail.page').then(
+        (m) => m.CcNoticeDetailPage
       ),
   },
   {
