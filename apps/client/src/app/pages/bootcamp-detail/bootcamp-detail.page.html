@@ -311,29 +311,29 @@
 
   <!-- 교육 소개 -->
   <section class="bd-edu-info" id="bd-edu-info">
-    <div class="bd-edu-inner">
-      <h2 class="bd-section-title">교육 소개</h2>
+    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px]">
+      <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-50 m-0">교육 소개</h2>
       <div class="bd-info-bar">
-        <div class="bd-info-item">
+        <div class="flex items-center gap-2">
           <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#A1A1AA"></path>
           </svg>
-          <span class="bd-info-label">기수</span>
-          <span class="bd-info-value">{{ cohort }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">기수</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ cohort }}</span>
         </div>
-        <div class="bd-info-item">
+        <div class="flex items-center gap-2">
           <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" fill="#A1A1AA"></path>
           </svg>
-          <span class="bd-info-label">모집기간</span>
-          <span class="bd-info-value">{{ recruitPeriod }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">모집기간</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ recruitPeriod }}</span>
         </div>
-        <div class="bd-info-item">
+        <div class="flex items-center gap-2">
           <svg class="bd-info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"></path>
           </svg>
-          <span class="bd-info-label">교육기간</span>
-          <span class="bd-info-value">{{ eduPeriod }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">교육기간</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ eduPeriod }}</span>
         </div>
       </div>
     </div>
@@ -341,7 +341,7 @@
 
   <!-- 탭 바 -->
   <section class="bd-tab-bar" id="bd-tab-bar">
-    <div class="bd-tab-inner">
+    <div class="flex items-center gap-3">
       @for (tab of tabs; track tab) {
         <button
           [ngClass]="activeTab === tab ? 'bd-tab-btn bd-tab--active' : 'bd-tab-btn'"
@@ -354,26 +354,26 @@
 
   <!-- 콘텐츠 영역 -->
   <section class="bd-content" id="bd-content">
-    <div class="bd-content-inner">
+    <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
       <!-- 에디터 작성 -->
-      <div class="bd-block">
-        <h3 class="bd-block-title">에디터 작성</h3>
+      <div class="flex flex-col items-start gap-10 w-full">
+        <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">에디터 작성</h3>
         <p class="bd-block-desc">{{ description }}</p>
         <div class="bd-editor-placeholder">
-          <span class="bd-editor-text">에디터</span>
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
         </div>
       </div>
 
-      <!-- 커리큘럼 -->
-      <div class="bd-block">
-        <div class="bd-block-header">
-          <h3 class="bd-block-title">커리큘럼</h3>
+      <!-- 커리큐럼 -->
+      <div class="flex flex-col items-start gap-10 w-full">
+        <div class="flex flex-col items-start gap-6 w-full">
+          <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">커리큐럼</h3>
           <hr class="bd-divider">
         </div>
-        <h4 class="bd-block-subtitle">에디터 작성</h4>
+        <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">에디터 작성</h4>
         <p class="bd-block-desc">{{ description }}</p>
         <div class="bd-editor-placeholder">
-          <span class="bd-editor-text">에디터</span>
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
         </div>
       </div>
     </div>
@@ -381,8 +381,8 @@
 
   <!-- 강사 소개 -->
   <section class="bd-instructors" id="bd-instructors">
-    <div class="bd-instructors-inner">
-      <h2 class="bd-section-title">강사 소개</h2>
+    <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
+      <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-50 m-0 w-full">강사 소개</h2>
       <div class="bd-instructor-slider-wrap">
         <button class="bd-slider-arrow bd-slider-arrow-left" (click)="scrollInstructors('left')" aria-label="이전">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -393,15 +393,15 @@
           @for (inst of instructors; track $index) {
             <div class="bd-instructor-card">
               <div class="bd-instructor-photo"></div>
-              <div class="bd-instructor-info">
-                <div class="bd-instructor-meta">
+              <div class="flex flex-col items-start px-1 gap-3 w-full box-border">
+                <div class="flex flex-col gap-2">
                   <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">{{ inst.name }}</span>
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">{{ inst.summary }}</span>
                 </div>
                 <hr class="bd-instructor-divider">
-                <div class="bd-instructor-work">
+                <div class="flex items-center gap-1.5">
                   <span class="bd-work-badge">{{ inst.badge }}</span>
-                  <span class="bd-work-content">{{ inst.work }}</span>
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-200">{{ inst.work }}</span>
                 </div>
               </div>
             </div>
@@ -418,22 +418,22 @@
 
   <!-- 부트캠프 소개 섹션 -->
   <section class="bd-intro-section">
-    <div class="bd-intro-inner">
+    <div class="flex flex-col items-center gap-[100px] w-full max-w-[1400px]">
       <!-- 타이틀 + 구분선 -->
-      <div class="bd-intro-header">
-        <h4 class="bd-intro-title">부트캠프 소개</h4>
+      <div class="flex flex-col items-start gap-6 w-full">
+        <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-50 m-0">부트칠프 소개</h4>
         <div class="bd-intro-divider"></div>
       </div>
 
       <!-- 스텝 아이콘 -->
-      <div class="bd-intro-steps">
+      <div class="flex items-center gap-2.5">
         <img src="/images/bd-steps.svg" alt="" height="63">
       </div>
 
       <!-- 에디터 작성 -->
-      <div class="bd-intro-editor">
-        <span class="bd-intro-editor-title">에디터 작성</span>
-        <span class="bd-intro-editor-desc">부트캠프 후기 작성</span>
+      <div class="flex flex-col items-center gap-10">
+        <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 text-center">에디터 작성</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">부트칠프 후기 작성</span>
       </div>
     </div>
   </section>

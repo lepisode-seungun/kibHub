@@ -88,68 +88,7 @@
   background: #0C0B10;
 }
 
-.bd-edu-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  width: 100%;
-  max-width: 1400px;
-}
-
-.bd-section-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FAFAFA;
-  margin: 0;
-}
-
-.bd-info-bar {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  padding: 24px;
-  gap: 24px;
-  width: 100%;
-  box-sizing: border-box;
-  background: #1C1B20;
-  border-radius: 16px;
-}
-
-.bd-info-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.bd-info-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.bd-info-label {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-}
-
-.bd-info-value {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-}
+/* bd-edu-inner, bd-section-title, bd-info-item, bd-info-label, bd-info-value -> TW inline */
 
 /* ===== 탭 바 ===== */
 .bd-tab-bar {
@@ -164,12 +103,7 @@
   border: 1px solid #27272A;
 }
 
-.bd-tab-inner {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
+/* bd-tab-inner -> TW inline */
 
 .bd-tab-btn {
   display: flex;
@@ -220,58 +154,7 @@
   background: #0C0B10;
 }
 
-.bd-content-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  width: 100%;
-  max-width: 1400px;
-}
-
-.bd-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 40px;
-  width: 100%;
-}
-
-.bd-block-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  width: 100%;
-}
-
-.bd-block-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #F4F4F5;
-  margin: 0;
-}
-
-.bd-block-subtitle {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #F4F4F5;
-  margin: 0;
-}
-
-.bd-divider {
-  width: 100%;
-  height: 0;
-  border: none;
-  border-top: 1px solid #3F3F46;
-  margin: 0;
-}
+/* bd-content-inner, bd-block, bd-block-header, bd-block-title, bd-block-subtitle, bd-block-desc, bd-editor-text -> TW inline */
 
 .bd-block-desc {
   max-width: 438px;
@@ -283,27 +166,6 @@
   color: #A1A1AA;
   margin: 0;
   white-space: pre-line;
-}
-
-.bd-editor-placeholder {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 634px;
-  height: 456px;
-  background: rgba(229, 231, 235, 0.24);
-  border-radius: 8px;
-}
-
-.bd-editor-text {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #C4C4C4;
 }
 
 /* ===== 강사 소개 ===== */
@@ -319,18 +181,7 @@
   background: #18181B;
 }
 
-.bd-instructors-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  width: 100%;
-  max-width: 1400px;
-}
-
-.bd-instructors-inner .bd-section-title {
-  width: 100%;
-}
+/* bd-instructors-inner, bd-instructor-info, bd-instructor-meta, bd-instructor-work, bd-work-content -> TW inline */
 
 .bd-instructor-slider-wrap {
   width: 100%;
@@ -407,38 +258,12 @@
   border-radius: 8px;
 }
 
-.bd-instructor-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0 4px;
-  gap: 12px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.bd-instructor-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* bd-instructor-name, bd-instructor-summary -> TW inline */
-
-
 .bd-instructor-divider {
   width: 100%;
   height: 0;
   border: none;
   border-top: 1px solid #3F3F46;
   margin: 0;
-}
-
-.bd-instructor-work {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
 }
 
 .bd-work-badge {
@@ -456,15 +281,6 @@
   color: #D4D4D8;
 }
 
-.bd-work-content {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
-
 /* ===== 부트캠프 소개 섹션 ===== */
 .bd-intro-section {
   display: flex;
@@ -475,82 +291,7 @@
   background: #0C0B10;
 }
 
-.bd-intro-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 100px;
-  width: 100%;
-  max-width: 1400px;
-}
-
-.bd-intro-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  width: 100%;
-}
-
-.bd-intro-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #FAFAFA;
-  margin: 0;
-}
-
-.bd-intro-divider {
-  width: 100%;
-  height: 0;
-  border: 1px solid #3F3F46;
-}
-
-.bd-intro-steps {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-}
-
-.bd-intro-step {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.bd-intro-step-dim {
-  opacity: 0.1;
-}
-
-.bd-intro-editor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-}
-
-.bd-intro-editor-title {
-  font-family: var(--font-family);
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #F4F4F5;
-  text-align: center;
-}
-
-.bd-intro-editor-desc {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-  text-align: center;
-}
+/* bd-intro-inner, bd-intro-header, bd-intro-title, bd-intro-steps, bd-intro-step, bd-intro-editor, bd-intro-editor-title, bd-intro-editor-desc -> TW inline */
 
 /* ============================================
    수강 신청 모달 (af = apply form)
