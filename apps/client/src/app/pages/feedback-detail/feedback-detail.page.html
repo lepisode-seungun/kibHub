@@ -1,7 +1,7 @@
-<div class="sd-wrapper">
+<div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="sd-tab-nav">
-    <div class="sd-tab-nav-inner">
+    <div class="flex gap-6">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'sd-tab-item sd-tab-item-active' : 'sd-tab-item'"
@@ -15,41 +15,41 @@
   <!-- ===== 메인 ===== -->
   <main class="sd-page">
     <!-- 상단 바 -->
-    <div class="sd-topbar">
-      <div class="sd-topbar-left">
+    <div class="flex items-center gap-5 w-[1400px] max-w-full">
+      <div class="flex items-center gap-3 flex-1">
         <button class="sd-back-btn" (click)="goBack()" aria-label="뒤로 가기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
           </svg>
         </button>
-        <h1 class="sd-page-title">피드백 상세</h1>
+        <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">피드백 상세</h1>
       </div>
     </div>
 
     <!-- 콘텐츠 카드 -->
     <div class="sd-content-card">
       <!-- 과정명 -->
-      <span class="sd-course-label">{{ courseLabel }}</span>
+      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel }}</span>
 
       <!-- 배지 + 메타 -->
-      <div class="sd-badge-row">
-        <span class="sd-badge-type">{{ badge }}</span>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 w-full">
+        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">{{ badge }}</span>
         <span class="sd-meta-divider"></span>
-        <span class="sd-meta-text">{{ author }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ author }}</span>
         <span class="sd-meta-divider"></span>
-        <span class="sd-meta-text">{{ date }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ date }}</span>
         <span class="sd-meta-divider"></span>
-        <div class="sd-meta-file">
+        <div class="flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
             <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
           </svg>
-          <span>{{ fileName }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ fileName }}</span>
         </div>
       </div>
 
       <!-- 제목 + 더보기 -->
-      <div class="sd-title-row">
-        <h2 class="sd-title">{{ assignmentTitle }}</h2>
+      <div class="flex justify-between items-start w-full gap-2.5">
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1">{{ assignmentTitle }}</h2>
         <div class="sd-more-wrap">
           <button class="sd-more-btn" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -74,26 +74,26 @@
       </div>
 
       <!-- 구분선 -->
-      <div class="sd-divider"></div>
+      <div class="w-full border border-gray-100"></div>
 
       <!-- 설명 콘텐츠 (스크롤) -->
       <div class="sd-description-wrap">
         <div class="sd-description-scroll">
-          <p class="sd-description">{{ description }}</p>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description }}</p>
         </div>
       </div>
 
       <!-- 학습자료 -->
       <div class="sd-materials">
         <div class="sd-materials-header" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
-          <span class="sd-materials-title">학습자료</span>
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">학습자료</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isMaterialOpen() ? 'none' : 'rotate(180deg)'" style="transition: transform 0.2s">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
           </svg>
         </div>
         @if (isMaterialOpen()) {
           <div class="sd-materials-body">
-            <div class="sd-files-grid">
+            <div class="flex flex-wrap gap-3">
               @for (file of learningFiles; track file.name) {
                 <div class="sd-file-chip">
                   <span class="sd-file-name">{{ file.name }}</span>
@@ -114,20 +114,20 @@
     <!-- ===== 댓글 섹션 ===== -->
     <section class="sd-comments-section">
       <!-- 댓글 헤더 -->
-      <div class="sd-comments-header">
-        <span class="sd-comments-label">댓글</span>
-        <span class="sd-comments-count">{{ comments.length }}</span>
+      <div class="flex items-center gap-1">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">댓글</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-accent">{{ comments.length }}</span>
       </div>
 
       <!-- 댓글 리스트 -->
       <div class="sd-comments-list">
         <!-- 댓글 입력 -->
-        <div class="sd-comment-input-row">
-          <div class="sd-comment-profile">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2">
             <div class="sd-avatar">
               <span>N</span>
             </div>
-            <span class="sd-comment-author">newon</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">newon</span>
           </div>
           <div class="sd-comment-input-wrap">
             <textarea class="sd-comment-textarea" placeholder="댓글을 입력해주세요." rows="3" (input)="onCommentInput($event)"></textarea>
@@ -137,20 +137,20 @@
 
         <!-- 댓글 아이템 -->
         @for (comment of comments; track comment.id; let last = $last) {
-          <div class="sd-comment-item">
-            <div class="sd-comment-meta-row">
-              <div class="sd-comment-profile">
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
                 <div class="sd-avatar">
                   <span>{{ comment.avatarInitial }}</span>
                 </div>
-                <span class="sd-comment-author">{{ comment.author }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">{{ comment.author }}</span>
               </div>
-              <span class="sd-comment-date">{{ comment.date }}</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.date }}</span>
             </div>
-            <p class="sd-comment-content">{{ comment.content }}</p>
+            <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ comment.content }}</p>
           </div>
           @if (!last) {
-            <div class="sd-comment-divider"></div>
+            <div class="w-full border border-zinc-100"></div>
           }
         }
       </div>

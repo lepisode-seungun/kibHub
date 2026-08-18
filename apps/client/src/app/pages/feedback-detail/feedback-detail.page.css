@@ -1,11 +1,7 @@
+/* [TW-KEEP] 탭 ngClass, 반응형 패딩, 드롭다운/backdrop, 스크롤바, textarea, 버튼 hover, 학습자료 toggle, 아바타, 파일 칩 */
 :host { display: block; }
 
-.sd-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== 탭 네비게이션 ===== */
+/* ===== 탭 네비게이션 (ngClass + 반응형) ===== */
 .sd-tab-nav {
   box-sizing: border-box;
   display: flex;
@@ -15,11 +11,6 @@
   height: 60px;
   background: #FFFFFF;
   border-bottom: 1px solid #F4F4F5;
-}
-
-.sd-tab-nav-inner {
-  display: flex;
-  gap: 24px;
 }
 
 .sd-tab-item {
@@ -46,7 +37,7 @@
   border-bottom-color: #7A48FF;
 }
 
-/* ===== 메인 ===== */
+/* ===== 메인 반응형 ===== */
 .sd-page {
   display: flex;
   flex-direction: column;
@@ -56,22 +47,7 @@
   background: #FFFFFF;
 }
 
-/* 상단 바 */
-.sd-topbar {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  width: 1400px;
-  max-width: 100%;
-}
-
-.sd-topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-}
-
+/* 뒤로가기 */
 .sd-back-btn {
   display: flex;
   align-items: center;
@@ -82,16 +58,6 @@
   border: none;
   cursor: pointer;
   padding: 0;
-}
-
-.sd-page-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #1F2937;
-  margin: 0;
 }
 
 /* ===== 콘텐츠 카드 ===== */
@@ -109,93 +75,15 @@
   border-radius: 16px;
 }
 
-/* 과정명 */
-.sd-course-label {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-}
-
-/* 배지 + 메타 */
-.sd-badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-  width: 100%;
-}
-
-.sd-badge-type {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2px 8px;
-  background: #52525B;
-  border-radius: 6px;
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #E4E4E7;
-}
-
+/* 디바이더 (border-left) */
 .sd-meta-divider {
   width: 0;
   height: 12px;
   border-left: 1px solid #E4E4E7;
 }
 
-.sd-meta-text {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
-
-.sd-meta-file {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sd-meta-file span {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
-
-/* 제목 */
-.sd-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  gap: 10px;
-}
-
-.sd-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-  margin: 0;
-  flex: 1;
-}
-
-.sd-more-wrap {
-  position: relative;
-}
+/* 더보기 드롭다운 */
+.sd-more-wrap { position: relative; }
 
 .sd-more-btn {
   display: flex;
@@ -210,22 +98,18 @@
   opacity: 0.7;
   transition: opacity 0.15s;
 }
-
 .sd-more-btn:hover { opacity: 1; }
 
 .sd-more-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   z-index: 99;
 }
 
 .sd-more-dropdown {
   position: absolute;
-  top: 32px;
-  left: 0;
+  top: 32px; left: 0;
   display: flex;
   flex-direction: column;
   min-width: 120px;
@@ -252,19 +136,9 @@
   cursor: pointer;
   transition: background 0.12s;
 }
+.sd-more-item:hover { background: #F4F4F5; }
 
-.sd-more-item:hover {
-  background: #F4F4F5;
-}
-
-
-/* 구분선 */
-.sd-divider {
-  width: 100%;
-  border: 1px solid #F3F4F6;
-}
-
-/* 설명 */
+/* ===== 스크롤 영역 ===== */
 .sd-description-wrap {
   display: flex;
   width: 100%;
@@ -278,31 +152,11 @@
   overflow-y: auto;
   padding-right: 10px;
 }
+.sd-description-scroll::-webkit-scrollbar { width: 5px; }
+.sd-description-scroll::-webkit-scrollbar-track { background: #D9D9D9; }
+.sd-description-scroll::-webkit-scrollbar-thumb { background: #ACACAC; border-radius: 4px; }
 
-.sd-description-scroll::-webkit-scrollbar {
-  width: 5px;
-}
-
-.sd-description-scroll::-webkit-scrollbar-track {
-  background: #D9D9D9;
-}
-
-.sd-description-scroll::-webkit-scrollbar-thumb {
-  background: #ACACAC;
-  border-radius: 4px;
-}
-
-.sd-description {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #52525B;
-  margin: 0;
-}
-
-/* ===== 학습자료 ===== */
+/* ===== 학습자료 toggle ===== */
 .sd-materials {
   display: flex;
   flex-direction: column;
@@ -320,34 +174,12 @@
   cursor: pointer;
 }
 
-.sd-materials-title {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-}
-
-.sd-materials-header svg {
-  transition: transform 0.2s;
-}
-
-.sd-mat-open {
-  transform: rotate(180deg);
-}
-
 .sd-materials-body {
   padding: 12px;
   background: #F9FAFB;
 }
 
-.sd-files-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
+/* 파일 칩 (ellipsis) */
 .sd-file-chip {
   box-sizing: border-box;
   display: flex;
@@ -377,15 +209,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+  width: 20px; height: 20px;
+  background: none; border: none;
+  cursor: pointer; padding: 0;
 }
 
-/* ===== 댓글 섹션 ===== */
+/* ===== 댓글 섹션 반응형 ===== */
 .sd-comments-section {
   box-sizing: border-box;
   display: flex;
@@ -397,31 +226,6 @@
   border-top: 1px solid #E4E4E7;
 }
 
-.sd-comments-header {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.sd-comments-label {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-}
-
-.sd-comments-count {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #7A48FF;
-}
-
-/* 댓글 리스트 */
 .sd-comments-list {
   display: flex;
   flex-direction: column;
@@ -430,25 +234,17 @@
   max-width: 100%;
 }
 
-/* 댓글 프로필 */
-.sd-comment-profile {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
+/* 아바타 */
 .sd-avatar {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
   background: #F3F4F6;
   border: 0.32px solid #E5E7EB;
   border-radius: 50%;
 }
-
 .sd-avatar span {
   font-family: 'SUIT', sans-serif;
   font-weight: 700;
@@ -456,22 +252,7 @@
   color: #9CA3AF;
 }
 
-.sd-comment-author {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #27272A;
-}
-
-/* 댓글 입력 */
-.sd-comment-input-row {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
+/* textarea + 등록 버튼 */
 .sd-comment-input-wrap {
   display: flex;
   align-items: flex-end;
@@ -495,10 +276,7 @@
   letter-spacing: -0.04em;
   color: #52525B;
 }
-
-.sd-comment-textarea::placeholder {
-  color: #A1A1AA;
-}
+.sd-comment-textarea::placeholder { color: #A1A1AA; }
 
 .sd-comment-submit-btn {
   display: flex;
@@ -519,52 +297,14 @@
   cursor: pointer;
   transition: opacity 0.15s;
 }
-
 .sd-comment-submit-btn:hover { opacity: 0.85; }
-
-/* 댓글 아이템 */
-.sd-comment-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.sd-comment-meta-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.sd-comment-date {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #71717A;
-}
-
-.sd-comment-content {
-  font-family: 'SUIT', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #52525B;
-  margin: 0;
-}
-
-.sd-comment-divider {
-  width: 100%;
-  border: 1px solid #F4F4F5;
-}
 
 /* ===== 반응형 ===== */
 @media (max-width: 1600px) {
   .sd-tab-nav { padding: 0 100px; }
   .sd-page { padding: 60px 100px 40px; }
   .sd-comments-section { padding: 40px 0 0; }
-  .sd-topbar, .sd-content-card, .sd-comments-section, .sd-comments-list { width: 100%; }
+  .sd-comments-section, .sd-comments-list { width: 100%; }
 }
 
 @media (max-width: 768px) {

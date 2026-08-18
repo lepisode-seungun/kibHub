@@ -1,9 +1,9 @@
-<main class="mbd-page">
+<main class="flex flex-col min-h-screen bg-white">
   <!-- ===== 히어로 섹션 (다크) ===== -->
   <section class="mbd-hero">
-    <div class="mbd-hero-inner">
-      <div class="mbd-hero-top">
-        <div class="mbd-hero-left">
+    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px]">
+      <div class="flex flex-col gap-6 w-full">
+        <div class="flex items-center gap-3">
           <!-- 뒤로가기 -->
           <button class="mbd-back-btn" (click)="goBack()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -12,19 +12,19 @@
           </button>
 
           <!-- 상태 뱃지 -->
-          <span class="mbd-status-badge">{{ bootcampStatus }}</span>
+          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus }}</span>
 
           <!-- 부트캠프 제목 -->
-          <h1 class="mbd-hero-title">{{ bootcampTitle }}</h1>
+          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle }}</h1>
         </div>
 
         <!-- 교육 기간 -->
-        <div class="mbd-hero-meta">
+        <div class="flex items-center gap-2">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#A1A1AA" opacity="0.5"/>
             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v6h18V6c0-1.1-.9-2-2-2z" fill="#A1A1AA"/>
           </svg>
-          <span class="mbd-hero-date">{{ dateRange }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange }}</span>
         </div>
       </div>
     </div>
@@ -48,18 +48,18 @@
 
     <!-- ===== 학습목록 탭 ===== -->
     @if (activeDetailTab() === '학습목록') {
-      <div class="mbd-section-header">
-        <h2 class="mbd-section-title">학습 목록</h2>
+      <div class="flex items-center gap-3 w-full">
+        <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-800 m-0">학습 목록</h2>
       </div>
 
-      <div class="mbd-course-list">
+      <div class="flex flex-col items-start w-full bg-white">
         @for (section of courseSections; track section.id) {
           <div class="mbd-course-header" role="button" tabindex="0" (click)="toggleSection(section)" (keydown.enter)="toggleSection(section)">
-            <div class="mbd-course-header-left">
-              <span class="mbd-course-number">{{ section.number }}</span>
-              <span class="mbd-course-name">{{ section.title }}</span>
+            <div class="flex items-center gap-3 flex-1">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-accent">{{ section.number }}</span>
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-800">{{ section.title }}</span>
             </div>
-            <div class="mbd-course-header-right">
+            <div class="flex items-center gap-3">
               <span class="mbd-course-tag mbd-course-tag-lecture">
                 강의 {{ section.lectureCount }}개
               </span>
@@ -80,43 +80,43 @@
               @for (card of section.cards; track card.id) {
                 @if (card.type === '강의') {
                   <div class="mbd-lecture-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
-                    <div class="mbd-card-thumb">
+                    <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
                       <div class="mbd-thumb-placeholder"></div>
                     </div>
-                    <div class="mbd-card-body">
-                      <div class="mbd-card-badges">
-                        <span class="mbd-badge-lecture">강의</span>
+                    <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
+                      <div class="flex items-start gap-2">
+                        <span class="flex justify-center items-center px-2 py-0.5 bg-accent rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-white">강의</span>
                         @if (card.category) {
-                          <span class="mbd-badge-category">{{ card.category }}</span>
+                          <span class="flex justify-center items-center px-2 py-0.5 border border-zinc-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 box-border">{{ card.category }}</span>
                         }
                       </div>
-                      <span class="mbd-card-title">{{ card.title }}</span>
+                      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-600">{{ card.title }}</span>
                       @if (card.duration) {
-                        <div class="mbd-card-meta">
+                        <div class="flex items-center gap-1">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
                           </svg>
-                          <span class="mbd-card-duration">{{ card.duration }}</span>
+                          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ card.duration }}</span>
                         </div>
                       }
                     </div>
                   </div>
                 } @else {
                   <div class="mbd-lecture-card mbd-assignment-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
-                    <div class="mbd-card-thumb">
+                    <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
                       <div class="mbd-thumb-placeholder"></div>
                     </div>
-                    <div class="mbd-card-body">
-                      <div class="mbd-card-badges">
-                        <span class="mbd-badge-assignment">과제</span>
+                    <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
+                      <div class="flex items-start gap-2">
+                        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">과제</span>
                       </div>
-                      <span class="mbd-card-title">{{ card.title }}</span>
+                      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-600">{{ card.title }}</span>
                       @if (card.dateRange) {
-                        <div class="mbd-card-meta">
+                        <div class="flex items-center gap-1">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                             <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
                           </svg>
-                          <span class="mbd-card-date-range">{{ card.dateRange }}</span>
+                          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ card.dateRange }}</span>
                         </div>
                       }
                     </div>
@@ -132,7 +132,7 @@
     <!-- ===== 강의 탭 ===== -->
     @if (activeDetailTab() === '강의') {
       <!-- 필터 칩 -->
-      <div class="at-filter-chips">
+      <div class="flex items-center gap-2 w-full">
         @for (chip of lectureFilterChips; track chip) {
           <button
             [ngClass]="activeLectureFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
@@ -144,8 +144,8 @@
 
       <!-- 필터 바 -->
       <div class="at-filter-bar">
-        <span class="at-total">전체 {{ filteredLectures.length }}</span>
-        <div class="at-filter-right">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredLectures.length }}</span>
+        <div class="flex items-center gap-3">
           <div class="at-dropdown">
             <span>정렬</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -162,10 +162,10 @@
       </div>
 
       <!-- 강의 카드 그리드 -->
-      <div class="at-card-grid">
+      <div class="flex flex-wrap items-start content-start gap-6 w-full">
         @for (card of filteredLectures; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
-            <div class="at-card-thumb">
+            <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
               @if (card.hasImage) {
                 <div class="mbd-thumb-placeholder"></div>
               } @else {
@@ -174,17 +174,17 @@
                 </div>
               }
             </div>
-            <div class="at-card-body">
-              <div class="at-card-badges">
-                <span class="mbd-badge-lecture">강의</span>
-                <span class="mbd-badge-category">{{ card.category }}</span>
+            <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
+              <div class="flex items-start gap-2">
+                <span class="flex justify-center items-center px-2 py-0.5 bg-accent rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-white">강의</span>
+                <span class="flex justify-center items-center px-2 py-0.5 border border-zinc-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 box-border">{{ card.category }}</span>
               </div>
-              <span class="at-card-title">{{ card.title }}</span>
-              <div class="at-card-date">
+              <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-600">{{ card.title }}</span>
+              <div class="flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
                 </svg>
-                <span>{{ card.duration }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ card.duration }}</span>
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@
       </div>
 
       <!-- 더보기 -->
-      <div class="at-loadmore-wrap">
+      <div class="flex justify-center w-full">
         <button class="at-loadmore-btn">더보기</button>
       </div>
     }
@@ -200,7 +200,7 @@
     <!-- ===== 과제 탭 ===== -->
     @if (activeDetailTab() === '과제') {
       <!-- 필터 칩 -->
-      <div class="at-filter-chips">
+      <div class="flex items-center gap-2 w-full">
         @for (chip of assignmentFilterChips; track chip) {
           <button
             [ngClass]="activeAssignmentFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
@@ -212,8 +212,8 @@
 
       <!-- 필터 바 -->
       <div class="at-filter-bar">
-        <span class="at-total">전체 {{ filteredAssignments.length }}</span>
-        <div class="at-filter-right">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredAssignments.length }}</span>
+        <div class="flex items-center gap-3">
           <div class="at-dropdown">
             <span>정렬</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -230,10 +230,10 @@
       </div>
 
       <!-- 과제 카드 그리드 -->
-      <div class="at-card-grid">
+      <div class="flex flex-wrap items-start content-start gap-6 w-full">
         @for (card of filteredAssignments; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
-            <div class="at-card-thumb">
+            <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
               @if (card.hasImage) {
                 <div class="mbd-thumb-placeholder"></div>
               } @else {
@@ -242,13 +242,13 @@
                 </div>
               }
             </div>
-            <div class="at-card-body">
-              <span class="at-card-title">{{ card.title }}</span>
-              <div class="at-card-date">
+            <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
+              <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-600">{{ card.title }}</span>
+              <div class="flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                   <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/>
                 </svg>
-                <span>{{ card.dateRange }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ card.dateRange }}</span>
               </div>
             </div>
           </div>
@@ -256,7 +256,7 @@
       </div>
 
       <!-- 더보기 -->
-      <div class="at-loadmore-wrap">
+      <div class="flex justify-center w-full">
         <button class="at-loadmore-btn">더보기</button>
       </div>
     }
@@ -264,16 +264,16 @@
     <!-- ===== 공지사항 탭 ===== -->
     @if (activeDetailTab() === '공지사항') {
       <!-- 필터 바 -->
-      <div class="nt-filter-bar">
-        <span class="nt-total">전체 {{ notices.length }}</span>
-        <div class="nt-filter-right">
-          <div class="nt-dropdown">
+      <div class="flex justify-between items-center w-full max-w-[1400px] h-12">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ notices.length }}</span>
+        <div class="flex items-center gap-3">
+          <div class="at-dropdown">
             <span>정렬</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
             </svg>
           </div>
-          <div class="nt-search-input">
+          <div class="at-search-input nt-search-input">
             <input type="text" placeholder="검색어를 입력해주세요." (input)="onNoticeSearch($event)" />
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -283,25 +283,25 @@
       </div>
 
       <!-- 공지사항 리스트 -->
-      <div class="nt-list">
+      <div class="flex flex-col w-full max-w-[1400px]">
         @for (notice of notices; track notice.id) {
           <div class="nt-item" role="button" tabindex="0" (click)="navigateToNotice(notice.id)" (keydown.enter)="navigateToNotice(notice.id)">
-            <div class="nt-item-title-row">
+            <div class="flex items-center gap-3 w-full">
               @if (notice.isPinned) {
-                <svg class="nt-pin-icon" width="24" height="24" viewBox="0 0 24 24" fill="#7A48FF">
+                <svg class="shrink-0" width="24" height="24" viewBox="0 0 24 24" fill="#7A48FF">
                   <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
                 </svg>
               }
               <span [ngClass]="notice.isPinned ? 'nt-item-title nt-title-pinned' : 'nt-item-title'">{{ notice.title }}</span>
             </div>
             <p class="nt-item-desc">{{ notice.description }}</p>
-            <span class="nt-item-date">{{ notice.date }}</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ notice.date }}</span>
           </div>
         }
       </div>
 
       <!-- 페이지네이터 -->
-      <div class="nt-paginator">
+      <div class="flex justify-center items-center p-3 gap-2 w-full max-w-[1400px]">
         <button class="nt-page-arrow" (click)="goToNoticePage(currentNoticePage() - 1)" [disabled]="currentNoticePage() === 1">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#52525B"/>

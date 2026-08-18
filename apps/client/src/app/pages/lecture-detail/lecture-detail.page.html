@@ -1,7 +1,7 @@
 <main class="lecture-page">
   <!-- ===== 상단 바 ===== -->
-  <div class="lecture-topbar">
-    <div class="lecture-topbar-left">
+  <div class="flex items-center justify-between w-full max-w-[1400px] h-10">
+    <div class="flex items-center gap-3">
       <button class="lecture-back-btn" (click)="goBack()" aria-label="뒤로 가기">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
@@ -20,14 +20,14 @@
   <!-- ===== 메인 영역 ===== -->
   <div class="lecture-main">
     <!-- 좌측: 비디오 플레이어 -->
-    <div class="lecture-video-wrap">
+    <div class="flex-1 min-w-0">
       <div class="lecture-video-player">
         <div class="video-backdrop"></div>
 
         <!-- 비디오 컨트롤 -->
         <div class="video-controls">
           <!-- 타임라인 -->
-          <div class="vc-timeline">
+          <div class="flex items-center gap-1">
             <span class="vc-time">{{ currentTime }}</span>
             <div class="vc-progress-bar">
               <div class="vc-progress-bg"></div>
@@ -50,7 +50,7 @@
           </div>
 
           <!-- 재생 컨트롤 -->
-          <div class="vc-main-controls">
+          <div class="flex justify-center items-center gap-4">
             <!-- 되감기 -->
             <button class="vc-ctrl-btn">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF">
@@ -100,21 +100,21 @@
       <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel }}</span>
 
       <!-- 뱃지 + 시간 -->
-      <div class="ls-badge-row">
-        <div class="ls-badges">
+      <div class="flex items-center gap-3 w-full">
+        <div class="flex items-start gap-2">
           <span class="ls-badge ls-badge-type">{{ lectureType }}</span>
           <span class="ls-badge ls-badge-category">{{ category }}</span>
         </div>
-        <div class="ls-duration">
+        <div class="flex items-center gap-1">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
           </svg>
-          <span>{{ duration }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ duration }}</span>
         </div>
       </div>
 
       <!-- 강의 제목 -->
-      <div class="ls-title-row">
+      <div class="w-full">
         <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 break-keep">{{ lectureTitle }}</h2>
       </div>
 
@@ -138,7 +138,7 @@
         </div>
         @if (isMaterialOpen()) {
           <div class="ls-materials-body">
-            <div class="ls-files-grid">
+            <div class="flex flex-wrap gap-3">
               @for (file of learningFiles; track file.name) {
                 <div class="ls-file-chip">
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>
