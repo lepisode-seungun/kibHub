@@ -1192,16 +1192,7 @@
   gap: 25px;
 }
 
-.guest-prompt-text {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  text-align: center;
-  letter-spacing: -0.04em;
-  color: #71717A;
-  margin: 0;
-}
+/* guest-prompt-text -> TW inline */
 
 .guest-prompt-btn {
   display: flex;
