@@ -1394,3 +1394,114 @@
   letter-spacing: -0.04em;
   color: #A1A1AA;
 }
+
+/* ===== Logout Confirmation Modal ===== */
+.logout-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 3000;
+  animation: overlay-fade-in 0.2s ease;
+}
+
+.logout-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-width: 90vw;
+  border-radius: 16px;
+  overflow: hidden;
+  z-index: 3100;
+  display: flex;
+  flex-direction: column;
+  animation: overlay-fade-in 0.2s ease;
+}
+
+.logout-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 32px 32px 0;
+  background: #18181B;
+}
+
+.logout-modal-header-spacer {
+  flex: 1;
+}
+
+.logout-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logout-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  gap: 24px;
+  background: #18181B;
+}
+
+.logout-modal-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.logout-modal-desc {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #A1A1AA;
+  text-align: center;
+  margin: 0;
+}
+
+.logout-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 32px 32px;
+  background: #18181B;
+  border-top: 1px solid #262626;
+}
+
+.logout-modal-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background: #7A48FF;
+  border: none;
+  border-radius: 12px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-modal-btn:hover {
+  background: #6B3CE6;
+}

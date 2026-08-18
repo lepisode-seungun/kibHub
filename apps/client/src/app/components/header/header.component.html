@@ -366,7 +366,7 @@
       <div class="drawer-divider"></div>
 
       <!-- 로그아웃 -->
-      <button class="drawer-footer-item drawer-logout-btn" (click)="logout(); closeSidebar()">
+      <button class="drawer-footer-item drawer-logout-btn" (click)="showLogoutModal()">
         <div class="drawer-footer-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
@@ -572,5 +572,30 @@
     <button class="lang-sheet-option" (click)="closeLangSheet()">
       <span class="lang-sheet-label">English</span>
     </button>
+  </div>
+}
+
+<!-- ===== 로그아웃 확인 모달 ===== -->
+@if (isLogoutModalOpen()) {
+  <div class="logout-modal-overlay" (click)="closeLogoutModal()"></div>
+  <div class="logout-modal">
+    <!-- Header -->
+    <div class="logout-modal-header">
+      <div class="logout-modal-header-spacer"></div>
+      <button class="logout-modal-close" aria-label="닫기" (click)="closeLogoutModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Body -->
+    <div class="logout-modal-body">
+      <h2 class="logout-modal-title">로그아웃</h2>
+      <p class="logout-modal-desc">정말 로그아웃 하시겠습니까?</p>
+    </div>
+    <!-- Footer -->
+    <div class="logout-modal-footer">
+      <button class="logout-modal-btn" (click)="confirmLogout()">확인</button>
+    </div>
   </div>
 }

@@ -36,6 +36,7 @@ export class HeaderComponent {
   isHomeRoute = signal(false);
   isMobileSearchOpen = signal(false);
   isLangSheetOpen = signal(false);
+  isLogoutModalOpen = signal(false);
   currentUrl = signal('/');
 
   private bootcampPrefixes = ['/bootcamp-intro', '/k-digital', '/student-portfolio', '/hall-of-fame', '/bootcamp-detail'];
@@ -144,7 +145,17 @@ export class HeaderComponent {
     }
   }
 
-  async logout(): Promise<void> {
+  showLogoutModal(): void {
+    this.closeSidebar();
+    this.isLogoutModalOpen.set(true);
+  }
+
+  closeLogoutModal(): void {
+    this.isLogoutModalOpen.set(false);
+  }
+
+  async confirmLogout(): Promise<void> {
+    this.isLogoutModalOpen.set(false);
     await this.authService.logout();
     this.router.navigate(['/']);
   }
