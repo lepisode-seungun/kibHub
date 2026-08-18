@@ -582,10 +582,9 @@
 
 @media (max-width: 768px) {
   .side-drawer {
-    width: 100vw;
-    right: -100vw;
     height: 100vh;
     height: 100dvh;
+    overflow-x: hidden;
   }
 }
 
@@ -633,10 +632,7 @@
 
 @media (max-width: 768px) {
   .drawer-body {
-    max-width: 328px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
+    padding: 24px 20px;
   }
 }
 
