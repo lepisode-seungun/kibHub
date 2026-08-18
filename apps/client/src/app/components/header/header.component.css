@@ -580,6 +580,13 @@
   right: 0;
 }
 
+@media (max-width: 768px) {
+  .side-drawer {
+    width: 100vw;
+    right: -100vw;
+  }
+}
+
 .drawer-header {
   display: flex;
   justify-content: space-between;
