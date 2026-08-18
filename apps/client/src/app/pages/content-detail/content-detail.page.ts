@@ -201,10 +201,6 @@ export class ContentDetailPage implements OnInit {
   }
 
   enterFeedbackMode(): void {
-    if (!this.isLoggedIn()) {
-      this.isLoginRequiredModalOpen.set(true);
-      return;
-    }
     this.commentMode.set('feedback');
     if (!this.isSidebarOpen()) {
       this.isSidebarOpen.set(true);
