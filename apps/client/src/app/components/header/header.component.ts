@@ -35,6 +35,7 @@ export class HeaderComponent {
   isBootcampRoute = signal(false);
   isHomeRoute = signal(false);
   isMobileSearchOpen = signal(false);
+  isLangSheetOpen = signal(false);
   currentUrl = signal('/');
 
   private bootcampPrefixes = ['/bootcamp-intro', '/k-digital', '/student-portfolio', '/hall-of-fame', '/bootcamp-detail'];
@@ -57,14 +58,24 @@ export class HeaderComponent {
 
   toggleSidebar(): void {
     this.isSidebarOpen.update(v => !v);
+    document.body.style.overflow = this.isSidebarOpen() ? 'hidden' : '';
   }
 
   closeSidebar(): void {
     this.isSidebarOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   toggleMobileSearch(): void {
     this.isMobileSearchOpen.update(v => !v);
+  }
+
+  toggleLangSheet(): void {
+    this.isLangSheetOpen.update(v => !v);
+  }
+
+  closeLangSheet(): void {
+    this.isLangSheetOpen.set(false);
   }
 
   toggleBootcamp(): void {

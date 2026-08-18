@@ -628,6 +628,12 @@
   background: #09090B;
   flex: 1;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.drawer-body::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 768px) {
@@ -1229,3 +1235,68 @@
 }
 
 .login-req-btn-login:hover { background: #956DFF; }
+
+/* ===== Language Bottom Sheet ===== */
+.lang-sheet-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  animation: overlay-fade-in 0.2s ease;
+}
+
+.lang-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 360px;
+  background: #18181B;
+  border-radius: 12px 12px 0 0;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px 24px;
+  gap: 4px;
+  animation: lang-sheet-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes lang-sheet-up {
+  from { transform: translateX(-50%) translateY(100%); }
+  to { transform: translateX(-50%) translateY(0); }
+}
+
+.lang-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #3F3F46;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.lang-sheet-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.lang-sheet-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lang-sheet-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+}

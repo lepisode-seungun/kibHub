@@ -261,7 +261,7 @@
       <div class="drawer-divider"></div>
 
       <!-- 언어 -->
-      <div class="drawer-menu-item drawer-lang-row">
+      <div class="drawer-menu-item drawer-lang-row" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
         <div class="drawer-menu-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
@@ -372,7 +372,7 @@
       <div class="drawer-divider"></div>
 
       <!-- 언어 -->
-      <div class="drawer-menu-item drawer-lang-row">
+      <div class="drawer-menu-item drawer-lang-row" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
         <div class="drawer-menu-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
@@ -541,5 +541,20 @@
         </div>
       }
     </div>
+  </div>
+}
+
+<!-- ===== 언어 선택 바텀시트 ===== -->
+@if (isLangSheetOpen()) {
+  <div class="lang-sheet-overlay" (click)="closeLangSheet()" (keydown.escape)="closeLangSheet()" role="button" tabindex="-1"></div>
+  <div class="lang-sheet">
+    <div class="lang-sheet-handle"></div>
+    <button class="lang-sheet-option" (click)="closeLangSheet()">
+      <span class="lang-sheet-label">한국어</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#7A48FF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </button>
+    <button class="lang-sheet-option" (click)="closeLangSheet()">
+      <span class="lang-sheet-label">English</span>
+    </button>
   </div>
 }
