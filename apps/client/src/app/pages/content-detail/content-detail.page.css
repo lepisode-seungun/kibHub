@@ -436,17 +436,9 @@
   min-height: 320px;
 }
 
-.compose-user-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* compose-user-row -> TW inline */
 
-.compose-user-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* compose-user-left -> TW inline */
 
 .comment-avatar {
   width: 32px;
@@ -488,11 +480,7 @@
   justify-content: space-between;
 }
 
-.compose-mode-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+/* compose-mode-badge -> TW inline */
 
 /* mode-label -> TW inline */
 
@@ -558,17 +546,9 @@
   box-shadow: 0 0 12px rgba(161, 72, 255, 0.5);
 }
 
-.compose-body {
-  display: flex;
-  gap: 12px;
-}
+/* compose-body -> TW inline */
 
-.compose-marker-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
+/* compose-marker-col -> TW inline */
 
 .compose-marker-btn {
   width: 48px;
@@ -597,12 +577,7 @@
   opacity: 1;
 }
 
-.compose-input-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
+/* compose-input-col -> TW inline */
 
 .compose-textarea {
   width: 100%;
@@ -635,11 +610,7 @@
   color: #A1A1AA;
 }
 
-.compose-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
+/* compose-actions -> TW inline */
 
 .compose-btn-outline {
   display: flex;
@@ -697,12 +668,7 @@
   box-sizing: border-box;
 }
 
-.guest-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
+/* guest-content -> TW inline */
 
 .guest-text {
   font-family: 'SUIT', sans-serif;
@@ -750,11 +716,7 @@
   border-bottom: 1px solid #27272A;
 }
 
-.filter-tabs {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+/* filter-tabs -> TW inline */
 
 .filter-tab {
   display: flex;
@@ -800,11 +762,7 @@
   color: #18181B;
 }
 
-.filter-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+/* filter-right -> TW inline */
 
 .filter-divider {
   width: 1px;
@@ -1030,17 +988,9 @@
 
 /* comment-item-time -> TW inline */
 
-.comment-item-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* comment-item-actions -> TW inline */
 
-.comment-actions-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* comment-actions-left -> TW inline */
 
 /* Action Pill Buttons */
 .action-pill {
@@ -1093,11 +1043,7 @@
   padding: 20px 20px 20px 88px;
 }
 
-.reply-connector {
-  display: flex;
-  align-items: flex-start;
-  padding-top: 4px;
-}
+/* reply-connector -> TW inline */
 
 .reply-line {
   width: 8px;

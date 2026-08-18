@@ -235,13 +235,13 @@
     @if (isLoggedIn()) {
     <div class="comment-compose">
       <!-- 유저 정보 + 모드 표시 -->
-      <div class="compose-user-row">
-        <div class="compose-user-left">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2.5">
           <div class="comment-avatar">N</div>
           <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">고식혜</span>
           <span class="compose-me-badge">나</span>
         </div>
-        <div class="compose-mode-badge">
+        <div class="flex items-center gap-1.5">
           <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-400">{{ commentMode() === 'feedback' ? '피드백 댓글' : '일반 댓글' }}</span>
           @if (commentMode() === 'general') {
             <button class="mode-close-btn" (click)="exitCommentMode()" aria-label="닫기">
@@ -254,8 +254,8 @@
       </div>
 
       <!-- 마커 + 입력 -->
-      <div class="compose-body">
-        <div class="compose-marker-col">
+      <div class="flex gap-3">
+        <div class="flex flex-col items-center gap-1">
           <button [ngClass]="commentMode() === 'feedback' ? 'compose-marker-btn marker-btn-active' : 'compose-marker-btn'" aria-label="마커 피드백" (click)="toggleCommentMode()">
             <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M28.0244 26.2316L34.2772 32.3603L34.6386 33.6793L35 34.9982L33.6753 34.6645L32.3506 34.3308L26.0978 28.2022L24.5175 29.8185C23.9769 30.3714 23.1006 30.3714 22.56 29.8185L22.4533 29.7093C22.2105 29.461 22.0767 29.1433 22.0521 28.8187C19.662 29.2196 17.1243 28.4774 15.281 26.5921C12.2409 23.4827 12.2409 18.4414 15.281 15.332C18.3211 12.2227 23.2501 12.2227 26.2902 15.332C28.1346 17.2184 28.86 19.8159 28.4665 22.2617C28.7828 22.2876 29.092 22.4243 29.334 22.6718L29.4407 22.781C29.9813 23.3338 29.9813 24.2302 29.4407 24.7831L28.0244 26.2316Z" [attr.fill]="commentMode() === 'feedback' ? '#A148FF' : '#FAFAFA'"/>
@@ -265,14 +265,14 @@
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
           </svg>
         </div>
-        <div class="compose-input-col">
+        <div class="flex flex-col flex-1 gap-2">
           <textarea class="compose-textarea" [placeholder]="commentMode() === 'feedback' ? '피드백을 입력하세요.' : '일반댓글'" (input)="onCommentInput($event)"></textarea>
           <span class="compose-hint">이미지 첨부는 5장까지 가능하며, 이미지당 최대용량은 10mb 입니다.</span>
         </div>
       </div>
 
       <!-- 버튼 -->
-      <div class="compose-actions">
+      <div class="flex justify-end gap-3">
         <button class="compose-btn-outline">이미지 첨부</button>
         <button class="compose-btn-primary">등록</button>
       </div>
@@ -280,7 +280,7 @@
     } @else {
     <!-- 비회원 상태 -->
     <div class="comment-compose-guest">
-      <div class="guest-content">
+      <div class="flex items-center gap-3">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA">
           <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z"/>
         </svg>
@@ -292,7 +292,7 @@
 
     <!-- 댓글 필터 바 -->
     <div class="comment-filter-bar">
-      <div class="filter-tabs">
+      <div class="flex items-center gap-2">
         <button [ngClass]="activeCommentTab() === 'all' ? 'filter-tab active' : 'filter-tab'" (click)="setCommentTab('all')">
           <span>전체</span>
           <span [ngClass]="activeCommentTab() === 'all' ? 'filter-count active' : 'filter-count'">{{ allCount }}</span>
@@ -306,7 +306,7 @@
           <span [ngClass]="activeCommentTab() === 'general' ? 'filter-count active' : 'filter-count'">{{ generalCount }}</span>
         </button>
       </div>
-      <div class="filter-right">
+      <div class="flex items-center gap-2">
         <div class="filter-divider"></div>
         <div class="sidebar-translate-wrap" (mouseenter)="toggleFilterTranslate()" (mouseleave)="isFilterTranslateOpen.set(false)">
           @if (selectedSidebarLang() === 'en') {
@@ -372,7 +372,7 @@
             <!-- 댓글 내용 -->
             <div class="comment-item-body">
               <div class="comment-item-header">
-                <div class="comment-item-user">
+                <div class="flex items-center gap-2">
                   <div class="comment-item-avatar">{{ comment.avatar }}</div>
                   <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ comment.userName }}</span>
                   @if (comment.isMe) {
@@ -397,8 +397,8 @@
               </div><!-- /comment-item-header -->
               <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
               <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.time }}</span>
-              <div class="comment-item-actions">
-                <div class="comment-actions-left">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
                   <button class="action-pill">답글 쓰기</button>
                   <button class="action-pill" [class.liked]="comment.liked">
                     <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="comment.liked ? '#EF4444' : 'none'">
@@ -424,12 +424,12 @@
           <!-- 대댓글 -->
           @for (reply of comment.replies; track reply.id) {
             <div class="reply-item">
-              <div class="reply-connector">
+              <div class="flex items-center gap-2">
                 <div class="reply-line"></div>
               </div>
               <div class="reply-body">
                 <div class="comment-item-header">
-                  <div class="comment-item-user">
+                  <div class="flex items-center gap-2">
                     <div class="comment-item-avatar">{{ reply.avatar }}</div>
                     <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ reply.userName }}</span>
                     @if (reply.isMe) {
@@ -448,7 +448,7 @@
                     }
                   </div>
                 }
-                <div class="comment-item-actions">
+                <div class="flex justify-between items-center">
                   <button class="action-pill" [class.liked]="reply.liked">
                     <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="reply.liked ? '#EF4444' : 'none'">
                       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="reply.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
