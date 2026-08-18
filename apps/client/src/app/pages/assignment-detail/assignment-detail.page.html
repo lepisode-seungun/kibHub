@@ -86,7 +86,7 @@
 
         <!-- 학습자료 -->
         <div class="ad-ls-materials">
-          <div class="ad-ls-materials-header" (click)="toggleMaterial()">
+          <div class="ad-ls-materials-header" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()" role="button" tabindex="0">
             <span class="ad-ls-materials-title">학습자료</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isMaterialOpen() ? 'none' : 'rotate(180deg)'" style="transition: transform 0.2s">
               <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
@@ -155,7 +155,7 @@
                 </svg>
               </div>
             }
-            <div [ngClass]="item.isReply ? 'as-item-card as-item-card-reply' : 'as-item-card'" (click)="navigateToSubmission(item.id)" style="cursor:pointer">
+            <div [ngClass]="item.isReply ? 'as-item-card as-item-card-reply' : 'as-item-card'" (click)="navigateToSubmission(item.id)" (keydown.enter)="navigateToSubmission(item.id)" role="button" tabindex="0" style="cursor:pointer">
               <!-- 제목 행 -->
               <div class="as-item-title-row">
                 <span class="as-item-title">{{ item.title }}</span>

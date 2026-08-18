@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
@@ -21,7 +21,7 @@ interface Comment {
   templateUrl: './feedback-detail.page.html',
   styleUrls: ['./feedback-detail.page.css'],
 })
-export class FeedbackDetailPage {
+export class FeedbackDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
