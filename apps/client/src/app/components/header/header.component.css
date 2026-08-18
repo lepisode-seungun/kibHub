@@ -21,6 +21,16 @@
   }
 }
 
+/* Hide scrollbar on mobile sub-header */
+.mobile-sub-scroll {
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.mobile-sub-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .header {
   box-sizing: border-box;
   width: 100%;

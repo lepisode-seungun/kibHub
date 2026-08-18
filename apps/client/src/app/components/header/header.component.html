@@ -183,7 +183,7 @@
 
   <!-- 3줄: 서브헤더 탭 (60px) - 부트캠프 라우트일 때만 표시 -->
   @if (isBootcampRoute()) {
-    <div class="flex items-center px-5 h-[60px] bg-[#18181B] border-b border-[#27272A]">
+    <div class="flex items-center px-5 h-[60px] bg-[#18181B] border-b border-[#27272A] mobile-sub-scroll">
       <a routerLink="/bootcamp-intro" class="flex justify-center items-center px-3 h-[60px] font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap no-underline"
          [ngClass]="currentUrl().startsWith('/bootcamp-intro') ? 'text-white' : 'text-zinc-500'">부트캠프 소개</a>
       <a routerLink="/k-digital" class="flex justify-center items-center px-3 h-[60px] font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap no-underline"
@@ -375,10 +375,20 @@
           </svg>
         </a>
         <a class="drawer-footer-item" routerLink="/terms" (click)="closeSidebar()">
-          <span>서비스 약관</span>
+          <div class="drawer-footer-left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM9 13h6v2H9v-2zm6 4H9v2h6v-2z"/>
+            </svg>
+            <span>서비스 약관</span>
+          </div>
         </a>
         <a class="drawer-footer-item" routerLink="/privacy" (click)="closeSidebar()">
-          <span>개인정보 보호정책</span>
+          <div class="drawer-footer-left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span>개인정보 보호정책</span>
+          </div>
         </a>
       </div>
     }
