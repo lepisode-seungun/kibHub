@@ -145,15 +145,17 @@ export class HeaderComponent {
     }
   }
 
-  async showLogoutModal(): Promise<void> {
+  showLogoutModal(): void {
     this.closeSidebar();
-    await this.authService.logout();
-    this.isLogoutModalOpen.set(true);
+    setTimeout(async () => {
+      await this.authService.logout();
+      await this.router.navigate(['/']);
+      this.isLogoutModalOpen.set(true);
+    }, 300);
   }
 
   closeLogoutModal(): void {
     this.isLogoutModalOpen.set(false);
-    this.router.navigate(['/']);
   }
 
   goToLogin(): void {
