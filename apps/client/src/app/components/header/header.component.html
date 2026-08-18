@@ -183,7 +183,7 @@
 
   <!-- 3줄: 서브헤더 탭 (60px) - 부트캠프 라우트일 때만 표시 -->
   @if (isBootcampRoute()) {
-    <div class="flex items-center px-5 h-[60px] bg-[#18181B] border-b border-[#27272A] overflow-x-auto scrollbar-none">
+    <div class="flex items-center px-5 h-[60px] bg-[#18181B] border-b border-[#27272A]">
       <a routerLink="/bootcamp-intro" class="flex justify-center items-center px-3 h-[60px] font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap no-underline"
          [ngClass]="currentUrl().startsWith('/bootcamp-intro') ? 'text-white' : 'text-zinc-500'">부트캠프 소개</a>
       <a routerLink="/k-digital" class="flex justify-center items-center px-3 h-[60px] font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap no-underline"
