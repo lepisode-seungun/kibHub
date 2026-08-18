@@ -10,7 +10,7 @@
   <!-- 콘텐츠 영역 -->
   <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
     <!-- 작품 정보 카드 -->
-    <div class="work-info-card">
+    <div class="w-full bg-zinc-900/80 rounded-2xl p-6 flex flex-col gap-6 box-border">
       <div class="flex gap-6">
         <div class="w-[136px] h-[102px] rounded-md shrink-0" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
         <div class="flex flex-col justify-center gap-3 flex-1">
@@ -42,10 +42,10 @@
     <!-- 작품 뷰어 -->
     <div class="flex flex-col items-center gap-10 w-full">
       <!-- 기획서 섹션 -->
-      <div class="section-divider">
-        <hr class="divider-line" />
+      <div class="flex items-center gap-0 w-full">
+        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
         <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">기획서</span>
-        <hr class="divider-line" />
+        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
       </div>
 
       <div class="w-full max-w-[800px]">
@@ -53,33 +53,33 @@
       </div>
 
       <!-- 원고 섹션 -->
-      <div class="section-divider">
-        <hr class="divider-line" />
+      <div class="flex items-center gap-0 w-full">
+        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
         <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">원고</span>
-        <hr class="divider-line" />
+        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
       </div>
 
-      <div class="work-image-wrap work-image-wrap--masked">
+      <div class="w-full max-w-[800px] relative overflow-hidden">
         <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px;"></div>
-        <div class="work-image-mask"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-[#090909] to-transparent pointer-events-none"></div>
       </div>
 
       <!-- 더보기 버튼 -->
-      <button style="width: 200px; height: 48px; border-radius: 12px; background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%); border: 1px solid rgba(255,255,255,0.12); font-family: 'SUIT Variable', sans-serif; font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: -0.04em; color: #FFFFFF; cursor: pointer; transition: opacity 0.15s;" (click)="openManuscriptViewer()">원고보기</button>
+      <button class="w-[200px] h-12 rounded-xl bg-gradient-to-r from-accent to-[#5FCCB6] border border-white/10 font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-opacity duration-150 hover:opacity-85" (click)="openManuscriptViewer()">원고보기</button>
     </div>
 
     <!-- 하단: 문의하기 -->
-    <div style="display: flex; align-items: center; width: 100%; margin-top: 60px;">
-      <div style="flex: 1; height: 1px; background: #3F3F46;"></div>
-      <button style="width: 300px; height: 48px; background: #27272A; border: none; border-radius: 24px; font-family: 'SUIT Variable', sans-serif; font-weight: 600; font-size: 16px; line-height: 150%; letter-spacing: -0.04em; color: #FFFFFF; cursor: pointer; transition: background 0.15s; flex-shrink: 0;" (click)="openInquiryModal()">문의하기</button>
-      <div style="flex: 1; height: 1px; background: #3F3F46;"></div>
+    <div class="flex items-center w-full mt-[60px]">
+      <div class="flex-1 h-px bg-zinc-700"></div>
+      <button class="w-[300px] h-12 bg-zinc-800 border-none rounded-3xl font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-colors duration-150 hover:bg-zinc-700 shrink-0" (click)="openInquiryModal()">문의하기</button>
+      <div class="flex-1 h-px bg-zinc-700"></div>
     </div>
   </div>
 
   <!-- ===== 원고 뷰어 모달 ===== -->
   @if (isViewerOpen()) {
-    <div class="viewer-overlay" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
-      <div class="viewer-container">
+    <div class="fixed inset-0 flex justify-center items-center p-16 bg-black/60 backdrop-blur-[30px] z-[1000]" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
+      <div class="flex flex-col gap-2.5 w-full max-w-[900px] max-h-[90vh]">
         <div class="flex justify-between items-center w-full">
           <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">명예의 전당</h2>
           <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 transition-opacity duration-150 hover:opacity-70" (click)="closeViewer()" aria-label="닫기">
@@ -87,22 +87,22 @@
           </button>
         </div>
 
-        <div class="viewer-body">
-          <button class="viewer-arrow viewer-arrow-left" (click)="prevPage()" aria-label="이전">
+        <div class="flex items-center gap-6 w-full">
+          <button class="viewer-arrow" (click)="prevPage()" aria-label="이전">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
           </button>
 
-          <div class="viewer-card">
+          <div class="flex-1 bg-[#1C1B20] rounded-2xl p-6 overflow-hidden flex flex-col max-h-[75vh] box-border">
             <div class="flex items-center gap-1 pb-4">
               <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ currentViewerPage() }}회</span>
               <span class="font-suit font-medium text-lg leading-[150%] tracking-tight text-zinc-500">/{{ totalPages }}회</span>
             </div>
-            <div class="viewer-image-scroll">
-              <div class="viewer-image" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
+            <div class="flex-1 overflow-y-auto rounded-lg">
+              <div class="w-full min-h-[600px] rounded-lg bg-cover bg-center" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
             </div>
           </div>
 
-          <button class="viewer-arrow viewer-arrow-right" (click)="nextPage()" aria-label="다음">
+          <button class="viewer-arrow" (click)="nextPage()" aria-label="다음">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
           </button>
         </div>
@@ -112,8 +112,8 @@
 
   <!-- ===== 문의하기 모달 ===== -->
   @if (isInquiryOpen()) {
-    <div class="iq-overlay" tabindex="-1" (click)="onInquiryOverlayClick($event)" (keydown.escape)="closeInquiryModal()">
-      <div class="iq-modal">
+    <div class="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-blur-[30px] z-[1100]" tabindex="-1" (click)="onInquiryOverlayClick($event)" (keydown.escape)="closeInquiryModal()">
+      <div class="flex flex-col w-[600px] max-h-[90vh] bg-[#1C1B20] rounded-2xl overflow-hidden">
         <div class="flex justify-between items-center px-6 py-5 border-b border-zinc-700">
           <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">문의하기</span>
           <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0" (click)="closeInquiryModal()" aria-label="닫기">
@@ -182,8 +182,8 @@
 
   <!-- ===== 개인정보 수집 동의 모달 ===== -->
   @if (isPrivacyOpen()) {
-    <div class="prv-overlay" tabindex="-1" (click)="onPrivacyOverlayClick($event)" (keydown.escape)="closePrivacyModal()">
-      <div class="prv-modal">
+    <div class="fixed inset-0 flex justify-center items-center bg-black/60 backdrop-blur-[30px] z-[1200]" tabindex="-1" (click)="onPrivacyOverlayClick($event)" (keydown.escape)="closePrivacyModal()">
+      <div class="flex flex-col w-[600px] max-h-[90vh] bg-[#1C1B20] rounded-2xl overflow-hidden">
         <div class="flex justify-between items-center px-6 py-5 border-b border-zinc-700">
           <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">개인정보 수집 및 이용 동의</span>
           <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0" (click)="closePrivacyModal()" aria-label="닫기">

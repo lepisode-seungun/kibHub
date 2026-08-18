@@ -1,26 +1,12 @@
-/* [TW-KEEP] 카드 그리드 calc + line-clamp + 반응형 + 랭크 위치 */
+/* [TW-KEEP] 카드 calc 너비 + line-clamp + 반응형 */
 :host { display: block; }
 
+/* 반응형 패딩 */
 .search-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 80px 100px;
-  gap: 48px;
-  min-height: 100vh;
-  background: #151419;
-  box-sizing: border-box;
 }
 
-/* 카드 그리드 */
-.search-results-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  width: 100%;
-  max-width: 1720px;
-}
-
+/* 카드 calc 너비 */
 .result-card {
   display: flex;
   flex-direction: column;
@@ -36,6 +22,7 @@
   box-sizing: border-box;
 }
 
+/* 랭크 마커 */
 .result-rank {
   position: relative;
   width: 38px;

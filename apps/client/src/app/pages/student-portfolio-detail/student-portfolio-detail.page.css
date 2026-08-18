@@ -1,154 +1,27 @@
-/* [TW-KEEP] 모달 overlay + 뷰어 구조 + 마스크 + divider + consent 박스 */
+/* [TW-KEEP] viewer arrow hover, consent box dynamic binding */
 :host { display: block; }
 
-/* 작품 정보 카드 */
-.work-info-card {
-  width: 100%;
-  background: rgba(24, 24, 27, 0.8);
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  box-sizing: border-box;
-}
-
-/* 섹션 디바이더 */
-.section-divider {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  width: 100%;
-}
-
-.divider-line {
-  flex: 1;
-  border: none;
-  border-top: 1px solid #3F3F46;
-  margin: 0;
-}
-
-/* 문의하기 버튼 */
-.inquiry-btn {
-  font-family: 'SUIT Variable', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 150%;
-  letter-spacing: -0.04em;
-  color: #A1A1AA;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 0 20px;
-  transition: color 0.15s;
-}
-
-.inquiry-btn:hover {
-  color: #7A48FF;
-}
-
-/* 원고 이미지 마스크 */
-.work-image-wrap { width: 100%; max-width: 800px; }
-
-.work-image-wrap--masked {
-  position: relative;
-  overflow: hidden;
-}
-
-.work-image-mask {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 200px;
-  background: linear-gradient(0deg, #090909 0%, transparent 100%);
-  pointer-events: none;
-}
-
-/* ===== 원고 뷰어 모달 ===== */
-.viewer-overlay {
-  position: fixed; inset: 0;
-  display: flex; justify-content: center; align-items: center;
-  padding: 64px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(30px);
-  z-index: 1000;
-}
-
-.viewer-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
-}
-
-.viewer-body {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
-}
-
+/* 뷰어 화살표 (hover pseudo-class) */
 .viewer-arrow {
-  display: flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s, border-color 0.2s;
 }
 
-.viewer-arrow:hover { background: rgba(255,255,255,0.1); border-color: #7A48FF; }
-
-.viewer-card {
-  flex: 1;
-  background: #1C1B20;
-  border-radius: 16px;
-  padding: 24px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  max-height: 75vh;
-  box-sizing: border-box;
+.viewer-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #7A48FF;
 }
 
-.viewer-image-scroll {
-  flex: 1;
-  overflow-y: auto;
-  border-radius: 8px;
-}
-
-.viewer-image {
-  width: 100%;
-  min-height: 600px;
-  border-radius: 8px;
-  background-size: cover;
-  background-position: center;
-}
-
-/* ===== 문의하기 모달 ===== */
-.iq-overlay {
-  position: fixed; inset: 0;
-  display: flex; justify-content: center; align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(30px);
-  z-index: 1100;
-}
-
-.iq-modal {
-  display: flex;
-  flex-direction: column;
-  width: 600px;
-  max-height: 90vh;
-  background: #1C1B20;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-/* 개인정보 동의 박스 */
+/* 개인정보 동의 박스 (ngClass 동적 바인딩) */
 .iq-consent-box {
   display: flex;
   flex-direction: column;
@@ -163,22 +36,3 @@
 
 .iq-consent-box:hover { border-color: #7A48FF; }
 .iq-consent-box--checked { border-color: #956DFF; }
-
-/* ===== 개인정보 동의 모달 ===== */
-.prv-overlay {
-  position: fixed; inset: 0;
-  display: flex; justify-content: center; align-items: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(30px);
-  z-index: 1200;
-}
-
-.prv-modal {
-  display: flex;
-  flex-direction: column;
-  width: 600px;
-  max-height: 90vh;
-  background: #1C1B20;
-  border-radius: 16px;
-  overflow: hidden;
-}
