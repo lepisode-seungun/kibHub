@@ -12,14 +12,14 @@
 
     <!-- Header (항상 표시) -->
     <div class="detail-header">
-      <div class="detail-header-main">
-        <div class="detail-header-left">
-          <div class="detail-author-row">
+      <div class="flex flex-col gap-3 w-full">
+        <div class="flex justify-between items-start gap-2.5 w-full">
+          <div class="flex items-start gap-2.5 flex-1">
             <div class="detail-avatar"></div>
-            <div class="detail-author-info">
+            <div class="flex flex-col justify-center gap-3 flex-1">
               <h1 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ title }}</h1>
-              <div class="detail-meta-row">
-                <div class="detail-meta-left">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="flex items-center gap-2">
                   <span class="detail-role-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="#CAB6FF">
                       <path d="M13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2h10V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2" opacity=".5"/>
@@ -51,11 +51,11 @@
     <!-- Description (아코디언 - isDescOpen일 때만 표시) -->
     @if (isDescOpen()) {
       <div class="detail-description accordion-content">
-        <div class="detail-description-inner">
+        <div class="flex flex-col gap-2 w-full">
           <h2 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-300 m-0">크리스마스 트리가 있는 녹차밭</h2>
           <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
         </div>
-        <div class="detail-tags">
+        <div class="flex flex-wrap items-center gap-3">
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">글</span>
           <span class="font-suit font-medium text-sm text-zinc-500">·</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ category }}</span>

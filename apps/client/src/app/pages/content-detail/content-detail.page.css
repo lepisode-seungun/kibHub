@@ -63,29 +63,11 @@
   width: 100%;
 }
 
-.detail-header-main {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
+/* detail-header-main -> TW inline */
 
-.detail-header-left {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  width: 100%;
-}
+/* detail-header-left -> TW inline */
 
-.detail-author-row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 10px;
-  flex: 1;
-}
+/* detail-author-row -> TW inline */
 
 .detail-avatar {
   width: 50px;
@@ -95,29 +77,13 @@
   flex-shrink: 0;
 }
 
-.detail-author-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-  flex: 1;
-}
+/* detail-author-info -> TW inline */
 
 /* detail-title -> TW inline */
 
-.detail-meta-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
+/* detail-meta-row -> TW inline */
 
-.detail-meta-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* detail-meta-left -> TW inline */
 
 .detail-role-badge {
   display: flex;
@@ -203,24 +169,13 @@
   background: #1C1B20;
 }
 
-.detail-description-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
+/* detail-description-inner -> TW inline */
 
 /* detail-desc-title -> TW inline */
 
 /* detail-desc-text -> TW inline */
 
-.detail-tags {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
+/* detail-tags -> TW inline */
 
 /* detail-tag -> TW inline */
 
