@@ -101,9 +101,47 @@
   text-shadow: 0 0 10.5px rgba(0, 0, 0, 0.6);
 }
 
-/* 반응형 */
+/* 반응형 — 모바일: 팝업 유지 + 카드 3등분 */
 @media (max-width: 768px) {
-  .upload-modal { width: calc(100% - 40px); max-width: 700px; }
-  .upload-cards { flex-direction: column; align-items: center; }
-  .upload-card-bg { width: 100%; max-width: 280px; height: 140px; }
+  .upload-modal {
+    width: calc(100% - 32px);
+    max-width: 700px;
+  }
+
+  .upload-cards {
+    gap: 10px;
+  }
+
+  .upload-card {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .upload-card-bg {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+  }
+
+  .upload-card-bg svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-label {
+    font-size: 12px;
+  }
+
+  .card-ellipse-lg {
+    width: 50px;
+    height: 30px;
+  }
+
+  .card-ellipse-sm {
+    width: 26px;
+    height: 15px;
+    left: 16px;
+    top: 36px;
+  }
 }

@@ -741,11 +741,16 @@
 .am-select-btn:hover { opacity: 0.85; }
 .am-select-btn:disabled { background: #3F3F46; color: #71717A; cursor: not-allowed; opacity: 1; }
 
+/* ===== 모바일 백 바 — 기본 숨김 ===== */
+.cu-mobile-back {
+  display: none;
+}
+
 /* ===== 반응형 ===== */
 /* [TW-KEEP] responsive */
 @media (max-width: 1600px) {
   .cu-main { padding: 60px 100px; }
-  .cu-columns { width: 100%; } /* row 유지 */
+  .cu-columns { width: 100%; }
   .cu-left { width: 60%; }
 }
 
@@ -755,11 +760,206 @@
 }
 
 @media (max-width: 768px) {
-  .cu-main { padding: 40px 20px; }
-  .cu-columns { flex-direction: column; }
-  .cu-left { width: 100%; }
-  .cu-right { position: static; }
-  .cu-card-header { padding: 16px; }
-  .cu-card-body { padding: 16px; }
-  .cu-footer-cancel, .cu-footer-submit { width: 100%; max-width: 400px; }
+  /* 페이지 전체 */
+  .cu-page {
+    background: #151419;
+    gap: 12px;
+  }
+
+  /* 모바일 백 바 */
+  .cu-mobile-back {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 20px;
+    width: 100%;
+    height: 56px;
+    background: #090909;
+    box-sizing: border-box;
+  }
+
+  /* 메인 영역 */
+  .cu-main {
+    padding: 0;
+    gap: 12px;
+  }
+
+  /* 컬럼 → 단일 세로 */
+  .cu-columns {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  /* 왼쪽 영역 풀 width */
+  .cu-left {
+    width: 100%;
+    gap: 12px;
+  }
+
+  /* 카드 간 간격 */
+  .cu-card {
+    border-radius: 0;
+  }
+
+  /* 카드 헤더 — Figma: 75px, padding 24px, #1E1D22 */
+  .cu-card-header {
+    padding: 24px;
+    height: 75px;
+    box-sizing: border-box;
+    background: #1E1D22;
+  }
+
+  /* 카드 바디 — Figma: padding 20px, gap 40px, #18181B */
+  .cu-card-body {
+    padding: 20px;
+    gap: 24px;
+    background: #18181B;
+  }
+
+  /* 칩 — Figma: wrap, gap 12px */
+  .cu-chip {
+    padding: 8px 16px;
+    gap: 10px;
+    height: 40px;
+  }
+
+  /* 세그먼트 — Figma: 40px 높이, pill */
+  .cu-segment {
+    height: 40px;
+  }
+
+  /* 인풋 — Figma: 48px, #27272A, rounded 12px */
+  .cu-input {
+    height: 48px;
+    font-size: 16px;
+  }
+
+  /* 텍스트에리어 — Figma: 120px */
+  .cu-textarea {
+    min-height: 120px;
+    font-size: 16px;
+  }
+
+  /* 첨부파일 버튼 — Figma: 110px, 48px */
+  .cu-attach-btn {
+    width: 110px;
+    height: 48px;
+  }
+
+  /* 업로드 영역 — Figma: 200px */
+  .cu-upload-zone {
+    height: 200px;
+  }
+
+  /* 콘텐츠 아이템 — Figma: 110px, padding 20px, gap 12px */
+  .cu-content-item {
+    height: 110px;
+    padding: 20px;
+    gap: 12px;
+  }
+
+  /* 썸네일 프리뷰 — 모바일 축소 */
+  .cu-thumb-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cu-thumb-preview {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  /* 미리보기 패널 — 썸네일 아래로 (flex order) */
+  .cu-right {
+    position: static;
+    width: 100%;
+    max-height: none;
+    order: 4;
+  }
+
+  .cu-preview-card {
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .cu-preview-body {
+    min-height: 300px;
+  }
+
+  /* 푸터 — 풀 width, 버튼 50/50 */
+  .cu-footer {
+    padding: 12px 20px;
+    height: 72px;
+    gap: 12px;
+  }
+
+  .cu-footer-cancel,
+  .cu-footer-submit {
+    width: 100%;
+    max-width: none;
+    flex: 1;
+    padding: 8px 12px;
+  }
+
+  .cu-footer-cancel {
+    padding: 8px 12px;
+  }
+
+  /* 모달 — 풀 width */
+  .tm-modal {
+    width: calc(100% - 32px);
+    max-width: 700px;
+  }
+
+  .tm-wrapper {
+    flex-direction: column;
+    width: calc(100% - 32px);
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .tm-modal-inline {
+    width: 100%;
+  }
+
+  .tm-header {
+    padding: 20px 20px 0;
+  }
+
+  .tm-body {
+    padding: 20px;
+    max-height: 400px;
+  }
+
+  .tm-footer {
+    padding: 16px 20px 20px;
+  }
+
+  /* 앨범 모달 */
+  .am-modal {
+    width: calc(100% - 32px);
+    max-width: 700px;
+    height: auto;
+    max-height: 80vh;
+  }
+
+  .am-body {
+    padding: 20px;
+    min-height: 300px;
+    max-height: 50vh;
+  }
+
+  .am-empty {
+    min-height: 250px;
+  }
+
+  .am-footer {
+    padding: 16px 20px 20px;
+    height: auto;
+  }
 }

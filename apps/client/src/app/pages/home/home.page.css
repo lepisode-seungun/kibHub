@@ -18,14 +18,116 @@
   }
 }
 
+/* ========================================= */
+/* ===== Bootcamp Section ===== */
+/* ========================================= */
+.bootcamp-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(32px, 4.2vw, 80px) clamp(20px, 5.2vw, 100px);
+  gap: 20px;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  background: #151419;
+  box-sizing: border-box;
+}
+
+.bootcamp-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.bootcamp-track {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.bootcamp-track::-webkit-scrollbar {
+  display: none;
+}
+
+.bootcamp-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  min-width: 260px;
+  width: 260px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.bootcamp-thumb {
+  width: 100%;
+  height: 172px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+}
+
+.bootcamp-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 4px;
+  gap: 12px;
+}
+
+.bootcamp-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 8px;
+  height: 25px;
+  border-radius: 6px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.bootcamp-badge--primary {
+  background: #7A48FF;
+  color: #FFFFFF;
+}
+
+.bootcamp-badge--outline {
+  background: transparent;
+  border: 1px solid #71717A;
+  color: #D4D4D8;
+  box-sizing: border-box;
+}
+
+/* ===== Bootcamp Responsive ===== */
+@media (max-width: 768px) {
+  .bootcamp-section {
+    padding: 40px 20px;
+  }
+}
+
 /* ===== Recent Comments Section ===== */
 /* [TW-KEEP] gradient background + responsive padding */
 .recent-comments {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 100px;
-  gap: 40px;
+  padding: clamp(32px, 4.2vw, 80px) clamp(20px, 5.2vw, 100px);
+  gap: clamp(24px, 2.2vw, 40px);
   width: 100%;
   max-width: 1920px;
   margin: 0 auto;
@@ -45,12 +147,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 40px;
+  gap: clamp(24px, 2.2vw, 40px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  padding-right: 100px;
+  padding-right: clamp(20px, 5.2vw, 100px);
 }
 
 .cards-track::-webkit-scrollbar {
@@ -63,9 +165,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-width: 540px;
-  width: 540px;
-  height: 272px;
+  min-width: clamp(260px, 25vw, 480px);
+  width: clamp(260px, 25vw, 480px);
+  height: clamp(200px, 14.2vw, 272px);
   border: 1px solid #27272A;
   border-radius: 24px;
   overflow: hidden;
@@ -78,10 +180,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 32px;
+  padding: clamp(20px, 2.2vw, 32px);
   gap: 12px;
-  width: 409px;
-  height: 272px;
+  width: 76%;
+  height: 100%;
   background: linear-gradient(226.13deg, #14151A 59.21%, #1A191F 83.37%, #302035 106.12%);
   border-radius: 24px 0 0 24px;
   box-sizing: border-box;
@@ -91,8 +193,8 @@
 /* [TW-KEEP] thumbnail + gradient overlays */
 .card-thumbnail {
   position: relative;
-  width: 131px;
-  height: 272px;
+  width: 24%;
+  height: 100%;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 0 24px 24px 0;
@@ -115,8 +217,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 131px;
-  height: 272px;
+  width: 100%;
+  height: 100%;
   background: linear-gradient(90deg, #141519 0%, rgba(20, 21, 25, 0) 100%);
 }
 
@@ -154,32 +256,33 @@
   right: 0;
 }
 
-/* [TW-KEEP] gradient fade */
+/* [TW-KEEP] gradient fade — narrower + semi-transparent so next card peeks */
 .carousel-fade {
   position: absolute;
   top: 0;
   right: 0;
-  width: 200px;
+  width: clamp(40px, 5vw, 80px);
   height: 100%;
-  background: linear-gradient(90deg, rgba(27, 26, 31, 0) 0%, #0C0B10 100%);
+  background: linear-gradient(90deg, rgba(12, 11, 16, 0) 0%, rgba(12, 11, 16, 0.7) 100%);
   pointer-events: none;
   z-index: 5;
 }
 
 /* ===== Responsive (Recent Comments) ===== */
 /* [TW-KEEP] responsive */
-@media (max-width: 1440px) {
-  .recent-comments {
-    padding: 60px 60px;
+
+@media (max-width: 1024px) {
+  .recent-comments h2 {
+    font-size: 28px;
+  }
+
+  .carousel-arrow {
+    width: 44px;
+    height: 44px;
   }
 }
 
 @media (max-width: 768px) {
-  .recent-comments {
-    padding: 40px 20px;
-    gap: 24px;
-  }
-
   .recent-comments h2 {
     font-size: 24px;
   }
@@ -192,8 +295,8 @@
   }
 
   .card-content {
-    width: 203px;
-    height: 180px;
+    width: 73%;
+    height: 100%;
     padding: 20px;
     gap: 8px;
     border-radius: 12px 0 0 12px;
@@ -260,8 +363,8 @@
   }
 
   .card-thumbnail {
-    width: 77px;
-    height: 180px;
+    width: 27%;
+    height: 100%;
     border-radius: 0 12px 12px 0;
   }
 
@@ -274,21 +377,12 @@
   }
 
   .thumbnail-overlay-left {
-    width: 77px;
-    height: 180px;
-  }
-
-  .cards-track {
-    gap: 24px;
-    padding-right: 20px;
+    width: 100%;
+    height: 100%;
   }
 
   .carousel-arrow {
     display: none;
-  }
-
-  .carousel-fade {
-    width: 80px;
   }
 }
 
@@ -300,7 +394,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 100px;
+  padding: clamp(20px, 4.2vw, 80px) clamp(4px, 5.2vw, 100px);
   width: 100%;
   max-width: 1920px;
   margin: 0 auto;
@@ -463,21 +557,7 @@
 
 /* ===== Gallery Responsive ===== */
 /* [TW-KEEP] responsive */
-@media (max-width: 1440px) {
-  .content-gallery {
-    padding: 60px 60px;
-  }
-
-  .gallery-search {
-    width: 400px;
-  }
-}
-
 @media (max-width: 1200px) {
-  .content-gallery {
-    padding: 40px 40px;
-  }
-
   .gallery-card {
     width: calc(33.333% - 16px);
   }
@@ -489,7 +569,8 @@
 
 @media (max-width: 768px) {
   .content-gallery {
-    padding: 20px 4px 4px;
+    padding-top: 20px;
+    padding-bottom: 4px;
   }
 
   .gallery-inner {
@@ -551,8 +632,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 100px;
-  gap: 48px;
+  padding: clamp(32px, 4.2vw, 80px) clamp(20px, 5.2vw, 100px);
+  gap: clamp(24px, 2.5vw, 48px);
   width: 100%;
   max-width: 1920px;
   margin: 0 auto;
@@ -571,12 +652,12 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 24px;
+  gap: clamp(16px, 1.4vw, 24px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  padding-right: 100px;
+  padding-right: clamp(20px, 5.2vw, 100px);
 }
 
 .mentor-cards-track::-webkit-scrollbar {
@@ -589,11 +670,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: clamp(16px, 1.4vw, 20px);
   gap: 12px;
-  min-width: 408px;
-  width: 408px;
-  height: 364px;
+  min-width: clamp(240px, 19vw, 365px);
+  width: clamp(240px, 19vw, 365px);
+  height: clamp(280px, 19vw, 350px);
   background: linear-gradient(226.13deg, #14151A 59.21%, #1A191F 83.37%, #302035 106.12%);
   border-radius: 20px;
   scroll-snap-align: start;
@@ -645,15 +726,14 @@
   box-sizing: border-box;
 }
 
-/* [TW-KEEP] gradient fade + arrow */
+/* [TW-KEEP] gradient fade + arrow — narrower + semi-transparent so next card peeks */
 .mentor-carousel-fade {
   position: absolute;
   top: 0;
   right: 0;
-  width: 282px;
+  width: clamp(40px, 5vw, 80px);
   height: 100%;
-  background: linear-gradient(90deg, rgba(27, 26, 31, 0) 0%, #0C0B10 100%);
-  opacity: 0.88;
+  background: linear-gradient(90deg, rgba(12, 11, 16, 0) 0%, rgba(12, 11, 16, 0.7) 100%);
   pointer-events: none;
   z-index: 5;
 }
@@ -684,18 +764,18 @@
 }
 
 /* [TW-KEEP] responsive */
-@media (max-width: 1440px) {
-  .best-mentor {
-    padding: 60px 60px;
+@media (max-width: 1024px) {
+  .best-mentor h2 {
+    font-size: 28px;
+  }
+
+  .mentor-arrow {
+    width: 44px;
+    height: 44px;
   }
 }
 
 @media (max-width: 768px) {
-  .best-mentor {
-    padding: 32px 20px;
-    gap: 24px;
-  }
-
   .best-mentor h2 {
     font-size: 24px;
   }
@@ -754,16 +834,8 @@
     font-size: 14px;
   }
 
-  .mentor-cards-track {
-    padding-right: 20px;
-  }
-
   .mentor-arrow {
     display: none;
-  }
-
-  .mentor-carousel-fade {
-    width: 80px;
   }
 }
 
@@ -775,8 +847,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 100px;
-  gap: 50px;
+  padding: clamp(4px, 4.2vw, 80px) clamp(4px, 5.2vw, 100px);
+  gap: clamp(4px, 2.6vw, 50px);
   width: 100%;
   max-width: 1920px;
   margin: 0 auto;
@@ -785,12 +857,6 @@
 }
 
 /* [TW-KEEP] responsive */
-@media (max-width: 1440px) {
-  .more-content {
-    padding: 60px 60px;
-  }
-}
-
 @media (max-width: 768px) {
   .more-content {
     padding: 4px;

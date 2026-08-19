@@ -7,6 +7,9 @@
     <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0 flex-1">수강생 포트폴리오</h1>
   </div>
 
+  <!-- 모바일 히어로 이미지 (데스크톱에서 숨김) -->
+  <div class="mobile-hero" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+
   <!-- 콘텐츠 영역 -->
   <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
     <!-- 작품 정보 카드 -->
@@ -43,9 +46,9 @@
     <div class="flex flex-col items-center gap-10 w-full">
       <!-- 기획서 섹션 -->
       <div class="flex items-center gap-0 w-full">
-        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
+        <div class="flex-1 h-px bg-zinc-700"></div>
         <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">기획서</span>
-        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
+        <div class="flex-1 h-px bg-zinc-700"></div>
       </div>
 
       <div class="w-full max-w-[800px]">
@@ -54,9 +57,9 @@
 
       <!-- 원고 섹션 -->
       <div class="flex items-center gap-0 w-full">
-        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
+        <div class="flex-1 h-px bg-zinc-700"></div>
         <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">원고</span>
-        <hr class="flex-1 border-none border-t border-zinc-700 m-0" />
+        <div class="flex-1 h-px bg-zinc-700"></div>
       </div>
 
       <div class="w-full max-w-[800px] relative overflow-hidden">
@@ -78,31 +81,31 @@
 
   <!-- ===== 원고 뷰어 모달 ===== -->
   @if (isViewerOpen()) {
-    <div class="fixed inset-0 flex justify-center items-center p-16 bg-black/60 backdrop-blur-[30px] z-[1000]" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
-      <div class="flex flex-col gap-2.5 w-full max-w-[900px] max-h-[90vh]">
-        <div class="flex justify-between items-center w-full">
-          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">명예의 전당</h2>
+    <div class="viewer-overlay fixed inset-0 flex justify-center items-center p-0 md:p-16 bg-[#090909] md:bg-black/60 md:backdrop-blur-[30px] z-[1000]" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
+      <div class="viewer-container flex flex-col gap-0 md:gap-2.5 w-full max-w-full md:max-w-[900px] h-full md:h-auto md:max-h-[90vh]">
+        <div class="viewer-header flex justify-between items-center w-full px-5 py-1 md:px-0 md:py-0 h-14 md:h-auto">
+          <div></div>
           <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 transition-opacity duration-150 hover:opacity-70" (click)="closeViewer()" aria-label="닫기">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
           </button>
         </div>
 
-        <div class="flex items-center gap-6 w-full">
-          <button class="viewer-arrow" (click)="prevPage()" aria-label="이전">
+        <div class="viewer-body flex flex-col md:flex-row items-stretch md:items-center gap-0 md:gap-6 w-full flex-1 overflow-hidden">
+          <button class="viewer-arrow hidden md:flex" (click)="prevPage()" aria-label="이전">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
           </button>
 
-          <div class="flex-1 bg-[#1C1B20] rounded-2xl p-6 overflow-hidden flex flex-col max-h-[75vh] box-border">
+          <div class="viewer-content flex-1 bg-[#1C1B20] rounded-none md:rounded-2xl p-5 md:p-6 overflow-hidden flex flex-col max-h-full md:max-h-[75vh] box-border">
             <div class="flex items-center gap-1 pb-4">
               <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ currentViewerPage() }}회</span>
               <span class="font-suit font-medium text-lg leading-[150%] tracking-tight text-zinc-500">/{{ totalPages }}회</span>
             </div>
             <div class="flex-1 overflow-y-auto rounded-lg">
-              <div class="w-full min-h-[600px] rounded-lg bg-cover bg-center" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
+              <div class="w-full min-h-[400px] md:min-h-[600px] rounded-lg bg-cover bg-center" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
             </div>
           </div>
 
-          <button class="viewer-arrow" (click)="nextPage()" aria-label="다음">
+          <button class="viewer-arrow hidden md:flex" (click)="nextPage()" aria-label="다음">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
           </button>
         </div>

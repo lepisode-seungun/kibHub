@@ -261,6 +261,14 @@
   max-width: 416px;
 }
 
+.academy-description-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
 /* ===== 우측: 710×589.28 비율 컨테이너 ===== */
 .academy-right {
   position: relative;
@@ -369,6 +377,23 @@
   letter-spacing: -0.04em;
   color: #FFFFFF;
   white-space: nowrap;
+}
+
+/* 배너 내부 구조: 데스크탑에서는 한 줄 */
+.feature-banner-inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.feature-banner-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }
 
 /* 코너 다이아몬드 — 컨테이너 기준 */
@@ -524,50 +549,308 @@
 }
 
 @media (max-width: 768px) {
+  /* 히어로 배너 숨김 */
+  .bootcamp-intro app-home-banner {
+    display: none !important;
+  }
+
   .bootcamp-list-section {
     padding: 40px 20px;
-    gap: 24px;
+    gap: 20px;
   }
 
   .section-title {
     font-size: 20px;
   }
 
+  /* 카드 → 가로 스크롤 슬라이드 */
   .cards-row {
-    flex-direction: column;
-    gap: 32px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    gap: 20px;
   }
 
+  .cards-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 카드: 260px 고정 */
   .bootcamp-card {
-    flex: 1;
-    width: 100%;
+    flex: 0 0 260px;
+    min-width: 260px;
+    width: 260px;
+    scroll-snap-align: start;
   }
 
+  /* 썸네일: 172px 높이 */
+  .card-thumbnail {
+    aspect-ratio: unset;
+    height: 172px;
+    border-radius: 8px;
+  }
+
+  /* 카드 이름/설명 축소 */
+  .card-name {
+    font-size: 16px;
+  }
+
+  .card-summary {
+    font-size: 14px;
+  }
+
+  /* 아카데미 섹션 — 모바일 (360px Figma Spec) */
   .academy-section {
     flex-direction: column;
-    padding: 48px 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
     gap: 40px;
+    background: #09090B;
+  }
+
+  .academy-left {
+    gap: 40px;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
   }
 
   .academy-label {
     font-size: 18px;
+    font-weight: 700;
+    line-height: 150%;
+  }
+
+  .academy-text-block {
+    gap: 40px;
+    align-items: center;
   }
 
   .academy-headline {
     font-size: 20px;
+    font-weight: 700;
+    line-height: 150%;
+    text-align: center;
+    max-width: 253px;
   }
 
   .academy-description {
-    font-size: 15px;
-    max-width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    max-width: 320px;
+    align-self: stretch;
+  }
+
+  .feature-banner {
+    width: 320px;
+    height: 77px;
+    padding: 12px;
+    gap: 9px;
+    left: 50%;
+    top: 4%;
+    transform: translateX(-50%);
   }
 
   .feature-banner-text {
     font-size: 14px;
+    font-weight: 500;
+    white-space: normal;
+    text-align: center;
+    line-height: 150%;
   }
 
-  .academy-grid-item {
-    height: 100px;
+  .feature-banner-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+  }
+
+  .feature-banner-row {
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .academy-right {
+    width: 100%;
+    max-width: 326px;
+    aspect-ratio: 326 / 311.89;
+  }
+
+  /* 데코 요소 모바일 조정 */
+  .deco-card-bg {
+    display: none;
+  }
+
+  .deco-logo {
+    width: 60px;
+    top: -7%;
+  }
+
+  .deco-orbit {
+    width: 68%;
+    height: 24%;
+    top: 2%;
+  }
+
+  .deco-star {
+    left: 72%;
+    top: -2%;
+    width: 15px;
+    height: 15px;
+  }
+
+  .deco-cursor {
+    display: none;
+  }
+
+  /* 코너 다이아몬드 — 배너에 맞춤 */
+  .corner-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .corner-dot--tl {
+    left: 0;
+    top: 4%;
+  }
+
+  .corner-dot--tr {
+    right: 0;
+    top: 4%;
+  }
+
+  .corner-dot--bl {
+    left: 0;
+    top: calc(4% + 77px);
+  }
+
+  .corner-dot--br {
+    right: 0;
+    top: calc(4% + 77px);
+  }
+
+  /* 이미지 그리드 — 모바일 */
+  .academy-grid {
+    left: 1%;
+    top: 44%;
+    width: 98%;
+    height: 56%;
+    gap: 7px;
+  }
+
+  .academy-grid-row {
+    gap: 4px;
+  }
+
+  .grid-img {
+    border-radius: 3px;
+  }
+
+  /* 그리드 페이드 — 모바일 배경색 맞춤 */
+  .grid-fade--top {
+    height: 48%;
+    background: linear-gradient(180deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
+  }
+
+  .grid-fade--left {
+    width: 26%;
+    background: linear-gradient(90deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
+  }
+
+  .grid-fade--right {
+    width: 26%;
+    background: linear-gradient(270deg, #1B1A20 0%, rgba(26, 25, 30, 0) 100%);
+  }
+
+  .grid-fade--bottom {
+    height: 48%;
+    background: linear-gradient(0deg, #1D1C21 0%, rgba(29, 28, 33, 0) 100%);
+  }
+
+  /* 비디오 섹션 */
+  .video-preview-section {
+    padding: 40px 20px;
+    gap: 20px;
+    min-height: auto;
+    height: auto;
+  }
+
+  .video-card {
+    height: 185.81px;
+    min-height: unset;
+    max-width: 100%;
+    border-radius: 6px;
+    padding: 16px 0;
+    border: 1px solid #27272A;
+  }
+
+  /* 히스토리 섹션 — 세로 배치: 이미지 위, 텍스트 아래 */
+  .history-section {
+    flex-direction: column;
+    padding: 40px 20px;
+    gap: 40px;
+    min-height: auto;
+  }
+
+  .history-left {
+    max-width: 100%;
+    width: 100%;
+    order: -1;
+  }
+
+  .history-showcase {
+    padding: 20px 0;
+  }
+
+  .showcase-image {
+    width: 70%;
+    max-width: 280px;
+  }
+
+  .history-right {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .history-title {
+    font-size: 20px;
+  }
+
+  .entry-title {
+    font-size: 16px;
+  }
+
+  .entry-desc {
+    font-size: 16px;
+  }
+
+  .entry-date {
+    font-size: 16px;
+  }
+
+  .timeline-row {
+    gap: 20px;
+  }
+
+  /* 파트너 섹션 */
+  .partner-section {
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .partner-label {
+    font-size: 18px;
+  }
+
+  .partner-title {
+    font-size: 20px;
   }
 }
 
@@ -629,6 +912,49 @@
 .play-icon {
   position: relative;
   margin-left: 4px;
+}
+
+/* 비디오 섹션 모바일 오버라이드 (베이스 스타일 뒤에 위치해야 함) */
+@media (max-width: 768px) {
+  .video-preview-section {
+    padding: 40px 20px;
+    gap: 20px;
+    min-height: auto;
+    height: auto;
+  }
+
+  .video-card {
+    height: 185.81px;
+    min-height: unset;
+    max-width: 100%;
+    border-radius: 6px;
+    padding: 16px 0;
+  }
+
+  .play-btn {
+    width: 42px;
+    height: 42px;
+    position: relative;
+  }
+
+  .play-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+  }
+
+  .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    width: 12px;
+    height: 14px;
+    margin-left: 0;
+  }
 }
 
 /* ============================================
@@ -870,6 +1196,60 @@
   border-radius: 1000px;
 }
 
+/* 히스토리 섹션 모바일 오버라이드 (베이스 스타일 뒤) */
+@media (max-width: 768px) {
+  .history-section {
+    flex-direction: column;
+    padding: 40px 20px;
+    gap: 40px;
+    min-height: auto;
+  }
+
+  .history-left {
+    max-width: 100%;
+    width: 100%;
+    order: -1;
+  }
+
+  .history-showcase {
+    padding: 20px 0;
+  }
+
+  .showcase-image {
+    width: 70%;
+    max-width: 280px;
+  }
+
+  .history-right {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .history-title {
+    font-size: 20px;
+  }
+
+  .entry-title {
+    font-size: 16px;
+  }
+
+  .entry-desc {
+    font-size: 16px;
+  }
+
+  .entry-date {
+    font-size: 16px;
+  }
+
+  .timeline-row {
+    gap: 20px;
+  }
+
+  .timeline-scrollbar {
+    display: none;
+  }
+}
+
 /* ============================================
    섹션 4: Partner
    ============================================ */
@@ -1003,4 +1383,42 @@
 .block-spinner {
   width: 32px;
   height: 32px;
+}
+
+/* 파트너 섹션 모바일 오버라이드 (베이스 스타일 뒤) */
+@media (max-width: 768px) {
+  .partner-section {
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .partner-label {
+    font-size: 18px;
+  }
+
+  .partner-title {
+    font-size: 20px;
+  }
+
+  .partner-logos-wrapper {
+    gap: 40px;
+    max-width: 320px;
+  }
+
+  .partner-marquee {
+    height: 32px;
+  }
+
+  .partner-logo-item {
+    width: 120px;
+    height: 32px;
+  }
+
+  .partner-marquee-track {
+    gap: 20px;
+  }
+
+  .partner-fade {
+    width: 40px;
+  }
 }

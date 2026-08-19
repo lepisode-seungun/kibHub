@@ -33,8 +33,15 @@ export class BootcampDetailPage {
   recruitPeriod = '2025-01-16 ~ 2025-08-07';
   eduPeriod = '2025-01-16 ~ 2025-08-07';
 
-  activeTab = '전체';
-  tabs = ['전체', '모집중', '준비중', '모집마감'];
+  activeTab = '항목 소개';
+  tabs = ['항목 소개', '커리큘럼', '강사소개', '부트캠프 후기'];
+
+  private tabSectionMap: Record<string, string> = {
+    '항목 소개': 'bd-content',
+    '커리큘럼': 'bd-curriculum',
+    '강사소개': 'bd-instructors',
+    '부트캠프 후기': 'bd-intro-section',
+  };
 
   description = `" 상상하는 모든 이야기를 현실로 "\n\n글로벌 웹툰 작가에 도전하세요!\n\n상상으로만 펼쳐나가던 나의 세상.\n어디서 부터 어떻게 기획을 하고 만들어나갈지 막막했던 이야기 -\n\n진학을 고민하는 학생, 비전을 고민하는 직장인,\n마음 속에 꿈을 품었던 그 누구라도 도전할 수 있습니다.\n\n웹툰의 기초, 프로그램 사용법부터 기획, 제작, 완성까지 !\n모듈화로 진행되는 코스를 통해 반복 학습은 물론\n단계를 밟아 차근차근 배워나갑니다.\n\n국내 정식 연재부터 글로벌 연재의 기회를 잡아보세요.\n케나즈와 함께 성장해나갈 미래의 작가님을 모십니다.\n\n온라인 기초 CLASS ㆍ 개인 맞춤 교육 커리큘럼 ㆍ 웹툰 아티스트 데뷔 기회`;
 
@@ -73,6 +80,15 @@ export class BootcampDetailPage {
 
   selectTab(tab: string): void {
     this.activeTab = tab;
+    const sectionId = this.tabSectionMap[tab];
+    if (sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        const offset = 80; // 탭 바 높이 + 여유
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
   }
 
   onApply(): void {

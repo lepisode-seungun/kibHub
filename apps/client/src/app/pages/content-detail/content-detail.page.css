@@ -1158,25 +1158,60 @@
   display: none;
 }
 
+/* Mobile comment FAB - hidden on desktop */
+.mobile-comment-fab {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .detail-page {
     padding: 0;
     gap: 0;
+    padding-bottom: 45px; /* space for collapsed toggle */
+  }
+
+  /* Sidebar wrapper → fixed bottom sheet */
+  .sidebar-wrapper {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   /* Mobile comment toggle button */
   .mobile-comment-toggle {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     width: 100%;
     height: 45px;
-    padding: 0 20px;
+    padding: 8px 0;
+    gap: 4px;
     background: #1C1B20;
     border: none;
-    border-top: 1px solid #27272A;
+    border-radius: 12px 12px 0 0;
     cursor: pointer;
     box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .mobile-toggle-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mobile-toggle-handle {
+    width: 32px;
+    height: 3px;
+    background: #52525B;
+    border-radius: 2px;
   }
 
   /* Hide desktop sidebar toggle on mobile */
@@ -1194,13 +1229,119 @@
     display: none;
   }
 
-  /* Expanded: show the comment content */
+  /* Expanded: show the comment content as bottom sheet */
   .sidebar-wrapper.mobile-comment-open .detail-right {
     display: flex !important;
+    flex-direction: column;
     width: 100% !important;
     min-width: unset !important;
-    max-height: 60vh;
+    height: 555px;
+    max-height: 75vh;
     overflow-y: auto;
+    background: #1C1B20;
+    border-top: 1px solid #3F3F46;
+    border-radius: 0;
+  }
+
+  /* Detail-left: hide topbar/header/description/actions on mobile when needed */
+  .detail-topbar {
+    background: #090909;
+    border-radius: 0;
+  }
+
+  .detail-images {
+    width: 100%;
+  }
+
+  /* Floating comment button */
+  .mobile-comment-fab {
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 101;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .mobile-comment-fab:active {
+    transform: scale(0.95);
+  }
+
+  /* Respect [hidden] attribute */
+  .mobile-comment-fab[hidden] {
+    display: none !important;
+  }
+
+  .comment-compose-guest {
+    display: none !important;
+  }
+
+  /* Mobile compose area */
+  .comment-compose {
+    padding: 20px;
+    gap: 12px;
+    background: #0F0E11;
+    min-height: auto;
+    width: 100%;
+    box-sizing: border-box;
+    order: 99;
+  }
+
+  .compose-textarea {
+    width: 100%;
+    height: 100px;
+  }
+
+  /* Image grid in compose */
+  .comment-compose .flex.flex-wrap {
+    gap: 8px;
+  }
+
+  .comment-compose .flex.flex-wrap > div {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Mobile image viewer */
+  .cimg-viewer {
+    max-width: 320px;
+    gap: 5.33px;
+    padding: 0 20px;
+  }
+
+  .cimg-image {
+    aspect-ratio: 1;
+    max-height: 320px;
+    border-radius: 2.13px;
+  }
+
+  .cimg-nav {
+    display: none !important;
+  }
+
+  .cimg-thumbs {
+    display: none !important;
+  }
+
+  /* Hide counter text */
+  .cimg-header > span {
+    display: none !important;
+  }
+
+  .cimg-header {
+    justify-content: flex-end !important;
+  }
+
+  .cimg-close-btn {
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    border-radius: 0 !important;
+    padding: 4px !important;
   }
 }
 
@@ -2351,3 +2492,32 @@
   left: auto;
 }
 
+/* ===== 모바일 번역 하단 시트 ===== */
+/* 데스크톱: 숨김 */
+.translate-sheet-overlay,
+.translate-sheet {
+  display: none;
+}
+
+/* 모바일: 표시 + 애니메이션 */
+@media (max-width: 768px) {
+  .translate-sheet-overlay {
+    display: block;
+    animation: sheetFadeIn 0.25s ease;
+  }
+
+  .translate-sheet {
+    display: flex;
+    animation: sheetSlideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  @keyframes sheetSlideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes sheetFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -30,6 +30,13 @@ export class ContentDetailPage implements OnInit {
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
   isSidebarOpen = signal(true);
   isMobileCommentOpen = signal(false);
+
+  private mobileCommentEffect = effect(() => {
+    const isOpen = this.isMobileCommentOpen();
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+  });
   commentMode = signal<'general' | 'feedback'>('general');
   isLoggedIn = this.authService.isLoggedIn;
   pendingMarker = signal<{top: number; left: number} | null>(null);
@@ -39,6 +46,9 @@ export class ContentDetailPage implements OnInit {
   isTranslateOpen = signal(false);
   selectedLang = signal<'ko' | 'en'>('ko');
 
+  /* 모바일 번역 하단 시트 */
+  isTranslateSheetOpen = signal(false);
+
   toggleTranslateDropdown(): void {
     if (!this.isLoggedIn()) {
       this.isLoginRequiredModalOpen.set(true);
@@ -47,9 +57,22 @@ export class ContentDetailPage implements OnInit {
     this.isTranslateOpen.update(v => !v);
   }
 
+  openTranslateSheet(): void {
+    if (!this.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
+    this.isTranslateSheetOpen.set(true);
+  }
+
+  closeTranslateSheet(): void {
+    this.isTranslateSheetOpen.set(false);
+  }
+
   selectLang(lang: 'ko' | 'en'): void {
     this.selectedLang.set(lang);
     this.isTranslateOpen.set(false);
+    this.isTranslateSheetOpen.set(false);
   }
 
   /* 사이드바 헤더 번역 */

@@ -168,6 +168,17 @@
   white-space: pre-line;
 }
 
+.bd-editor-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  background: rgba(229, 231, 235, 0.24);
+  border-radius: 8px;
+}
+
 /* ===== 강사 소개 ===== */
 .bd-instructors {
   display: flex;
@@ -1145,4 +1156,140 @@
 
 .af-btn-file-select:hover { background: #52525B; }
 
+/* ===== 모바일 대응 (360px Figma Spec) ===== */
+@media (max-width: 768px) {
+  /* 히어로 배너 */
+  .bd-hero {
+    padding: 40px 20px;
+    height: auto;
+    min-height: 200px;
+  }
+
+  .bd-hero-cta {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* 교육 소개 */
+  .bd-edu-info {
+    padding: 40px 20px;
+    gap: 20px;
+  }
+
+  .bd-edu-info h2 {
+    font-size: 20px;
+  }
+
+  .bd-info-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    align-content: flex-end;
+    padding: 24px;
+    gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #1C1B20;
+    border-radius: 16px;
+  }
+
+  /* 탭 바 */
+  .bd-tab-bar {
+    padding: 12px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bd-tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bd-tab-bar > div {
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+
+  .bd-tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 콘텐츠 영역 */
+  .bd-content {
+    padding: 40px 20px;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .bd-content h3,
+  .bd-content h4 {
+    font-size: 20px !important;
+    text-align: center;
+    width: 100%;
+  }
+
+  .bd-content .bd-section-heading {
+    text-align: left;
+  }
+
+  .bd-block-desc {
+    font-size: 14px;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .bd-editor-placeholder {
+    width: 100%;
+    height: 236px;
+    border-radius: 8px;
+  }
+
+  .bd-divider {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #3F3F46;
+    margin: 0;
+  }
+
+  /* 강사 소개 */
+  .bd-instructors {
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .bd-instructors h2 {
+    font-size: 20px !important;
+  }
+
+  .bd-instructor-card {
+    width: 300px;
+    min-width: 300px;
+  }
+
+  .bd-instructor-photo {
+    height: 200px;
+  }
+
+  .bd-instructor-slider {
+    padding-right: 40px;
+  }
+
+  .bd-slider-arrow {
+    display: none;
+  }
+
+  /* 부트캠프 소개 섹션 */
+  .bd-intro-section {
+    padding: 40px 20px;
+  }
+
+  .bd-intro-section h4 {
+    font-size: 20px !important;
+  }
+
+  .bd-intro-divider {
+    width: 100%;
+  }
+}
 

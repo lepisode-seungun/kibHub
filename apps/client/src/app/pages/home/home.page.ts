@@ -39,6 +39,15 @@ interface MentorCard {
   likes: string;
 }
 
+interface BootcampCard {
+  id: number;
+  title: string;
+  description: string;
+  thumbnailGradient: string;
+  status: string;
+  deadline: string;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -49,6 +58,7 @@ interface MentorCard {
 export class HomePage {
   @ViewChild('track') track!: ElementRef<HTMLDivElement>;
   @ViewChild('mentorTrack') mentorTrack!: ElementRef<HTMLDivElement>;
+  @ViewChild('bootcampTrack') bootcampTrack!: ElementRef<HTMLDivElement>;
 
   private searchService = inject(SearchService);
   searchQuery = this.searchService.searchQuery;
@@ -87,6 +97,36 @@ export class HomePage {
 
   scrollRight(): void {
     this.track.nativeElement.scrollBy({ left: 580, behavior: 'smooth' });
+  }
+
+  /* ===== Bootcamp ===== */
+  bootcampCards: BootcampCard[] = [
+    {
+      id: 1, title: '케나즈 아카데미 초급반',
+      description: '웹툰의 입문자, 초보자를 위한 커리큘럼',
+      thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      status: '모집중', deadline: '01.15 모집 마감',
+    },
+    {
+      id: 2, title: '케나즈 아카데미 중급반',
+      description: '실전 웹툰 제작을 위한 심화 과정',
+      thumbnailGradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      status: '모집중', deadline: '02.28 모집 마감',
+    },
+    {
+      id: 3, title: '케나즈 아카데미 고급반',
+      description: '글로벌 진출을 위한 프로 과정',
+      thumbnailGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      status: '모집 마감', deadline: '12.31 마감',
+    },
+  ];
+
+  scrollBootcampRight(): void {
+    this.bootcampTrack.nativeElement.scrollBy({ left: 280, behavior: 'smooth' });
+  }
+
+  scrollBootcampLeft(): void {
+    this.bootcampTrack.nativeElement.scrollBy({ left: -280, behavior: 'smooth' });
   }
 
   /* ===== Content Gallery ===== */
