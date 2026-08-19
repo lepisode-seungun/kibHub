@@ -98,4 +98,8 @@
 @media (max-width: 768px) {
   .nd-page { padding: 20px; }
   .nd-tab-nav { padding: 0 20px; }
+  .nd-attach-files {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
 }

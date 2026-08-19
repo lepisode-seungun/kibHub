@@ -29,4 +29,9 @@
 
 @media (max-width: 768px) {
   .ccnd-page { padding: 20px; }
+  .ccnd-attach-files {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
 }

@@ -84,6 +84,19 @@ export class MyBootcampDetailPage implements OnInit {
   activeLectureFilter = signal('전체');
   lectureSearchText = '';
 
+  /* 정렬 드롭다운 */
+  sortOrder = signal<'오름차순' | '내림차순'>('오름차순');
+  isSortDropdownOpen = signal(false);
+
+  toggleSortDropdown(): void {
+    this.isSortDropdownOpen.update(v => !v);
+  }
+
+  selectSortOrder(order: '오름차순' | '내림차순'): void {
+    this.sortOrder.set(order);
+    this.isSortDropdownOpen.set(false);
+  }
+
   lectureCards = [
     { id: 1, title: '강의명 30자 이내 강의명 30자 이내', category: '카테고리', duration: '13:27', status: 'progress' as const, hasImage: true },
     { id: 2, title: '강의명 30자 이내 강의명 30자 이내', category: '카테고리', duration: '13:27', status: 'progress' as const, hasImage: true },

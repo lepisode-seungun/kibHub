@@ -1,4 +1,12 @@
-<main class="flex flex-col min-h-screen bg-[#151419]">
+<main class="inq-form-page flex flex-col min-h-screen bg-[#151419]">
+  <!-- 백 헤더 (모바일 전용) -->
+  <div class="if-back-header">
+    <button class="if-back-btn" (click)="goToList()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M17.77 3.77L16 2L6 12l10 10 1.77-1.77L9.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
   <!-- 히어로 배너 -->
   <section class="if-hero">
     <h1 class="font-suit font-bold text-[32px] leading-[150%] tracking-tight text-white m-0">문의사항 수정</h1>
@@ -50,17 +58,17 @@
       <div class="flex flex-col items-start gap-2 w-full">
         <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">파일업로드</span>
         <div class="flex flex-col items-start gap-3 w-full">
-          <div class="flex flex-col justify-center items-center p-4 w-full h-[200px] bg-zinc-800 border border-dashed border-zinc-500 shadow-sm rounded-xl box-border">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">파일을 드래그 앤 드롭하거나 선택해주세요.</span>
+          <div class="flex flex-col justify-center items-center p-4 gap-4 w-full h-[200px] bg-zinc-800 border border-dashed border-zinc-500 shadow-sm rounded-xl box-border">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">첨부할 파일을 여기에 끌어다 놓거나, 파일 선택<br>버튼을 눌러 파일을 직접 선택해 주세요.</span>
+            <button class="flex justify-center items-center px-3 py-2 gap-1 h-12 border border-zinc-300 rounded-xl bg-transparent cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.8px] text-zinc-500 transition-colors duration-150 hover:bg-white/5" (click)="onFileSelect()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+              <span>파일 선택</span>
+            </button>
           </div>
-          <button class="flex justify-center items-center px-3 py-2 gap-1 h-12 border border-zinc-300 rounded-xl bg-transparent cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.8px] text-zinc-500 transition-colors duration-150 hover:bg-white/5" (click)="onFileSelect()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-            <span>파일 선택</span>
-          </button>
         </div>
-        <div class="flex flex-col gap-1 w-full">
-          <span class="font-suit font-medium text-base leading-[22px] tracking-tight text-zinc-400">압축 형식(zip) 파일을 제외한 모든 유형의 파일을 등록할 수 있습니다.</span>
-          <span class="font-suit font-medium text-base leading-[22px] tracking-tight text-zinc-400">파일 1개당 크기는 20MB를 초과할 수 없으며, 최대 10개 까지 등록할 수 있습니다.</span>
+        <div class="if-file-desc flex flex-col gap-1 w-full">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-tight text-zinc-400">압축 형식(zip) 파일을 제외한 모든 유형의 파일을<br>등록할 수 있습니다.</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-tight text-zinc-400">파일 1개당 크기는 20MB를 초과할 수 없으며, 최대<br>10개 까지 등록할 수 있습니다.</span>
         </div>
       </div>
 

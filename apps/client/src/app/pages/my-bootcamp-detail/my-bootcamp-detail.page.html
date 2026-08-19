@@ -146,11 +146,17 @@
       <div class="at-filter-bar">
         <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredLectures.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown">
-            <span>정렬</span>
+          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+            <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
             </svg>
+            @if (isSortDropdownOpen()) {
+              <div class="at-dropdown-menu">
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+              </div>
+            }
           </div>
           <div class="at-search-input">
             <input type="text" placeholder="검색어를 입력해주세요." (input)="onLectureSearch($event)" />
@@ -214,11 +220,17 @@
       <div class="at-filter-bar">
         <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredAssignments.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown">
-            <span>정렬</span>
+          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+            <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
             </svg>
+            @if (isSortDropdownOpen()) {
+              <div class="at-dropdown-menu">
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+              </div>
+            }
           </div>
           <div class="at-search-input">
             <input type="text" placeholder="검색어를 입력해주세요." (input)="onAssignmentSearch($event)" />
@@ -265,13 +277,19 @@
     @if (activeDetailTab() === '공지사항') {
       <!-- 필터 바 -->
       <div class="flex justify-between items-center w-full max-w-[1400px] h-12">
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ notices.length }}</span>
+        <span class="mbd-notice-total font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ notices.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown">
-            <span>정렬</span>
+          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+            <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
             </svg>
+            @if (isSortDropdownOpen()) {
+              <div class="at-dropdown-menu">
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+              </div>
+            }
           </div>
           <div class="at-search-input nt-search-input">
             <input type="text" placeholder="검색어를 입력해주세요." (input)="onNoticeSearch($event)" />

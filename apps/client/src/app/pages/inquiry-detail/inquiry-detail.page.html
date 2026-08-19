@@ -1,6 +1,15 @@
-<main class="flex flex-col min-h-screen bg-[#151419]">
+<main class="inq-page flex flex-col min-h-screen bg-[#151419]">
+  <!-- 백 헤더 (모바일 전용) -->
+  <div class="inq-back-header">
+    <button class="inq-back-btn" (click)="goToList()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M17.77 3.77L16 2L6 12l10 10 1.77-1.77L9.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
+
   <!-- 콘텐츠 영역 -->
-  <section class="flex flex-col items-center px-[260px] py-[60px] flex-1">
+  <section class="inq-content flex flex-col items-center px-[260px] py-[60px] flex-1">
     <div class="flex flex-col items-start gap-[60px] w-full max-w-[1400px]">
 
       <!-- 문의 카드 -->
@@ -41,7 +50,7 @@
 
         <!-- 첨부파일 -->
         @if (inquiry.attachments.length > 0) {
-          <div class="flex flex-wrap items-start gap-6 w-full">
+          <div class="inq-attach-files flex flex-wrap items-start gap-6 w-full">
             @for (file of inquiry.attachments; track $index) {
               <div class="flex items-center px-3 py-2 gap-2 border border-zinc-800 rounded-full">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -56,7 +65,7 @@
 
       <!-- 답변 영역 -->
       @if (inquiry.reply) {
-        <div class="flex items-start p-6 gap-6 w-full bg-bg-card rounded-2xl box-border">
+        <div class="inq-reply-card flex items-start p-6 gap-6 w-full bg-bg-card rounded-2xl box-border">
           <div class="flex flex-col gap-6 flex-1">
             <!-- 답변 헤더 -->
             <div class="flex justify-between items-start gap-6 w-full">
@@ -73,7 +82,7 @@
       }
 
       <!-- 목록으로 버튼 -->
-      <button class="flex justify-center items-center w-[332px] h-10 bg-zinc-700 border border-white/10 rounded-3xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-zinc-600" (click)="goToList()">목록으로</button>
+      <button class="inq-list-btn flex justify-center items-center w-[332px] h-10 bg-zinc-700 border border-white/10 rounded-3xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-zinc-600" (click)="goToList()">목록으로</button>
 
     </div>
   </section>

@@ -33,11 +33,11 @@ export class BootcampDetailPage {
   recruitPeriod = '2025-01-16 ~ 2025-08-07';
   eduPeriod = '2025-01-16 ~ 2025-08-07';
 
-  activeTab = '항목 소개';
-  tabs = ['항목 소개', '커리큘럼', '강사소개', '부트캠프 후기'];
+  activeTab = '소개';
+  tabs = ['소개', '커리큘럼', '강사소개', '부트캠프 후기'];
 
   private tabSectionMap: Record<string, string> = {
-    '항목 소개': 'bd-content',
+    '소개': 'bd-content',
     '커리큘럼': 'bd-curriculum',
     '강사소개': 'bd-instructors',
     '부트캠프 후기': 'bd-intro-section',

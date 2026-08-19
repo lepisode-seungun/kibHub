@@ -142,3 +142,49 @@
   .mb-card { width: 100%; } /* 1열 */
 }
 
+/* ===== 모바일 대응 (360px Figma Spec) ===== */
+@media (max-width: 768px) {
+  /* 섹션 패딩 조정 */
+  main > section {
+    padding: 20px !important;
+    gap: 20px !important;
+  }
+
+  /* 타이틀 크기 */
+  main > section h1 {
+    font-size: 20px !important;
+  }
+
+  /* 도움말 아이콘 숨기기 (모바일 터치에 불편) */
+  .mb-help-wrapper {
+    display: none;
+  }
+
+  /* 탭 필터: 가로 스크롤 */
+  main > section > div:nth-child(2) {
+    gap: 8px !important;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  main > section > div:nth-child(2)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mb-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* 카드 그리드: 1열, gap 20px */
+  main > section > div:nth-child(3) {
+    gap: 20px !important;
+  }
+
+  .mb-card {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}

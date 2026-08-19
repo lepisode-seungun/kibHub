@@ -222,6 +222,49 @@
   line-height: 150%;
   letter-spacing: -0.04em;
   color: #A1A1AA;
+  white-space: nowrap;
+}
+
+/* 드롭다운 메뉴 */
+.at-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.at-dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #52525B;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.at-dropdown-item:hover {
+  background: #F4F4F5;
+}
+
+.at-dropdown-item-active {
+  color: #7A48FF;
+  font-weight: 600;
 }
 
 /* 검색 input */
@@ -423,4 +466,5 @@
 .nt-search-input { width: 400px; }
 @media (max-width: 768px) {
   .nt-search-input { width: 100%; }
+  .mbd-notice-total { display: none; }
 }

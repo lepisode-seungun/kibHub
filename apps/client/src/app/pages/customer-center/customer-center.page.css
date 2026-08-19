@@ -285,3 +285,80 @@
   letter-spacing: -0.04em;
   color: #A1A1AA;
 }
+
+/* ===== 반응형 ===== */
+@media (max-width: 1440px) {
+  .cc-hero { padding: 0 100px; }
+  .cc-content { padding: 60px 100px; }
+}
+
+@media (max-width: 1200px) {
+  .cc-hero { padding: 0 40px; }
+  .cc-content { padding: 40px 40px; }
+}
+
+@media (max-width: 768px) {
+  /* 히어로: 축소, 타이틀만 표시 */
+  .cc-hero {
+    padding: 0 20px;
+    height: auto;
+    min-height: 0;
+    background: #151419;
+  }
+  .cc-hero-icon {
+    display: none;
+  }
+  .cc-hero h1 {
+    font-size: 24px !important;
+  }
+
+  /* 콘텐츠: 모바일 패딩 */
+  .cc-content {
+    padding: 24px 20px 20px;
+  }
+
+  /* 탭 */
+  .cc-tabs {
+    gap: 24px;
+  }
+
+  /* "전체 N" 숨기기 */
+  .cc-total-count {
+    display: none;
+  }
+
+  /* 검색 + 작성 버튼 행 */
+  .cc-content .flex.items-center.gap-3 {
+    width: 100%;
+    gap: 12px !important;
+  }
+
+  /* 검색박스: 나머지 공간 */
+  .cc-search-box {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* 작성 버튼: 컴팩트 */
+  .cc-btn-write {
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
+
+  /* 공지사항 아이템 간격 */
+  .cc-notice-item {
+    padding: 0 0 40px;
+  }
+
+  /* FAQ 답변 이미지 */
+  .cc-faq-item .w-\[228px\] {
+    width: 100% !important;
+  }
+
+  /* 페이지네이터 */
+  .cc-page-btn, .cc-page-arrow {
+    width: 32px;
+    height: 32px;
+  }
+}

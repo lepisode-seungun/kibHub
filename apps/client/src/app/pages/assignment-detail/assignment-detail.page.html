@@ -110,6 +110,14 @@
             </div>
           }
         </div>
+
+        <!-- 모바일 하단 "다음" 버튼 -->
+        <button class="ad-next-btn-mobile" (click)="goNext()">
+          <span>다음</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#71717A"/>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -130,7 +138,7 @@
           <span class="as-total">전체 {{ submissions.length }}</span>
           <div class="as-filter-right">
             <div class="as-dropdown">
-              <span class="as-dropdown-text">정렬</span>
+              <span class="as-dropdown-text">최신순</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>

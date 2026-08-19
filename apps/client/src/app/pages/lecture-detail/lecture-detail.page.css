@@ -337,9 +337,145 @@
 }
 
 @media (max-width: 768px) {
-  .lecture-page { padding: 20px; }
+  /* 페이지: 패딩 제거, 풀스크린 */
+  .lecture-page {
+    padding: 0;
+    gap: 0;
+    min-height: 100vh;
+  }
+
+  /* 상단 바 → 백 헤더 56px */
+  .lecture-page > div:first-child {
+    padding: 5px 20px;
+    height: 56px;
+    background: #090909;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 타이틀 숨기기 */
+  .lecture-page > div:first-child h1 {
+    display: none;
+  }
+
+  /* 뒤로가기 화살표 흰색 */
+  .lecture-back-btn svg path {
+    fill: #A1A1AA;
+  }
+
+  /* 다음 강의 버튼 상단에서 숨기기 */
+  .lecture-next-btn {
+    display: none;
+  }
+
+  /* 메인 레이아웃: 세로 배치 */
+  .lecture-main {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* 비디오 래퍼: flex-1 → 풀 너비로 강제 */
+  .lecture-main > div:first-child {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* 비디오: 풀 너비, border-radius 제거 */
+  .lecture-video-player {
+    border-radius: 0;
+    aspect-ratio: 360 / 202.5;
+  }
+
+  /* 비디오 컨트롤 피그마 스펙 */
+  .video-controls {
+    gap: 13.5px;
+    padding: 3px 10.5px;
+    height: 41px;
+    background: rgba(45, 45, 45, 0.7);
+    backdrop-filter: blur(0.94px);
+  }
+
   .vc-progress-bar { width: 160px; }
-  .vc-volume { display: none; }
-  .vc-others { display: none; }
-  .video-controls { gap: 12px; padding: 8px 16px; }
+  .vc-time { font-size: 12px; line-height: 15px; }
+
+  /* 볼륨 아이콘 크기 */
+  .vc-volume svg { width: 12px; height: 12px; }
+  .vc-volume-bar { width: 0; display: none; }
+
+  /* 재생 컨트롤 크기 */
+  .vc-ctrl-btn { width: 9px; height: 9px; }
+  .vc-ctrl-btn svg { width: 9px; height: 9px; }
+  .vc-play-btn { width: 12.6px; height: 12.6px; }
+  .vc-play-btn svg { width: 12.6px; height: 12.6px; }
+
+  /* 기타 버튼 크기 */
+  .vc-ctrl-btn-sm { width: 12px; height: 12px; }
+  .vc-ctrl-btn-sm svg { width: 12px; height: 12px; }
+  .vc-others { gap: 9px; }
+
+  /* 사이드바 → 풀 너비, border 없음, 구조 변경 */
+  .lecture-sidebar {
+    width: 100%;
+    min-width: 0;
+    border: none;
+    border-radius: 0;
+    padding: 20px;
+    gap: 12px;
+    border-top: 1px solid #E4E4E7;
+  }
+
+  /* 강의 제목 크기 */
+  .lecture-sidebar h2 {
+    font-size: 20px !important;
+  }
+
+  /* 학습자료 파일 칩: 풀 너비 */
+  .ls-file-chip {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* 학습자료 감싸기 */
+  .ls-materials-body .flex-wrap {
+    gap: 12px;
+  }
+
+  /* 설명 스크롤 영역 높이 자동 */
+  .ls-description-scroll {
+    max-height: none;
+  }
+
+  /* 모바일 하단 "다음" 버튼 */
+  .lecture-next-btn-mobile {
+    display: flex !important;
+  }
+}
+
+/* 모바일 하단 "다음" 버튼 (데스크톱 숨김) */
+.lecture-next-btn-mobile {
+  box-sizing: border-box;
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 4px;
+  width: 100%;
+  height: 48px;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: background 0.15s;
+}
+.lecture-next-btn-mobile:hover { background: #F4F4F5; }
+.lecture-next-btn-mobile span {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #52525B;
 }

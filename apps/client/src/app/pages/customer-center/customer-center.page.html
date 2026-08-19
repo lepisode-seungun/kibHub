@@ -29,7 +29,7 @@
 
         <!-- 카운트 + 검색 -->
         <div class="flex items-center gap-[60px] w-full">
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white flex-1">전체 {{ totalCount }}</span>
+          <span class="cc-total-count font-suit font-medium text-base leading-[150%] tracking-tight text-white flex-1">전체 {{ totalCount }}</span>
           <div class="flex items-center gap-3">
             <div class="cc-search-box">
               <input class="cc-search-input" type="text" placeholder="검색어를 입력해주세요." [(ngModel)]="searchQuery" name="searchQuery" (keydown.enter)="onSearch()">
@@ -37,7 +37,7 @@
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
               </svg>
             </div>
-            <button class="cc-btn-write" (click)="onWrite()">작성</button>
+            <button class="cc-btn-write" (click)="onSearch()">등록</button>
           </div>
         </div>
       </div>
@@ -198,7 +198,7 @@
 
       <!-- 검색 결과 없음 -->
       @if (items.length === 0 && hasSearched) {
-        <div class="flex flex-col justify-center items-center gap-3 w-full h-[576px]">
+        <div class="flex flex-col justify-center items-center gap-3 w-full h-[492px]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3.5-6.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm7 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-3.5 4c-2.33 0-4.32-1.45-5.12-3.5h1.67c.7 1.19 1.97 2 3.45 2s2.75-.81 3.45-2h1.67c-.8 2.05-2.79 3.5-5.12 3.5z" fill="#A1A1AA"/>
           </svg>
