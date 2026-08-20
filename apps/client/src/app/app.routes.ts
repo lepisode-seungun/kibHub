@@ -26,6 +26,20 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'change-email',
+    loadComponent: () =>
+      import('./pages/change-email/change-email.page').then(
+        (m) => m.ChangeEmailPage
+      ),
+  },
+  {
+    path: 'change-password',
+    loadComponent: () =>
+      import('./pages/change-password/change-password.page').then(
+        (m) => m.ChangePasswordPage
+      ),
+  },
+  {
     path: 'student-portfolio/:id',
     loadComponent: () =>
       import('./pages/student-portfolio-detail/student-portfolio-detail.page').then(
@@ -82,10 +96,24 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'my-bootcamp/:bootcampId/submission/:submissionId/feedback-register',
+    loadComponent: () =>
+      import('./pages/feedback-register/feedback-register.page').then(
+        (m) => m.FeedbackRegisterPage
+      ),
+  },
+  {
     path: 'my-bootcamp/:bootcampId/feedback/:feedbackId',
     loadComponent: () =>
       import('./pages/feedback-detail/feedback-detail.page').then(
         (m) => m.FeedbackDetailPage
+      ),
+  },
+  {
+    path: 'my-bootcamp/:bootcampId/feedback/:feedbackId/register',
+    loadComponent: () =>
+      import('./pages/feedback-register/feedback-register.page').then(
+        (m) => m.FeedbackRegisterPage
       ),
   },
   {

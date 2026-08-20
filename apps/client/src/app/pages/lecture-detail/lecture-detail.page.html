@@ -1,8 +1,19 @@
+<!-- 모바일: 상단 네비게이션 바 -->
+<div class="md:hidden flex justify-end items-center px-5 py-[5px] gap-2.5 w-full h-14 bg-[#090909]">
+  <div class="flex items-center gap-2.5 flex-1 h-6">
+    <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <main class="lecture-page">
   <!-- ===== 상단 바 ===== -->
   <div class="flex items-center justify-between w-full max-w-[1400px] h-10">
     <div class="flex items-center gap-3">
-      <button class="lecture-back-btn" (click)="goBack()" aria-label="뒤로 가기">
+      <button class="lecture-back-btn hidden md:flex" (click)="goBack()" aria-label="뒤로 가기">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
         </svg>

@@ -219,8 +219,8 @@
 
 <!-- Side Drawer -->
 <aside [ngClass]="isSidebarOpen() ? 'side-drawer drawer-open' : 'side-drawer'">
-  <!-- Drawer Header -->
-  <div class="drawer-header">
+  <!-- Drawer Header (모바일만) -->
+  <div class="drawer-header drawer-mobile-only">
     <span class="drawer-logo">KIPhub</span>
     <button class="drawer-close-btn" aria-label="닫기" (click)="closeSidebar()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
@@ -233,8 +233,24 @@
   <div class="drawer-body">
     @if (isLoggedIn()) {
       <!-- ===== 로그인 상태 ===== -->
-      <!-- 유저 프로필 -->
-      <div class="flex items-center gap-2.5 w-full">
+
+      <!-- 데스크톱 전용: 알림 -->
+      <button class="drawer-footer-item drawer-logout-btn drawer-desktop-only" (click)="openNotification()">
+        <div class="drawer-footer-left">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="#A1A1AA" opacity="0.5"/>
+            <path d="M9.5 18.5c0 .28.03.55.08.81.4 1.87 2.82 2.1 3.43.42A3.49 3.49 0 0 0 13.5 18.5" fill="#FFFFFF"/>
+          </svg>
+          <span>알림</span>
+        </div>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </button>
+      <div class="drawer-divider drawer-desktop-only"></div>
+
+      <!-- 모바일 전용: 유저 프로필 -->
+      <div class="flex items-center gap-2.5 w-full drawer-mobile-only">
         <a routerLink="/profile-edit" class="flex items-center justify-center w-12 h-12 bg-[#434343] border border-[#565757] rounded-full no-underline flex-shrink-0" (click)="closeSidebar()">
           <span class="font-suit font-medium text-xs text-[#E0E0E0]">{{ userInitial() }}</span>
         </a>
@@ -245,8 +261,8 @@
         </a>
       </div>
 
-      <!-- 마이페이지 / 내 부트캠프 / 알림 -->
-      <div class="flex flex-col w-full">
+      <!-- 모바일 전용: 마이페이지 / 내 부트캠프 / 알림 -->
+      <div class="flex flex-col w-full drawer-mobile-only">
         <a class="drawer-footer-item" routerLink="/profile" (click)="closeSidebar()">
           <div class="drawer-footer-left">
             <span class="flex items-center justify-center w-5 h-5 bg-[#3F3F46] border border-[#52525B] rounded-full">
@@ -274,10 +290,10 @@
         </button>
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
-      <!-- 언어 -->
-      <div class="drawer-menu-item drawer-lang-row" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
+      <!-- 모바일 전용: 언어 -->
+      <div class="drawer-menu-item drawer-lang-row drawer-mobile-only" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
         <div class="drawer-menu-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
@@ -290,10 +306,10 @@
         </svg>
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
-      <!-- 네비게이션 -->
-      <div class="drawer-nav-section">
+      <!-- 모바일 전용: 네비게이션 -->
+      <div class="drawer-nav-section drawer-mobile-only">
         <a class="drawer-nav-item" routerLink="/" (click)="closeSidebar()">홈</a>
 
         <button class="drawer-nav-item drawer-nav-expandable" (click)="toggleBootcamp()">
@@ -313,7 +329,7 @@
         }
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
       <!-- 킵허브 소개 / 고객센터 -->
       <div class="drawer-footer-section">
@@ -378,17 +394,17 @@
         </svg>
       </button>
     } @else {
-      <!-- ===== 비로그인 상태 (기존) ===== -->
-      <!-- 비회원: 로그인 유도 -->
-      <div class="drawer-login-section">
+      <!-- ===== 비로그인 상태 ===== -->
+      <!-- 모바일 전용: 로그인 유도 -->
+      <div class="drawer-login-section drawer-mobile-only">
         <span class="drawer-login-text">로그인 후 이용해주세요.</span>
         <a class="drawer-login-btn" routerLink="/login" (click)="closeSidebar()">로그인</a>
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
-      <!-- 언어 -->
-      <div class="drawer-menu-item drawer-lang-row" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
+      <!-- 모바일 전용: 언어 -->
+      <div class="drawer-menu-item drawer-lang-row drawer-mobile-only" (click)="toggleLangSheet()" role="button" tabindex="0" (keydown.enter)="toggleLangSheet()">
         <div class="drawer-menu-left">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
@@ -401,10 +417,10 @@
         </svg>
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
-      <!-- 네비게이션 -->
-      <div class="drawer-nav-section">
+      <!-- 모바일 전용: 네비게이션 -->
+      <div class="drawer-nav-section drawer-mobile-only">
         <a class="drawer-nav-item" routerLink="/" (click)="closeSidebar()">홈</a>
 
         <button class="drawer-nav-item drawer-nav-expandable" (click)="toggleBootcamp()">
@@ -424,9 +440,9 @@
         }
       </div>
 
-      <div class="drawer-divider"></div>
+      <div class="drawer-divider drawer-mobile-only"></div>
 
-      <!-- 하단 링크 -->
+      <!-- 공통: 킵허브 소개 / 고객센터 -->
       <div class="drawer-footer-section">
         <a class="drawer-footer-item" routerLink="/about" (click)="closeSidebar()">
           <div class="drawer-footer-left">
@@ -450,6 +466,12 @@
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
           </svg>
         </a>
+      </div>
+
+      <div class="drawer-divider"></div>
+
+      <!-- 공통: 서비스 약관 / 개인정보 처리방침 -->
+      <div class="drawer-footer-section">
         <a class="drawer-footer-item" routerLink="/terms" (click)="closeSidebar()">
           <div class="drawer-footer-left">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -463,7 +485,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
-            <span>개인정보 보호정책</span>
+            <span>개인정보 처리방침</span>
           </div>
         </a>
       </div>
@@ -475,11 +497,19 @@
 @if (isNotificationOpen()) {
   <div class="noti-overlay" (click)="closeNotification()" (keydown.enter)="closeNotification()" role="button" tabindex="-1"></div>
   <div class="noti-modal">
+    <!-- 모바일 상단 바 (close) -->
+    <div class="noti-mobile-topbar">
+      <button class="noti-close-btn" (click)="closeNotification()" aria-label="닫기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
     <!-- 헤더 -->
     <div class="noti-header">
       <div class="noti-header-inner">
-        <span class="noti-title">알림</span>
-        <button class="noti-close-btn" (click)="closeNotification()" aria-label="닫기">
+        <span class="noti-title">알림 ({{ notifications.length }})</span>
+        <button class="noti-close-btn noti-desktop-close" (click)="closeNotification()" aria-label="닫기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
           </svg>

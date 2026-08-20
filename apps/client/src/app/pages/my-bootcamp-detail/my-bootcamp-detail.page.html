@@ -1,20 +1,33 @@
+<!-- 모바일: 상단 네비게이션 바 -->
+<div class="md:hidden flex justify-end items-center px-5 py-[5px] gap-2.5 w-full h-14 bg-[#090909]">
+  <div class="flex items-center gap-2.5 flex-1 h-6">
+    <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <main class="flex flex-col min-h-screen bg-white">
   <!-- ===== 히어로 섹션 (다크) ===== -->
   <section class="mbd-hero">
     <div class="flex flex-col items-start gap-6 w-full max-w-[1400px]">
       <div class="flex flex-col gap-6 w-full">
-        <div class="flex items-center gap-3">
-          <!-- 뒤로가기 -->
+        <!-- 데스크톱: < 뱃지 제목 한 줄 -->
+        <div class="hidden md:flex items-center gap-3">
           <button class="mbd-back-btn" (click)="goBack()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
             </svg>
           </button>
-
-          <!-- 상태 뱃지 -->
           <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus }}</span>
+          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle }}</h1>
+        </div>
 
-          <!-- 부트캠프 제목 -->
+        <!-- 모바일: 뱃지 위, 제목 아래 -->
+        <div class="md:hidden flex flex-col items-start gap-2">
+          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus }}</span>
           <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle }}</h1>
         </div>
 
@@ -132,7 +145,7 @@
     <!-- ===== 강의 탭 ===== -->
     @if (activeDetailTab() === '강의') {
       <!-- 필터 칩 -->
-      <div class="flex items-center gap-2 w-full">
+      <div class="mbd-chip-scroll flex items-center gap-2 w-full">
         @for (chip of lectureFilterChips; track chip) {
           <button
             [ngClass]="activeLectureFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
@@ -146,7 +159,7 @@
       <div class="at-filter-bar">
         <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredLectures.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+          <div class="at-dropdown" role="button" tabindex="0" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
             <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
@@ -206,7 +219,7 @@
     <!-- ===== 과제 탭 ===== -->
     @if (activeDetailTab() === '과제') {
       <!-- 필터 칩 -->
-      <div class="flex items-center gap-2 w-full">
+      <div class="mbd-chip-scroll flex items-center gap-2 w-full">
         @for (chip of assignmentFilterChips; track chip) {
           <button
             [ngClass]="activeAssignmentFilter() === chip ? 'at-chip at-chip-active' : 'at-chip'"
@@ -220,7 +233,7 @@
       <div class="at-filter-bar">
         <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredAssignments.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+          <div class="at-dropdown" role="button" tabindex="0" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
             <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>
@@ -279,7 +292,7 @@
       <div class="flex justify-between items-center w-full max-w-[1400px] h-12">
         <span class="mbd-notice-total font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ notices.length }}</span>
         <div class="flex items-center gap-3">
-          <div class="at-dropdown" (click)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
+          <div class="at-dropdown" role="button" tabindex="0" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
             <span>{{ sortOrder() }}</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
               <path d="M7 10l5 5 5-5z"/>

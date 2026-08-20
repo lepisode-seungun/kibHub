@@ -395,6 +395,7 @@
                     <span class="comment-me-badge">나</span>
                   }
                 </div>
+                @if (editingCommentId() !== comment.id) {
                 <div class="comment-more-wrap">
                   <button class="comment-more-btn" aria-label="더보기" (click)="toggleDropdown(comment.id, $event)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
@@ -404,36 +405,50 @@
                   @if (openDropdownId() === comment.id) {
                     <div class="comment-dropdown-overlay" tabindex="-1" (click)="closeDropdown()" (keydown.escape)="closeDropdown()"></div>
                     <div class="comment-dropdown">
-                      <button class="dropdown-item dropdown-item-active" (click)="closeDropdown()">수정</button>
+                      <button class="dropdown-item dropdown-item-active" (click)="startEdit(comment)">수정</button>
                       <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
                       <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal()">신고</button>
                     </div>
                   }
                 </div>
-              </div><!-- /comment-item-header -->
-              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.time }}</span>
-              <div class="flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                  <button class="action-pill">답글 쓰기</button>
-                  <button class="action-pill" [class.liked]="comment.liked">
-                    <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="comment.liked ? '#EF4444' : 'none'">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="comment.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
-                    </svg>
-                    <span>좋아요</span>
-                    <span>{{ comment.likes }}</span>
-                  </button>
-                </div>
-                @if (comment.replyCount > 0) {
-                  <div class="comment-reply-count">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#D4D4D8" opacity="0.5"/>
-                      <circle cx="8" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="12" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="16" cy="10.5" r="1" fill="#D4D4D8"/>
-                    </svg>
-                    <span>{{ comment.replyCount }}</span>
-                  </div>
                 }
-              </div>
+              </div><!-- /comment-item-header -->
+
+              @if (editingCommentId() === comment.id) {
+                <!-- 수정 모드 -->
+                <div class="flex flex-col gap-2 w-full">
+                  <textarea class="compose-textarea" [value]="editingCommentText()" (input)="onEditInput($event)"></textarea>
+                  <div class="flex justify-end gap-2">
+                    <button class="compose-btn-outline" (click)="cancelEdit()">취소</button>
+                    <button class="compose-btn-primary" (click)="saveEdit(comment.id)">저장</button>
+                  </div>
+                </div>
+              } @else {
+                <!-- 일반 모드 -->
+                <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.time }}</span>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <button class="action-pill">답글 쓰기</button>
+                    <button class="action-pill" [class.liked]="comment.liked">
+                      <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="comment.liked ? '#EF4444' : 'none'">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="comment.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
+                      </svg>
+                      <span>좋아요</span>
+                      <span>{{ comment.likes }}</span>
+                    </button>
+                  </div>
+                  @if (comment.replyCount > 0) {
+                    <div class="comment-reply-count">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#D4D4D8" opacity="0.5"/>
+                        <circle cx="8" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="12" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="16" cy="10.5" r="1" fill="#D4D4D8"/>
+                      </svg>
+                      <span>{{ comment.replyCount }}</span>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
 
@@ -547,7 +562,6 @@
       <div class="viewer-container">
         <!-- 헤더 -->
         <div class="viewer-header">
-          <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-200 m-0">명예의 전당</h2>
           <button class="viewer-close-btn" (click)="closeViewer()" aria-label="닫기">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
               <path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
@@ -797,7 +811,7 @@
         @for (cat of bookmarkCategories(); track cat.id) {
           <!-- 카테고리 카드 -->
           <div
-            [class]="selectedEditId() === cat.id
+            [class]="selectedEditIds().has(cat.id)
               ? 'box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] rounded-xl shrink-0 cursor-pointer transition-all duration-150 border border-accent bg-[rgba(122,72,255,0.04)] hover:bg-[rgba(122,72,255,0.08)]'
               : 'box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] bg-zinc-800 border border-zinc-700 rounded-xl shrink-0 cursor-pointer transition-all duration-150 hover:bg-[rgba(122,72,255,0.06)] hover:border-[#956DFF]'"
             (click)="toggleRowEdit(cat.id)" role="button" tabindex="0" (keydown.enter)="toggleRowEdit(cat.id)"
@@ -823,7 +837,7 @@
             </div>
 
             <!-- 마이너스 삭제 버튼 -->
-            @if (selectedEditId() === cat.id) {
+            @if (selectedEditIds().has(cat.id)) {
               <button class="flex items-center justify-center w-8 h-8 bg-transparent border-none cursor-pointer p-0 shrink-0 rounded-md transition-transform duration-150 hover:scale-110 active:scale-95" (click)="removeBookmarkCategory(cat.id, $event)" aria-label="삭제">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                   <rect x="3" y="3" width="18" height="18" rx="3" fill="#F87171"/>
@@ -852,7 +866,7 @@
 
 <!-- ===== 모바일 번역 하단 시트 ===== -->
 @if (isTranslateSheetOpen()) {
-  <div class="translate-sheet-overlay fixed inset-0 bg-black/50 z-[200]" (click)="closeTranslateSheet()"></div>
+  <div class="translate-sheet-overlay fixed inset-0 bg-black/50 z-[200]" tabindex="-1" (click)="closeTranslateSheet()" (keydown.escape)="closeTranslateSheet()"></div>
   <div class="translate-sheet fixed bottom-0 left-0 right-0 w-full flex flex-col items-start bg-[#1C1B20] rounded-t-xl z-[201] box-border">
     <!-- Handle -->
     <div class="w-8 h-1 bg-zinc-600 rounded-sm mx-auto mt-2.5"></div>

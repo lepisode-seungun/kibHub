@@ -1,0 +1,42 @@
+/* ===== 모바일 바텀시트 ===== */
+@media (max-width: 768px) {
+  /* 오버레이: 하단 정렬 */
+  .modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  /* 모달 컨테이너: 바텀시트 */
+  .modal-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+    min-height: unset !important;
+    border-radius: 24px 24px 0 0 !important;
+    animation: slide-up 0.3s ease-out;
+  }
+
+  /* 바텀시트 핸들 바 */
+  .modal-container::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    z-index: 20;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

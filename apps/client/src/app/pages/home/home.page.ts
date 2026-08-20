@@ -139,6 +139,16 @@ export class HomePage {
     { id: 'writing', label: '글', iconBg: '#7B7EDF' },
   ];
 
+  subCategories = [
+    { id: 'sub1', label: 'Category', count: 1 },
+    { id: 'sub2', label: 'Category', count: 2 },
+    { id: 'sub3', label: 'Category', count: 3 },
+    { id: 'sub4', label: 'Category', count: 4 },
+    { id: 'sub5', label: 'Category', count: 5 },
+    { id: 'sub6', label: 'Category', count: 6 },
+    { id: 'sub7', label: 'Category', count: 7 },
+  ];
+
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
 
   contentCards: ContentCard[] = [

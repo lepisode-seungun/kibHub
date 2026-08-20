@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 
@@ -21,9 +21,13 @@ interface Comment {
   templateUrl: './feedback-detail.page.html',
   styleUrls: ['./feedback-detail.page.css'],
 })
-export class FeedbackDetailPage implements OnInit {
+export class FeedbackDetailPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
 
   feedbackId = '';
   bootcampId = '';
@@ -41,6 +45,7 @@ export class FeedbackDetailPage implements OnInit {
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
+  isDeleteModalOpen = signal(false);
 
   // TODO: 차후 계정 권한 API 연동
   isAuthor = false;
@@ -103,14 +108,34 @@ export class FeedbackDetailPage implements OnInit {
 
   onEdit(): void {
     this.closeMore();
+    this.router.navigate([
+      '/my-bootcamp', this.bootcampId, 'feedback', this.feedbackId, 'register',
+    ]);
   }
 
   onDelete(): void {
     this.closeMore();
+    this.isDeleteModalOpen.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen.set(false);
+    document.body.style.overflow = '';
+  }
+
+  confirmDelete(): void {
+    this.isDeleteModalOpen.set(false);
+    document.body.style.overflow = '';
+    // TODO: API 삭제 요청 후 목록으로 이동
+    this.goBack();
   }
 
   onRegisterFeedback(): void {
     this.closeMore();
+    this.router.navigate([
+      '/my-bootcamp', this.bootcampId, 'feedback', this.feedbackId, 'register',
+    ]);
   }
 
   onCommentInput(event: Event): void {

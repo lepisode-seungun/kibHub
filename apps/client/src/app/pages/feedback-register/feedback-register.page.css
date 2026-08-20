@@ -1,8 +1,23 @@
 /* [TW-KEEP] 탭 + 에디터 구조 + 드롭존 + spinner + 반응형 */
-:host { display: block; min-height: 100vh; background: #FFFFFF; }
+:host { display: block; }
+
+/* 모바일 상단 바 — 데스크톱에서 숨김 */
+.fbr-mobile-topbar {
+  display: none;
+}
+
+.fbr-mobile-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* 탭 */
-.asf-tab-nav {
+.fbr-tab-nav {
   box-sizing: border-box;
   display: flex;
   align-items: flex-end;
@@ -13,7 +28,7 @@
   border-bottom: 1px solid #F4F4F5;
 }
 
-.asf-tab-item {
+.fbr-tab-item {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,13 +47,15 @@
   transition: color 0.15s, border-color 0.15s;
 }
 
-.asf-tab-item-active {
+.fbr-tab-item:hover { color: #52525B; }
+
+.fbr-tab-item-active {
   color: #27272A;
   border-bottom-color: #7A48FF;
 }
 
 /* 메인 */
-.asf-page {
+.fbr-page {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,7 +66,7 @@
 }
 
 /* 카드 */
-.asf-form-card {
+.fbr-form-card {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -65,7 +82,7 @@
 }
 
 /* 에디터 */
-.asf-editor {
+.fbr-editor {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -75,7 +92,7 @@
   overflow: hidden;
 }
 
-.asf-editor-toolbar {
+.fbr-editor-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -85,7 +102,7 @@
   border-radius: 12px 12px 0 0;
 }
 
-.asf-tb-btn {
+.fbr-tb-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,10 +116,10 @@
   transition: opacity 0.15s;
 }
 
-.asf-tb-btn:hover { opacity: 1; }
+.fbr-tb-btn:hover { opacity: 1; }
 
 /* 드롭존 */
-.asf-upload-dropzone {
+.fbr-upload-dropzone {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -120,24 +137,48 @@
   transition: border-color 0.15s;
 }
 
-.asf-upload-dropzone:hover { border-color: #7A48FF; }
+.fbr-upload-dropzone:hover { border-color: #7A48FF; }
 
 /* Spinner */
-.asf-file-spinner { animation: spin 1s linear infinite; }
-@keyframes spin {
+.fbr-file-spinner { animation: fbr-spin 1s linear infinite; }
+@keyframes fbr-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
 /* 반응형 */
 @media (max-width: 1600px) {
-  .asf-tab-nav { padding: 0 100px; }
-  .asf-page { padding: 60px 100px; }
-  .asf-form-card { width: 100%; }
+  .fbr-tab-nav { padding: 0 100px; }
+  .fbr-page { padding: 60px 100px; }
+  .fbr-form-card { width: 100%; }
 }
 
 @media (max-width: 768px) {
-  .asf-tab-nav { display: none !important; }
-  .asf-page { padding: 40px 20px; }
-  .asf-form-card { padding: 20px; }
+  .fbr-mobile-topbar {
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    width: 100%;
+    height: 56px;
+    background: #090909;
+    box-sizing: border-box;
+  }
+
+  .fbr-tab-nav {
+    display: none !important;
+  }
+
+  .fbr-desktop-back {
+    display: none !important;
+  }
+
+  .fbr-page {
+    padding: 20px;
+  }
+
+  .fbr-form-card {
+    padding: 20px;
+    border: none;
+    box-shadow: none;
+  }
 }

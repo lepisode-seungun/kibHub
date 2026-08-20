@@ -1,7 +1,7 @@
 <!-- ===== 회원가입 완료 모달 ===== -->
 @if (modalService.showModal()) {
-  <div class="fixed inset-0 bg-black/60 z-[2000] flex items-center justify-center p-4">
-    <div class="relative w-[550px] max-w-full flex flex-col bg-white" style="border-radius: 24px; height: 920px; max-height: 95vh; min-height: 600px; overflow: hidden;">
+  <div class="modal-overlay fixed inset-0 bg-black/60 z-[2000] flex items-center justify-center p-4">
+    <div class="modal-container relative w-[550px] max-w-full flex flex-col bg-white" style="border-radius: 24px; height: 920px; max-height: 95vh; min-height: 600px; overflow: hidden;">
 
       <!-- 다크 배경 SVG (absolute) -->
       <svg class="absolute inset-x-0 top-0 w-full pointer-events-none z-0" viewBox="0 0 550 479" preserveAspectRatio="none" style="height: 58%;">
@@ -171,7 +171,7 @@
 
         <!-- 확인 버튼 -->
         <button class="mt-4 w-[453px] max-w-full h-14 flex items-center justify-center bg-[#7A48FF] border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]"
-          (click)="goToHome()">확인</button>
+          (click)="goToProfile()">프로필</button>
       </div>
     </div>
   </div>

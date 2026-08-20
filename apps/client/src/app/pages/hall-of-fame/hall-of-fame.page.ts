@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeroBannerComponent } from '../../components/hero-banner/hero-banner.component';
 
@@ -27,9 +27,13 @@ interface PortfolioCard {
   templateUrl: './hall-of-fame.page.html',
   styleUrl: './hall-of-fame.page.css',
 })
-export class HallOfFamePage {
+export class HallOfFamePage implements OnDestroy {
   isLoading = signal(false);
   selectedCard = signal<PortfolioCard | null>(null);
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
 
   private readonly gradients = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -75,9 +79,11 @@ export class HallOfFamePage {
 
   openCard(card: PortfolioCard): void {
     this.selectedCard.set(card);
+    document.body.style.overflow = 'hidden';
   }
 
   closeCard(): void {
     this.selectedCard.set(null);
+    document.body.style.overflow = '';
   }
 }

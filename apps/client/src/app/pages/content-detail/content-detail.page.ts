@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './content-detail.page.html',
   styleUrl: './content-detail.page.css',
 })
-export class ContentDetailPage implements OnInit {
+export class ContentDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -51,7 +51,6 @@ export class ContentDetailPage implements OnInit {
 
   toggleTranslateDropdown(): void {
     if (!this.isLoggedIn()) {
-      this.isLoginRequiredModalOpen.set(true);
       return;
     }
     this.isTranslateOpen.update(v => !v);
@@ -168,6 +167,12 @@ export class ContentDetailPage implements OnInit {
     this.route.params.subscribe(params => {
       this.contentId = params['id'] || '1';
     });
+    document.body.classList.add('page-content-detail');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('page-content-detail');
+    document.body.style.overflow = '';
   }
 
   goBack(): void {
@@ -311,6 +316,7 @@ export class ContentDetailPage implements OnInit {
 
   openManuscriptViewer(imageIndex: number): void {
     if (this.commentMode() === 'feedback') return;
+    if (this.isMobileCommentOpen()) return;
     this.currentViewerPage.set(imageIndex + 1);
     this.isViewerOpen.set(true);
   }
@@ -356,6 +362,35 @@ export class ContentDetailPage implements OnInit {
     this.closeDeleteModal();
   }
 
+  /* 댓글 수정 모드 */
+  editingCommentId = signal<number | null>(null);
+  editingCommentText = signal('');
+
+  startEdit(comment: { id: number; content: string }): void {
+    this.editingCommentId.set(comment.id);
+    this.editingCommentText.set(comment.content);
+    this.closeDropdown();
+  }
+
+  cancelEdit(): void {
+    this.editingCommentId.set(null);
+    this.editingCommentText.set('');
+  }
+
+  saveEdit(commentId: number): void {
+    const newText = this.editingCommentText().trim();
+    if (newText) {
+      this.comments = this.comments.map(c =>
+        c.id === commentId ? { ...c, content: newText } : c
+      );
+    }
+    this.cancelEdit();
+  }
+
+  onEditInput(event: Event): void {
+    this.editingCommentText.set((event.target as HTMLTextAreaElement).value);
+  }
+
   /* 댓글 이미지 뷰어 */
   isCommentImageViewerOpen = signal(false);
   commentImageList = signal<string[]>([]);
@@ -385,8 +420,8 @@ export class ContentDetailPage implements OnInit {
   /* ===== 책갈피 추가 모달 ===== */
   isBookmarkModalOpen = signal(false);
   bookmarkSaved = signal(false);
-  /** 현재 편집(삭제) 대상으로 선택된 카테고리 ID. null이면 아무것도 선택 안 됨 */
-  selectedEditId = signal<number | null>(null);
+  /** 현재 편집(삭제) 대상으로 선택된 카테고리 ID Set. 다중 선택 가능 */
+  selectedEditIds = signal<Set<number>>(new Set());
   bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnail: string}[]>([
     { id: 1, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
     { id: 2, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'private', thumbnail: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
@@ -404,21 +439,33 @@ export class ContentDetailPage implements OnInit {
   closeBookmarkModal(): void {
     this.isBookmarkModalOpen.set(false);
     this.bookmarkSaved.set(false);
-    this.selectedEditId.set(null);
+    this.selectedEditIds.set(new Set());
     this.newCategoryName = '';
     document.body.style.overflow = '';
   }
 
-  /** 로우 클릭: 카테고리 선택/해제 토글 + 편집 상태 토글 */
+  /** 로우 클릭: 카테고리 선택/해제 토글 + 편집 상태 토글 (다중 선택) */
   toggleRowEdit(id: number): void {
     this.toggleBookmarkCategory(id);
-    this.selectedEditId.update(v => v === id ? null : id);
+    this.selectedEditIds.update(ids => {
+      const next = new Set(ids);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   }
 
   removeBookmarkCategory(id: number, event: Event): void {
     event.stopPropagation();
     this.bookmarkCategories.update(cats => cats.filter(c => c.id !== id));
-    this.selectedEditId.set(null);
+    this.selectedEditIds.update(ids => {
+      const next = new Set(ids);
+      next.delete(id);
+      return next;
+    });
   }
 
   toggleBookmarkCategory(id: number): void {

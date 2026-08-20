@@ -1,16 +1,15 @@
 /* [TW-KEEP] sphere + keyframes + tooltip ::before/::after + dropdown + verify btn + 반응형 */
-:host { display: block; }
+:host { display: block; background: #202020; height: calc(100vh - 72px); overflow-y: auto; }
 
 /* Left Panel */
 .login-left {
   position: relative;
   width: 456px;
   min-width: 456px;
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  min-height: 100%;
   background: #0B0B0B;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .sphere { position: absolute; border-radius: 50%; }

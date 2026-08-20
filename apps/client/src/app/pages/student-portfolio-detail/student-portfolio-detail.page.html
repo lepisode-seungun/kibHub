@@ -1,6 +1,13 @@
-<main class="w-full min-h-screen bg-[#090909] flex flex-col items-center px-[100px] py-20 gap-10 box-border">
-  <!-- 헤더: 뒤로가기 + 타이틀 -->
-  <div class="flex items-center gap-2.5 w-full max-w-[1400px]">
+<main class="w-full min-h-screen bg-[#090909] flex flex-col items-center px-[100px] py-20 gap-10 box-border spd-page">
+  <!-- 모바일 백 바 -->
+  <div class="spd-mobile-back">
+    <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </button>
+  </div>
+
+  <!-- 헤더: 뒤로가기 + 타이틀 (데스크톱) -->
+  <div class="spd-desktop-header flex items-center gap-2.5 w-full max-w-[1400px]">
     <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFFFFF"/></svg>
     </button>
@@ -131,7 +138,7 @@
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">제목</span>
               <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             </div>
-            <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="text" placeholder="입력해주세요." [(ngModel)]="inquiryTitle" />
+            <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="text" placeholder="입력해주세요." [value]="inquiryTitle()" (input)="inquiryTitle.set($any($event.target).value)" />
           </div>
 
           <!-- 이메일 -->
@@ -141,7 +148,7 @@
                 <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">이메일</span>
                 <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
               </div>
-              <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="email" placeholder="입력해주세요." [(ngModel)]="inquiryEmail" />
+              <input class="w-full h-12 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" type="email" placeholder="입력해주세요." [value]="inquiryEmail()" (input)="inquiryEmail.set($any($event.target).value)" />
             </div>
             <div class="flex items-center gap-1">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.33a6.67 6.67 0 100 13.34A6.67 6.67 0 008 1.33zm.67 10H7.33V10h1.34v1.33zm0-2.66H7.33V4.67h1.34v4z" fill="#A1A1AA" fill-opacity="0.5"/></svg>
@@ -155,7 +162,7 @@
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">내용</span>
               <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
             </div>
-            <textarea class="w-full min-h-[200px] p-4 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none resize-y placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" placeholder="입력해주세요." [(ngModel)]="inquiryContent"></textarea>
+            <textarea class="w-full min-h-[200px] p-4 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-white outline-none resize-y placeholder:text-zinc-500 focus:border-accent transition-colors duration-200 box-border" placeholder="입력해주세요." [value]="inquiryContent()" (input)="inquiryContent.set($any($event.target).value)"></textarea>
           </div>
 
           <!-- 개인정보 동의 -->

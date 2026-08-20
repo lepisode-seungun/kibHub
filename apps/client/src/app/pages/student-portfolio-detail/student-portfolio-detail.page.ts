@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -10,8 +10,16 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './student-portfolio-detail.page.html',
   styleUrls: ['./student-portfolio-detail.page.css'],
 })
-export class StudentPortfolioDetailPage {
+export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   private location = inject(Location);
+
+  ngOnInit(): void {
+    document.body.classList.add('page-portfolio-detail');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('page-portfolio-detail');
+  }
 
   goBack(): void {
     this.location.back();
@@ -52,22 +60,22 @@ export class StudentPortfolioDetailPage {
 
   /* ===== 문의하기 모달 ===== */
   isInquiryOpen = signal(false);
-  inquiryTitle = '';
-  inquiryEmail = '';
-  inquiryContent = '';
+  inquiryTitle = signal('');
+  inquiryEmail = signal('');
+  inquiryContent = signal('');
   inquiryConsent = signal(false);
 
   canSubmitInquiry = computed(() =>
-    this.inquiryTitle.trim().length > 0 &&
-    this.inquiryEmail.trim().length > 0 &&
-    this.inquiryContent.trim().length > 0 &&
+    this.inquiryTitle().trim().length > 0 &&
+    this.inquiryEmail().trim().length > 0 &&
+    this.inquiryContent().trim().length > 0 &&
     this.inquiryConsent()
   );
 
   openInquiryModal(): void {
-    this.inquiryTitle = '';
-    this.inquiryEmail = '';
-    this.inquiryContent = '';
+    this.inquiryTitle.set('');
+    this.inquiryEmail.set('');
+    this.inquiryContent.set('');
     this.inquiryConsent.set(false);
     this.isInquiryOpen.set(true);
   }
@@ -84,9 +92,9 @@ export class StudentPortfolioDetailPage {
     if (!this.canSubmitInquiry()) return;
     // TODO: API 호출
     console.log('문의 전송:', {
-      title: this.inquiryTitle,
-      email: this.inquiryEmail,
-      content: this.inquiryContent,
+      title: this.inquiryTitle(),
+      email: this.inquiryEmail(),
+      content: this.inquiryContent(),
     });
     this.closeInquiryModal();
   }

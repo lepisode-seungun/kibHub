@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -9,7 +9,15 @@ import { RouterModule } from '@angular/router';
   templateUrl: './find-email.page.html',
   styleUrl: './find-email.page.css',
 })
-export class FindEmailPage {
+export class FindEmailPage implements OnInit, OnDestroy {
+  ngOnInit(): void {
+    document.body.style.overflow = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
+
   name = '';
   phone = '';
   birthday = '';

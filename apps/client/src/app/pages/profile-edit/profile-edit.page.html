@@ -49,11 +49,35 @@
             <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
           <div class="flex gap-2 w-full">
-            <div class="flex justify-between items-center px-3 gap-2 w-[102px] min-w-[102px] h-12 bg-zinc-800 rounded-xl cursor-pointer box-border">
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ phonePrefix }}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
+            <div class="relative">
+              <div class="flex justify-between items-center px-3 gap-2 min-w-[120px] h-12 bg-zinc-800 rounded-xl cursor-pointer box-border" role="button" tabindex="0" (click)="toggleCountryDropdown()" (keydown.enter)="toggleCountryDropdown()">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight whitespace-nowrap" [class.text-zinc-500]="!selectedCountry.code" [class.text-white]="selectedCountry.code">{{ selectedCountry.code ? selectedCountry.flag + ' ' + selectedCountry.code : '국가선택' }}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isCountryDropdownOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
+                  <path d="M7 10l5 5 5-5z"/>
+                </svg>
+              </div>
+              @if (isCountryDropdownOpen()) {
+                <div class="absolute top-[calc(100%+4px)] left-0 flex flex-col w-[240px] max-h-[240px] overflow-y-auto bg-[#27272A] border border-zinc-700 rounded-xl z-50 shadow-lg py-1">
+                  <button
+                    class="flex items-center gap-2 px-3 py-2.5 w-full bg-transparent border-none cursor-pointer text-left font-suit font-medium text-sm leading-[150%] tracking-tight transition-colors duration-100 hover:bg-zinc-700"
+                    [class.text-accent]="!selectedCountry.code"
+                    [class.text-zinc-400]="selectedCountry.code"
+                    (click)="resetCountry()">
+                    <span>국가선택</span>
+                  </button>
+                  <div class="h-px bg-zinc-700 mx-2 my-0.5"></div>
+                  @for (country of countryCodes; track country.code) {
+                    <button
+                      class="flex items-center gap-2 px-3 py-2.5 w-full bg-transparent border-none cursor-pointer text-left font-suit font-medium text-sm leading-[150%] tracking-tight transition-colors duration-100 hover:bg-zinc-700"
+                      [class.text-accent]="selectedCountry.code === country.code"
+                      [class.text-zinc-300]="selectedCountry.code !== country.code"
+                      (click)="selectCountry(country)">
+                      <span>{{ country.flag }}</span>
+                      <span>{{ country.label }}</span>
+                    </button>
+                  }
+                </div>
+              }
             </div>
             <input class="flex-1 h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="text" placeholder="입력해주세요." />
           </div>
@@ -65,13 +89,7 @@
             <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">생년월일</span>
             <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
           </div>
-          <div class="flex items-center gap-2 w-full">
-            <input class="flex-1 h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" />
-            <span class="font-suit font-medium text-base text-zinc-500">.</span>
-            <input class="w-[72px] h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="2" placeholder="MM" />
-            <span class="font-suit font-medium text-base text-zinc-500">.</span>
-            <input class="w-[72px] h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border text-center" type="text" inputmode="numeric" maxlength="2" placeholder="DD" />
-          </div>
+          <input class="w-full h-12 px-3 py-2 bg-zinc-800 border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white outline-none transition-shadow duration-150 placeholder:text-zinc-500 focus:shadow-[0_0_0_1px_#7A48FF] box-border" type="text" placeholder="YYYY-MM-DD" />
         </div>
 
         <!-- 닉네임 -->

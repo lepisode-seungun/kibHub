@@ -8,6 +8,7 @@ import { SignupModalService } from '../../services/signup-modal.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './signup-complete-modal.component.html',
+  styleUrl: './signup-complete-modal.component.css',
 })
 export class SignupCompleteModalComponent {
   modalService = inject(SignupModalService);
@@ -15,7 +16,7 @@ export class SignupCompleteModalComponent {
 
   goToProfile(): void {
     this.modalService.close();
-    this.router.navigate(['/profile-edit']);
+    this.router.navigate(['/profile']);
   }
 
   goToHome(): void {

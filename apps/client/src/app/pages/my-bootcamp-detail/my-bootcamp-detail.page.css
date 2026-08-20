@@ -1,7 +1,22 @@
 /* [TW-KEEP] 반응형 패딩, 탭 ngClass, 아코디언 hover/animation, 카드 calc/hover, 칩 hover/active, 드롭다운, 검색 input, 더보기 hover, 공지 hover/ellipsis, 페이지네이터 hover/disabled/active */
 :host {
   display: block;
+  min-height: 100vh;
+  background: #FFFFFF;
   --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== 필터 칩 수평 스크롤 ===== */
+.mbd-chip-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap !important;
+}
+.mbd-chip-scroll::-webkit-scrollbar { display: none; }
+.mbd-chip-scroll .at-chip {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ===== 히어로 반응형 패딩 ===== */

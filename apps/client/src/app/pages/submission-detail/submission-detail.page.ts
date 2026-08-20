@@ -33,6 +33,7 @@ export class SubmissionDetailPage implements OnInit {
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
+  isDeleteModalOpen = signal(false);
 
   // TODO: 차후 계정 권한 API 연동
   isAuthor = true;
@@ -87,11 +88,24 @@ export class SubmissionDetailPage implements OnInit {
 
   onDelete(): void {
     this.closeMore();
-    // TODO: 삭제 확인 모달
+    this.isDeleteModalOpen.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalOpen.set(false);
+  }
+
+  confirmDelete(): void {
+    // TODO: API 호출
+    console.log('제출과제 삭제:', this.submissionId);
+    this.isDeleteModalOpen.set(false);
+    this.goBack();
   }
 
   onRegisterFeedback(): void {
     this.closeMore();
-    // TODO: 피드백 등록 페이지 이동
+    this.router.navigate([
+      '/my-bootcamp', this.bootcampId, 'submission', this.submissionId, 'feedback-register',
+    ]);
   }
 }

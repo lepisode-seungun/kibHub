@@ -1,7 +1,8 @@
-import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
 
 export interface Instructor {
   name: string;
@@ -23,8 +24,19 @@ export interface PortfolioFile {
   templateUrl: './bootcamp-detail.page.html',
   styleUrls: ['./bootcamp-detail.page.css'],
 })
-export class BootcampDetailPage {
+export class BootcampDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
+
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('page-bootcamp-detail');
+    document.body.style.overflow = '';
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
 
   bootcampId = '';
   title = '케나즈 아카데미 초급반 13기';
@@ -73,6 +85,7 @@ export class BootcampDetailPage {
   };
 
   ngOnInit(): void {
+    document.body.classList.add('page-bootcamp-detail');
     this.route.paramMap.subscribe((params) => {
       this.bootcampId = params.get('id') || '';
     });

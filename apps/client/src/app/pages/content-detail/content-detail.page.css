@@ -1080,7 +1080,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0;
+  padding: 0 0 24px;
   width: 100%;
   height: 288px;
   background: #1C1B20;
@@ -1243,10 +1243,26 @@
     border-radius: 0;
   }
 
-  /* Detail-left: hide topbar/header/description/actions on mobile when needed */
+  /* Detail-left: topbar → 검은 백 바 */
   .detail-topbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 20px;
+    width: 100%;
+    height: 56px;
     background: #090909;
     border-radius: 0;
+    box-sizing: border-box;
+  }
+
+  .back-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+  .back-btn svg path {
+    stroke: #A1A1AA;
   }
 
   .detail-images {
@@ -1590,13 +1606,10 @@
 }
 
 .viewer-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 12px;
-  width: 800px;
-  box-sizing: border-box;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  z-index: 1;
 }
 
 .viewer-title {
@@ -1728,7 +1741,8 @@
   }
 
   .viewer-header {
-    width: 100%;
+    top: 20px;
+    right: 20px;
   }
 
   .viewer-card {

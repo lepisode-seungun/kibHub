@@ -67,6 +67,12 @@ img {
   max-width: 100%;
 }
 
+/* ===== 제목 줄바꿈 ===== */
+h1, h2, h3, h4, h5, h6 {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 /* ===== Scrollbar Styling ===== */
 ::-webkit-scrollbar {
   width: 6px;
@@ -142,4 +148,37 @@ img {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ===== 상세 페이지 모바일: 글로벌 GNB 숨김 ===== */
+@media (max-width: 768px) {
+  body.page-content-detail app-header,
+  body.page-content-detail app-sub-header,
+  body.page-portfolio-detail app-header,
+  body.page-portfolio-detail app-sub-header,
+  body.page-bootcamp-detail app-header,
+  body.page-bootcamp-detail app-sub-header,
+  body.page-content-upload app-header,
+  body.page-content-upload app-sub-header,
+  body.page-feedback-register app-header,
+  body.page-feedback-register app-sub-header {
+    display: none !important;
+  }
+}
+
+/* 모바일: body 배경을 흰색으로 변경하여 하단 검은 영역 방지 */
+@media (max-width: 768px) {
+  body {
+    background-color: #FFFFFF;
+  }
+}
+
+/* 고객센터 페이지: 서브헤더 숨김 */
+body.page-customer-center app-sub-header {
+  display: none !important;
+}
+
+/* 업로드 페이지: 모바일에서도 body 배경 어둡게 유지 */
+body.page-upload {
+  background-color: #0C0B10 !important;
 }

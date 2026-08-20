@@ -65,7 +65,11 @@ export class LectureDetailPage implements OnInit {
   }
 
   goNextLecture(): void {
-    // 추후 구현
+    const nextId = Number(this.lectureId) + 1;
+    this.router.navigate(
+      ['/my-bootcamp', this.bootcampId, 'lecture', nextId],
+      { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+    );
   }
 
   togglePlay(): void {

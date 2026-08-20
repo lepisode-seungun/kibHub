@@ -1,5 +1,5 @@
 /* [TW-KEEP] host, 탭 동적 바인딩, 반응형 패딩, 스크롤바 */
-:host { display: block; }
+:host { display: block; min-height: 100vh; background: #FFFFFF; }
 
 /* ===== 탭 네비게이션 ===== */
 .sd-tab-nav {
@@ -70,6 +70,260 @@
 }
 
 @media (max-width: 768px) {
-  .sd-tab-nav { padding: 0 20px; }
+  .sd-tab-nav { display: none !important; }
   .sd-page { padding: 40px 20px; }
+}
+
+/* ===== 삭제 확인 모달 ===== */
+.sd-del-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  animation: sd-del-fade-in 0.2s ease;
+}
+
+@keyframes sd-del-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sd-del-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 700px;
+  max-width: calc(100vw - 40px);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: sd-del-slide-in 0.25s ease;
+}
+
+@keyframes sd-del-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sd-del-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 32px 0;
+  gap: 24px;
+  width: 100%;
+  background: #FFFFFF;
+  box-sizing: border-box;
+}
+
+.sd-del-header-inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.sd-del-title-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.sd-del-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #27272A;
+}
+
+.sd-del-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.sd-del-close:hover {
+  opacity: 0.7;
+}
+
+.sd-del-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  gap: 24px;
+  width: 100%;
+  background: #FFFFFF;
+  box-sizing: border-box;
+}
+
+.sd-del-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sd-del-row {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 24px;
+  width: 100%;
+  border: 1px solid #E4E4E7;
+}
+
+.sd-del-row-top {
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+}
+
+.sd-del-row-bottom {
+  border-radius: 0 0 12px 12px;
+}
+
+.sd-del-label {
+  width: 68px;
+  flex-shrink: 0;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.04em;
+  color: #71717A;
+}
+
+.sd-del-divider {
+  width: 0;
+  height: 12px;
+  border-left: 1px solid #E4E4E7;
+  flex-shrink: 0;
+}
+
+.sd-del-value {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #27272A;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.sd-del-warning {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #71717A;
+  margin: 0;
+}
+
+.sd-del-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 32px 32px;
+  gap: 24px;
+  width: 100%;
+  background: #FFFFFF;
+  border-top: 1px solid #E6E6E6;
+  box-sizing: border-box;
+}
+
+.sd-del-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.sd-del-btn-cancel {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 1;
+  height: 48px;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  background: #FFFFFF;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #52525B;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sd-del-btn-cancel:hover {
+  background: #F4F4F5;
+}
+
+.sd-del-btn-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 1;
+  height: 48px;
+  background: #EF4444;
+  border: none;
+  border-radius: 12px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sd-del-btn-delete:hover {
+  background: #DC2626;
+}
+
+/* 모달 반응형 */
+@media (max-width: 768px) {
+  .sd-del-modal {
+    width: calc(100vw - 40px);
+  }
+
+  .sd-del-header,
+  .sd-del-body,
+  .sd-del-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

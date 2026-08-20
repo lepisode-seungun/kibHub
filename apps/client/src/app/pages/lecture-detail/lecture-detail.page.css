@@ -1,6 +1,9 @@
 /* [TW-KEEP] 반응형 패딩, 비디오 플레이어, 사이드바 border/scroll, 버튼 hover, 칩 hover */
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #FFFFFF;
   --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -341,30 +344,12 @@
   .lecture-page {
     padding: 0;
     gap: 0;
-    min-height: 100vh;
+    min-height: auto;
+    flex: 1;
   }
 
-  /* 상단 바 → 백 헤더 56px */
+  /* 상단 바: 모바일에서 숨김 (별도 모바일 탑바 사용) */
   .lecture-page > div:first-child {
-    padding: 5px 20px;
-    height: 56px;
-    background: #090909;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* 타이틀 숨기기 */
-  .lecture-page > div:first-child h1 {
-    display: none;
-  }
-
-  /* 뒤로가기 화살표 흰색 */
-  .lecture-back-btn svg path {
-    fill: #A1A1AA;
-  }
-
-  /* 다음 강의 버튼 상단에서 숨기기 */
-  .lecture-next-btn {
     display: none;
   }
 

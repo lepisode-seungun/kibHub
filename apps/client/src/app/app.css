@@ -1,0 +1,20 @@
+/* 모바일: 특정 페이지에서 글로벌 헤더/서브헤더 숨김 */
+@media (max-width: 768px) {
+  app-header.upload-page,
+  app-sub-header.upload-page,
+  app-header.mobile-hidden-page,
+  app-sub-header.mobile-hidden-page {
+    display: none !important;
+  }
+}
+/* app-root: 전체 높이를 차지하여 body 배경 노출 방지 */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 라우터 아울렛 다음에 렌더되는 컴포넌트가 남은 공간 채움 */
+router-outlet + * {
+  flex: 1;
+}

@@ -1,6 +1,6 @@
-<app-header />
-@if (!isHome() && !isLogin()) {
-  <app-sub-header />
+<app-header [class.upload-page]="isUpload()" [class.mobile-hidden-page]="isMobileHeaderHidden()" />
+@if (!isHome() && !isLogin() && !isCustomerCenter()) {
+  <app-sub-header [class.upload-page]="isUpload()" [class.mobile-hidden-page]="isMobileHeaderHidden()" />
 }
 <router-outlet></router-outlet>
 <app-signup-complete-modal />

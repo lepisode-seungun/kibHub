@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  background: #151419;
+  min-height: 100vh;
+}
+
+/* 모바일에서 safe-area 대응 */
+@media (max-width: 768px) {
+  :host {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}

@@ -580,11 +580,39 @@
   right: 0;
 }
 
+/* 데스크톱: 컴팩트 팝업 */
+@media (min-width: 769px) {
+  .side-drawer {
+    top: 72px;
+    right: -280px;
+    width: 280px;
+    height: auto;
+    max-height: calc(100vh - 96px);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(63, 63, 70, 0.12);
+  }
+
+  .side-drawer.drawer-open {
+    right: 0;
+  }
+
+  .drawer-mobile-only {
+    display: none !important;
+  }
+}
+
+/* 모바일: 풀하이트 슬라이드인 */
 @media (max-width: 768px) {
   .side-drawer {
     height: 100vh;
     height: 100dvh;
     overflow-x: hidden;
+  }
+
+  .drawer-desktop-only {
+    display: none !important;
   }
 }
 
@@ -1093,11 +1121,48 @@
   margin-top: 4px;
 }
 
+/* 모바일 상단 바 — 데스크톱에서 숨김 */
+.noti-mobile-topbar {
+  display: none;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
+  .noti-overlay {
+    display: none;
+  }
+
+  .noti-mobile-topbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 5px 20px;
+    height: 56px;
+    background: #090909;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .noti-desktop-close {
+    display: none !important;
+  }
+
   .noti-modal {
-    width: 95vw;
-    height: 80vh;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .noti-header {
+    padding: 20px 20px 0;
+  }
+
+  .noti-body {
+    padding: 20px;
   }
 }
 

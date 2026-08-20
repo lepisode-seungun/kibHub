@@ -20,6 +20,8 @@ export interface BootcampCard {
   styleUrls: ['./k-digital.page.css'],
 })
 export class KDigitalPage {
+  heroTitle = '부트캠프';
+  heroSubtitle = '전문가가 알려주는 실전 노하우!';
   bootcampCards: BootcampCard[] = [
     {
       id: 1, name: '케나즈 초급반 13기', summary: '기초부터 탄탄하게',

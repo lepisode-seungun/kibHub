@@ -1,6 +1,6 @@
-import { Component, signal, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 interface Album {
   id: number;
@@ -27,6 +27,33 @@ interface ContentCard {
 })
 export class ProfilePage {
   @ViewChild('albumSlider') albumSlider!: ElementRef<HTMLDivElement>;
+  private router = inject(Router);
+
+  /* ===== 프로필 편집 드롭다운 ===== */
+  isEditDropdownOpen = signal(false);
+
+  toggleEditDropdown(): void {
+    this.isEditDropdownOpen.update(v => !v);
+  }
+
+  closeEditDropdown(): void {
+    this.isEditDropdownOpen.set(false);
+  }
+
+  goToProfileEdit(): void {
+    this.closeEditDropdown();
+    this.router.navigate(['/profile-edit']);
+  }
+
+  goToChangeEmail(): void {
+    this.closeEditDropdown();
+    this.router.navigate(['/change-email']);
+  }
+
+  goToChangePassword(): void {
+    this.closeEditDropdown();
+    this.router.navigate(['/change-password']);
+  }
 
   activeTab = signal<'all' | 'album'>('all');
   selectedAlbumId = signal<number | null>(null);

@@ -1,4 +1,4 @@
-<main class="flex w-full h-screen bg-[#202020] overflow-hidden">
+<main class="signup-main flex w-full min-h-full bg-[#202020]">
   <!-- Left Panel - Branding -->
   <div class="login-left">
     <div class="sphere sphere-sm-logo"></div>
@@ -18,7 +18,7 @@
   </div>
 
   <!-- Right Panel - Signup Form -->
-  <div class="flex-1 flex flex-col justify-center items-center bg-white rounded-l-[40px] relative overflow-y-auto max-[960px]:rounded-none">
+  <div class="signup-right flex-1 flex flex-col items-center bg-white rounded-l-[40px] relative overflow-y-auto max-[960px]:rounded-none">
     <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5 py-10">
       <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-tight text-zinc-800 text-center m-0">회원가입</h1>
 
@@ -146,7 +146,7 @@
               <svg class="help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
             </span>
           </div>
-          <input type="date" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 focus:border-accent box-border" (input)="onInput('birthday', $event)" />
+          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." maxlength="10" (input)="onInput('birthday', $event)" />
         </div>
 
         <!-- 닉네임 -->
@@ -158,13 +158,7 @@
           <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('nickname', $event)" />
         </div>
 
-        <!-- 소개 -->
-        <div class="flex flex-col gap-2 w-full">
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">소개</span>
-          </div>
-          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('intro', $event)" />
-        </div>
+
       </div>
 
       <!-- Terms -->
@@ -183,8 +177,8 @@
               <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">서비스 이용약관 및 개인정보 처리 방침 동의</span>
             </div>
             <div class="flex items-center gap-3">
-              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/">개인정보처리방침 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/">이용약관 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/privacy">개인정보처리방침 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="flex items-center gap-0.5 no-underline font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 transition-colors duration-150 hover:text-zinc-600" routerLink="/terms">이용약관 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </div>

@@ -1,3 +1,14 @@
+<!-- 모바일: 상단 네비게이션 바 -->
+<div class="md:hidden flex justify-end items-center px-5 py-[5px] gap-2.5 w-full h-14 bg-[#090909]">
+  <div class="flex items-center gap-2.5 flex-1 h-6">
+    <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="sd-tab-nav">
@@ -17,11 +28,6 @@
     <!-- 상단 바 -->
     <div class="flex items-center gap-5 w-[1400px] max-w-full">
       <div class="flex items-center gap-3 flex-1">
-        <button class="sd-back-btn" (click)="goBack()" aria-label="뒤로 가기">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
-          </svg>
-        </button>
         <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">피드백 상세</h1>
       </div>
     </div>
@@ -49,7 +55,7 @@
 
       <!-- 제목 + 더보기 -->
       <div class="flex justify-between items-start w-full gap-2.5">
-        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1">{{ assignmentTitle }}</h2>
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle }}</h2>
         <div class="sd-more-wrap">
           <button class="sd-more-btn" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -60,14 +66,9 @@
           </button>
           @if (isMoreOpen()) {
             <div class="sd-more-backdrop" (click)="closeMore()" (keydown.escape)="closeMore()" aria-hidden="true"></div>
-            <div class="sd-more-dropdown">
-              @if (isAuthor) {
-                <button class="sd-more-item" (click)="onEdit()">수정</button>
-                <button class="sd-more-item" (click)="onDelete()">삭제</button>
-              }
-              @if (isInstructor) {
-                <button class="sd-more-item" (click)="onRegisterFeedback()">피드백 등록</button>
-              }
+            <div class="sd-more-dropdown" (click)="$event.stopPropagation()">
+              <button class="sd-more-item" (click)="onEdit()">수정</button>
+              <button class="sd-more-item" (click)="onDelete()">삭제</button>
             </div>
           }
         </div>
@@ -157,3 +158,52 @@
     </section>
   </main>
 </div>
+
+<!-- ===== 삭제 확인 모달 ===== -->
+@if (isDeleteModalOpen()) {
+  <div class="fd-del-backdrop" (click)="closeDeleteModal()"></div>
+  <div class="fd-del-modal">
+    <!-- 헤더 -->
+    <div class="fd-del-header">
+      <div class="fd-del-header-inner">
+        <div class="fd-del-header-title">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800">삭제</span>
+        </div>
+        <button class="fd-del-close" (click)="closeDeleteModal()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#A1A1AA"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 바디 -->
+    <div class="fd-del-body">
+      <!-- 정보 테이블 -->
+      <div class="fd-del-info">
+        <div class="fd-del-row fd-del-row-top">
+          <span class="fd-del-label">제목</span>
+          <div class="fd-del-divider"></div>
+          <span class="fd-del-value">{{ assignmentTitle }}</span>
+        </div>
+        <div class="fd-del-row fd-del-row-bottom">
+          <span class="fd-del-label">등록일</span>
+          <div class="fd-del-divider"></div>
+          <span class="fd-del-value">{{ date }}</span>
+        </div>
+      </div>
+      <!-- 경고 문구: 데스크톱 -->
+      <p class="fd-del-warning hidden md:block">제출 과제 피드백을 삭제하시겠습니까? 해당 제출과제에 포함된 내용은 모두 삭제되며,<br>제출과제 삭제 후 복구는 불가능합니다.</p>
+      <!-- 경고 문구: 모바일 -->
+      <p class="fd-del-warning md:hidden">제출 과제 피드백을 삭제하시겠습니까?<br>해당 제출과제에 포함된 내용은 모두 삭제되며,<br>제출과제 삭제 후 복구는 불가능합니다.</p>
+    </div>
+
+    <!-- 푸터 -->
+    <div class="fd-del-footer">
+      <div class="fd-del-actions">
+        <button class="fd-del-btn-cancel" (click)="closeDeleteModal()">취소</button>
+        <button class="fd-del-btn-delete" (click)="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+}

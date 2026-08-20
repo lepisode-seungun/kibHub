@@ -1,5 +1,7 @@
 :host {
   display: block;
+  min-height: 100vh;
+  background: #FFFFFF;
   --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -510,7 +512,7 @@
 .ad-ls-badge-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
 }
 
 .ad-ls-badges {
@@ -1059,25 +1061,15 @@
     gap: 0;
   }
   .ad-tab-nav {
-    padding: 0 20px;
+    display: none !important;
   }
   .as-total {
     display: none;
   }
 
-  /* 상단 바 → 백 헤더 */
+  /* 상단 바: 모바일에서 숨김 (별도 모바일 탑바 사용) */
   .ad-page > div:first-child {
-    padding: 5px 20px;
-    height: 56px;
-    background: #090909;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-  .ad-page > div:first-child h1 {
     display: none;
-  }
-  .ad-back-btn svg path {
-    fill: #A1A1AA;
   }
   .ad-next-btn {
     display: none;

@@ -86,9 +86,26 @@
         }
 
         <!-- Divider -->
-        <div class="w-px h-[46px] border-r border-white/25 shrink-0"></div>
+        <div class="w-px h-[46px] bg-white/25 shrink-0"></div>
 
-        <!-- Search Bar -->
+        <!-- All Category Button -->
+        <button class="all-category-btn">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800">All category</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#A1A1AA">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+        </button>
+
+        <!-- Sub Category Buttons -->
+        @for (sub of subCategories; track sub.id) {
+          <button class="sub-category-btn">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ sub.label }}{{ sub.count }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-row">
         <div class="gallery-search">
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500 whitespace-nowrap">{{ searchPlaceholder }}</span>
           <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center shrink-0">
@@ -130,15 +147,6 @@
                       <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#52525B" opacity="0.5"/>
-                      <circle cx="8" cy="10.5" r="1" fill="#52525B"/><circle cx="12" cy="10.5" r="1" fill="#52525B"/><circle cx="16" cy="10.5" r="1" fill="#52525B"/>
-                    </svg>
-                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-white">{{ card.commenter }}</span>
-                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-600">{{ card.commentTime }}</span>
-                  </div>
-                  <div class="gallery-comment-arrow"></div>
                 } @else {
                   <!-- Default: empty feedback prompt -->
                   <div class="gallery-feedback-box">
@@ -260,15 +268,6 @@
                     <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                   </div>
                 </div>
-                <div class="flex items-center gap-3">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#52525B" opacity="0.5"/>
-                    <circle cx="8" cy="10.5" r="1" fill="#52525B"/><circle cx="12" cy="10.5" r="1" fill="#52525B"/><circle cx="16" cy="10.5" r="1" fill="#52525B"/>
-                  </svg>
-                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-white">{{ card.commenter }}</span>
-                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-600">{{ card.commentTime }}</span>
-                </div>
-                <div class="gallery-comment-arrow"></div>
               } @else {
                 <div class="gallery-feedback-box">
                   <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none">

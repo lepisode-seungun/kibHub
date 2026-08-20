@@ -1,5 +1,5 @@
 /* [TW-KEEP] 탭 동적 바인딩 + border-bottom 활성 상태 + 반응형 패딩 */
-:host { display: block; }
+:host { display: block; min-height: 100vh; background: #FFFFFF; }
 
 .nd-tab-nav {
   box-sizing: border-box;
@@ -97,7 +97,7 @@
 
 @media (max-width: 768px) {
   .nd-page { padding: 20px; }
-  .nd-tab-nav { padding: 0 20px; }
+  .nd-tab-nav { display: none !important; }
   .nd-attach-files {
     flex-direction: column !important;
     gap: 12px !important;

@@ -37,4 +37,36 @@ export class App {
     ),
     { initialValue: false }
   );
+
+  /** 현재 라우트가 업로드 페이지인지 추적 */
+  isUpload = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects.startsWith('/upload'))
+    ),
+    { initialValue: false }
+  );
+
+  /** 모바일에서 글로벌 헤더/서브헤더를 숨길 페이지인지 추적 */
+  isMobileHeaderHidden = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => {
+        const url = e.urlAfterRedirects.split('?')[0];
+        return url.startsWith('/change-email')
+          || url.startsWith('/change-password')
+          || /^\/my-bootcamp\/\d+/.test(url);
+      })
+    ),
+    { initialValue: false }
+  );
+
+  /** 현재 라우트가 고객센터 페이지인지 추적 */
+  isCustomerCenter = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects.split('?')[0].startsWith('/customer-center'))
+    ),
+    { initialValue: window.location.pathname.startsWith('/customer-center') }
+  );
 }

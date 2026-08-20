@@ -328,6 +328,15 @@
 
 .cu-thumb-action-btn:hover { background: rgba(255, 255, 255, 0.05); }
 
+.cu-thumb-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.cu-thumb-actions .cu-thumb-action-btn {
+  flex: 1;
+}
+
 /* ===== 오른쪽 미리보기 ===== */
 /* [TW-KEEP] sticky positioning */
 .cu-right {
@@ -871,6 +880,10 @@
     max-width: 320px;
     height: auto;
     aspect-ratio: 1 / 1;
+  }
+
+  .cu-thumb-actions {
+    gap: 12px;
   }
 
   /* 미리보기 패널 — 썸네일 아래로 (flex order) */

@@ -112,6 +112,16 @@
                   </div>
                 </div>
 
+                <!-- 설명 -->
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">설명</span>
+                  </div>
+                  <div class="flex items-center w-full">
+                    <input class="cu-input" type="text" placeholder="입력해주세요."/>
+                  </div>
+                </div>
+
                 <!-- 내용 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1">
@@ -260,11 +270,12 @@
                 <!-- 오른쪽 정보 -->
                 <div class="flex flex-col justify-center gap-3 flex-1 min-w-0">
                   <span class="font-suit font-bold text-base leading-[150%] tracking-tight text-zinc-500">최소 100px X 100px 사이즈의 이미지파일을 등록해주세요.</span>
-                  <div class="flex flex-wrap gap-3">
-                    <button class="cu-thumb-action-btn" (click)="openThumbSelectModal()">이미지 업로드</button>
-                    <button class="cu-thumb-action-btn" (click)="onThumbnailDelete()">이미지 삭제</button>
-                  </div>
                 </div>
+              </div>
+              <!-- 버튼 영역: 가로 50:50 -->
+              <div class="cu-thumb-actions">
+                <button class="cu-thumb-action-btn" (click)="onThumbnailDelete()">제목으로 적용</button>
+                <button class="cu-thumb-action-btn" (click)="openThumbSelectModal()">직접 업로드</button>
               </div>
             </div>
           }

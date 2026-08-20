@@ -10,9 +10,11 @@ export class SignupModalService {
     this.nickname.set(nickname);
     this.intro.set(intro);
     this.showModal.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   close(): void {
     this.showModal.set(false);
+    document.body.style.overflow = '';
   }
 }

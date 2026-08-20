@@ -112,8 +112,8 @@
 
         <!-- 파일 가이드 -->
         <div class="af-file-guide">
-          <p>압축 형식(zip) 파일을 제외한 모든 유형의 파일을 등록할 수 있습니다.</p>
-          <p>파일 1개당 크기는 20MB를 초과할 수 없으며, 최대 10개 까지 등록할 수 있습니다.</p>
+          <p>· 압축 형식(zip) 파일을 제외한 모든 유형의 파일을 등록할 수 있습니다.</p>
+          <p>· 파일 1개당 크기는 20MB를 초과할 수 없으며, 최대 10개 까지 등록할 수 있습니다.</p>
         </div>
 
         <!-- 첨부 파일 목록 -->
@@ -299,12 +299,19 @@
 }
 
 <main class="bd-page">
+  <!-- 모바일 백 바 -->
+  <div class="bd-mobile-back">
+    <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </button>
+  </div>
+
   <!-- 히어로 배너 -->
   <section class="bd-hero" id="bd-hero">
     <img class="bd-hero-bg" src="/images/bd-hero-bg.svg" alt="" aria-hidden="true">
     <div class="bd-hero-content">
-      <h1 class="font-suit font-bold text-[32px] leading-[150%] tracking-tight text-zinc-50 m-0 text-center">{{ title }}</h1>
-      <p class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-400 text-center m-0">{{ subtitle }}</p>
+      <h1 class="bd-hero-title font-suit font-bold text-[32px] leading-[150%] tracking-tight text-zinc-50 m-0 text-center">{{ title }}</h1>
+      <p class="bd-hero-subtitle font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-400 text-center m-0">{{ subtitle }}</p>
       <button class="bd-hero-cta" (click)="onApply()">지원하기</button>
     </div>
   </section>

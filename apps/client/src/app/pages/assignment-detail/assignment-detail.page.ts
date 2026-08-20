@@ -95,7 +95,11 @@ export class AssignmentDetailPage implements OnInit {
   }
 
   goNext(): void {
-    // 추후 구현
+    const nextId = Number(this.assignmentId) + 1;
+    this.router.navigate(
+      ['/my-bootcamp', this.bootcampId, 'assignment', nextId],
+      { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+    );
   }
 
   selectDetailTab(tab: string): void {

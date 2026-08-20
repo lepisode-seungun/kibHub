@@ -21,7 +21,7 @@ export class SignupPage {
   password = '';
   passwordConfirm = '';
   phone = '';
-  intro = '';
+
   countryCode = signal('+82');
   agreeTerms = signal(false);
   showCountryDropdown = signal(false);
@@ -45,7 +45,7 @@ export class SignupPage {
       case 'password': this.password = val; break;
       case 'passwordConfirm': this.passwordConfirm = val; break;
       case 'phone': this.phone = val; break;
-      case 'intro': this.intro = val; break;
+
     }
   }
 
@@ -97,12 +97,11 @@ export class SignupPage {
         password: this.password,
         nickname: this.nickname,
         phone: this.phone,
-        intro: this.intro,
       });
 
       if (result.success) {
         // 서비스에 모달 상태 저장 후 홈으로 라우팅
-        this.signupModalService.open(this.nickname, this.intro);
+        this.signupModalService.open(this.nickname, '');
         this.router.navigate(['/']);
       } else {
         console.error('회원가입 실패:', result.error);

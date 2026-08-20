@@ -1,5 +1,5 @@
 /* [TW-KEEP] 탭 ngClass, 반응형 패딩, 드롭다운/backdrop, 스크롤바, textarea, 버튼 hover, 학습자료 toggle, 아바타, 파일 칩 */
-:host { display: block; }
+:host { display: block; min-height: 100vh; background: #FFFFFF; }
 
 /* ===== 탭 네비게이션 (ngClass + 반응형) ===== */
 .sd-tab-nav {
@@ -109,14 +109,13 @@
 
 .sd-more-dropdown {
   position: absolute;
-  top: 32px; left: 0;
+  top: 28px; left: 0;
   display: flex;
   flex-direction: column;
-  min-width: 120px;
   background: #FFFFFF;
-  border: 1px solid #F3F4F6;
-  border-radius: 12px;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   z-index: 100;
 }
@@ -124,16 +123,17 @@
 .sd-more-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 9px 18px 9px 12px;
   background: none;
   border: none;
   font-family: 'SUIT', sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 150%;
   letter-spacing: -0.04em;
   color: #27272A;
   cursor: pointer;
+  white-space: nowrap;
   transition: background 0.12s;
 }
 .sd-more-item:hover { background: #F4F4F5; }
@@ -308,8 +308,207 @@
 }
 
 @media (max-width: 768px) {
-  .sd-tab-nav { padding: 0 20px; }
+  .sd-tab-nav { display: none !important; }
   .sd-page { padding: 40px 20px; }
   .sd-comments-section { padding: 20px 0 0; }
   .sd-content-card { padding: 16px; }
+  .fd-del-modal { width: calc(100% - 40px); max-width: 700px; }
+  .fd-del-value {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-all;
+    min-width: 0;
+    flex: 1;
+  }
 }
+
+/* ===== 삭제 확인 모달 ===== */
+.fd-del-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.fd-del-modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+  max-width: calc(100vw - 40px);
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+/* 헤더 */
+.fd-del-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 32px 0;
+}
+
+.fd-del-header-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.fd-del-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fd-del-close {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  background: none; border: none;
+  cursor: pointer; padding: 0;
+}
+
+/* 바디 */
+.fd-del-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  gap: 24px;
+}
+
+.fd-del-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.fd-del-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 24px;
+}
+
+.fd-del-row-top {
+  border: 1px solid #E4E4E7;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+}
+
+.fd-del-row-bottom {
+  border: 1px solid #E4E4E7;
+  border-radius: 0 0 12px 12px;
+}
+
+.fd-del-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #71717A;
+  flex-shrink: 0;
+  width: 68px;
+}
+
+.fd-del-divider {
+  width: 0;
+  height: 12px;
+  border-left: 1px solid #E4E4E7;
+  flex-shrink: 0;
+}
+
+.fd-del-value {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #27272A;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fd-del-warning {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #71717A;
+  text-align: center;
+  margin: 0;
+}
+
+/* 푸터 */
+.fd-del-footer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 32px 32px;
+  border-top: 1px solid #E6E6E6;
+}
+
+.fd-del-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.fd-del-btn-cancel {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 1;
+  height: 48px;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #52525B;
+  transition: background 0.15s;
+}
+.fd-del-btn-cancel:hover { background: #F4F4F5; }
+
+.fd-del-btn-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 1;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: #EF4444;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  transition: opacity 0.15s;
+}
+.fd-del-btn-delete:hover { opacity: 0.9; }

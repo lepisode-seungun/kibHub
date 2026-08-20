@@ -1,12 +1,23 @@
 <main class="w-full min-h-screen bg-[#09090B]">
-  <!-- 히어로 배너 -->
-  <section class="kd-hero" id="kd-hero">
+  <!-- 히어로 배너 (데스크톱) -->
+  <section class="kd-hero kd-hero--desktop" id="kd-hero">
     <div class="flex items-center justify-center z-[1]">
       <h1 class="font-bold text-[40px] leading-[46px] text-center tracking-tight m-0"
-          style="font-family: 'Gmarket Sans TTF', sans-serif; background: linear-gradient(180deg, #ECEFEF 0%, #FFFFFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">부트캠프</h1>
+          style="font-family: 'Gmarket Sans TTF', sans-serif; background: linear-gradient(180deg, #ECEFEF 0%, #FFFFFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ heroTitle }}</h1>
     </div>
     <p class="font-medium text-[clamp(14px,1.2vw,20px)] leading-[150%] text-center tracking-tight text-[#D9D9D9] mt-6 z-[1]"
-       style="font-family: 'Gmarket Sans TTF', sans-serif;">전문가가 알려주는 실전 노하우!</p>
+       style="font-family: 'Gmarket Sans TTF', sans-serif;">{{ heroSubtitle }}</p>
+  </section>
+
+  <!-- 히어로 배너 (모바일) -->
+  <section class="kd-hero--mobile" id="kd-hero-mobile">
+    <img class="kd-hero-mobile-bg" src="/images/kd-hero-bg-mobile.svg" alt="" aria-hidden="true">
+    <div class="kd-hero-mobile-overlay">
+      <div class="kd-hero-mobile-box">
+        <h1 class="kd-hero-mobile-title" style="font-family: 'Gmarket Sans TTF', sans-serif;">{{ heroTitle }}</h1>
+      </div>
+      <p class="kd-hero-mobile-subtitle" style="font-family: 'Gmarket Sans TTF', sans-serif;">{{ heroSubtitle }}</p>
+    </div>
   </section>
 
   <!-- 부트캠프 카드 그리드 -->

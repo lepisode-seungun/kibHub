@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -24,8 +24,17 @@ interface CcItem {
   templateUrl: './customer-center.page.html',
   styleUrls: ['./customer-center.page.css'],
 })
-export class CustomerCenterPage {
+export class CustomerCenterPage implements OnInit, OnDestroy {
   private router = inject(Router);
+
+  ngOnInit(): void {
+    document.body.classList.add('page-customer-center');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('page-customer-center');
+  }
+
   tabs = ['공지사항', '1:1문의', 'FAQ'];
   activeTab = signal('공지사항');
 

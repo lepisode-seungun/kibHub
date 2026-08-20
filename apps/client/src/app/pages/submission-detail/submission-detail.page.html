@@ -1,3 +1,14 @@
+<!-- 모바일: 상단 네비게이션 바 -->
+<div class="md:hidden flex justify-end items-center px-5 py-[5px] gap-2.5 w-full h-14 bg-[#090909]">
+  <div class="flex items-center gap-2.5 flex-1 h-6">
+    <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="sd-tab-nav">
@@ -17,7 +28,7 @@
     <!-- 상단 바 -->
     <div class="flex items-center gap-5 w-[1400px] max-w-full">
       <div class="flex items-center gap-3 flex-1">
-        <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+        <button class="hidden md:flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
           </svg>
@@ -49,7 +60,7 @@
 
       <!-- 제목 + 더보기 -->
       <div class="flex justify-between items-start w-full gap-2.5">
-        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1">{{ assignmentTitle }}</h2>
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle }}</h2>
         <div class="relative">
           <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0 opacity-70 transition-opacity duration-150 hover:opacity-100" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -111,4 +122,53 @@
       </div>
     </div>
   </main>
+
+  <!-- ===== 삭제 확인 모달 ===== -->
+  @if (isDeleteModalOpen()) {
+    <div class="sd-del-overlay" tabindex="-1" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()">
+      <div class="sd-del-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+        <!-- 헤더 -->
+        <div class="sd-del-header">
+          <div class="sd-del-header-inner">
+            <div class="sd-del-title-wrap">
+              <span class="sd-del-title">삭제</span>
+            </div>
+            <button class="sd-del-close" (click)="closeDeleteModal()" aria-label="닫기">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 본문 -->
+        <div class="sd-del-body">
+          <!-- 정보 테이블 -->
+          <div class="sd-del-info">
+            <div class="sd-del-row sd-del-row-top">
+              <span class="sd-del-label">제목</span>
+              <div class="sd-del-divider"></div>
+              <span class="sd-del-value">{{ assignmentTitle }}</span>
+            </div>
+            <div class="sd-del-row sd-del-row-bottom">
+              <span class="sd-del-label">등록일</span>
+              <div class="sd-del-divider"></div>
+              <span class="sd-del-value">{{ date }}</span>
+            </div>
+          </div>
+
+          <!-- 경고 메시지 -->
+          <p class="sd-del-warning">제출과제를 삭제하시겠습니까?<br>해당 제출과제에 포함된 내용은 모두 삭제되며, 제출과제 삭제 후 복구는 불가능합니다.</p>
+        </div>
+
+        <!-- 푸터 -->
+        <div class="sd-del-footer">
+          <div class="sd-del-actions">
+            <button class="sd-del-btn-cancel" (click)="closeDeleteModal()">취소</button>
+            <button class="sd-del-btn-delete" (click)="confirmDelete()">삭제</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

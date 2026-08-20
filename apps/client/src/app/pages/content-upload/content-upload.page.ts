@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import Cropper from 'cropperjs';
@@ -31,7 +31,7 @@ interface ThumbCandidate {
   templateUrl: './content-upload.page.html',
   styleUrls: ['./content-upload.page.css'],
 })
-export class ContentUploadPage implements OnInit {
+export class ContentUploadPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -99,9 +99,14 @@ export class ContentUploadPage implements OnInit {
   @ViewChild('thumbFileInput') thumbFileInput!: ElementRef<HTMLInputElement>;
 
   ngOnInit(): void {
+    document.body.classList.add('page-content-upload');
     this.route.paramMap.subscribe((params) => {
       this.contentType = params.get('type') || 'webtoon';
     });
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('page-content-upload');
   }
 
   toggleDetail(): void {
@@ -337,6 +342,6 @@ export class ContentUploadPage implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/upload']);
+    this.router.navigate(['/']);
   }
 }

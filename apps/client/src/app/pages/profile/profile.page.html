@@ -52,7 +52,52 @@
 
     <!-- 버튼 -->
     <div class="pf-actions">
-      <a routerLink="/profile-edit" class="pf-btn pf-btn-edit">프로필 편집</a>
+      <div class="relative w-full">
+        <button class="pf-btn pf-btn-edit" (click)="toggleEditDropdown()">프로필 편집</button>
+        @if (isEditDropdownOpen()) {
+          <!-- 공통 백드롭 -->
+          <div class="fixed inset-0 z-[49] bg-transparent md:bg-transparent bg-black/50" tabindex="-1" (click)="closeEditDropdown()" (keydown.escape)="closeEditDropdown()"></div>
+
+          <!-- 데스크톱: 드롭다운 -->
+          <div class="hidden md:block absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] w-[143px] z-50">
+            <div class="flex flex-col items-start p-1 w-[143px] bg-zinc-800 border border-white/[0.04] shadow-[0_4px_16px_rgba(0,0,0,0.3)] rounded-lg overflow-hidden">
+              <button class="flex items-center px-3 py-2 gap-2 w-full h-10 border-none bg-zinc-700 rounded-lg cursor-pointer box-border transition-colors duration-150 hover:bg-zinc-600" (click)="goToProfileEdit()">
+                <span class="font-suit font-medium text-sm leading-[140%] tracking-tight text-white">프로필 편집</span>
+              </button>
+              <button class="flex items-center px-3 py-2 gap-2 w-full h-10 border-none bg-transparent rounded-lg cursor-pointer box-border transition-colors duration-150 hover:bg-white/[0.06]" (click)="goToChangeEmail()">
+                <span class="font-suit font-medium text-sm leading-[140%] tracking-tight text-zinc-500">이메일 변경</span>
+              </button>
+              <button class="flex items-center px-3 py-2 gap-2 w-full h-10 border-none bg-transparent rounded-lg cursor-pointer box-border transition-colors duration-150 hover:bg-white/[0.06]" (click)="goToChangePassword()">
+                <span class="font-suit font-medium text-sm leading-[140%] tracking-tight text-zinc-500">비밀번호 변경</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 모바일: 바텀시트 -->
+          <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 flex flex-col items-start w-full rounded-t-2xl overflow-hidden pf-bottomsheet-slide">
+            <!-- 헤더 -->
+            <div class="flex justify-between items-center px-4 gap-2.5 w-full h-14 bg-[#18181B] rounded-t-[16px]">
+              <div class="w-6 h-6 opacity-0"></div>
+              <span class="font-suit font-medium text-base leading-6 text-center tracking-[-0.06em] text-[#18181B]">.</span>
+              <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="closeEditDropdown()" aria-label="닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18.3 5.71a1 1 0 00-1.41 0L12 10.59 7.11 5.7A1 1 0 105.7 7.11L10.59 12 5.7 16.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4z" fill="#71717A"/>
+                </svg>
+              </button>
+            </div>
+            <!-- 메뉴 아이템 -->
+            <button class="flex items-center px-4 gap-2 w-full h-12 bg-[#18181B] border-none cursor-pointer" (click)="goToProfileEdit()">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-center text-zinc-300">프로필 편집</span>
+            </button>
+            <button class="flex items-center px-4 gap-2 w-full h-12 bg-[#18181B] border-none cursor-pointer" (click)="goToChangeEmail()">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-center text-zinc-300">이메일 변경</span>
+            </button>
+            <button class="flex items-center px-4 gap-2 w-full h-12 bg-[#18181B] border-none cursor-pointer" (click)="goToChangePassword()">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-center text-zinc-300">비밀번호 변경</span>
+            </button>
+          </div>
+        }
+      </div>
       <a routerLink="/upload" class="pf-btn pf-btn-upload">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#FFFFFF"/>
@@ -178,6 +223,13 @@
 
   <!-- ===== 메인 콘텐츠 ===== -->
   <div class="pf-main">
+    <!-- 모바일 전용: 새 앨범 추가 버튼 -->
+    <button class="pf-mobile-new-album-btn" (click)="openAddModal()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      <span>{{ activeTab() === 'album' ? '새 카테고리 추가' : '새 앨범 추가' }}</span>
+    </button>
     <!-- 앨범 카드 슬라이더 (앨범 탭) -->
     @if (activeTab() === 'all') {
     <div class="pf-album-slider-wrap">
@@ -362,8 +414,8 @@
       <div class="pf-content-toolbar">
         <button class="pf-dropdown" (click)="toggleSort()">
           <span class="pf-dropdown-text">{{ sortLabel }}</span>
-          <svg [style.transform]="isSortOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s" width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
-            <path d="M7 10l5 5 5-5z"/>
+          <svg width="20" height="20" viewBox="0 0 15 15" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1667 3.33538C14.3877 3.33538 14.5996 3.24758 14.7559 3.0913C14.9122 2.93502 15 2.72306 15 2.50204C15 2.28103 14.9122 2.06907 14.7559 1.91279C14.5996 1.75651 14.3877 1.66871 14.1667 1.66871H6.525C6.35283 1.18076 6.03355 0.758237 5.61117 0.459367C5.18878 0.160496 4.68409 0 4.16667 0C3.64924 0 3.14455 0.160496 2.72217 0.459367C2.29978 0.758237 1.9805 1.18076 1.80833 1.66871H0.833333C0.61232 1.66871 0.400358 1.75651 0.244078 1.91279C0.0877973 2.06907 0 2.28103 0 2.50204C0 2.72306 0.0877973 2.93502 0.244078 3.0913C0.400358 3.24758 0.61232 3.33538 0.833333 3.33538H1.80833C1.9805 3.82332 2.29978 4.24585 2.72217 4.54472C3.14455 4.84359 3.64924 5.00408 4.16667 5.00408C4.68409 5.00408 5.18878 4.84359 5.61117 4.54472C6.03355 4.24585 6.35283 3.82332 6.525 3.33538H14.1667ZM14.1667 8.33538C14.3877 8.33538 14.5996 8.24758 14.7559 8.0913C14.9122 7.93502 15 7.72306 15 7.50204C15 7.28103 14.9122 7.06907 14.7559 6.91279C14.5996 6.75651 14.3877 6.66871 14.1667 6.66871H13.1917C13.0195 6.18077 12.7002 5.75824 12.2778 5.45937C11.8554 5.1605 11.3508 5 10.8333 5C10.3159 5 9.81122 5.1605 9.38883 5.45937C8.96645 5.75824 8.64717 6.18077 8.475 6.66871H0.833333C0.61232 6.66871 0.400358 6.75651 0.244078 6.91279C0.0877973 7.06907 0 7.28103 0 7.50204C0 7.72306 0.0877973 7.93502 0.244078 8.0913C0.400358 8.24758 0.61232 8.33538 0.833333 8.33538H8.475C8.64717 8.82332 8.96645 9.24585 9.38883 9.54472C9.81122 9.84359 10.3159 10.0041 10.8333 10.0041C11.3508 10.0041 11.8554 9.84359 12.2778 9.54472C12.7002 9.24585 13.0195 8.82332 13.1917 8.33538H14.1667ZM14.1667 13.3354C14.3877 13.3354 14.5996 13.2476 14.7559 13.0913C14.9122 12.935 15 12.7231 15 12.502C15 12.281 14.9122 12.0691 14.7559 11.9128C14.5996 11.7565 14.3877 11.6687 14.1667 11.6687H6.525C6.35283 11.1808 6.03355 10.7582 5.61117 10.4594C5.18878 10.1605 4.68409 10 4.16667 10C3.64924 10 3.14455 10.1605 2.72217 10.4594C2.29978 10.7582 1.9805 11.1808 1.80833 11.6687H0.833333C0.61232 11.6687 0.400358 11.7565 0.244078 11.9128C0.0877973 12.0691 0 12.281 0 12.502C0 12.7231 0.0877973 12.935 0.244078 13.0913C0.400358 13.2476 0.61232 13.3354 0.833333 13.3354H1.80833C1.9805 13.8233 2.29978 14.2458 2.72217 14.5447C3.14455 14.8436 3.64924 15.0041 4.16667 15.0041C4.68409 15.0041 5.18878 14.8436 5.61117 14.5447C6.03355 14.2458 6.35283 13.8233 6.525 13.3354H14.1667Z" fill="#A1A1AA"/>
           </svg>
           @if (isSortOpen()) {
             <div class="pf-dropdown-panel">
