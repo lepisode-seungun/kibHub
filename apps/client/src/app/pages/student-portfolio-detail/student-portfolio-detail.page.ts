@@ -2,11 +2,12 @@ import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-student-portfolio-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ImageViewerComponent],
   templateUrl: './student-portfolio-detail.page.html',
   styleUrls: ['./student-portfolio-detail.page.css'],
 })
@@ -38,10 +39,12 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   openManuscriptViewer(): void {
     this.currentViewerPage.set(1);
     this.isViewerOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   closeViewer(): void {
     this.isViewerOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   prevPage(): void {

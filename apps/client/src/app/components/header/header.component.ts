@@ -59,12 +59,34 @@ export class HeaderComponent {
 
   toggleSidebar(): void {
     this.isSidebarOpen.update(v => !v);
-    document.body.style.overflow = this.isSidebarOpen() ? 'hidden' : '';
+
+    const drawer = document.querySelector<HTMLElement>('.side-drawer');
+
+    if (window.innerWidth <= 768) {
+      // 모바일: 스크롤 잠금 + 인라인 left 제거 (데스크톱 잔존 방지)
+      document.body.style.overflow = this.isSidebarOpen() ? 'hidden' : '';
+      if (drawer) drawer.style.left = '';
+    } else {
+      // 데스크톱: 햄버거 버튼 기준 드롭다운 위치 설정
+      if (this.isSidebarOpen()) {
+        const btn = document.querySelector<HTMLElement>('.icon-btn');
+        if (btn && drawer) {
+          const rect = btn.getBoundingClientRect();
+          drawer.style.left = rect.left + 'px';
+        }
+      } else if (drawer) {
+        setTimeout(() => { drawer.style.left = ''; }, 250);
+      }
+    }
   }
 
   closeSidebar(): void {
     this.isSidebarOpen.set(false);
     document.body.style.overflow = '';
+    const drawer = document.querySelector<HTMLElement>('.side-drawer');
+    if (drawer) {
+      setTimeout(() => { drawer.style.left = ''; }, 250);
+    }
   }
 
   toggleMobileSearch(): void {

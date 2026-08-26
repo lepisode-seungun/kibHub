@@ -2,11 +2,12 @@ import { Component, computed, effect, inject, OnInit, OnDestroy, signal } from '
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-content-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ImageViewerComponent],
   templateUrl: './content-detail.page.html',
   styleUrl: './content-detail.page.css',
 })

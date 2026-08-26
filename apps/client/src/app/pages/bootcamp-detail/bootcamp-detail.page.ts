@@ -153,6 +153,12 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  /** 강사 수에 따라 카드 너비 동적 계산 (최대 4장 기준) */
+  get instructorCardWidth(): string {
+    const count = Math.min(this.instructors.length, 4);
+    return `calc((100% - 24px * ${count - 1}) / ${count})`;
+  }
+
   onSearchAddress(): void {
     // TODO: 주소 검색 API (카카오/다음 우편번호 등) 연동
     alert('주소검색 기능은 API 연동 후 사용 가능합니다.');

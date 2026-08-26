@@ -164,8 +164,9 @@
             }
           </div>
           <button class="floating-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8">
-              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M15.4755 14.0792L10.929 9.62349L11.9222 8.60777C12.3369 8.18373 12.3369 7.49623 11.9222 7.07219C11.8227 6.97039 11.7083 6.89304 11.5862 6.84012L6.66016 11.766C6.71057 11.9213 6.7962 12.0672 6.91704 12.1908C7.33168 12.6148 8.00395 12.6148 8.4186 12.1908L9.52757 11.0567L14.074 15.5124L15.0377 15.7551L16.0013 15.9978L15.7384 15.0385L15.4755 14.0792ZM4.95009 11.5363C3.74667 11.3811 2.58267 10.831 1.65858 9.88594C-0.55286 7.62439 -0.55286 3.9577 1.65858 1.69616C3.87002 -0.565386 7.45547 -0.565386 9.66691 1.69616C10.6233 2.67422 11.1661 3.91509 11.2952 5.19145L4.95009 11.5363Z" fill="#D4D4D8"/>
+              <path d="M13.8138 2.17969L2.17604 13.817" stroke="#D4D4D8" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             <span>마커 숨기기</span>
           </button>
@@ -556,51 +557,14 @@
     </div>
   }
 
-  <!-- ===== 원고 뷰어 모달 ===== -->
-  @if (isViewerOpen()) {
-    <div class="viewer-overlay" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
-      <div class="viewer-container">
-        <!-- 헤더 -->
-        <div class="viewer-header">
-          <button class="viewer-close-btn" (click)="closeViewer()" aria-label="닫기">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </div>
+  <!-- ===== 원고 뷰어 (공통 컴포넌트) ===== -->
+  <app-image-viewer
+    [images]="manuscriptImages"
+    [isOpen]="isViewerOpen()"
+    [pageLabel]="'회'"
+    (closed)="closeViewer()"
+  />
 
-        <!-- 본문 -->
-        <div class="viewer-body">
-          <!-- 왼쪽 화살표 -->
-          <button class="viewer-arrow viewer-arrow-left" (click)="prevPage()" aria-label="이전">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/>
-            </svg>
-          </button>
-
-          <!-- 원고 카드 -->
-          <div class="viewer-card">
-            <div class="viewer-page-info">
-              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-50">{{ currentViewerPage() }}회</span>
-              <span class="font-suit font-medium text-lg leading-[150%] tracking-tight text-zinc-500">/{{ totalPages }}회</span>
-            </div>
-            <div class="viewer-image-scroll">
-              <div class="viewer-image"
-                [style.background]="manuscriptImages[currentViewerPage() - 1].gradient">
-              </div>
-            </div>
-          </div>
-
-          <!-- 오른쪽 화살표 -->
-          <button class="viewer-arrow viewer-arrow-right" (click)="nextPage()" aria-label="다음">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  }
 
   <!-- ===== 댓글 삭제 확인 모달 ===== -->
   @if (isDeleteModalOpen()) {

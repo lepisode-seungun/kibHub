@@ -1,0 +1,152 @@
+<div class="flex flex-col p-6 gap-6 flex-1">
+
+  <!-- 기본정보 아코디언 -->
+  <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
+
+    <!-- 헤더 -->
+    <div class="flex items-center justify-between pb-4 border-b border-gray-200 relative">
+      <!-- 왼쪽: 타이틀 + 토글 -->
+      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleBasicInfo()">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본정보</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200"
+             [ngClass]="basicInfoOpen() ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- 오른쪽: 더보기 (세로 ⋮ 버튼) -->
+      <div class="relative">
+        <button class="flex flex-col items-center justify-center gap-[3px] bg-transparent border-none cursor-pointer p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                (click)="$event.stopPropagation(); toggleMoreMenu()">
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+        </button>
+
+        <!-- 더보기 드롭다운 -->
+        @if (moreMenuOpen()) {
+          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-1 flex flex-col py-2 bg-white rounded-lg z-50"
+               style="width: 114px; border: 1px solid #F9FAFB; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);"
+               (click)="$event.stopPropagation()">
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 40px; width: 100%;"
+                    (click)="onMoreMenuAction('hide')">
+              숨김
+            </button>
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 40px; width: 100%;"
+                    (click)="onMoreMenuAction('edit')">
+              수정
+            </button>
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 40px; width: 100%;"
+                    (click)="onMoreMenuAction('delete')">
+              삭제
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 콘텐츠 -->
+    @if (basicInfoOpen()) {
+      <div class="flex items-center gap-3 w-full">
+
+        <!-- 순번 -->
+        <div class="flex flex-col py-1.5 gap-2 flex-1">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.id }}</span>
+        </div>
+
+        <!-- 상태 -->
+        <div class="flex flex-col py-1.5 gap-2 flex-1">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+          <div class="flex items-center">
+            <span class="inline-flex items-center px-2 py-1 bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]">
+              {{ courseData.status }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 과정명 -->
+        <div class="flex flex-col py-1.5 gap-2 flex-1">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">과정명</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.name }}</span>
+        </div>
+
+        <!-- 등록일시 -->
+        <div class="flex flex-col py-1.5 gap-2 flex-1">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.createdAt }}</span>
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+  <!-- 강의/과제 아코디언 -->
+  <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
+
+    <!-- 헤더 -->
+    <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleLecture()">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">강의/과제</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200"
+             [ngClass]="lectureOpen() ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- 오른쪽: 더보기 (세로 ⋮ 버튼) -->
+      <div class="relative">
+        <button class="flex flex-col items-center justify-center gap-[3px] bg-transparent border-none cursor-pointer p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                (click)="$event.stopPropagation(); toggleLectureMenu()">
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+        </button>
+
+        @if (lectureMenuOpen()) {
+          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-1 flex flex-col py-2 bg-white rounded-lg z-50"
+               style="width: 114px; border: 1px solid #F9FAFB; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);"
+               (click)="$event.stopPropagation()">
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 40px; width: 100%;"
+                    (click)="onLectureMenuAction('addLecture')">
+              강의등록
+            </button>
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 40px; width: 100%;"
+                    (click)="onLectureMenuAction('addAssignment')">
+              과제등록
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 콘텐츠 -->
+    @if (lectureOpen()) {
+      <!-- 검색바 -->
+      <div class="relative flex items-center">
+        <svg class="absolute left-3" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M7.333 12.667A5.333 5.333 0 107.333 2a5.333 5.333 0 000 10.667zM14 14l-2.9-2.9" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input type="text"
+               class="pl-9 pr-4 py-2 w-[280px] h-10 bg-white border border-gray-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors"
+               placeholder="검색어를 입력하세요" />
+      </div>
+      <adm-data-grid
+        [columns]="lectureColumns"
+        [data]="lectureData"
+        [showSearch]="false"
+        (rowClick)="onLectureRowClick($event)">
+      </adm-data-grid>
+    }
+
+  </div>
+
+</div>

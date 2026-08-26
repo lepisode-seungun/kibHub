@@ -1,0 +1,561 @@
+<div class="flex flex-col gap-6">
+  <!-- 페이지 타이틀 -->
+  <div class="flex items-center gap-[10px]">
+    <h2 class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800 m-0">회원 상세</h2>
+  </div>
+
+  <!-- ===== 기본 정보 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <!-- 헤더 -->
+    <button class="flex items-center justify-between w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('basic')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본 정보</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('basic') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- 케밥 메뉴 -->
+      <div class="relative">
+        <div class="flex items-center justify-center w-8 h-8 rounded-md hover:bg-zinc-100 transition-colors"
+             tabindex="0"
+             (click)="toggleKebabMenu($event)"
+             (keyup.enter)="toggleKebabMenu($event)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="#6B7280">
+            <circle cx="10" cy="4" r="1.5"/>
+            <circle cx="10" cy="10" r="1.5"/>
+            <circle cx="10" cy="16" r="1.5"/>
+          </svg>
+        </div>
+        @if (showKebabMenu()) {
+          <div class="absolute left-1/2 -translate-x-1/2 top-10 z-50 w-[85px] bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <button class="w-full px-2 py-2.5 text-center font-suit font-medium text-sm tracking-[-0.04em] text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors border-none bg-transparent cursor-pointer"
+                    (click)="onChangeRole(); $event.stopPropagation()">권한변경</button>
+            <button class="w-full px-2 py-2.5 text-center font-suit font-medium text-sm tracking-[-0.04em] text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors border-none bg-transparent cursor-pointer"
+                    (click)="onEdit(); $event.stopPropagation()">수정</button>
+            <button class="w-full px-2 py-2.5 text-center font-suit font-medium text-sm tracking-[-0.04em] text-red-500 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors border-none bg-transparent cursor-pointer"
+                    (click)="onBlock(); $event.stopPropagation()">차단</button>
+          </div>
+        }
+      </div>
+    </button>
+    <!-- 콘텐츠 -->
+    @if (isOpen('basic')) {
+      <div class="flex flex-col gap-6">
+        <div class="grid grid-cols-4 gap-3">
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+            <span class="inline-flex items-center self-start px-2 py-1 rounded-full border text-sm font-suit font-medium whitespace-nowrap"
+                  [ngClass]="getStatusClass(member.status)">{{ member.status }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">권한</span>
+            <span class="inline-flex items-center self-start px-2 py-1 rounded-lg border text-sm font-suit font-medium whitespace-nowrap"
+                  [ngClass]="getRoleClass(member.role)">{{ member.role }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이메일</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.email }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.name }}</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-3">
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">국가번호</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.countryCode }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">연락처</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.phone }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">생년월일</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.birthday }}</span>
+          </div>
+          <div class="flex flex-col gap-2 py-1.5">
+            <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">가입일시</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.createdAt }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ===== 추가 정보 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <button class="flex items-center justify-between w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('extra')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">추가 정보</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('extra') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <button class="px-3 py-2 bg-white border border-[#3C8EEE] rounded-md font-suit font-medium text-base tracking-[-0.04em] text-[#3C8EEE] cursor-pointer hover:bg-blue-50 transition-colors"
+              (click)="$event.stopPropagation()">
+        정보 수정
+      </button>
+    </button>
+    @if (isOpen('extra')) {
+      <div class="grid grid-cols-4 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">닉네임</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.nickname }}</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">프로필</span>
+          <div class="w-[100px] h-[100px] rounded-full bg-gray-200 overflow-hidden">
+            @if (member.profileImage) {
+              <img [src]="member.profileImage" class="w-full h-full object-cover" alt="프로필"/>
+            } @else {
+              <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#9CA3AF">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">SNS</span>
+          <div class="flex flex-col gap-2">
+            @for (sns of member.sns; track sns.label) {
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-6 h-6 bg-zinc-50 border border-zinc-100 rounded">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
+                    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                  </svg>
+                </div>
+                <span class="font-suit text-sm text-gray-400">{{ sns.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">소개</span>
+          <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[266px]">{{ member.intro }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ===== 부트캠프 지원 내역 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('bootcamp')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프 지원 내역</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ bootcampHistory.length }})</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('bootcamp') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+    @if (isOpen('bootcamp')) {
+      <adm-data-grid
+        [columns]="bootcampColumns"
+        [data]="bootcampHistory"
+        searchPlaceholder="검색어를 입력하세요">
+        <!-- 힌트 텍스트 -->
+        <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+          <!-- info 아이콘 -->
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]" style="color: #374151;">지원내역 선택 시 지원서 상세로 이동합니다.</span>
+        </div>
+      </adm-data-grid>
+    }
+  </div>
+
+  <!-- ==== 참여 부트캠프 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('content')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">참여 부트캠프</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ bootcampHistory.length }})</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('content') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+    @if (isOpen('content')) {
+      <adm-data-grid
+        [columns]="contentColumns"
+        [data]="contentHistory">
+        <!-- 힌트 텍스트 -->
+        <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]" style="color: #374151;">부트캠프 선택 시 해당 부트캠프 워크스페이스로 이<br>동합니다.</span>
+        </div>
+      </adm-data-grid>
+    }
+  </div>
+
+  <!-- ===== 콘텐츠 내역 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('portfolio')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ contentHistory.length }})</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('portfolio') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+    @if (isOpen('portfolio')) {
+      <adm-data-grid
+        [columns]="portfolioColumns"
+        [data]="portfolioHistory">
+        <!-- 힌트 텍스트 -->
+        <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]" style="color: #374151;">콘텐츠 선택 시 콘텐츠 상세로 이동합니다.</span>
+        </div>
+      </adm-data-grid>
+    }
+  </div>
+
+  <!-- ===== 댓글 아코디언 ===== -->
+  <div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+    <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+            (click)="toggleSection('comment')">
+      <div class="flex items-center gap-3">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">댓글</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ commentHistory.length }})</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200" [ngClass]="isOpen('comment') ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+    @if (isOpen('comment')) {
+      <adm-data-grid
+        [columns]="commentColumns"
+        [data]="commentHistory">
+        <!-- 힌트 텍스트 -->
+        <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]" style="color: #374151;">댓글 선택 시 댓글 상세페이지를 조회할 수 있습니다.</span>
+        </div>
+      </adm-data-grid>
+    }
+  </div>
+</div>
+
+<!-- ===== 권한 변경 사이드 드로어 ===== -->
+@if (showRoleDrawer()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0"
+       (click)="closeRoleDrawer()"
+       (keyup.enter)="closeRoleDrawer()"></div>
+
+  <!-- 드로어 패널 -->
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeRoleDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <div class="flex items-center gap-6">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">권한 변경</h4>
+    </div>
+
+    <!-- 폼 영역 -->
+    <div class="flex flex-col gap-6">
+      <!-- 현재 권한 -->
+      <div class="flex flex-col gap-2">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">현재 권한</span>
+        <div class="flex items-center px-4 h-10 bg-gray-100 border-2 border-gray-400 rounded-md">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">{{ member.role }}</span>
+        </div>
+      </div>
+
+      <!-- 변경 권한 -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">변경 권한</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <div class="relative">
+          <button class="flex items-center justify-between w-full px-4 h-10 bg-white border-2 border-gray-300 rounded-md cursor-pointer transition-colors hover:border-gray-400"
+                  (click)="toggleRoleDropdown(); $event.stopPropagation()">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em]"
+                  [ngClass]="selectedRole() ? 'text-gray-800' : 'text-gray-400'">
+              {{ selectedRole() || '권한을 선택하세요' }}
+            </span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 class="transition-transform duration-200" [ngClass]="showRoleDropdown() ? 'rotate-180' : ''">
+              <path d="M7 10l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          @if (showRoleDropdown()) {
+            <div class="absolute left-0 top-11 z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+              @for (role of roleOptions; track role) {
+                <button class="w-full px-4 py-2.5 text-left font-suit font-medium text-base tracking-[-0.04em] border-none cursor-pointer transition-colors"
+                        [ngClass]="selectedRole() === role ? 'bg-[#ECF4FE] text-[#3C8EEE]' : 'bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE]'"
+                        (click)="selectRole(role); $event.stopPropagation()">
+                  {{ role }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col justify-end items-center flex-1">
+      <button class="flex items-center justify-center w-full h-10 rounded-md border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white transition-colors"
+              [ngClass]="selectedRole() ? 'bg-[#3C8EEE] hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
+              [disabled]="!selectedRole()"
+              (click)="submitRoleChange()">
+        등록
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 회원 수정 사이드 드로어 ===== -->
+@if (showEditDrawer()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0"
+       (click)="closeEditDrawer()"
+       (keyup.enter)="closeEditDrawer()"></div>
+
+  <!-- 드로어 패널 -->
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeEditDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <div class="flex items-center gap-6">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">회원 수정</h4>
+    </div>
+
+    <!-- 이메일 -->
+    <div class="flex flex-col gap-2">
+      <label for="edit-email" class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이메일</label>
+      <div class="flex items-start gap-2">
+        <div class="flex flex-col gap-1 flex-1">
+          <input id="edit-email" type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors"
+                 [value]="editEmail()"
+                 (input)="onEmailInput($event)"
+                 placeholder="default"/>
+          <!-- 중복체크 결과 메시지 -->
+          @if (emailValidation().checked) {
+            <div class="flex items-center gap-1 mt-1">
+              @if (emailValidation().valid) {
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="7" cy="7" r="5.5" stroke="#10B981" stroke-width="2" fill="none"/>
+                </svg>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-emerald-500">사용 가능한 이메일입니다.</span>
+              } @else {
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500">이미 사용 중인 이메일입니다.</span>
+              }
+            </div>
+          }
+        </div>
+        <button class="flex items-center justify-center h-10 px-3 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
+                (click)="checkEmailDuplicate()">
+          중복확인
+        </button>
+      </div>
+    </div>
+
+    <!-- 비밀번호 -->
+    <div class="flex flex-col gap-2">
+      <label for="edit-password" class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">비밀번호</label>
+      <div class="flex flex-col gap-2">
+        <!-- 비밀번호 입력 -->
+        <input id="edit-password" type="password"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-slate-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               [value]="editPassword()"
+               (input)="onPasswordInput($event)"
+               placeholder="비밀번호를 입력하세요"/>
+        <!-- 비밀번호 확인 -->
+        <input type="password"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-slate-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               [value]="editPasswordConfirm()"
+               (input)="onPasswordConfirmInput($event)"
+               placeholder="비밀번호를 다시 입력하세요"/>
+        <!-- 불일치 메시지 -->
+        @if (passwordMismatch()) {
+          <div class="flex items-center gap-1">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500">비밀번호가 일치하지 않습니다.</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col justify-end items-center flex-1">
+      <button class="flex items-center justify-center w-full h-10 rounded-md border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white bg-[#3C8EEE] hover:bg-blue-600 transition-colors"
+              (click)="submitEdit()">
+        등록
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 회원 차단 확인 팝업 ===== -->
+@if (showBlockPopup()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       tabindex="0"
+       (click)="closeBlockPopup()"
+       (keyup.enter)="closeBlockPopup()">
+
+    <!-- 팝업 카드 -->
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white shadow-lg rounded-2xl"
+         tabindex="0"
+         (click)="$event.stopPropagation()"
+         (keyup.enter)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <!-- 위험 아이콘 -->
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 18.084a1.167 1.167 0 110-2.334 1.167 1.167 0 010 2.334zm1.167-5.834a1.167 1.167 0 01-2.334 0V8.167a1.167 1.167 0 012.334 0v6.416z" fill="#EF4444"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">회원 차단</span>
+      </div>
+
+      <!-- 회원 정보 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
+        <!-- 이메일 -->
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이메일</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.email }}</span>
+        </div>
+        <!-- 이름 -->
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.name }}</span>
+        </div>
+        <!-- 닉네임 -->
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">닉네임</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.nickname }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0">
+        해당 회원을 차단하시겠습니까?<br>차단 시 해당 계정은 로그인할 수 없게 됩니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="closeBlockPopup()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 border-none rounded-xl bg-red-500 cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmBlock()">
+          차단
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 회원 차단 해제 확인 팝업 ===== -->
+@if (showUnblockPopup()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       tabindex="0"
+       (click)="closeUnblockPopup()"
+       (keyup.enter)="closeUnblockPopup()">
+
+    <!-- 팝업 카드 -->
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white shadow-lg rounded-2xl"
+         tabindex="0"
+         (click)="$event.stopPropagation()"
+         (keyup.enter)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 18.084a1.167 1.167 0 110-2.334 1.167 1.167 0 010 2.334zm1.167-5.834a1.167 1.167 0 01-2.334 0V8.167a1.167 1.167 0 012.334 0v6.416z" fill="#3C8EEE"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">회원 차단 해제</span>
+      </div>
+
+      <!-- 회원 정보 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이메일</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.email }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.name }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">닉네임</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.nickname }}</span>
+        </div>
+      </div>
+
+      <!-- 안내 메시지 -->
+      <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0">
+        해당 회원의 차단을 해제하시겠습니까?<br>차단 해제 시 해당 계정은 다시 로그인할 수 있습니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="closeUnblockPopup()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 border-none rounded-xl bg-[#3C8EEE] cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                (click)="confirmUnblock()">
+          차단 해제
+        </button>
+      </div>
+    </div>
+  </div>
+}

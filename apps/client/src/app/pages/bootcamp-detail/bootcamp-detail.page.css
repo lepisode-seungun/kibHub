@@ -157,7 +157,7 @@
 /* bd-content-inner, bd-block, bd-block-header, bd-block-title, bd-block-subtitle, bd-block-desc, bd-editor-text -> TW inline */
 
 .bd-block-desc {
-  max-width: 438px;
+  max-width: 620px;
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
@@ -173,7 +173,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 50%;
   height: 400px;
   background: rgba(229, 231, 235, 0.24);
   border-radius: 8px;
@@ -185,8 +185,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 80px 260px;
-  gap: 100px;
   width: 100%;
   box-sizing: border-box;
   background: #18181B;
@@ -225,15 +223,7 @@
 
 /* 오른쪽 페이드 - 다음 카드 힌트 */
 .bd-instructor-slider-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 80px;
-  height: 100%;
-  background: linear-gradient(to left, #09090B 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 1;
+  display: none;
 }
 
 .bd-instructor-slider {
@@ -244,7 +234,7 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-right: 120px;
+  padding-right: 0;
 }
 
 .bd-instructor-slider::-webkit-scrollbar {
@@ -256,8 +246,8 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-  width: 300px;
-  min-width: 300px;
+  width: calc((100% - 24px * 3) / 4);
+  min-width: calc((100% - 24px * 3) / 4);
   flex-shrink: 0;
   scroll-snap-align: start;
 }
@@ -1219,19 +1209,7 @@
     font-size: 20px;
   }
 
-  .bd-info-bar {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    align-content: flex-end;
-    padding: 24px;
-    gap: 24px;
-    width: 100%;
-    box-sizing: border-box;
-    background: #1C1B20;
-    border-radius: 16px;
-  }
+
 
   /* 탭 바 */
   .bd-tab-bar {
@@ -1291,29 +1269,7 @@
     margin: 0;
   }
 
-  /* 강사 소개 */
-  .bd-instructors {
-    padding: 40px 20px;
-    gap: 40px;
-  }
-
-  .bd-instructors h2 {
-    font-size: 20px !important;
-  }
-
-  .bd-instructor-card {
-    width: 300px;
-    min-width: 300px;
-  }
-
-  .bd-instructor-photo {
-    height: 200px;
-  }
-
-  .bd-instructor-slider {
-    padding-right: 40px;
-  }
-
+  /* 강사 소개 — Tailwind로 이동, 화살표만 CSS 처리 */
   .bd-slider-arrow {
     display: none;
   }

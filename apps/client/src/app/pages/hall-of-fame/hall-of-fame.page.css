@@ -160,14 +160,11 @@
 
 .hof-crown-badge {
   position: absolute;
-  top: 0; right: 7px;
-  width: 36px; height: 51px;
-  background: #7A48FF;
-  border-radius: 0 0 4px 4px;
+  top: 0; right: 20px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding-top: 6px;
+  line-height: 0;
 }
 
 .hof-modal-thumb {
@@ -276,9 +273,8 @@
 
   /* 메타 정보 wrap 처리 */
   .hof-modal-card .flex-col.gap-2 {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 12px !important;
+    flex-direction: column !important;
+    gap: 8px !important;
   }
 
   /* 메타 라벨 고정 너비 해제 */

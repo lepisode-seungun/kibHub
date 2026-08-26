@@ -1,0 +1,375 @@
+:host {
+  display: block;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer-slide-in {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+/* ===== 기본 정보 카드 ===== */
+.info-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 24px;
+  isolation: isolate;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+/* ===== 헤더 ===== */
+.info-header {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  gap: 8px;
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.info-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+}
+
+.toggle-arrow {
+  transition: transform 0.2s ease;
+}
+
+.toggle-arrow.collapsed {
+  transform: rotate(180deg);
+}
+
+.data-count {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #3C8EEE;
+}
+
+/* ===== 드롭다운 ===== */
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+}
+
+.dropdown-trigger:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-menu {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(100% + 4px);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  width: 114px;
+  background: #ffffff;
+  border: 1px solid #f9fafb;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.dropdown-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  width: 100%;
+  height: 40px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #4b5563;
+  transition: background-color 0.15s;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background: #f9fafb;
+}
+
+/* ===== 본문 ===== */
+.info-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.info-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 0;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.field-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+}
+
+.field-value {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #6b7280;
+}
+
+/* ===== 상태 뱃지 ===== */
+.status-badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 99999px;
+}
+
+.status-badge span {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #059669;
+}
+
+/* ===== +추가 버튼 ===== */
+.add-instructor-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.add-instructor-btn:hover {
+  opacity: 0.85;
+}
+
+/* ===== 다이얼로그 ===== */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  gap: 24px;
+  width: 400px;
+  background: #ffffff;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.dialog-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 25px;
+  letter-spacing: -0.8px;
+  color: #1F2937;
+}
+
+.dialog-info {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px;
+  gap: 12px;
+  width: 100%;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.dialog-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.dialog-info-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.8px;
+  color: #6B7280;
+}
+
+.dialog-info-value {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.8px;
+  color: #1F2937;
+  text-align: right;
+}
+
+.dialog-warning {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+  text-align: center;
+  letter-spacing: -0.8px;
+  color: #4B5563;
+  margin: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.dialog-btn-cancel {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  flex: 1;
+  height: 40px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.04em;
+  color: #1F2937;
+  transition: background-color 0.15s;
+}
+
+.dialog-btn-cancel:hover {
+  background: #F9FAFB;
+}
+
+.dialog-btn-confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 1;
+  height: 40px;
+  background: #EF4444;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  transition: background-color 0.15s;
+}
+
+.dialog-btn-confirm:hover {
+  background: #DC2626;
+}

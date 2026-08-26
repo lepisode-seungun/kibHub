@@ -72,6 +72,9 @@
   gap: 20px;
   flex: 1;
   min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 /* 썸네일 */
@@ -189,6 +192,7 @@
 .academy-section {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
   padding: 100px 200px;
   gap: 100px;
@@ -207,6 +211,7 @@
   gap: 60px;
   flex: 1;
   min-width: 0;
+  max-width: 500px;
 }
 
 .academy-label {
@@ -963,6 +968,7 @@
 .history-section {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: flex-start;
   padding: 100px;
   gap: 100px;
@@ -1046,11 +1052,13 @@
 }
 
 .history-right {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 40px;
   flex: 1;
   max-width: 810px;
+  align-self: stretch;
 }
 
 .history-header {
@@ -1079,11 +1087,16 @@
 }
 
 .timeline-scroll {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  height: 620px;
+  overflow-y: auto;
+  padding-right: 24px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
+.timeline-scroll::-webkit-scrollbar {
+  display: none;
+}
 .timeline-divider {
   width: 100%;
   border: none;
@@ -1189,12 +1202,13 @@
 .scrollbar-thumb {
   position: absolute;
   right: 0;
-  bottom: 0;
+  top: 0;
   width: 8px;
   height: 38%;
   background: rgba(217, 217, 217, 0.5);
   border-radius: 1000px;
 }
+
 
 /* 히스토리 섹션 모바일 오버라이드 (베이스 스타일 뒤) */
 @media (max-width: 768px) {

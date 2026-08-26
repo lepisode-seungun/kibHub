@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     './apps/client/src/**/*.{html,ts}',
+    './apps/admin/src/**/*.{html,ts}',
   ],
   theme: {
     extend: {

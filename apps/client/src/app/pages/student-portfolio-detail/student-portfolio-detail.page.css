@@ -1,9 +1,11 @@
-/* [TW-KEEP] viewer arrow hover, consent box dynamic binding */
+/* ============================================
+   수강생 포트폴리오 상세 페이지
+   — Tailwind로 처리 불가한 스타일만 유지
+   ============================================ */
 :host { display: block; }
 
-/* 뷰어 화살표 (hover pseudo-class) */
+/* 뷰어 화살표 (hover pseudo-class — Tailwind으로 처리 불가) */
 .viewer-arrow {
-  display: flex;
   align-items: center;
   justify-content: center;
   width: 48px;
@@ -21,7 +23,7 @@
   border-color: #7A48FF;
 }
 
-/* 개인정보 동의 박스 (ngClass 동적 바인딩) */
+/* 개인정보 동의 박스 (ngClass 동적 바인딩 — Tailwind으로 처리 불가) */
 .iq-consent-box {
   display: flex;
   flex-direction: column;
@@ -36,182 +38,13 @@
 
 .iq-consent-box:hover { border-color: #7A48FF; }
 .iq-consent-box--checked { border-color: #956DFF; }
-/* 모바일 히어로 이미지 */
-.mobile-hero {
-  display: none;
+
+/* 모바일 뷰어 그라디언트 배경 (Tailwind으로 처리 불가한 복합 그라디언트) */
+.spd-viewer-bg {
+  background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
 }
-
-/* ===== 모바일 대응 (360px Figma Spec) ===== */
-@media (max-width: 768px) {
-  .mobile-hero {
-    display: block;
-    width: 100%;
-    height: 270px;
-    background-size: cover;
-    background-position: center;
-  }
-
-  /* 메인 컨테이너: 패딩 제거, 풀 너비 */
-  main {
-    padding: 0 !important;
-    gap: 0 !important;
-  }
-
-  /* 뒤로가기 헤더 */
-  main > div:first-child {
-    padding: 5px 20px !important;
-    height: 56px;
-    background: #090909;
-    box-sizing: border-box;
-  }
-
-  /* 콘텐츠 영역 */
-  main > div:nth-child(3) {
-    padding: 20px !important;
-    gap: 20px !important;
-    background: #0C0B10;
-  }
-
-  /* 작품 정보 카드: 카드 스타일 제거, 플랫 레이아웃 */
-  main > div:nth-child(3) > div:first-child {
-    background: transparent !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    gap: 12px !important;
-  }
-
-  /* 썸네일 + 정보 flex row → column */
-  main > div:nth-child(3) > div:first-child > div:first-child {
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-
-  /* 썸네일 숨기기 (히어로 이미지로 대체) */
-  main > div:nth-child(3) > div:first-child > div:first-child > div:first-child {
-    display: none !important;
-  }
-
-  /* 제목 크기 */
-  main > div:nth-child(3) > div:first-child > div:first-child h2 {
-    font-size: 20px !important;
-  }
-
-  /* 작품 소개 박스 */
-  main > div:nth-child(3) > div:first-child > div:last-child {
-    background: #1F1F23 !important;
-    border-radius: 12px !important;
-    padding: 16px !important;
-    gap: 8px !important;
-  }
-
-  /* 작품 소개 라벨 */
-  main > div:nth-child(3) > div:first-child > div:last-child > span:first-child {
-    font-weight: 500 !important;
-    color: #A1A1AA !important;
-  }
-
-  /* 기획서/원고 이미지 풀 너비 */
-  main > div:nth-child(3) > div:nth-child(3) > div[class*="max-w"] {
-    max-width: 100% !important;
-  }
-
-  /* 기획서/원고 구분선 텍스트 */
-  main > div:nth-child(3) > div:nth-child(3) > div > span {
-    font-size: 16px !important;
-    font-weight: 500 !important;
-  }
-
-  /* 원고보기 버튼 */
-  main > div:nth-child(3) > div:nth-child(3) > button {
-    width: 200px;
-  }
-
-  /* 문의하기 섹션 */
-  main > div:nth-child(3) > div:last-child {
-    margin-top: 30px !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-
-  /* 문의하기 옆 경계선 숨기기 */
-  main > div:nth-child(3) > div:last-child > div.flex-1 {
-    display: none !important;
-  }
-
-  /* 문의하기 버튼: 풀 너비 pill */
-  main > div:nth-child(3) > div:last-child > button {
-    width: 100% !important;
-    border-radius: 9999px !important;
-    background: #27272A !important;
-  }
-
-  /* ===== 원고 뷰어 모달 모바일 ===== */
-  :host ::ng-deep .viewer-overlay {
-    padding: 0 !important;
-    backdrop-filter: none !important;
-    background: #090909 !important;
-  }
-
-  :host ::ng-deep .viewer-container {
-    max-width: 100% !important;
-    max-height: 100% !important;
-    height: 100%;
-    gap: 0 !important;
-  }
-
-  :host ::ng-deep .viewer-header {
-    padding: 5px 20px;
-    height: 56px;
-    box-sizing: border-box;
-  }
-
-  :host ::ng-deep .viewer-body {
-    flex-direction: column !important;
-    gap: 0 !important;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  /* 좌우 화살표 숨기기 */
-  :host ::ng-deep .viewer-arrow {
-    display: none !important;
-  }
-
-  :host ::ng-deep .viewer-content {
-    border-radius: 0 !important;
-    padding: 20px !important;
-    max-height: 100% !important;
-    flex: 1;
-  }
-}
-
-/* ===== 모바일 백 바 ===== */
-.spd-mobile-back {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  /* 페이지 패딩 리셋 */
-  .spd-page {
-    padding: 0 0 40px 0 !important;
-    gap: 0 !important;
-  }
-
-  /* 데스크톱 헤더 숨김 */
-  .spd-desktop-header {
-    display: none !important;
-  }
-
-  /* 모바일 백 바 */
-  .spd-mobile-back {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 5px 20px;
-    width: 100%;
-    height: 56px;
-    background: #090909;
-    box-sizing: border-box;
+@media (min-width: 768px) {
+  .spd-viewer-bg {
+    background: #1C1B20;
   }
 }

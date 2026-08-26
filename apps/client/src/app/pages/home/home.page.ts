@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, signal, inject, computed } from '@angular/core';
+import { Component, ElementRef, ViewChild, signal, inject, computed, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
@@ -55,10 +55,41 @@ interface BootcampCard {
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
-export class HomePage {
+export class HomePage implements AfterViewInit {
   @ViewChild('track') track!: ElementRef<HTMLDivElement>;
   @ViewChild('mentorTrack') mentorTrack!: ElementRef<HTMLDivElement>;
   @ViewChild('bootcampTrack') bootcampTrack!: ElementRef<HTMLDivElement>;
+
+  private ngZone = inject(NgZone);
+
+  /* ===== Carousel arrow / fade visibility ===== */
+  showCommentLeftArrow = signal(false);
+  showMentorLeftArrow = signal(false);
+  showCommentRightFade = signal(true);
+  showMentorRightFade = signal(true);
+
+  ngAfterViewInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      this.track?.nativeElement.addEventListener('scroll', () => {
+        const el = this.track.nativeElement;
+        const scrolled = el.scrollLeft > 1;
+        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 50;
+        this.ngZone.run(() => {
+          this.showCommentLeftArrow.set(scrolled);
+          this.showCommentRightFade.set(!atEnd);
+        });
+      });
+      this.mentorTrack?.nativeElement.addEventListener('scroll', () => {
+        const el = this.mentorTrack.nativeElement;
+        const scrolled = el.scrollLeft > 1;
+        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 50;
+        this.ngZone.run(() => {
+          this.showMentorLeftArrow.set(scrolled);
+          this.showMentorRightFade.set(!atEnd);
+        });
+      });
+    });
+  }
 
   private searchService = inject(SearchService);
   searchQuery = this.searchService.searchQuery;
@@ -92,11 +123,20 @@ export class HomePage {
   ];
 
   scrollLeft(): void {
-    this.track.nativeElement.scrollBy({ left: -580, behavior: 'smooth' });
+    const el = this.track.nativeElement;
+    if (el.scrollLeft <= 580) {
+      this.showCommentLeftArrow.set(false);
+    }
+    el.scrollBy({ left: -580, behavior: 'smooth' });
   }
 
   scrollRight(): void {
-    this.track.nativeElement.scrollBy({ left: 580, behavior: 'smooth' });
+    const el = this.track.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const remaining = maxScroll - el.scrollLeft;
+    if (remaining <= 0) return;
+    this.showCommentLeftArrow.set(true);
+    el.scrollBy({ left: Math.min(580, remaining), behavior: 'smooth' });
   }
 
   /* ===== Bootcamp ===== */
@@ -203,7 +243,20 @@ export class HomePage {
   ];
 
   scrollMentorRight(): void {
-    this.mentorTrack.nativeElement.scrollBy({ left: 432, behavior: 'smooth' });
+    const el = this.mentorTrack.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const remaining = maxScroll - el.scrollLeft;
+    if (remaining <= 0) return;
+    this.showMentorLeftArrow.set(true);
+    el.scrollBy({ left: Math.min(432, remaining), behavior: 'smooth' });
+  }
+
+  scrollMentorLeft(): void {
+    const el = this.mentorTrack.nativeElement;
+    if (el.scrollLeft <= 432) {
+      this.showMentorLeftArrow.set(false);
+    }
+    el.scrollBy({ left: -432, behavior: 'smooth' });
   }
 
   /* ===== More Content ===== */

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 
@@ -24,6 +24,7 @@ interface InquiryDetail {
   styleUrls: ['./inquiry-detail.page.css'],
 })
 export class InquiryDetailPage {
+  private router = inject(Router);
   isMoreOpen = signal(false);
   isDeleteOpen = signal(false);
 
@@ -44,8 +45,6 @@ export class InquiryDetailPage {
       date: '-',
     },
   };
-
-  constructor(private router: Router) {}
 
   toggleMore(): void {
     this.isMoreOpen.update(v => !v);

@@ -1,0 +1,195 @@
+<adm-data-grid
+  [columns]="gridColumns"
+  [data]="bootcampData"
+  [contextMenuItems]="contextMenuItems"
+  (contextMenuSelect)="onContextMenuAction($event)">
+  <button gridActions
+          class="flex items-center justify-center gap-2 px-3 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+          style="height: 36px;"
+          (click)="openDrawer()">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+      <path d="M8.66291 5.33601L5.32958 5.33366L5.32724 8.667C5.32711 8.84381 5.25676 9.01333 5.13164 9.13826C5.00653 9.2632 4.83691 9.33332 4.6601 9.33319C4.48329 9.33307 4.31377 9.26271 4.18884 9.1376C4.0639 9.01249 3.99378 8.84287 3.99391 8.66606L3.99625 5.33273L0.662916 5.33038C0.486105 5.33026 0.316586 5.2599 0.191649 5.13479C0.0667131 5.00968 -0.0034057 4.84006 -0.00328137 4.66325C-0.00315705 4.48644 0.0672002 4.31692 0.192312 4.19198C0.317424 4.06704 0.487043 3.99693 0.663854 3.99705L3.99719 3.99939L3.99953 0.666061C3.99965 0.48925 4.07001 0.31973 4.19512 0.194794C4.32024 0.0698575 4.48985 -0.000260923 4.66667 -0.000136598C4.84348 -1.22732e-05 5.013 0.0703447 5.13793 0.195457C5.26287 0.320569 5.33299 0.490188 5.33286 0.666999L5.33052 4.00033L8.66385 4.00268C8.84066 4.0028 9.01018 4.07316 9.13512 4.19827C9.26006 4.32338 9.33017 4.493 9.33005 4.66981C9.32993 4.84662 9.25957 5.01614 9.13446 5.14108C9.00935 5.26601 8.83973 5.33613 8.66291 5.33601Z" fill="white"/>
+    </svg>
+    등록
+  </button>
+</adm-data-grid>
+
+<!-- ===== 부트캠프 등록 사이드 드로어 ===== -->
+@if (drawerOpen()) {
+  <!-- 오버레이 -->
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button"
+       tabindex="0"
+       aria-label="드로어 닫기"
+       (click)="closeDrawer()"
+       (keydown.enter)="closeDrawer()"></div>
+
+  <!-- 드로어 패널 -->
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <!-- 닫기 버튼 (>>) -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M11.67 0L19 8l-7.33 8-1.42-1.41L15.5 8l-5.25-6.59L11.67 0z" fill="#374151"/>
+        <path d="M3.67 0L11 8l-7.33 8-1.42-1.41L7.5 8 2.25 1.41 3.67 0z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">부트캠프 등록</h4>
+
+    <!-- 썸네일 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-1">
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">썸네일</span>
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+      </div>
+      <!-- 힌트 -->
+      <div class="flex items-center gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="bold">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">권장 사이즈 420px * 276px</span>
+      </div>
+      <!-- 업로드 영역 -->
+      <input type="file" id="bootcamp-thumbnail-input" class="hidden" accept="image/*"
+             (change)="onDrawerThumbnailSelected($event)"/>
+      @if (!drawerThumbnail()) {
+        <div class="flex items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-[#3C8EEE] transition-colors"
+             style="height: 103px;"
+             (click)="triggerFileInput('bootcamp-thumbnail-input')"
+             tabindex="0" role="button"
+             (keyup.enter)="triggerFileInput('bootcamp-thumbnail-input')">
+          <div class="flex flex-col items-center gap-2">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <path d="M3.25 19.5l5.42-7.22a1 1 0 0 1 1.6 0L14.08 17l2.17-2.89a1 1 0 0 1 1.6 0L22.75 19.5M6.5 22.75h13a3.25 3.25 0 0 0 3.25-3.25v-13A3.25 3.25 0 0 0 19.5 3.25h-13A3.25 3.25 0 0 0 3.25 6.5v13a3.25 3.25 0 0 0 3.25 3.25z" stroke="#3C8EEE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">사진 또는 파일을 드래그 할 수 있어요</span>
+          </div>
+        </div>
+      } @else {
+        <!-- 업로드된 파일 표시 -->
+        <div class="flex items-center gap-2.5 p-2.5 border border-slate-200 rounded-md">
+          <img [src]="drawerThumbnail()!.preview" alt="" class="w-[35px] h-[46px] object-cover rounded"/>
+          <div class="flex items-center justify-between flex-1">
+            <div class="flex flex-col gap-1">
+              <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ drawerThumbnail()!.name }}</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ drawerThumbnail()!.size }}</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <!-- 체크 아이콘 -->
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="#10B981"/>
+              </svg>
+              <!-- 삭제 아이콘 -->
+              <button class="flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0"
+                      (click)="removeDrawerThumbnail()">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+                  <path d="M1 1l12 12M13 1L1 13" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 이름 * (셀렉트) -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="relative">
+        <select class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors appearance-none cursor-pointer box-border"
+                [value]="drawerForm().name"
+                (change)="updateDrawerField('name', $event)">
+          <option value="" disabled selected>선택</option>
+          <option value="홍길동">홍길동</option>
+          <option value="김철수">김철수</option>
+          <option value="이영희">이영희</option>
+        </select>
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 부트캠프명 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프명</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="drawerForm().bootcampName"
+             (input)="updateDrawerField('bootcampName', $event)"/>
+    </div>
+
+    <!-- 작품소개 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">작품소개</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             maxlength="10"
+             [value]="drawerForm().workIntro"
+             (input)="updateDrawerField('workIntro', $event)"/>
+      <div class="flex justify-end">
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ drawerForm().workIntro.length }} / 10</span>
+      </div>
+    </div>
+
+    <!-- 시작일시 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">시작일시</span>
+      </div>
+      <input type="date"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="drawerForm().startDate"
+             (input)="updateDrawerField('startDate', $event)"/>
+      <!-- 힌트 -->
+      <div class="flex items-center gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="bold">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">모집기간을 설정한 경우, 회원은 해당 기간동안 지원할 수 있습니다.</span>
+      </div>
+    </div>
+
+    <!-- 종료일시 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">종료일시</span>
+      </div>
+      <input type="date"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="drawerForm().endDate"
+             (input)="updateDrawerField('endDate', $event)"/>
+      <!-- 힌트 -->
+      <div class="flex items-start gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="shrink-0 mt-0.5">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="bold">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프 소개 페이지에 표시되는 교육 기간으로 상태값과는 무관합<br>니다.</span>
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col items-center justify-end mt-auto">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="registerBootcamp()">
+        등록
+      </button>
+    </div>
+  </div>
+}

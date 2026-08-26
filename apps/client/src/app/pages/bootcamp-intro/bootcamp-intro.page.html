@@ -15,7 +15,7 @@
     <!-- 카드 목록 -->
     <div class="cards-row">
       @for (card of bootcampCards; track card.id) {
-        <article class="bootcamp-card">
+        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]">
           <!-- 썸네일 -->
           <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
 
@@ -37,7 +37,7 @@
             <!-- 요약설명 -->
             <p class="card-summary">{{ card.summary }}</p>
           </div>
-        </article>
+        </a>
       }
     </div>
   </section>
@@ -184,7 +184,7 @@
       </div>
 
       <!-- 타임라인 그룹들 -->
-      <div class="timeline-scroll">
+      <div class="timeline-scroll" #timelineScroll (scroll)="onTimelineScroll()">
         <!-- 2024 -->
         <div class="timeline-group">
           <hr class="timeline-divider" />
@@ -270,11 +270,65 @@
           </div>
         </div>
 
-        <!-- 스크롤 트랙 -->
-        <div class="timeline-scrollbar">
-          <div class="scrollbar-track"></div>
-          <div class="scrollbar-thumb"></div>
+        <!-- 2020 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2020</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ WEBTOON</span>
+                  <span class="entry-desc">글로벌 웹툰 프로젝트</span>
+                  <span class="entry-date">2020. 03 ~ 2020. 12</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- 2019 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2019</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
+                  <span class="entry-desc">웹툰 아카데미 설립</span>
+                  <span class="entry-date">2019. 06 ~ 2019. 12</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2018 -->
+        <div class="timeline-group">
+          <hr class="timeline-divider" />
+          <div class="timeline-row">
+            <span class="timeline-year">2018</span>
+            <div class="timeline-entries">
+              <div class="timeline-entry">
+                <div class="entry-bar"></div>
+                <div class="entry-content">
+                  <span class="entry-title gradient-text">KENAZ STUDIO</span>
+                  <span class="entry-desc">스튜디오 창립</span>
+                  <span class="entry-date">2018. 01 ~ 2018. 06</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 커스텀 스크롤바 -->
+      <div class="timeline-scrollbar" #scrollbarTrack (mousedown)="onScrollbarTrackClick($event)">
+        <div class="scrollbar-track"></div>
+        <div class="scrollbar-thumb" [style.top.%]="timelineThumbTop" (mousedown)="onThumbMousedown($event)"></div>
       </div>
     </div>
   </section>

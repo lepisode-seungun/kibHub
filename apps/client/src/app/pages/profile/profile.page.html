@@ -1,31 +1,36 @@
 <div class="pf-wrap">
   <!-- ===== 배너 ===== -->
-  <div class="pf-banner group relative">
+  <div class="pf-banner group relative" [style.background]="bannerBackground()">
     <!-- 호버 오버레이 -->
     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-[5]">
       <div class="flex flex-col items-start gap-2">
         <div class="flex items-center gap-3">
           <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6]">배경 변경</button>
-          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-transparent border border-zinc-500 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-white/10">기본 이미지로 변경</button>
+          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-transparent border border-zinc-500 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-white/10" (click)="resetToDefaultCover()">기본 이미지로 변경</button>
         </div>
         <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-white/50 ml-16">권장 사이즈 : 1920x300</span>
       </div>
     </div>
   </div>
 
+
   <!-- ===== 프로필 사이드바 카드 ===== -->
   <div class="pf-sidebar">
-    <!-- 아바타 + 뱃지 -->
+    <!-- 강사 뱃지 (오른쪽 상단) -->
+    <div class="pf-badge">
+      <svg width="36" height="61" viewBox="0 0 36 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 31H36V61L18 48.7067L0 61V31Z" fill="#7A48FF"/>
+        <path d="M0 0H36V31H0V0Z" fill="#7A48FF"/>
+        <path opacity="0.5" d="M18.8359 7.66797H17.1693C15.5976 7.66797 14.8126 7.66797 14.3243 8.1563C13.8359 8.64464 13.8359 9.42964 13.8359 11.0013V12.668H22.1693V11.0013C22.1693 9.42964 22.1693 8.64464 21.6809 8.1563C21.1926 7.66797 20.4076 7.66797 18.8359 7.66797Z" fill="#CAB6FF"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3359 11H19.6693C22.0259 11 23.2051 11 23.9368 11.7325C24.6693 12.4642 24.6693 13.6433 24.6693 16V16.88C24.6693 18.8842 24.6693 19.8867 24.1718 20.6925C23.6734 21.4975 22.7768 21.9458 20.9843 22.8425C19.5209 23.5742 18.7893 23.94 18.0026 23.94C17.2159 23.94 16.4843 23.5742 15.0209 22.8425C13.2284 21.9458 12.3318 21.4975 11.8334 20.6925C11.3359 19.8867 11.3359 18.8833 11.3359 16.88V16C11.3359 13.6433 11.3359 12.4642 12.0684 11.7325C12.8001 11 13.9793 11 16.3359 11ZM18.0026 14.3333C17.7659 14.3333 17.6076 14.6167 17.2909 15.1858L17.2093 15.3325C17.1193 15.4942 17.0743 15.5742 17.0043 15.6275C16.9334 15.6808 16.8459 15.7008 16.6709 15.74L16.5126 15.7767C15.8976 15.9158 15.5901 15.985 15.5168 16.22C15.4434 16.455 15.6534 16.7008 16.0726 17.1908L16.1809 17.3175C16.3001 17.4567 16.3601 17.5258 16.3868 17.6125C16.4134 17.6992 16.4043 17.7917 16.3868 17.9775L16.3701 18.1467C16.3068 18.8008 16.2751 19.1283 16.4659 19.2733C16.6576 19.4183 16.9459 19.2858 17.5218 19.0208L17.6701 18.9525C17.8343 18.8775 17.9159 18.84 18.0026 18.84C18.0893 18.84 18.1709 18.8775 18.3351 18.9525L18.4834 19.0208C19.0593 19.2867 19.3476 19.4183 19.5393 19.2733C19.7309 19.1283 19.6984 18.8008 19.6351 18.1467L19.6184 17.9775C19.6009 17.7917 19.5918 17.6992 19.6184 17.6125C19.6451 17.5258 19.7051 17.4567 19.8243 17.3175L19.9326 17.1908C20.3518 16.7008 20.5618 16.4558 20.4884 16.22C20.4151 15.985 20.1076 15.9158 19.4926 15.7767L19.3343 15.74C19.1593 15.7008 19.0718 15.6817 19.0009 15.6275C18.9309 15.5742 18.8859 15.4942 18.7959 15.3325L18.7143 15.1858C18.3976 14.6167 18.2393 14.3333 18.0026 14.3333Z" fill="#CAB6FF"/>
+        <path d="M15.8564 31.7041V34.5732H17.5068V35.5508H15.8564V38.458H14.6504V31.7041H15.8564ZM6.90625 37.5693C9.57227 36.8203 11.2036 35.335 11.4258 33.4941H7.41406V32.5166H12.7334C12.7334 35.4556 10.7339 37.582 7.40137 38.5469L6.90625 37.5693ZM8.45508 40.8193C8.44238 39.4355 9.94043 38.5786 12.2256 38.585C14.5171 38.5786 15.9834 39.4355 15.9834 40.8193C15.9834 42.2158 14.5171 43.0601 12.2256 43.0664C9.94043 43.0601 8.44238 42.2158 8.45508 40.8193ZM9.64844 40.8193C9.64209 41.6191 10.6323 42.1079 12.2256 42.1143C13.8062 42.1079 14.8027 41.6191 14.8027 40.8193C14.8027 40.0195 13.8062 39.5308 12.2256 39.5371C10.6323 39.5308 9.64209 40.0195 9.64844 40.8193ZM22.1025 34.5986C22.0898 36.6108 23.2642 38.6738 24.959 39.499L24.21 40.4639C22.9722 39.8164 22.0137 38.5469 21.5122 37.0298C21.0044 38.6421 20.0078 40.0068 18.7129 40.6797L17.9639 39.7021C19.7095 38.8643 20.8901 36.6807 20.8965 34.5986V32.6562H22.1025V34.5986ZM25.8096 43.0791V31.7041H27.0156V36.2363H28.8438V37.2646H27.0156V43.0791H25.8096Z" fill="#E0E0E0"/>
+      </svg>
+    </div>
+
+    <!-- 아바타 -->
     <div class="pf-avatar-wrap">
       <div class="pf-avatar">
         <span class="pf-avatar-initial">N</span>
-      </div>
-      <div class="pf-badge">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M17 3H7a2 2 0 00-2 2v14l7-3 7 3V5a2 2 0 00-2-2z" fill="#CAB6FF" opacity="0.5"/>
-          <path d="M12 8l1.12 2.27 2.5.36-1.81 1.77.43 2.49L12 13.77l-2.24 1.12.43-2.49-1.81-1.77 2.5-.36L12 8z" fill="#CAB6FF"/>
-        </svg>
-        <span class="pf-badge-text">강사</span>
       </div>
     </div>
 
@@ -56,10 +61,10 @@
         <button class="pf-btn pf-btn-edit" (click)="toggleEditDropdown()">프로필 편집</button>
         @if (isEditDropdownOpen()) {
           <!-- 공통 백드롭 -->
-          <div class="fixed inset-0 z-[49] bg-transparent md:bg-transparent bg-black/50" tabindex="-1" (click)="closeEditDropdown()" (keydown.escape)="closeEditDropdown()"></div>
+          <div class="fixed inset-0 z-[49] bg-black/50 md:bg-transparent" tabindex="-1" (click)="closeEditDropdown()" (keydown.escape)="closeEditDropdown()"></div>
 
           <!-- 데스크톱: 드롭다운 -->
-          <div class="hidden md:block absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] w-[143px] z-50">
+          <div class="hidden md:block absolute left-1/2 -translate-x-1/2 top-[calc(100%+2px)] w-[143px] z-50">
             <div class="flex flex-col items-start p-1 w-[143px] bg-zinc-800 border border-white/[0.04] shadow-[0_4px_16px_rgba(0,0,0,0.3)] rounded-lg overflow-hidden">
               <button class="flex items-center px-3 py-2 gap-2 w-full h-10 border-none bg-zinc-700 rounded-lg cursor-pointer box-border transition-colors duration-150 hover:bg-zinc-600" (click)="goToProfileEdit()">
                 <span class="font-suit font-medium text-sm leading-[140%] tracking-tight text-white">프로필 편집</span>

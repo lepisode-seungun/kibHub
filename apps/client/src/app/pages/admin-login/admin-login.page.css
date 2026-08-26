@@ -1,0 +1,277 @@
+/* ===== 관리자 로그인 페이지 ===== */
+
+.adm-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ===== 상단 타이틀 바 ===== */
+.adm-title-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 40px;
+  width: 100%;
+  height: 62px;
+  background: linear-gradient(270.26deg, #122D57 0%, #1C57B5 32.81%, #1C57B5 86.46%, #063681 100%);
+  border-radius: 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.adm-title-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 920px;
+  max-width: 100%;
+  margin: 0 auto;
+  height: 46px;
+}
+
+.adm-title-text {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+.adm-title-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.adm-role-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+.adm-role-name {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #CBD5E1;
+}
+
+/* ===== 로그인 영역 ===== */
+.adm-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  background: #FFFFFF;
+}
+
+.adm-form-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  gap: 20px;
+  width: 500px;
+  max-width: calc(100% - 40px);
+  background: #FFFFFF;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* 아이콘 원형 */
+.adm-icon-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  background: #3C8EEE;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+/* 폼 타이틀 */
+.adm-form-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+  margin: 0;
+}
+
+/* 필드 */
+.adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 420px;
+  max-width: 100%;
+}
+
+.adm-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.adm-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+}
+
+.adm-input-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.adm-input {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  width: 100%;
+  height: 40px;
+  background: #FFFFFF;
+  border: 2px solid #D1D5DB;
+  border-radius: 6px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.adm-input::placeholder {
+  color: #9CA3AF;
+}
+
+.adm-input:focus {
+  border-color: #3C8EEE;
+}
+
+/* 체크박스 */
+.adm-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 420px;
+  max-width: 100%;
+  cursor: pointer;
+  user-select: none;
+}
+
+.adm-checkbox {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #D1D5DB;
+  border-radius: 4px;
+  background: #FFFFFF;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.adm-checkbox-checked {
+  background: #3C8EEE;
+  border-color: #3C8EEE;
+}
+
+.adm-checkbox-text {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #374151;
+}
+
+/* 에러 메시지 */
+.adm-error {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #EF4444;
+  width: 420px;
+  max-width: 100%;
+  text-align: left;
+}
+
+/* 로그인 버튼 */
+.adm-submit-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  width: 420px;
+  max-width: 100%;
+  height: 40px;
+  background: #3C8EEE;
+  border: none;
+  border-radius: 6px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.adm-submit-btn:hover {
+  background: #2B7CDB;
+}
+
+.adm-submit-btn:active {
+  background: #1D6BC4;
+}
+
+/* ===== 모바일 대응 ===== */
+@media (max-width: 768px) {
+  .adm-title-bar {
+    padding: 8px 20px;
+    border-radius: 0;
+  }
+
+  .adm-title-inner {
+    width: 100%;
+  }
+
+  .adm-form-card {
+    padding: 24px 20px;
+    width: 100%;
+  }
+
+  .adm-field,
+  .adm-checkbox-row,
+  .adm-error,
+  .adm-submit-btn {
+    width: 100%;
+  }
+}

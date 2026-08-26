@@ -1,0 +1,850 @@
+<div class="flex flex-col gap-6">
+
+  <!-- 탭 -->
+  <div class="flex items-center" style="border-bottom: 2px solid #E5E7EB;">
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'portfolio'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'portfolio'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('portfolio')">
+      포트폴리오
+    </button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'hallOfFame'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'hallOfFame'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('hallOfFame')">
+      명예의 전당
+    </button>
+  </div>
+
+  <!-- ===== 목록 뷰 ===== -->
+  @if (viewMode() === 'list') {
+
+    <!-- 포트폴리오 탭 -->
+    @if (activeTab() === 'portfolio') {
+      <adm-data-grid
+        [columns]="gridColumns"
+        [data]="portfolioData"
+        [contextMenuItems]="['수정', '삭제']"
+        searchPlaceholder="검색어를 입력하세요"
+        (rowClick)="openDetail($event)">
+        <button gridActions
+                class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#ECF4FE] transition-colors whitespace-nowrap"
+                style="min-width: 95px;"
+                (click)="openManagerDrawer()">
+          담당자 설정
+        </button>
+        <button gridActions
+                class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                (click)="openForm()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          등록
+        </button>
+      </adm-data-grid>
+    }
+
+    <!-- 명예의 전당 탭 -->
+    @if (activeTab() === 'hallOfFame') {
+      <adm-data-grid
+        [columns]="hallOfFameColumns"
+        [data]="hallOfFameData"
+        [contextMenuItems]="['수정', '삭제']"
+        searchPlaceholder="검색어를 입력하세요"
+        (rowClick)="openDetail($event)">
+        <button gridActions
+                class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#ECF4FE] transition-colors whitespace-nowrap"
+                style="min-width: 95px;"
+                (click)="openManagerDrawer()">
+          담당자 설정
+        </button>
+        <button gridActions
+                class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                (click)="openHofDrawer()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          등록
+        </button>
+      </adm-data-grid>
+    }
+  }
+
+  <!-- ===== 상세 뷰 ===== -->
+  @if (viewMode() === 'detail' && detailData()) {
+
+    <!-- 포트폴리오 상세 -->
+    @if (activeTab() === 'portfolio') {
+    <div class="flex flex-col px-6 gap-2.5">
+
+      <!-- 기본정보 아코디언 -->
+      <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg relative">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+          <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="detailBasicInfoExpanded.set(!detailBasicInfoExpanded())">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본정보</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 [class.rotate-180]="!detailBasicInfoExpanded()"
+                 class="transition-transform duration-200">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+            </svg>
+          </button>
+          <!-- 드롭다운 트리거 -->
+          <div class="relative">
+            <button class="flex items-center justify-center w-7 h-4 bg-transparent border-none cursor-pointer p-0 hover:bg-gray-100 rounded transition-colors"
+                    (click)="detailDropdownOpen.set(!detailDropdownOpen())">
+              <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+                <circle cx="1.5" cy="2" r="1.5" fill="#1F2937"/>
+                <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+                <circle cx="1.5" cy="13" r="1.5" fill="#1F2937"/>
+              </svg>
+            </button>
+            @if (detailDropdownOpen()) {
+              <div class="absolute left-1/2 -translate-x-1/2 top-6 w-[114px] bg-white border border-gray-50 rounded-lg py-2 z-10"
+                   style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="hidePortfolio()">숨김</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors">수정</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="deletePortfolio()">삭제</button>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (detailBasicInfoExpanded()) {
+          <div class="flex flex-col gap-6">
+            <!-- Row 1: 순번, 상태, 등록일시, 이름 -->
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.id }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+                <div>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-sm font-suit font-medium tracking-[-0.04em]"
+                        style="background: #ECFDF5; border: 1px solid #A7F3D0; color: #059669;">
+                    {{ detailData()!.status }}
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.createdAt }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.name }}</span>
+              </div>
+            </div>
+            <!-- Row 2: 부트캠프명, 작품명, 작가명, 장르 -->
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.bootcampName }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작품명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">작품명</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작가명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">작가명</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">장르</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">장르</span>
+              </div>
+            </div>
+            <!-- Row 3: 작품소개 -->
+            <div class="flex flex-col gap-2 py-1.5">
+              <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작품소개</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">
+                케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라 케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라 200자 이내
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 원고 아코디언 -->
+      <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+          <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="detailManuscriptExpanded.set(!detailManuscriptExpanded())">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">원고</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 [class.rotate-180]="!detailManuscriptExpanded()"
+                 class="transition-transform duration-200">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+            </svg>
+          </button>
+        </div>
+        @if (detailManuscriptExpanded()) {
+          <div class="flex items-center justify-center w-full rounded bg-gray-200" style="height: 509px;">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600">이미지</span>
+          </div>
+        }
+      </div>
+
+      <!-- 기획서 아코디언 -->
+      <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+          <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="detailPlanExpanded.set(!detailPlanExpanded())">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기획서</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 [class.rotate-180]="!detailPlanExpanded()"
+                 class="transition-transform duration-200">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+            </svg>
+          </button>
+        </div>
+        @if (detailPlanExpanded()) {
+          <div class="flex items-center justify-center w-full rounded bg-gray-200" style="height: 509px;">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600">이미지</span>
+          </div>
+        }
+      </div>
+
+    </div>
+    }
+
+    <!-- 명예의 전당 상세 -->
+    @if (activeTab() === 'hallOfFame') {
+    <div class="flex flex-col px-6 gap-2.5">
+
+      <!-- 기본정보 아코디언 -->
+      <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg relative">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+          <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="detailBasicInfoExpanded.set(!detailBasicInfoExpanded())">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본정보</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 [class.rotate-180]="!detailBasicInfoExpanded()"
+                 class="transition-transform duration-200">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+            </svg>
+          </button>
+          <!-- 드롭다운 트리거 -->
+          <div class="relative">
+            <button class="flex items-center justify-center w-7 h-4 bg-transparent border-none cursor-pointer p-0 hover:bg-gray-100 rounded transition-colors"
+                    (click)="detailDropdownOpen.set(!detailDropdownOpen())">
+              <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+                <circle cx="1.5" cy="2" r="1.5" fill="#1F2937"/>
+                <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+                <circle cx="1.5" cy="13" r="1.5" fill="#1F2937"/>
+              </svg>
+            </button>
+            @if (detailDropdownOpen()) {
+              <div class="absolute left-1/2 -translate-x-1/2 top-6 w-[114px] bg-white border border-gray-50 rounded-lg py-2 z-10"
+                   style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="hidePortfolio()">숨김</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors">수정</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="deletePortfolio()">삭제</button>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (detailBasicInfoExpanded()) {
+          <div class="flex flex-col gap-6">
+            <!-- Row 1: 순번, 이름, 등록일시, 부트캠프명 -->
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.id }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.name }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.createdAt }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.bootcampName }}</span>
+              </div>
+            </div>
+            <!-- Row 2: 작품명, 작가명, 런칭 플랫폼, 플랫폼 링크 -->
+            <div class="flex items-start gap-3">
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작품명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">작품명</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작가명</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">작가명</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">런칭 플랫폼</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ detailData()!.launchPlatform }}</span>
+              </div>
+              <div class="flex flex-col gap-2 py-1.5" style="flex: 1 1 0; min-width: 0;">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">플랫폼 링크</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#3C8EEE] cursor-pointer hover:underline">https://example.com</span>
+              </div>
+            </div>
+            <!-- Row 3: 작품소개 -->
+            <div class="flex flex-col gap-2 py-1.5">
+              <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작품소개</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">
+                케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라 200자 이내
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+    }
+
+  }
+
+  <!-- ===== 등록 폼 뷰 ===== -->
+  @if (viewMode() === 'form') {
+
+    <!-- 서브 타이틀 -->
+    <h3 class="font-suit font-bold text-lg leading-[150%] tracking-[-0.04em] text-gray-800 m-0">
+      {{ activeTab() === 'portfolio' ? '포트폴리오 등록' : '명예의 전당 등록' }}
+    </h3>
+
+    <!-- 수강생 정보 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="studentInfoExpanded.set(!studentInfoExpanded())">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">수강생 정보</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!studentInfoExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (studentInfoExpanded()) {
+        <div class="grid grid-cols-2 gap-6">
+          <!-- 이름 * -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-0.5">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+            </div>
+            <input type="text"
+                   class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="이름을 입력하세요"
+                   [value]="portfolioForm().name"
+                   (input)="updateFormField('name', $event)"/>
+          </div>
+          <!-- 부트캠프명 * -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-0.5">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프명</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+            </div>
+            <input type="text"
+                   class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="부트캠프명을 입력하세요"
+                   [value]="portfolioForm().bootcampName"
+                   (input)="updateFormField('bootcampName', $event)"/>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 작품 정보 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="workInfoExpanded.set(!workInfoExpanded())">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">작품 정보</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!workInfoExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (workInfoExpanded()) {
+        <div class="flex flex-col gap-6">
+          <!-- 작품명 -->
+          <div class="flex flex-col gap-2">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">작품명</span>
+            <input type="text"
+                   class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="작품명을 입력하세요"
+                   [value]="portfolioForm().workTitle"
+                   (input)="updateFormField('workTitle', $event)"/>
+          </div>
+          <!-- 작가명 -->
+          <div class="flex flex-col gap-2">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">작가명</span>
+            <input type="text"
+                   class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="작가명을 입력하세요"
+                   [value]="portfolioForm().authorName"
+                   (input)="updateFormField('authorName', $event)"/>
+          </div>
+          <!-- 장르 -->
+          <div class="flex flex-col gap-2">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">장르</span>
+            <input type="text"
+                   class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="장르를 입력하세요"
+                   [value]="portfolioForm().genre"
+                   (input)="updateFormField('genre', $event)"/>
+          </div>
+          <!-- 작품소개 -->
+          <div class="flex flex-col gap-2">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">작품소개</span>
+            <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                      rows="4"
+                      placeholder="작품소개를 입력하세요"
+                      [value]="portfolioForm().workIntro"
+                      (input)="updateFormField('workIntro', $event)"></textarea>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 파일 업로드 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="fileUploadExpanded.set(!fileUploadExpanded())">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">파일 업로드</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!fileUploadExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (fileUploadExpanded()) {
+        <div class="flex flex-col gap-6">
+
+          <!-- 썸네일 * -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">썸네일</span>
+              <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+            </div>
+            <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+                <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+                <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+            </div>
+            <input type="file" id="portfolioThumbnailInput" accept="image/*" class="hidden" (change)="onFileSelected('thumbnail', $event)"/>
+            <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+                 style="min-height: 84px;"
+                 tabindex="0" role="button"
+                 (click)="triggerFileInput('portfolioThumbnailInput')"
+                 (keyup.enter)="triggerFileInput('portfolioThumbnailInput')">
+              <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+                <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+            </div>
+            @if (thumbnailFile()) {
+              <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+                <img [src]="thumbnailFile()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+                <div class="flex items-center justify-between flex-1">
+                  <div class="flex flex-col gap-1">
+                    <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ thumbnailFile()!.name }}</span>
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ thumbnailFile()!.size }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                      <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+                    </svg>
+                    <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeFile('thumbnail'); $event.stopPropagation()">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- 기획서 * -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">기획서</span>
+              <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+            </div>
+            <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+                <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+                <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+            </div>
+            <input type="file" id="portfolioPlanInput" accept="image/*,.pdf,.doc,.docx" class="hidden" (change)="onFileSelected('plan', $event)"/>
+            <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+                 style="min-height: 103px;"
+                 tabindex="0" role="button"
+                 (click)="triggerFileInput('portfolioPlanInput')"
+                 (keyup.enter)="triggerFileInput('portfolioPlanInput')">
+              <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+                <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+            </div>
+            @if (planFile()) {
+              <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+                <img [src]="planFile()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+                <div class="flex items-center justify-between flex-1">
+                  <div class="flex flex-col gap-1">
+                    <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ planFile()!.name }}</span>
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ planFile()!.size }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                      <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+                    </svg>
+                    <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeFile('plan'); $event.stopPropagation()">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+
+    <!-- 원고 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="manuscriptExpanded.set(!manuscriptExpanded())">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">원고</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!manuscriptExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (manuscriptExpanded()) {
+        <div class="flex flex-col gap-4">
+
+          <!-- 업로드 영역 -->
+          <input type="file" id="manuscriptFileInput" accept="image/*" class="hidden" (change)="onManuscriptUpload($event)"/>
+          <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+               style="min-height: 84px;"
+               tabindex="0" role="button"
+               (click)="triggerFileInput('manuscriptFileInput')"
+               (keyup.enter)="triggerFileInput('manuscriptFileInput')">
+            <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+              <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+          </div>
+
+          <!-- 원고 테이블 -->
+          <div class="flex flex-col w-full">
+            <!-- 헤더 -->
+            <div class="flex items-center w-full bg-white border-b-2 border-gray-200 whitespace-nowrap">
+              <div class="flex items-start py-2 px-4" style="width: 80px;">
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">회차</span>
+              </div>
+              <div class="flex items-start py-2 px-4" style="width: 67px;">
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">썸네일</span>
+              </div>
+              <div class="flex-1 flex items-start py-2 px-4">
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">파일</span>
+              </div>
+              <div class="flex items-center justify-center py-2 px-4" style="width: 52px;"></div>
+              <div class="flex items-center justify-center py-2 px-4" style="width: 52px;"></div>
+            </div>
+            <!-- 데이터 로우 -->
+            @for (file of manuscriptFiles(); track file.episode; let i = $index) {
+              <div class="flex items-center w-full bg-white border-b border-gray-200 whitespace-nowrap">
+                <div class="flex items-start py-2 px-4" style="width: 80px;">
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ file.episode }}</span>
+                </div>
+                <div class="flex items-center py-2 px-4" style="width: 67px;">
+                  <div class="w-[35px] h-[46px] bg-gray-200 rounded" [style.background-image]="file.preview ? 'url(' + file.preview + ')' : 'none'" style="background-size: cover; background-position: center;"></div>
+                </div>
+                <div class="flex-1 flex flex-col py-2 px-4 gap-0.5">
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ file.name }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ file.size }}</span>
+                </div>
+                <div class="flex items-center justify-center py-2 px-4" style="width: 52px;">
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none" class="cursor-grab">
+                    <path d="M0 0h18v2H0V0zm0 5h18v2H0V5zm0 5h18v2H0v-2z" fill="#6B7280"/>
+                  </svg>
+                </div>
+                <div class="flex items-center justify-center py-2 px-4" style="width: 52px;">
+                  <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeManuscript(i)">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                      <path d="M6 6l10 10M16 6L6 16" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+
+    <!-- 하단 취소/등록 버튼 -->
+    <div class="flex items-start gap-6 py-6">
+      <button class="flex-1 flex items-center justify-center h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#ECF4FE] transition-colors"
+              (click)="backToList()">
+        취소
+      </button>
+      <button class="flex-1 flex items-center justify-center h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors">
+        등록
+      </button>
+    </div>
+
+  }
+</div>
+
+<!-- ===== 담당자 설정 사이드 드로어 ===== -->
+@if (managerDrawerOpen()) {
+  <div class="fixed inset-0 z-50 flex justify-end" style="background: rgba(0,0,0,0.3);" role="dialog" (click)="closeManagerDrawer()" (keyup.enter)="closeManagerDrawer()" tabindex="-1">
+    <div class="flex flex-col p-6 gap-6 bg-white drawer-slide-in" style="width: 522px; height: 100vh; border-radius: 6px 0 0 6px; overflow-y: auto;" tabindex="-1" (click)="$event.stopPropagation()" (keyup.enter)="$event.stopPropagation()">
+
+      <!-- 닫기 버튼 -->
+      <button class="flex items-center justify-center p-1.5 rounded-md cursor-pointer bg-transparent border-none hover:bg-gray-100 transition-colors self-start"
+              (click)="closeManagerDrawer()">
+        <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+          <path d="M7.33 0.94L12.39 6H0.5V8H12.39L7.33 13.06L8.5 14.23L15.73 7L8.5 -0.23L7.33 0.94Z" fill="#374151"/>
+          <path d="M16.5 0H18.5V14H16.5V0Z" fill="#374151"/>
+        </svg>
+      </button>
+
+      <!-- 타이틀 -->
+      <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">포트폴리오 문의 담당자</h3>
+
+      <!-- 담당자 리스트 -->
+      <div class="flex flex-col w-full">
+        @for (mgr of managers(); track $index; let i = $index) {
+
+          @if (!mgr.editing) {
+            <!-- 읽기 모드 -->
+            <div class="flex items-center py-3 border-b border-gray-200" style="border-top: 1px solid #E5E7EB;">
+              <div class="flex-1 flex items-start py-3 px-4 gap-2.5">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ mgr.name }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ mgr.email }}</span>
+              </div>
+              <button class="flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded bg-transparent border-none" style="width: 50px;" (click)="editManager(i)">
+                <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+                  <path d="M0 13.0647V16.5022H3.4375L13.5758 6.36391L10.1383 2.92641L0 13.0647ZM16.2342 2.41307L14.0892 0.268074C14.0044 0.183095 13.9036 0.115677 13.7927 0.0696771C13.6818 0.0236775 13.563 0 13.4429 0C13.3229 0 13.204 0.0236775 13.0931 0.0696771C12.9822 0.115677 12.8815 0.183095 12.7967 0.268074L11.1192 1.94557L14.5567 5.38307L16.2342 3.70557C16.3191 3.62077 16.3866 3.52004 16.4326 3.40915C16.4786 3.29825 16.5022 3.17938 16.5022 3.05932C16.5022 2.93927 16.4786 2.82039 16.4326 2.7095C16.3866 2.59861 16.3191 2.49788 16.2342 2.41307Z" fill="#6B7280"/>
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <!-- 편집 모드 -->
+            <div class="flex items-center py-4 border-b border-gray-200 gap-3">
+              <div class="flex items-center gap-3 flex-1">
+                <input type="text"
+                       class="h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                       style="width: 120px;"
+                       placeholder="이름"
+                       [value]="mgr.name"
+                       (input)="updateManager(i, 'name', $event)"/>
+                <input type="text"
+                       class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                       placeholder="이메일"
+                       [value]="mgr.email"
+                       (input)="updateManager(i, 'email', $event)"/>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                        (click)="saveManager(i)">
+                  저장
+                </button>
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
+                        (click)="deleteManager(i)">
+                  취소
+                </button>
+              </div>
+            </div>
+          }
+        }
+
+        <!-- 추가 버튼 행 -->
+        <div class="flex items-center py-4 border-b border-gray-200">
+          <div class="flex-1 flex items-start py-2 px-4">
+            <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:text-blue-600 transition-colors"
+                    (click)="addManager()">
+              <span>추가</span>
+              <span>+</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== 명예의 전당 등록 사이드 드로어 ===== -->
+@if (hofDrawerOpen()) {
+  <div class="fixed inset-0 z-50 flex justify-end" style="background: rgba(0,0,0,0.3);" role="dialog" (click)="closeHofDrawer()" (keyup.enter)="closeHofDrawer()" tabindex="-1">
+    <div class="flex flex-col p-6 gap-6 bg-white drawer-slide-in" style="width: 522px; height: 100vh; border-radius: 6px 0 0 6px; overflow-y: auto;" tabindex="-1" (click)="$event.stopPropagation()" (keyup.enter)="$event.stopPropagation()">
+
+      <!-- 닫기 버튼 -->
+      <button class="flex items-center justify-center p-1.5 rounded-md cursor-pointer bg-transparent border-none hover:bg-gray-100 transition-colors self-start"
+              (click)="closeHofDrawer()">
+        <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+          <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+          <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+        </svg>
+      </button>
+
+      <!-- 타이틀 -->
+      <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">명예의 전당 등록</h3>
+
+      <!-- 썸네일 * -->
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-1">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">썸네일</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+        </div>
+        <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">권장 사이즈 000px * 000px</span>
+        </div>
+        <input type="file" id="hofThumbnailInput" accept="image/*" class="hidden" (change)="onHofThumbnailSelected($event)"/>
+        <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+             style="min-height: 103px;"
+             tabindex="0" role="button"
+             (click)="triggerFileInput('hofThumbnailInput')"
+             (keyup.enter)="triggerFileInput('hofThumbnailInput')">
+          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+        </div>
+        @if (hofThumbnail()) {
+          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+            <img [src]="hofThumbnail()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+            <div class="flex items-center justify-between flex-1">
+              <div class="flex flex-col gap-1">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ hofThumbnail()!.name }}</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ hofThumbnail()!.size }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                  <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+                </svg>
+                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeHofThumbnail()">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 수강생 정보 -->
+      <h4 class="font-suit font-bold text-lg leading-[150%] tracking-[-0.04em] text-gray-700 m-0">수강생 정보</h4>
+
+      <!-- 이름 * -->
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">이름</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               [value]="hofForm().name"
+               (input)="updateHofField('name', $event)"/>
+      </div>
+
+      <!-- 부트캠프명 * -->
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">부트캠프명</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               [value]="hofForm().bootcampName"
+               (input)="updateHofField('bootcampName', $event)"/>
+      </div>
+
+      <!-- 데뷔 정보 -->
+      <h4 class="font-suit font-bold text-lg leading-[150%] tracking-[-0.04em] text-gray-700 m-0">데뷔 정보</h4>
+
+      <!-- 작품명 -->
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">작품명</span>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               [value]="hofForm().workTitle"
+               (input)="updateHofField('workTitle', $event)"/>
+      </div>
+
+      <!-- 작품소개 (textarea) -->
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">작품소개</span>
+        <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                  style="height: 200px;"
+                  [value]="hofForm().workIntro"
+                  maxlength="200"
+                  (input)="updateHofField('workIntro', $event)"></textarea>
+        <div class="flex justify-end">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ hofForm().workIntro.length }} / 200</span>
+        </div>
+      </div>
+
+      <!-- 런칭 플랫폼 -->
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">런칭 플랫폼</span>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               [value]="hofForm().launchPlatform"
+               (input)="updateHofField('launchPlatform', $event)"/>
+      </div>
+
+      <!-- 런칭 URL -->
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">플랫폼 링크</span>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="https:// 로 시작하는 URL를 기재해주세요."
+               [value]="hofForm().launchUrl"
+               (input)="updateHofField('launchUrl', $event)"/>
+      </div>
+
+      <!-- 등록 버튼 -->
+      <div class="flex items-center w-full mt-auto">
+        <button class="flex items-center justify-center w-full h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                (click)="registerHof()">
+          등록
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

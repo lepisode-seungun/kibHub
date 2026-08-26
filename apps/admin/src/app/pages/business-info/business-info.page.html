@@ -1,0 +1,112 @@
+<div class="flex flex-col px-6 py-6 gap-6">
+
+  <!-- 사업자 정보 폼그룹 -->
+  <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+    <!-- 헤더 -->
+    <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+      <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0"
+              (click)="businessInfoExpanded.set(!businessInfoExpanded())">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">사업자 정보</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             [class.rotate-180]="!businessInfoExpanded()"
+             class="transition-transform duration-200">
+          <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+        </svg>
+      </button>
+    </div>
+
+    @if (businessInfoExpanded()) {
+      <div class="flex flex-col gap-6">
+
+        <!-- 회사명 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">회사명</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().companyName"
+                 (input)="updateField('companyName', $event)"/>
+        </div>
+
+        <!-- 대표자명 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">대표자명</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().representativeName"
+                 (input)="updateField('representativeName', $event)"/>
+        </div>
+
+        <!-- 이름 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().name"
+                 (input)="updateField('name', $event)"/>
+        </div>
+
+        <!-- 업종 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">업종</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().businessType"
+                 (input)="updateField('businessType', $event)"/>
+        </div>
+
+        <!-- 주소 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">주소</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().address"
+                 (input)="updateField('address', $event)"/>
+        </div>
+
+        <!-- 사업자등록번호 * -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">사업자등록번호</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <input type="text"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 [value]="form().businessNumber"
+                 (input)="updateField('businessNumber', $event)"/>
+        </div>
+
+      </div>
+    }
+  </div>
+
+  <!-- 하단 버튼 -->
+  <div class="flex items-start gap-6">
+    <button class="flex items-center justify-center h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#ECF4FE] transition-colors"
+            style="flex: 1 1 0;"
+            (click)="cancel()">
+      취소
+    </button>
+    <button class="flex items-center justify-center h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+            style="flex: 1 1 0;"
+            (click)="register()">
+      등록
+    </button>
+  </div>
+
+</div>

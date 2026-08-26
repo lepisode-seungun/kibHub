@@ -1,0 +1,93 @@
+<div class="flex flex-col p-6 gap-4 flex-1">
+  <!-- 검색바 + 추가 버튼 -->
+  <div class="flex items-center justify-between">
+    <div class="relative flex items-center">
+      <svg class="absolute left-3" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M7.333 12.667A5.333 5.333 0 107.333 2a5.333 5.333 0 000 10.667zM14 14l-2.9-2.9" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input type="text"
+             class="pl-9 pr-4 py-2 w-[280px] h-10 bg-white border border-gray-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors"
+             placeholder="검색어를 입력하세요" />
+    </div>
+    <button class="flex items-center justify-center gap-1 px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+            style="height: 40px;"
+            (click)="openDrawer()">
+      <span>+</span>
+      <span>추가</span>
+    </button>
+  </div>
+
+  <adm-data-grid
+    [columns]="columns"
+    [data]="data"
+    [showSearch]="false"
+    [contextMenuItems]="contextMenuItems"
+    (rowClick)="onRowClick($event)">
+  </adm-data-grid>
+</div>
+
+<!-- ===== 과정 등록 사이드 드로어 ===== -->
+@if (drawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998] drawer-overlay"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeDrawer()"
+       (keydown.enter)="closeDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto drawer-panel"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">과정 등록</span>
+
+    <!-- 분류 -->
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="relative w-full">
+        <select class="w-full h-10 px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none appearance-none cursor-pointer focus:border-[#3C8EEE] transition-colors box-border"
+                style="padding-right: 40px;"
+                [value]="courseCategory()"
+                (change)="courseCategory.set($any($event.target).value)">
+          <option value="">선택하세요</option>
+          <option value="show">노출</option>
+          <option value="hide">숨김</option>
+        </select>
+        <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M9 6L15 12L9 18" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 과정명 -->
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">과정명</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             style="height: 40px;"
+             [value]="courseName()"
+             (input)="courseName.set($any($event.target).value)"
+             placeholder="과정명을 입력하세요" />
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col flex-1 justify-end">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitCourse()">
+        등록
+      </button>
+    </div>
+  </div>
+}

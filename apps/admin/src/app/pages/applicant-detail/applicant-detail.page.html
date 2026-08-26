@@ -1,0 +1,259 @@
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ===== 지원자 정보 아코디언 ===== -->
+  <div class="info-card">
+
+    <!-- 헤더 -->
+    <div class="card-header">
+      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleSection()"
+           role="button" tabindex="0" (keydown.enter)="toggleSection()">
+        <span class="card-title">지원자 정보</span>
+        <svg class="toggle-icon" [class.collapsed]="!sectionOpen()"
+             width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M7 14.5l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- 상태 변경 드롭다운 -->
+        <div class="relative">
+          <button class="edit-btn" (click)="toggleStatusDropdown()">상태 변경</button>
+
+          @if (statusDropdownOpen()) {
+            <div class="fixed inset-0 z-[999]"
+                 role="button" tabindex="0" aria-label="드롭다운 닫기"
+                 (click)="closeStatusDropdown()"
+                 (keydown.enter)="closeStatusDropdown()"></div>
+            <div class="absolute left-1/2 -translate-x-1/2 top-[calc(100%+4px)] flex flex-col items-start py-2 w-[114px] bg-white border border-[#F9FAFB] rounded-lg z-[1000]"
+                 style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
+              <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-[#F9FAFB] hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                      (click)="changeStatus('합격')">
+                합격
+              </button>
+              <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                      (click)="changeStatus('불합격')">
+                불합격
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 폼 콘텐츠 -->
+    @if (sectionOpen()) {
+      <div class="form-grid">
+
+        <!-- Row 1: 순번, 상태, 회원, 지원일시 -->
+        <div class="form-row">
+          <div class="field-group">
+            <span class="field-label">순번</span>
+            <span class="field-value">{{ applicant.id }}</span>
+          </div>
+          <div class="field-group">
+            <span class="field-label">상태</span>
+            <span class="status-badge" [ngClass]="getBadgeClass(applicant.status)">{{ applicant.status }}</span>
+          </div>
+          <div class="field-group">
+            <span class="field-label">회원</span>
+            <div class="flex items-center gap-1">
+              <span class="field-value">{{ applicant.member }}</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7.75 2.75H2.25C1.85218 2.75 1.47064 2.90804 1.18934 3.18934C0.908035 3.47064 0.75 3.85218 0.75 4.25V11.25C0.75 11.6478 0.908035 12.0294 1.18934 12.3107C1.47064 12.592 1.85218 12.75 2.25 12.75H9.25C9.64782 12.75 10.0294 12.592 10.3107 12.3107C10.592 12.0294 10.75 11.6478 10.75 11.25V5.75M3.75 9.75L12.75 0.75M12.75 0.75H9.25M12.75 0.75V4.25" stroke="#67A6F3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">지원일시</span>
+            <span class="field-value">{{ applicant.appliedAt }}</span>
+          </div>
+        </div>
+
+        <!-- Row 2: 이름, 연락처, 이메일, 주소 -->
+        <div class="form-row">
+          <div class="field-group">
+            <span class="field-label">이름</span>
+            <span class="field-value">{{ applicant.name }}</span>
+          </div>
+          <div class="field-group">
+            <span class="field-label">연락처</span>
+            <span class="field-value">{{ applicant.phone }}</span>
+          </div>
+          <div class="field-group">
+            <span class="field-label">이메일</span>
+            <span class="field-value">{{ applicant.email }}</span>
+          </div>
+          <div class="field-group">
+            <span class="field-label">주소</span>
+            <span class="field-value">{{ applicant.address }}</span>
+          </div>
+        </div>
+
+        <!-- Row 3: 포트폴리오(첨부파일), 포트폴리오(링크), 마지막 업데이트 -->
+        <div class="form-row">
+          <div class="field-group">
+            <span class="field-label">포트폴리오(첨부파일)</span>
+            <div class="file-chip">
+              <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+                <path d="M9.16667 0V8.78717L12.8333 5.1205L14.1295 6.41667L8.25 12.2962L2.3705 6.41667L3.66667 5.1205L7.33333 8.78717V0H9.16667ZM0 13.75H16.5V15.5833H0V13.75Z" fill="#3C8EEE"/>
+              </svg>
+              <div class="flex items-center gap-2">
+                <span class="file-name">{{ applicant.portfolioFile.name }}</span>
+                <span class="file-size">({{ applicant.portfolioFile.size }})</span>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">포트폴리오(링크)</span>
+            <a class="field-link" [href]="applicant.portfolioLink" target="_blank">{{ applicant.portfolioLink }}</a>
+          </div>
+          <div class="field-group">
+            <span class="field-label">마지막 업데이트</span>
+            <span class="field-value">{{ applicant.lastUpdate }}</span>
+          </div>
+          <div class="field-group"></div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+  <!-- ===== 사전 인터뷰 아코디언 ===== -->
+  <div class="info-card">
+
+    <!-- 헤더 -->
+    <div class="card-header">
+      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleInterview()"
+           role="button" tabindex="0" (keydown.enter)="toggleInterview()">
+        <span class="card-title">사전 인터뷰</span>
+        <svg class="toggle-icon" [class.collapsed]="!interviewOpen()"
+             width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M7 14.5l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <button class="edit-btn" style="gap: 4px;" (click)="openInterviewDrawer()">
+        <span>+</span>
+        <span>등록</span>
+      </button>
+    </div>
+
+    <!-- Q&A 콘텐츠 -->
+    @if (interviewOpen()) {
+      <div class="flex flex-col gap-6 w-full">
+        @for (qa of interviewQA(); track $index; let last = $last) {
+          <div class="flex flex-col gap-2 py-1.5 w-full">
+            <!-- 질문 -->
+            <div class="flex items-center gap-0.5 w-full">
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">Q.</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 flex-1">{{ qa.question }}</span>
+            </div>
+            <!-- 답변 -->
+            <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 w-full">{{ qa.answer }}</p>
+          </div>
+          @if (!last) {
+            <div class="w-full" style="border-top: 1px solid #E5E7EB;"></div>
+          }
+        }
+      </div>
+    }
+
+  </div>
+
+</div>
+
+<!-- ===== 사전인터뷰 설정 사이드 드로어 ===== -->
+@if (interviewDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeInterviewDrawer()"
+       (keydown.enter)="closeInterviewDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeInterviewDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">지원서 사전인터뷰 설정</span>
+
+    <!-- 힌트 바 -->
+    <div class="flex items-center gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+        <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="700">i</text>
+      </svg>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">질문을 등록하면 지원자에게 사전 인터뷰 질문이 전달됩니다.</span>
+    </div>
+
+    <!-- 질문 목록 -->
+    <div class="flex flex-col w-full">
+      @for (q of drawerQuestions(); track $index) {
+        <div class="flex items-center w-full" style="border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+
+          @if (q.editing) {
+            <!-- 편집 모드 -->
+            <div class="flex items-center gap-3 w-full px-0 py-3">
+              <div class="flex flex-col gap-2 flex-1">
+                <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors resize-none box-border"
+                          rows="5"
+                          [value]="q.text"
+                          (input)="updateDrawerQuestion($index, $any($event.target).value)"
+                          placeholder="질문을 입력하세요"
+                          maxlength="150"></textarea>
+                <div class="flex justify-end">
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ q.text.length }} / 150</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                        (click)="saveDrawerQuestion($index)">저장</button>
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
+                        (click)="removeDrawerQuestion($index)">삭제</button>
+              </div>
+            </div>
+          } @else {
+            <!-- 읽기 모드 -->
+            <div class="flex items-center w-full px-4 py-2" style="min-height: 64px;">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 flex-1">{{ q.text }}</span>
+              <div class="flex items-center gap-2">
+                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" class="cursor-pointer shrink-0"
+                     (click)="editDrawerQuestion($index)">
+                  <path d="M0 13.0647V16.5022H3.4375L13.5758 6.36391L10.1383 2.92641L0 13.0647ZM16.2342 2.41307L14.0892 0.268074C14.0044 0.183095 13.9036 0.115677 13.7927 0.0696771C13.6818 0.0236775 13.563 0 13.4429 0C13.3229 0 13.204 0.0236775 13.0931 0.0696771C12.9822 0.115677 12.8815 0.183095 12.7967 0.268074L11.1192 1.94557L14.5567 5.38307L16.2342 3.70557C16.3191 3.62077 16.3866 3.52004 16.4326 3.40915C16.4786 3.29825 16.5022 3.17938 16.5022 3.05932C16.5022 2.93927 16.4786 2.82039 16.4326 2.7095C16.3866 2.59861 16.3191 2.49788 16.2342 2.41307Z" fill="#6B7280"/>
+                </svg>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" class="cursor-pointer shrink-0">
+                  <path d="M4 6H18M4 11H18M4 16H18" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          }
+
+        </div>
+      }
+
+      <!-- 추가 + 행 -->
+      <div class="flex items-center w-full px-4 py-2" style="min-height: 64px; border-bottom: 1px solid #E5E7EB;">
+        <button class="flex items-center gap-1 border-none bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:underline p-0"
+                (click)="addDrawerQuestion()">
+          <span>추가</span>
+          <span>+</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col flex-1 justify-end">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitInterviewDrawer()">
+        등록
+      </button>
+    </div>
+  </div>
+}

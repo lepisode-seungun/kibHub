@@ -1,0 +1,153 @@
+<div class="flex flex-col gap-6 p-6">
+  <adm-data-grid
+    [columns]="columns"
+    [data]="applicantData"
+    [showCheckbox]="true"
+    (selectionChange)="onSelectionChange($event)"
+    (rowClick)="onRowClick($event)">
+
+    <!-- 검색바 오른쪽 버튼 -->
+    <div gridActions class="flex items-center gap-2">
+      <!-- 사전인터뷰 설정 (outline) -->
+      <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#EBF4FF] transition-colors"
+              style="gap: 10px;">
+        사전인터뷰 설정
+      </button>
+
+      <!-- 상태 변경 (solid + dropdown) -->
+      <div class="relative">
+        <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                style="gap: 10px;"
+                (click)="toggleStatusDropdown()">
+          상태 변경
+        </button>
+
+        @if (statusDropdownOpen()) {
+          <div class="fixed inset-0 z-[999]"
+               role="button" tabindex="0" aria-label="드롭다운 닫기"
+               (click)="closeStatusDropdown()"
+               (keydown.enter)="closeStatusDropdown()"></div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-[calc(100%+4px)] flex flex-col items-start py-2 w-[114px] bg-white border border-[#F9FAFB] rounded-lg z-[1000]"
+               style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
+            <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-[#F9FAFB] hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    (click)="onPassClick()">
+              합격
+            </button>
+            <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    (click)="onFailClick()">
+              불합격
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+  </adm-data-grid>
+</div>
+
+<!-- ===== 지원자 합격 다이얼로그 ===== -->
+@if (showPassDialog()) {
+  <div class="fixed inset-0 z-[1500] flex items-center justify-center bg-black/30"
+       role="button" tabindex="0" aria-label="다이얼로그 닫기"
+       (click)="cancelPassDialog()"
+       (keydown.enter)="cancelPassDialog()">
+    <div class="flex flex-col justify-center items-center p-4 bg-white rounded-2xl"
+         style="width: 400px; gap: 24px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);"
+         (click)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#3C8EEE"/>
+          <path d="M8 14.5L12 18.5L20 10.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">지원자 합격</span>
+      </div>
+
+      <!-- 정보 영역 -->
+      <div class="flex flex-col items-start w-full px-3 py-3 gap-3"
+           style="border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-500">부트캠프명</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">{{ bootcampName }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">{{ selectedLabel() }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 문구 -->
+      <p class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600 text-center m-0"
+         style="max-width: 296px;">
+        지원자를 합격 처리하시겠습니까?<br>합격 처리 시 해당 부트캠프명의 '수강생' 권한이 자동으로 부여됩니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center w-full gap-3">
+        <button class="flex-1 flex items-center justify-center h-10 bg-white border border-gray-200 rounded-xl cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-zinc-50 transition-colors"
+                (click)="cancelPassDialog()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 bg-[#3C8EEE] border-none rounded-xl cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                (click)="confirmPass()">
+          합격
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 지원자 불합격 다이얼로그 ===== -->
+@if (showFailDialog()) {
+  <div class="fixed inset-0 z-[1500] flex items-center justify-center bg-black/30"
+       role="button" tabindex="0" aria-label="다이얼로그 닫기"
+       (click)="cancelFailDialog()"
+       (keydown.enter)="cancelFailDialog()">
+    <div class="flex flex-col justify-center items-center p-4 bg-white rounded-2xl"
+         style="width: 400px; gap: 24px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);"
+         (click)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.2" fill="white"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">지원자 불합격</span>
+      </div>
+
+      <!-- 정보 영역 -->
+      <div class="flex flex-col items-start w-full px-3 py-3 gap-3"
+           style="border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-500">부트캠프명</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">{{ bootcampName }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">{{ selectedLabel() }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 문구 -->
+      <p class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600 text-center m-0"
+         style="max-width: 296px;">
+        지원자를 불합격 처리하시겠습니까?
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center w-full gap-3">
+        <button class="flex-1 flex items-center justify-center h-10 bg-white border border-gray-200 rounded-xl cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.8px] text-gray-800 hover:bg-zinc-50 transition-colors"
+                (click)="cancelFailDialog()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 bg-[#EF4444] border-none rounded-xl cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.8px] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmFail()">
+          불합격
+        </button>
+      </div>
+    </div>
+  </div>
+}

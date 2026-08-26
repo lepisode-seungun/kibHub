@@ -1,0 +1,152 @@
+<adm-data-grid
+  [columns]="columns"
+  [data]="contents"
+  searchPlaceholder="검색어를 입력하세요"
+  (rowClick)="onRowClick($event)">
+  <button gridActions
+          class="flex items-center justify-center px-3 py-2 w-[108px] h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
+          (click)="openCategoryDrawer()">
+    카테고리 설정
+  </button>
+</adm-data-grid>
+
+<!-- ===== 카테고리 설정 사이드 드로어 ===== -->
+@if (showCategoryDrawer()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       role="button"
+       tabindex="0"
+       aria-label="드로어 닫기"
+       (click)="closeCategoryDrawer()"
+       (keydown.enter)="closeCategoryDrawer()"></div>
+
+  <!-- 드로어 패널 -->
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeCategoryDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">콘텐츠 카테고리 관리</h4>
+
+    <!-- 카테고리 목록 -->
+    <div class="flex flex-col w-full flex-1 overflow-y-auto">
+
+      @for (cat of categories(); track cat.id) {
+        @if (cat.editing) {
+          <!-- 수정 모드 -->
+          <div class="flex items-center w-full h-16 border-b border-gray-200">
+            <div class="flex items-center gap-3 flex-1 px-0 py-3">
+              <input type="text"
+                     class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 outline-none focus:border-[#3C8EEE] transition-colors"
+                     [value]="editCategoryName()"
+                     (input)="onEditCategoryInput($event)"/>
+              <div class="flex items-center gap-1">
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                        (click)="saveEditCategory(cat.id)">
+                  저장
+                </button>
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
+                        (click)="cancelEditCategory(cat.id)">
+                  취소
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- 일반 모드 -->
+          <div class="flex items-center w-full h-16 border-b border-gray-200"
+               (contextmenu)="toggleCategoryDropdown(cat.id, $event)">
+            <div class="flex-1 px-4 py-2">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ cat.name }}</span>
+            </div>
+            <!-- 연필 아이콘 (수정) -->
+            <button class="flex items-center justify-center w-[50px] h-[50px] border-none bg-transparent cursor-pointer p-2 hover:bg-zinc-100 rounded-md transition-colors"
+                    (click)="startEditCategory(cat.id)">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M2 13.13V16h2.87l8.46-8.46-2.87-2.87L2 13.13zM15.71 5.04a.77.77 0 000-1.08l-1.67-1.67a.77.77 0 00-1.08 0L11.52 3.73l2.87 2.87 1.32-1.56z" fill="#6B7280"/>
+              </svg>
+            </button>
+            <!-- 드래그 핸들(≡) -->
+            <button class="flex items-center justify-center w-[50px] h-[50px] border-none bg-transparent cursor-pointer p-2 hover:bg-zinc-100 rounded-md transition-colors cursor-grab">
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                <path d="M0 1a1 1 0 011-1h16a1 1 0 110 2H1a1 1 0 01-1-1zm0 5a1 1 0 011-1h16a1 1 0 110 2H1a1 1 0 01-1-1zm1 4a1 1 0 100 2h16a1 1 0 100-2H1z" fill="#6B7280"/>
+              </svg>
+            </button>
+          </div>
+        }
+      }
+
+
+      <!-- 새 카테고리 입력 행 -->
+      @if (showNewCategoryRow()) {
+        <div class="flex items-center w-full h-16 border-b border-gray-200">
+          <div class="flex items-center gap-3 flex-1 px-0 py-3">
+            <input type="text"
+                   class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 outline-none focus:border-[#3C8EEE] transition-colors"
+                   [value]="newCategoryName()"
+                   (input)="onNewCategoryInput($event)"
+                   placeholder="카테고리 입력"/>
+            <div class="flex items-center gap-1">
+              <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                      (click)="saveNewCategory()">
+                저장
+              </button>
+              <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
+                      (click)="cancelNewCategory()">
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 추가 + 행 -->
+      <div class="flex items-center w-full h-16 border-b border-gray-200">
+        <div class="flex-1 px-4 py-2">
+          <button class="flex items-center gap-1 border-none bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:underline p-0"
+                  (click)="addEmptyCategory()">
+            <span>추가</span>
+            <span>+</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 저장 버튼 -->
+    <div class="flex flex-col justify-end items-center">
+      <button class="flex items-center justify-center w-full h-10 rounded-md border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white bg-[#3C8EEE] hover:bg-blue-600 transition-colors"
+              (click)="submitCategories()">
+        저장
+      </button>
+    </div>
+  </div>
+}
+
+<!-- 수정/삭제 드롭다운 (드로어 바깥, 마우스 위치) -->
+@if (categoryDropdown().id !== null) {
+  <div class="fixed inset-0 z-[1100]"
+       role="button"
+       tabindex="0"
+       aria-label="드롭다운 닫기"
+       (click)="closeCategoryDropdown()"
+       (keydown.enter)="closeCategoryDropdown()"
+       (contextmenu)="closeCategoryDropdown()"></div>
+  <div class="fixed flex flex-col items-start p-2 gap-1 w-16 bg-white shadow-md rounded-md z-[1200]"
+       [ngStyle]="{ left: categoryDropdown().x + 'px', top: categoryDropdown().y + 'px' }">
+    <button class="flex items-center justify-center w-full px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#3C8EEE] bg-[#ECF4FE] hover:bg-blue-100 transition-colors"
+            (click)="startEditCategory(categoryDropdown().id!)">
+      수정
+    </button>
+    <button class="flex items-center justify-center w-full px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 bg-white hover:bg-zinc-50 transition-colors"
+            (click)="deleteCategory(categoryDropdown().id!)">
+      삭제
+    </button>
+  </div>
+}

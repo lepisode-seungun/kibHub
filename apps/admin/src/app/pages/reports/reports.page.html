@@ -1,0 +1,113 @@
+<div class="flex flex-col gap-6">
+  <!-- 페이지 타이틀 -->
+  <div class="flex items-center gap-[10px]">
+    <h2 class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800 m-0">신고내역</h2>
+  </div>
+
+  <!-- 탭 -->
+  <div class="flex items-center" style="border-bottom: 2px solid #E5E7EB;">
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'content'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'content'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('content')">
+      콘텐츠
+    </button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'comment'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'comment'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('comment')">
+      댓글
+    </button>
+  </div>
+
+  <!-- 콘텐츠 신고 그리드 -->
+  @if (activeTab() === 'content') {
+    <adm-data-grid
+      [columns]="contentReportColumns"
+      [data]="contentReportData"
+      searchPlaceholder="검색어를 입력하세요">
+      <button gridActions
+              class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
+              style="min-width: 111px;"
+              (click)="openAutoHideDrawer()">
+        자동 숨김 설정
+      </button>
+    </adm-data-grid>
+  }
+
+  <!-- 댓글 신고 그리드 -->
+  @if (activeTab() === 'comment') {
+    <adm-data-grid
+      [columns]="commentReportColumns"
+      [data]="commentReportData"
+      searchPlaceholder="검색어를 입력하세요">
+      <button gridActions
+              class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
+              style="min-width: 111px;">
+        엑셀 다운로드
+      </button>
+    </adm-data-grid>
+  }
+</div>
+
+<!-- ===== 자동 숨김 설정 사이드 드로어 ===== -->
+@if (showAutoHideDrawer()) {
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0" role="button"
+       (click)="closeAutoHideDrawer()"
+       (keyup.escape)="closeAutoHideDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeAutoHideDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">자동 숨김 설정</h4>
+
+    <!-- 힌트 -->
+    <div class="flex items-start gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+        <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+        <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+      </svg>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">설정된 신고 횟수 이상 신고가 누적되면 해당 콘텐츠가 자동으로 숨김<br> 처리됩니다.</span>
+    </div>
+
+    <!-- 신고 횟수 입력 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">신고 횟수</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="신고 횟수를 입력하세요"
+             [value]="reportCountValue()"
+             (input)="onReportCountInput($event)"/>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitAutoHide()">
+        등록
+      </button>
+    </div>
+
+  </div>
+}

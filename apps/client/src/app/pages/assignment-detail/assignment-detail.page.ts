@@ -64,12 +64,12 @@ export class AssignmentDetailPage implements OnInit {
   ];
 
   submissions: Submission[] = [
-    { id: 1, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '고예림', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
+    { id: 1, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
     { id: 2, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '피드백', author: '고식혜', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: true, isInstructor: true },
     { id: 3, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '피드백', author: '고식혜', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: true, isInstructor: true },
-    { id: 4, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '고예림', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-    { id: 5, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '고예림', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-    { id: 6, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '고예림', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
+    { id: 4, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
+    { id: 5, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
+    { id: 6, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
   ];
 
   ngOnInit(): void {

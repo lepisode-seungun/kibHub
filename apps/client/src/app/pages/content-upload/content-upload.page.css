@@ -47,7 +47,7 @@
   flex-direction: column;
   width: 100%;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cu-card-header {
@@ -57,6 +57,7 @@
   padding: 24px;
   background: #1E1D22;
   cursor: pointer;
+  border-radius: 12px 12px 0 0;
 }
 
 .cu-card-body {
@@ -65,6 +66,7 @@
   padding: 20px;
   gap: 40px;
   background: #18181B;
+  border-radius: 0 0 12px 12px;
 }
 
 /* ===== 칩 ===== */
@@ -115,6 +117,71 @@
   height: 40px;
   border-radius: 50%;
   transition: opacity 0.15s;
+}
+
+/* ===== 도움말 툴팁 ===== */
+.cu-help-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cu-help-icon {
+  transition: fill 0.15s;
+}
+
+.cu-help-wrap:hover .cu-help-icon {
+  fill: #D4D4D8;
+}
+
+.cu-help-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: -8px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.cu-help-tooltip-text {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: -8px;
+  z-index: 50;
+  pointer-events: none;
+  width: max-content;
+  max-width: 320px;
+  padding: 12px 16px;
+  background: #27272A;
+  border: 1px solid #3F3F46;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.1);
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+}
+
+.cu-help-tooltip-text::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 16px;
+  width: 12px;
+  height: 12px;
+  background: #27272A;
+  border-right: 1px solid #3F3F46;
+  border-bottom: 1px solid #3F3F46;
+  transform: rotate(45deg);
+}
+
+.cu-help-wrap:hover .cu-help-tooltip,
+.cu-help-wrap:hover .cu-help-tooltip-text {
+  display: block;
 }
 
 /* ===== 인풋 / 텍스트에리어 ===== */
@@ -338,15 +405,10 @@
 }
 
 /* ===== 오른쪽 미리보기 ===== */
-/* [TW-KEEP] sticky positioning */
+/* [TW-KEEP]  */
 .cu-right {
   flex: 1;
   min-width: 0;
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  max-height: 100vh;
-  overflow-y: auto;
 }
 
 .cu-preview-card {

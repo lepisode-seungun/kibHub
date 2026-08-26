@@ -1,0 +1,60 @@
+@if (isOpen) {
+  <div class="iv-overlay" tabindex="-1" (click)="onOverlayClick($event)" (keydown.escape)="close()">
+    <div class="iv-container">
+
+      <!-- 헤더: 닫기 버튼 -->
+      <div class="iv-header">
+        <div class="iv-header-spacer"></div>
+        <button class="iv-close-btn" (click)="close()" aria-label="닫기">
+          <svg class="iv-close-mobile" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="iv-close-desktop" width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <!-- 바디 -->
+      <div class="iv-body">
+
+        <!-- 데스크톱 좌측 화살표 -->
+        <button class="iv-arrow iv-arrow-desktop" (click)="prevPage()" aria-label="이전">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
+        </button>
+
+        <!-- 콘텐츠 영역 -->
+        <div class="iv-content">
+
+          <!-- 모바일 네비게이션 바 -->
+          <div class="iv-mobile-nav">
+            <button class="iv-mobile-arrow" (click)="prevPage()" aria-label="이전">
+              <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M9 1L1.5 8.5L9 16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="iv-mobile-page">
+              <span class="iv-page-current">{{ currentPage() }}{{ pageLabel }}</span>
+              <span class="iv-page-total">/{{ totalPages }}{{ pageLabel }}</span>
+            </div>
+            <button class="iv-mobile-arrow iv-mobile-arrow-right" (click)="nextPage()" aria-label="다음">
+              <svg width="10" height="17" viewBox="0 0 10 17" fill="none"><path d="M1 1L8.5 8.5L1 16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <!-- 데스크톱 페이지 인디케이터 -->
+          <div class="iv-desktop-page">
+            <span class="iv-page-current">{{ currentPage() }}{{ pageLabel }}</span>
+            <span class="iv-page-total">/{{ totalPages }}{{ pageLabel }}</span>
+          </div>
+
+          <!-- 이미지 스크롤 영역 -->
+          <div class="iv-image-scroll">
+            <div class="iv-image" [style.background]="images[currentPage() - 1].gradient"></div>
+            <!-- 모바일: 다음 이미지 미리보기 -->
+            <div class="iv-image iv-image-mobile-next" [style.background]="images[currentPage() < totalPages ? currentPage() : 0].gradient"></div>
+          </div>
+        </div>
+
+        <!-- 데스크톱 우측 화살표 -->
+        <button class="iv-arrow iv-arrow-desktop" (click)="nextPage()" aria-label="다음">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+}

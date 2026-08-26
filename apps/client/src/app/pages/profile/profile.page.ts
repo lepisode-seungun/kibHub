@@ -29,6 +29,17 @@ export class ProfilePage {
   @ViewChild('albumSlider') albumSlider!: ElementRef<HTMLDivElement>;
   private router = inject(Router);
 
+  /* ===== 배너 커버 ===== */
+  /** 기본 커버 그라디언트 */
+  private readonly DEFAULT_COVER = "url('/images/default-banner.svg') center center / cover no-repeat";
+  /** 커스텀 배너 배경 (이미지 URL 또는 기본 그라디언트) */
+  bannerBackground = signal<string>("url('/images/profile-banner.jpg') center center / cover no-repeat");
+
+  /** 기본 커버로 변경 */
+  resetToDefaultCover(): void {
+    this.bannerBackground.set(this.DEFAULT_COVER);
+  }
+
   /* ===== 프로필 편집 드롭다운 ===== */
   isEditDropdownOpen = signal(false);
 

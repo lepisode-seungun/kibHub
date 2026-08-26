@@ -8,7 +8,8 @@
 .portfolio-hero {
   position: relative;
   width: 100%;
-  height: 440px;
+  aspect-ratio: 1920 / 440;
+  min-height: 260px;
   background: linear-gradient(180deg, #010101 11.8%, #51199F 73.54%);
   overflow: hidden;
   display: flex;
@@ -160,7 +161,7 @@
 /* ===== 반응형 ===== */
 @media (max-width: 1200px) {
   .hero-cards { display: none; }
-  .portfolio-hero { height: 320px; }
+  .portfolio-hero { aspect-ratio: auto; height: 300px; }
   .hero-title { font-size: 28px; }
   .portfolio-grid-section { padding: 40px 20px; }
   .portfolio-row { flex-wrap: wrap; }

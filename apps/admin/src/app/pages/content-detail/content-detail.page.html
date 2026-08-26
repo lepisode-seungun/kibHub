@@ -1,0 +1,458 @@
+<!-- ===== 토스트 메시지 ===== -->
+@if (toastVisible()) {
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[2000] flex items-center gap-2 px-5 py-3 bg-gray-800 rounded-lg shadow-lg toast-slide-up">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="8" fill="#10B981"/>
+      <path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white">{{ toastMessage() }}</span>
+  </div>
+}
+
+<!-- ===== 콘텐츠 정보 (아코디언) ===== -->
+<div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+  <!-- 섹션 헤더 -->
+  <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+    <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="toggleSection1()">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠 정보</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           [class.rotate-180]="!section1Expanded()"
+           class="transition-transform duration-200">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+      </svg>
+    </button>
+    <!-- ⋮ 더보기 버튼 -->
+    <div class="relative">
+      <button class="flex items-center justify-center w-[27px] h-[27px] bg-transparent border-none cursor-pointer rounded hover:bg-gray-100 transition-colors"
+              (click)="toggleMoreMenu($event)">
+        <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+          <circle cx="1.5" cy="1.5" r="1.5" fill="#1F2937"/>
+          <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+          <circle cx="1.5" cy="13.5" r="1.5" fill="#1F2937"/>
+        </svg>
+      </button>
+      @if (moreMenuOpen()) {
+        <div class="fixed inset-0 z-40" tabindex="0" role="button" (click)="closeMoreMenu()" (keyup.escape)="closeMoreMenu()"></div>
+        <div class="absolute z-50 flex flex-col w-[60px] bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+             style="top: 32px; left: 50%; transform: translateX(-50%)">
+          <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 hover:bg-gray-50 transition-colors text-center w-full"
+                  (click)="onHide()">숨김</button>
+          <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 hover:bg-red-50 transition-colors text-center w-full"
+                  (click)="openDeleteDialog()">삭제</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- 콘텐츠 (펼침 시) -->
+  @if (section1Expanded()) {
+    <div class="flex flex-col gap-6">
+
+      <!-- 1행: 상태 / 타입 / 카테고리 / 작성자 -->
+      <div class="grid grid-cols-4 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+          <span class="inline-flex items-center gap-1 px-2 py-1 w-fit bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]">노출</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">타입</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">웹툰</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">카테고리</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">웹툰</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성자</span>
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">고예림</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2행: 작성일시 / 조회수 / 북마크 / 댓글 -->
+      <div class="grid grid-cols-4 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성일시</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">2025-01-20 13:11</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">조회수</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">0</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">북마크</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">0</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">댓글</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">0</span>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>
+
+<!-- ===== 상세 정보 (아코디언) ===== -->
+<div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+  <!-- 섹션 헤더 -->
+  <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+    <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="toggleSection2()">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">상세 정보</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           [class.rotate-180]="!section2Expanded()"
+           class="transition-transform duration-200">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+      </svg>
+    </button>
+    <!-- ⋮ 더보기 버튼 -->
+    <div class="relative">
+      <button class="flex items-center justify-center w-[27px] h-[27px] bg-transparent border-none cursor-pointer rounded hover:bg-gray-100 transition-colors"
+              (click)="toggleMoreMenu2($event)">
+        <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+          <circle cx="1.5" cy="1.5" r="1.5" fill="#1F2937"/>
+          <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+          <circle cx="1.5" cy="13.5" r="1.5" fill="#1F2937"/>
+        </svg>
+      </button>
+      @if (moreMenu2Open()) {
+        <div class="fixed inset-0 z-40" tabindex="0" role="button" (click)="closeMoreMenu2()" (keyup.escape)="closeMoreMenu2()"></div>
+        <div class="absolute z-50 flex flex-col w-[60px] bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+             style="top: 32px; left: 50%; transform: translateX(-50%)">
+          <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 hover:bg-gray-50 transition-colors text-center w-full"
+                  (click)="onHide()">숨김</button>
+          <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 hover:bg-red-50 transition-colors text-center w-full"
+                  (click)="openDeleteDialog()">삭제</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- 콘텐츠 (펼침 시) -->
+  @if (section2Expanded()) {
+    <div class="flex flex-col gap-6">
+
+      <!-- 썸네일 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">썸네일</span>
+        <div class="w-[223px] h-[223px] bg-[#D9D9D9] rounded"></div>
+      </div>
+
+      <!-- 제목 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">콘텐츠 제목 30자 이내 콘텐츠 제목 30자 이내</span>
+      </div>
+
+      <!-- 내용 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+        <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[704px]">내용 내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용 내용내용내용내용내용내용내용내용내용 내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용</p>
+      </div>
+
+      <!-- 이미지 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이미지</span>
+        <div class="w-full max-w-[838px] h-[400px] bg-[#D9D9D9] rounded"></div>
+      </div>
+
+    </div>
+  }
+
+</div>
+
+<!-- ===== 댓글 (아코디언 + 데이터그리드) ===== -->
+<div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+  <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+          (click)="toggleSection3()">
+    <div class="flex items-center gap-3">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">댓글</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ commentData.length }})</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           class="transition-transform duration-200"
+           [class.rotate-180]="!section3Expanded()">
+        <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </button>
+  @if (section3Expanded()) {
+    <adm-data-grid
+      [columns]="commentColumns"
+      [data]="commentData"
+      searchPlaceholder="검색어를 입력하세요"
+      (rowClick)="openCommentDrawer($event)">
+      <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink: 0;">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]" style="color: #374151;">댓글 선택 시 해당 댓글 상세페이지를 조회할 수 있습니다.</span>
+      </div>
+    </adm-data-grid>
+  }
+</div>
+
+<!-- ===== 콘텐츠 신고내역 (아코디언 + 데이터그리드) ===== -->
+<div class="flex flex-col bg-white border border-gray-200 rounded-lg p-5 gap-6">
+  <button class="flex items-center w-full pb-4 border-b border-gray-200 cursor-pointer bg-transparent border-x-0 border-t-0"
+          (click)="toggleSection4()">
+    <div class="flex items-center gap-3">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠 신고내역</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ reportData.length }})</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           class="transition-transform duration-200"
+           [class.rotate-180]="!section4Expanded()">
+        <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </button>
+  @if (section4Expanded()) {
+    <adm-data-grid
+      [columns]="reportColumns"
+      [data]="reportData"
+      searchPlaceholder="검색어를 입력하세요">
+    </adm-data-grid>
+  }
+</div>
+
+<!-- ===== 댓글 상세 사이드 드로어 ===== -->
+@if (showCommentDrawer()) {
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0" role="button"
+       (click)="closeCommentDrawer()"
+       (keyup.escape)="closeCommentDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 overflow-y-auto drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeCommentDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 + 케밥 -->
+    <div class="flex items-center justify-between">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">댓글 상세</h4>
+      <div class="relative">
+        <button class="flex items-center justify-center w-[27px] h-[27px] bg-transparent border-none cursor-pointer rounded hover:bg-gray-100 transition-colors"
+                (click)="toggleDrawerKebab($event)">
+          <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+            <circle cx="1.5" cy="1.5" r="1.5" fill="#1F2937"/>
+            <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+            <circle cx="1.5" cy="13.5" r="1.5" fill="#1F2937"/>
+          </svg>
+        </button>
+        @if (drawerKebabOpen()) {
+          <div class="fixed inset-0 z-40" tabindex="0" role="button" (click)="closeDrawerKebab()" (keyup.escape)="closeDrawerKebab()"></div>
+          <div class="absolute z-50 flex flex-col w-[60px] bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+               style="top: 32px; left: 50%; transform: translateX(-50%)">
+            <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm tracking-[-0.04em] text-gray-700 hover:bg-gray-50 transition-colors text-center w-full"
+                    (click)="onDrawerHide()">숨김</button>
+            <button class="flex items-center justify-center px-2 py-2.5 bg-transparent border-none cursor-pointer font-suit font-medium text-sm tracking-[-0.04em] text-red-500 hover:bg-red-50 transition-colors text-center w-full"
+                    (click)="onDrawerDelete()">삭제</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 폼 영역 -->
+    <div class="flex flex-col gap-3">
+
+      <!-- 1행: 콘텐츠 / 작성자 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠</span>
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">콘텐츠 제목</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성자</span>
+          <div class="flex items-center gap-1">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.author }}</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2행: 유형 / 좋아요 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">유형</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.type }}</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">좋아요</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.likes }}</span>
+        </div>
+      </div>
+
+      <!-- 3행: 작성일시 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성일시</span>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.createdAt }}</span>
+      </div>
+
+      <!-- 내용 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+        <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0">{{ selectedComment()?.content }}</p>
+      </div>
+
+      <!-- 이미지 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이미지</span>
+        <div class="flex flex-wrap gap-2.5">
+          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
+          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
+          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
+          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
+          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 신고 내역 -->
+    <div class="flex items-center gap-1">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">신고 내역</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ drawerReportData.length }})</span>
+    </div>
+
+    <adm-data-grid
+      [columns]="drawerReportColumns"
+      [data]="drawerReportData">
+    </adm-data-grid>
+
+  </div>
+}
+
+<!-- ===== 콘텐츠 삭제 확인 팝업 ===== -->
+@if (showDeleteDialog()) {
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       role="dialog" aria-modal="true" tabindex="0"
+       (click)="closeDeleteDialog()"
+       (keyup.escape)="closeDeleteDialog()">
+
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white shadow-lg rounded-2xl"
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keyup.escape)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 18.084a1.167 1.167 0 110-2.334 1.167 1.167 0 010 2.334zm1.167-5.834a1.167 1.167 0 01-2.334 0V8.167a1.167 1.167 0 012.334 0v6.416z" fill="#EF4444"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">콘텐츠 삭제</span>
+      </div>
+
+      <!-- 콘텐츠 정보 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">분류</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">웹툰</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">카테고리</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">작화</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">제목</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">1차 계약서 사본</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">작성자</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">고예림</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">등록일시</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">2025-01-21 14:12</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0">
+        콘텐츠를 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="closeDeleteDialog()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 border-none rounded-xl bg-red-500 cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmDelete()">
+          삭제
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 댓글 삭제 확인 팝업 ===== -->
+@if (showCommentDeleteDialog()) {
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       role="dialog" aria-modal="true" tabindex="0"
+       (click)="closeCommentDeleteDialog()"
+       (keyup.escape)="closeCommentDeleteDialog()">
+
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white shadow-lg rounded-2xl"
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keyup.escape)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 18.084a1.167 1.167 0 110-2.334 1.167 1.167 0 010 2.334zm1.167-5.834a1.167 1.167 0 01-2.334 0V8.167a1.167 1.167 0 012.334 0v6.416z" fill="#EF4444"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">댓글 삭제</span>
+      </div>
+
+      <!-- 댓글 정보 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">유형</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ selectedComment()?.type }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">작성자</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ selectedComment()?.author }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">등록일시</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ selectedComment()?.createdAt }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0">
+        댓글을 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="closeCommentDeleteDialog()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 border-none rounded-xl bg-red-500 cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmCommentDelete()">
+          삭제
+        </button>
+      </div>
+    </div>
+  </div>
+}

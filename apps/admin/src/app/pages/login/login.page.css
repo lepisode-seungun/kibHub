@@ -1,0 +1,10 @@
+/* 관리자 로그인 - Tailwind 기반, 추가 오버라이드만 */
+:host {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .rounded-xl {
+    border-radius: 0 !important;
+  }
+}

@@ -1,0 +1,423 @@
+<div class="flex flex-col gap-6">
+
+  <!-- ===== 기본 정보 섹션 ===== -->
+  <div class="info-card">
+
+    <!-- 헤더: 상세 정보 + 드롭다운 -->
+    <div class="info-header">
+      <div class="info-header-left">
+        <button class="section-toggle" (click)="toggleSection()">
+          <span class="info-title">상세 정보</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               class="toggle-arrow"
+               [class.collapsed]="!sectionOpen()">
+            <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 더보기 드롭다운 -->
+      <div class="dropdown-wrapper">
+        <button class="dropdown-trigger" (click)="toggleDropdown()">
+          <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+            <circle cx="1.5" cy="1.5" r="1.5" fill="#1F2937"/>
+            <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+            <circle cx="1.5" cy="13.5" r="1.5" fill="#1F2937"/>
+          </svg>
+        </button>
+        @if (dropdownOpen()) {
+          <div class="dropdown-menu">
+            <button class="dropdown-item" (click)="onDropdownAction('상태 변경')">상태 변경</button>
+            <button class="dropdown-item active" (click)="onDropdownAction('수정')">수정</button>
+            <button class="dropdown-item" (click)="onDropdownAction('삭제')">삭제</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 본문: 정보 필드 -->
+    @if (sectionOpen()) {
+      <div class="info-body">
+        <!-- Row 1 -->
+        <div class="info-row">
+          <div class="info-field">
+            <span class="field-label">ID</span>
+            <span class="field-value">{{ info.id }}</span>
+          </div>
+          <div class="info-field">
+            <span class="field-label">상태</span>
+            <div class="status-badge">
+              <span>{{ info.status }}</span>
+            </div>
+          </div>
+          <div class="info-field">
+            <span class="field-label">부트캠프명</span>
+            <span class="field-value">{{ info.bootcampName }}</span>
+          </div>
+          <div class="info-field">
+            <span class="field-label">등록일시</span>
+            <span class="field-value">{{ info.createdAt }}</span>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="info-row">
+          <div class="info-field">
+            <span class="field-label">모집기간</span>
+            <span class="field-value">{{ info.recruitmentPeriod }}</span>
+          </div>
+          <div class="info-field">
+            <span class="field-label">교육기간</span>
+            <span class="field-value">{{ info.educationPeriod }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ===== 강사 목록 섹션 ===== -->
+  <div class="info-card">
+    <div class="info-header">
+      <div class="info-header-left">
+        <button class="section-toggle" (click)="toggleInstructorSection()">
+          <span class="info-title">강사 목록</span>
+          <span class="data-count">({{ instructorData.length }})</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               class="toggle-arrow"
+               [class.collapsed]="!instructorSectionOpen()">
+            <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- +추가 버튼 -->
+      <button class="add-instructor-btn" (click)="openInstructorDrawer()">
+        <svg width="75" height="37" viewBox="0 0 75 37" fill="none">
+          <rect x="0.0234375" width="74" height="36" rx="6" transform="rotate(0.0402876 0.0234375 0)" fill="#3C8EEE"/>
+          <path d="M24.0067 18.6822L20.6733 18.6799L20.671 22.0132C20.6709 22.19 20.6005 22.3595 20.4754 22.4845C20.3503 22.6094 20.1807 22.6795 20.0039 22.6794C19.827 22.6793 19.6575 22.6089 19.5326 22.4838C19.4076 22.3587 19.3375 22.1891 19.3377 22.0123L19.34 18.6789L16.0067 18.6766C15.8299 18.6765 15.6603 18.6061 15.5354 18.481C15.4105 18.3559 15.3403 18.1863 15.3405 18.0094C15.3406 17.8326 15.411 17.6631 15.5361 17.5382C15.6612 17.4132 15.8308 17.3431 16.0076 17.3432L19.3409 17.3456L19.3433 14.0123C19.3434 13.8354 19.4138 13.6659 19.5389 13.541C19.664 13.416 19.8336 13.3459 20.0104 13.3461C20.1872 13.3462 20.3567 13.4165 20.4817 13.5416C20.6066 13.6668 20.6767 13.8364 20.6766 14.0132L20.6743 17.3465L24.0076 17.3489C24.1844 17.349 24.3539 17.4193 24.4789 17.5445C24.6038 17.6696 24.6739 17.8392 24.6738 18.016C24.6737 18.1928 24.6033 18.3623 24.4782 18.4873C24.3531 18.6122 24.1835 18.6823 24.0067 18.6822Z" fill="white"/>
+          <path d="M49.8653 18.8164L49.8644 20.0606L44.9699 20.0571L44.9673 23.7622L43.4634 23.7612L43.466 20.0561L38.5988 20.0527L38.5996 18.8085L49.8653 18.8164ZM48.8167 12.8548L48.8159 14.0579L45.0014 14.0552C45.1441 15.2789 46.7497 16.5584 49.2241 16.8609L48.6627 18.0636C46.6189 17.8024 45.0336 16.899 44.2346 15.709C43.4203 16.9115 41.8201 17.7991 39.7623 18.0574L39.2163 16.8539C41.6842 16.5548 43.3052 15.2982 43.4565 14.0541L39.6421 14.0514L39.6429 12.8483L43.471 12.851L43.472 11.4018L44.9759 11.4028L44.9749 12.8521L48.8167 12.8548ZM59.8242 11.3996L59.8208 16.2258L61.6528 16.2271L61.6519 17.4986L59.8199 17.4973L59.8155 23.7316L58.2979 23.7306L58.3066 11.3985L59.8242 11.3996ZM56.5557 12.6825C56.5531 16.3192 55.047 19.5037 50.9303 21.5242L50.0698 20.3478C53.0787 18.8529 54.7071 16.7486 55.0235 13.9392L50.7442 13.9362L50.7451 12.6784L56.5557 12.6825Z" fill="white"/>
+        </svg>
+      </button>
+    </div>
+
+    @if (instructorSectionOpen()) {
+      <adm-data-grid
+        [columns]="instructorColumns"
+        [data]="instructorData"
+        [showSearch]="false"
+        (actionClick)="removeInstructor($event)">
+      </adm-data-grid>
+    }
+  </div>
+
+  <!-- ===== 수강생 목록 섹션 ===== -->
+  <div class="info-card">
+    <div class="info-header">
+      <div class="info-header-left">
+        <button class="section-toggle" (click)="toggleStudentSection()">
+          <span class="info-title">수강생 목록</span>
+          <span class="data-count">({{ studentData.length }})</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               class="toggle-arrow"
+               [class.collapsed]="!studentSectionOpen()">
+            <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- +추가 버튼 -->
+      <button class="add-instructor-btn" (click)="openStudentDrawer()">
+        <svg width="75" height="37" viewBox="0 0 75 37" fill="none">
+          <rect x="0.0234375" width="74" height="36" rx="6" transform="rotate(0.0402876 0.0234375 0)" fill="#3C8EEE"/>
+          <path d="M24.0067 18.6822L20.6733 18.6799L20.671 22.0132C20.6709 22.19 20.6005 22.3595 20.4754 22.4845C20.3503 22.6094 20.1807 22.6795 20.0039 22.6794C19.827 22.6793 19.6575 22.6089 19.5326 22.4838C19.4076 22.3587 19.3375 22.1891 19.3377 22.0123L19.34 18.6789L16.0067 18.6766C15.8299 18.6765 15.6603 18.6061 15.5354 18.481C15.4105 18.3559 15.3403 18.1863 15.3405 18.0094C15.3406 17.8326 15.411 17.6631 15.5361 17.5382C15.6612 17.4132 15.8308 17.3431 16.0076 17.3432L19.3409 17.3456L19.3433 14.0123C19.3434 13.8354 19.4138 13.6659 19.5389 13.541C19.664 13.416 19.8336 13.3459 20.0104 13.3461C20.1872 13.3462 20.3567 13.4165 20.4817 13.5416C20.6066 13.6668 20.6767 13.8364 20.6766 14.0132L20.6743 17.3465L24.0076 17.3489C24.1844 17.349 24.3539 17.4193 24.4789 17.5445C24.6038 17.6696 24.6739 17.8392 24.6738 18.016C24.6737 18.1928 24.6033 18.3623 24.4782 18.4873C24.3531 18.6122 24.1835 18.6823 24.0067 18.6822Z" fill="white"/>
+          <path d="M49.8653 18.8164L49.8644 20.0606L44.9699 20.0571L44.9673 23.7622L43.4634 23.7612L43.466 20.0561L38.5988 20.0527L38.5996 18.8085L49.8653 18.8164ZM48.8167 12.8548L48.8159 14.0579L45.0014 14.0552C45.1441 15.2789 46.7497 16.5584 49.2241 16.8609L48.6627 18.0636C46.6189 17.8024 45.0336 16.899 44.2346 15.709C43.4203 16.9115 41.8201 17.7991 39.7623 18.0574L39.2163 16.8539C41.6842 16.5548 43.3052 15.2982 43.4565 14.0541L39.6421 14.0514L39.6429 12.8483L43.471 12.851L43.472 11.4018L44.9759 11.4028L44.9749 12.8521L48.8167 12.8548ZM59.8242 11.3996L59.8208 16.2258L61.6528 16.2271L61.6519 17.4986L59.8199 17.4973L59.8155 23.7316L58.2979 23.7306L58.3066 11.3985L59.8242 11.3996ZM56.5557 12.6825C56.5531 16.3192 55.047 19.5037 50.9303 21.5242L50.0698 20.3478C53.0787 18.8529 54.7071 16.7486 55.0235 13.9392L50.7442 13.9362L50.7451 12.6784L56.5557 12.6825Z" fill="white"/>
+        </svg>
+      </button>
+    </div>
+
+    @if (studentSectionOpen()) {
+      <adm-data-grid
+        [columns]="studentColumns"
+        [data]="studentData"
+        [showSearch]="false"
+        (actionClick)="removeStudent($event)">
+      </adm-data-grid>
+    }
+  </div>
+
+</div>
+
+<!-- ===== 강사 초대 사이드 드로어 ===== -->
+@if (instructorDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeInstructorDrawer()"
+       (keydown.enter)="closeInstructorDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeInstructorDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M11.67 0L19 8l-7.33 8-1.42-1.41L15.5 8l-5.25-6.59L11.67 0z" fill="#374151"/>
+        <path d="M3.67 0L11 8l-7.33 8-1.42-1.41L7.5 8 2.25 1.41 3.67 0z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">강사 초대</h4>
+
+    <!-- 이메일 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이메일</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="email"
+               class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="이메일을 입력하세요"
+               [value]="instructorInviteForm().email"
+               (input)="updateInstructorField('email', $event)"/>
+        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity">
+          <svg width="52" height="40" viewBox="0 0 52 40" fill="none">
+            <rect width="52" height="40" rx="6" fill="#3C8EEE"/>
+            <path d="M20.1436 14.016C20.1436 15.776 19.573 17.28 18.4316 18.528C17.2903 19.7653 15.6903 20.6773 13.6316 21.264L13.0716 20.176C14.725 19.7173 16.037 19.0507 17.0076 18.176C17.9783 17.3013 18.5276 16.288 18.6556 15.136H13.7916V14.016H20.1436ZM15.4396 21.728H24.5436V27.008H15.4396V21.728ZM23.1836 25.888V22.832H16.7836V25.888H23.1836ZM20.1756 16.704H23.1516V13.12H24.5436V21.136H23.1516V17.856H20.1756V16.704ZM30.496 13.968V15.824C30.496 16.6453 30.7413 17.4133 31.232 18.128C31.7333 18.8427 32.4267 19.3813 33.312 19.744L32.576 20.816C31.9467 20.5493 31.3973 20.176 30.928 19.696C30.4693 19.216 30.1067 18.6667 29.84 18.048C29.584 18.7413 29.2107 19.36 28.72 19.904C28.24 20.448 27.6693 20.8693 27.008 21.168L26.256 20.08C26.8533 19.8133 27.3707 19.4507 27.808 18.992C28.256 18.5227 28.592 18.0107 28.816 17.456C29.0507 16.9013 29.168 16.3573 29.168 15.824V13.968H30.496ZM28.672 22.416H38.16V27.216H36.768V23.536H28.672V22.416ZM33.824 13.376H35.12V16.768H36.832V13.136H38.16V21.648H36.832V17.904H35.12V21.568H33.824V13.376Z" fill="white"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 권한 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">권한</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="relative">
+        <select class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors appearance-none cursor-pointer box-border"
+                [value]="instructorInviteForm().role"
+                (change)="updateInstructorField('role', $event)">
+          <option value="" disabled selected>선택</option>
+          <option value="강사">강사</option>
+          <option value="보조강사">보조강사</option>
+          <option value="멘토">멘토</option>
+        </select>
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 이름 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="이름을 입력하세요"
+             [value]="instructorInviteForm().name"
+             (input)="updateInstructorField('name', $event)"/>
+    </div>
+
+    <!-- 연락처 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">연락처</span>
+      </div>
+      <input type="tel"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="연락처를 입력하세요"
+             [value]="instructorInviteForm().phone"
+             (input)="updateInstructorField('phone', $event)"/>
+    </div>
+
+    <!-- 하단 초대 버튼 -->
+    <div class="flex flex-col items-center justify-end mt-auto">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitInstructorInvite()">
+        초대
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 수강생 초대 사이드 드로어 ===== -->
+@if (studentDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeStudentDrawer()"
+       (keydown.enter)="closeStudentDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeStudentDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M11.67 0L19 8l-7.33 8-1.42-1.41L15.5 8l-5.25-6.59L11.67 0z" fill="#374151"/>
+        <path d="M3.67 0L11 8l-7.33 8-1.42-1.41L7.5 8 2.25 1.41 3.67 0z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">수강생 초대</h4>
+
+    <!-- 이메일 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이메일</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="email"
+               class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="이메일을 입력하세요"
+               [value]="studentInviteForm().email"
+               (input)="updateStudentField('email', $event)"/>
+        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity">
+          <svg width="52" height="40" viewBox="0 0 52 40" fill="none">
+            <rect width="52" height="40" rx="6" fill="#3C8EEE"/>
+            <path d="M20.1436 14.016C20.1436 15.776 19.573 17.28 18.4316 18.528C17.2903 19.7653 15.6903 20.6773 13.6316 21.264L13.0716 20.176C14.725 19.7173 16.037 19.0507 17.0076 18.176C17.9783 17.3013 18.5276 16.288 18.6556 15.136H13.7916V14.016H20.1436ZM15.4396 21.728H24.5436V27.008H15.4396V21.728ZM23.1836 25.888V22.832H16.7836V25.888H23.1836ZM20.1756 16.704H23.1516V13.12H24.5436V21.136H23.1516V17.856H20.1756V16.704ZM30.496 13.968V15.824C30.496 16.6453 30.7413 17.4133 31.232 18.128C31.7333 18.8427 32.4267 19.3813 33.312 19.744L32.576 20.816C31.9467 20.5493 31.3973 20.176 30.928 19.696C30.4693 19.216 30.1067 18.6667 29.84 18.048C29.584 18.7413 29.2107 19.36 28.72 19.904C28.24 20.448 27.6693 20.8693 27.008 21.168L26.256 20.08C26.8533 19.8133 27.3707 19.4507 27.808 18.992C28.256 18.5227 28.592 18.0107 28.816 17.456C29.0507 16.9013 29.168 16.3573 29.168 15.824V13.968H30.496ZM28.672 22.416H38.16V27.216H36.768V23.536H28.672V22.416ZM33.824 13.376H35.12V16.768H36.832V13.136H38.16V21.648H36.832V17.904H35.12V21.568H33.824V13.376Z" fill="white"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 권한 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">권한</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="relative">
+        <select class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors appearance-none cursor-pointer box-border"
+                [value]="studentInviteForm().role"
+                (change)="updateStudentField('role', $event)">
+          <option value="" disabled selected>선택</option>
+          <option value="수강생">수강생</option>
+          <option value="청강생">청강생</option>
+        </select>
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 이름 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="이름을 입력하세요"
+             [value]="studentInviteForm().name"
+             (input)="updateStudentField('name', $event)"/>
+    </div>
+
+    <!-- 연락처 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">연락처</span>
+      </div>
+      <input type="tel"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="연락처를 입력하세요"
+             [value]="studentInviteForm().phone"
+             (input)="updateStudentField('phone', $event)"/>
+    </div>
+
+    <!-- 하단 초대 버튼 -->
+    <div class="flex flex-col items-center justify-end mt-auto">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitStudentInvite()">
+        초대
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 강사 내보내기 다이얼로그 ===== -->
+@if (showInstructorRemoveDialog()) {
+  <div class="dialog-overlay" (click)="cancelRemoveInstructor()">
+    <div class="dialog-card" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.2" fill="white"/>
+        </svg>
+        <span class="dialog-title">강사 내보내기</span>
+      </div>
+      <div class="dialog-info">
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">부트캠프</span>
+          <span class="dialog-info-value">{{ info.bootcampName }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">이름</span>
+          <span class="dialog-info-value">{{ selectedInstructor()?.name }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">이메일</span>
+          <span class="dialog-info-value">{{ selectedInstructor()?.email }}</span>
+        </div>
+      </div>
+      <p class="dialog-warning">강사를 해당 부트캠프에서 내보내시겠습니까?<br>내보내기 후, 해당 강사는 더 이상 부트캠프에 접근할 수 없습니다.</p>
+      <div class="dialog-actions">
+        <button class="dialog-btn-cancel" (click)="cancelRemoveInstructor()">취소</button>
+        <button class="dialog-btn-confirm" (click)="confirmRemoveInstructor()">내보내기</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 수강생 내보내기 다이얼로그 ===== -->
+@if (showRemoveDialog()) {
+  <div class="dialog-overlay" (click)="cancelRemoveStudent()">
+    <div class="dialog-card" (click)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="dialog-header">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.2" fill="white"/>
+        </svg>
+        <span class="dialog-title">수강생 내보내기</span>
+      </div>
+
+      <!-- 정보 영역 -->
+      <div class="dialog-info">
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">부트캠프</span>
+          <span class="dialog-info-value">{{ info.bootcampName }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">이름</span>
+          <span class="dialog-info-value">{{ selectedStudent()?.name }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">이메일</span>
+          <span class="dialog-info-value">{{ selectedStudent()?.email }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 문구 -->
+      <p class="dialog-warning">수강생을 해당 부트캠프에서 내보내시겠습니까?<br>내보내기 후, 해당 수강생은 더 이상 부트캠프에 접근할 수 없습니다.</p>
+
+      <!-- 버튼 -->
+      <div class="dialog-actions">
+        <button class="dialog-btn-cancel" (click)="cancelRemoveStudent()">취소</button>
+        <button class="dialog-btn-confirm" (click)="confirmRemoveStudent()">내보내기</button>
+      </div>
+    </div>
+  </div>
+}

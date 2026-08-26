@@ -1,0 +1,804 @@
+<div class="flex flex-col gap-6">
+  <!-- 페이지 타이틀 -->
+  <div class="flex items-center gap-[10px]">
+    <h2 class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800 m-0">부트캠프 소개</h2>
+  </div>
+
+  <!-- 탭 -->
+  <div class="flex items-center" style="border-bottom: 2px solid #E5E7EB;">
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'intro'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'intro'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('intro')">
+      소개
+    </button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'banner'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'banner'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('banner')">
+      메인 배너
+    </button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'academy'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'academy'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('academy')">
+      아카데미 현역
+    </button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'partner'
+              ? 'text-[#3C8EEE] bg-white font-semibold'
+              : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeTab() === 'partner'
+              ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' }
+              : { 'border': 'none' }"
+            (click)="setTab('partner')">
+      파트너
+    </button>
+  </div>
+
+  <!-- 탭 콘텐츠 -->
+  @if (activeTab() === 'intro') {
+    <div class="flex flex-col gap-4">
+      <adm-text-editor placeholder="소개 내용을 입력하세요."></adm-text-editor>
+      <div class="flex justify-end">
+        <button class="flex items-center justify-center px-3 py-2 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                style="min-width: 71px;">
+          저장
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (activeTab() === 'banner') {
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+      <!-- 아코디언 헤더 -->
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="toggleBannerSection()">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">메인배너 관리</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!bannerSectionExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (bannerSectionExpanded()) {
+        <!-- 데이터 그리드 -->
+        <adm-data-grid
+          [columns]="bannerColumns"
+          [data]="bannerData"
+          [contextMenuItems]="['숨김', '수정', '삭제']"
+          (contextMenuSelect)="onBannerContextMenu($event)"
+          searchPlaceholder="검색어를 입력하세요">
+          <button gridActions
+                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            등록
+          </button>
+          <!-- 힌트 (검색바와 테이블 사이) -->
+          <div gridHint class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+              <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+              <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+          </div>
+        </adm-data-grid>
+      }
+
+    </div>
+
+    <!-- 영상 관리 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+      <!-- 아코디언 헤더 -->
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="toggleVideoSection()">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">영상 관리</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!videoSectionExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (videoSectionExpanded()) {
+        <!-- 비메오 링크 입력 -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-0.5">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">비메오 링크</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <input type="text"
+                   class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                   placeholder="비메오 링크를 입력하세요"
+                   [value]="vimeoLink()"
+                   (input)="onVimeoLinkInput($event)"/>
+            <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                    style="min-width: 52px;"
+                    (click)="registerVimeoLink()">
+              등록
+            </button>
+          </div>
+        </div>
+
+        <!-- 영상 미리보기 -->
+        <div class="flex items-center justify-center p-6 rounded-xl" style="background: #F9FAFB; min-height: 514px;">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">영상 미리보기</span>
+        </div>
+      }
+
+    </div>
+  }
+
+  @if (activeTab() === 'academy') {
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+      <!-- 아코디언 헤더 -->
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="togglePosterSection()">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">포스터 관리</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!posterSectionExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (posterSectionExpanded()) {
+        <adm-data-grid
+          [columns]="posterColumns"
+          [data]="posterData"
+          [contextMenuItems]="['수정', '삭제']"
+          searchPlaceholder="검색어를 입력하세요">
+          <button gridActions
+                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            등록
+          </button>
+          <!-- 힌트 (검색바와 테이블 사이) -->
+          <div gridHint class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+              <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+              <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+          </div>
+        </adm-data-grid>
+      }
+
+    </div>
+
+    <!-- 히스토리 관리 아코디언 -->
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg">
+
+      <!-- 아코디언 헤더 -->
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <button class="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0" (click)="toggleHistorySection()">
+          <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">히스토리 관리</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               [class.rotate-180]="!historySectionExpanded()"
+               class="transition-transform duration-200">
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z" fill="#000"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (historySectionExpanded()) {
+        <!-- 연도 등록 버튼 -->
+        <div class="flex justify-end">
+          <button class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                  (click)="openYearDrawer('add')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            연도 등록
+          </button>
+        </div>
+
+        <!-- 연도별 그룹 -->
+        <div class="flex flex-col gap-6">
+          @for (group of historyData; track group.year) {
+            <div class="flex flex-col">
+              <!-- 연도 헤더 -->
+              <div class="flex items-center gap-2 px-3 py-1.5 rounded" style="background: #D9E9FE;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="#1F2937"/>
+                </svg>
+                <span class="font-suit font-semibold text-base leading-[150%] tracking-[-0.04em] text-gray-800 flex-1">{{ group.year }}</span>
+                <div class="relative">
+                  <button class="flex items-center justify-center cursor-pointer bg-transparent border-none p-1 rounded hover:bg-blue-100 transition-colors"
+                          (click)="toggleYearMenu(group.year, $event)">
+                    <svg width="3" height="15" viewBox="0 0 3 15" fill="none">
+                      <circle cx="1.5" cy="1.5" r="1.5" fill="#1F2937"/>
+                      <circle cx="1.5" cy="7.5" r="1.5" fill="#1F2937"/>
+                      <circle cx="1.5" cy="13.5" r="1.5" fill="#1F2937"/>
+                    </svg>
+                  </button>
+                  @if (activeYearMenu() === group.year) {
+                    <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 flex flex-col p-2 gap-1 bg-white rounded-md z-[100]"
+                         style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); min-width: 64px;">
+                      <button class="flex items-center justify-center px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                              (click)="onYearAction(group.year, '수정')">
+                        수정
+                      </button>
+                      <button class="flex items-center justify-center px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                              (click)="onYearAction(group.year, '삭제')">
+                        삭제
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- 히스토리 항목들 -->
+              @for (item of group.items; track $index) {
+                <div class="flex items-center border-b border-gray-200">
+                  <!-- 체크박스 -->
+                  <div class="flex items-center justify-center w-[52px] py-2 px-4">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                      <path d="M0.75 0V12H12.75" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="2 2"/>
+                    </svg>
+                  </div>
+                  <!-- 제목 -->
+                  <div class="flex-1 py-2 px-4">
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ item.title }}</span>
+                  </div>
+                  <!-- 설명 -->
+                  <div class="flex-1 py-2 px-4">
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ item.description }}</span>
+                  </div>
+                  <!-- 기간 -->
+                  <div class="flex-1 py-2 px-4">
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600">{{ item.period }}</span>
+                  </div>
+                  <!-- 드래그 핸들 -->
+                  <div class="flex items-center justify-center w-[82px] py-2 px-4">
+                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                      <path d="M0 0h18v2H0zM0 5h18v2H0zM0 10h18v2H0z" fill="#6B7280"/>
+                    </svg>
+                  </div>
+                </div>
+              }
+
+              <!-- 추가 + 행 -->
+              <div class="flex items-center border-b border-gray-200">
+                <div class="flex items-center justify-center w-[52px] py-2 px-4">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                    <path d="M0.75 0V12H12.75" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="2 2"/>
+                  </svg>
+                </div>
+                <div class="flex-1 py-2 px-4">
+                  <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0"
+                          (click)="openHistoryItemDrawer('add')">
+                    <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">추가</span>
+                    <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">+</span>
+                  </button>
+                </div>
+                <div class="flex items-center justify-center w-[82px] py-2 px-4"></div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="flex items-center justify-between pt-4">
+          <!-- 페이지 사이즈 -->
+          <div class="relative">
+            <button class="flex items-center gap-2 px-4 py-2 h-9 bg-white border-2 border-gray-300 rounded-md cursor-pointer font-suit font-medium text-sm tracking-[-0.04em] text-gray-700"
+                    (click)="historyPageSizeOpen.set(!historyPageSizeOpen())">
+              {{ historyPageSize() }}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="transition-transform" [class.rotate-180]="historyPageSizeOpen()">
+                <path d="M7 10l5 5 5-5" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            @if (historyPageSizeOpen()) {
+              <div class="absolute bottom-full mb-1 left-0 flex flex-col p-1 bg-white rounded-md z-10" style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1);">
+                @for (size of [10, 20, 30, 50]; track size) {
+                  <button class="px-4 py-1.5 text-sm font-suit border-none rounded cursor-pointer transition-colors"
+                          [ngClass]="historyPageSize() === size ? 'bg-[#ECF4FE] text-[#3C8EEE]' : 'bg-white text-gray-700 hover:bg-zinc-100'"
+                          (click)="historyPageSize.set(size); historyPage.set(1); historyPageSizeOpen.set(false)">
+                    {{ size }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- 페이지 번호 -->
+          <div class="flex items-center gap-2 p-3 bg-white rounded-md">
+            <button class="flex items-center justify-center w-8 h-8 bg-white rounded cursor-pointer border-none hover:bg-zinc-100 transition-colors"
+                    (click)="goToHistoryPage(1)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M17.59 18L19 16.59 14.42 12 19 7.41 17.59 6l-6 6z" fill="#374151"/>
+                <path d="M11 18l1.41-1.41L7.83 12l4.58-4.59L11 6l-6 6z" fill="#374151"/>
+              </svg>
+            </button>
+            <button class="flex items-center justify-center w-8 h-8 bg-white rounded cursor-pointer border-none hover:bg-zinc-100 transition-colors"
+                    (click)="goToHistoryPage(historyPage() - 1)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z" fill="#374151"/>
+              </svg>
+            </button>
+            @for (page of historyPageNumbers(); track page) {
+              <button class="flex items-center justify-center w-8 h-8 rounded cursor-pointer border-none font-suit font-medium text-sm tracking-[-0.04em] transition-colors"
+                      [ngClass]="historyPage() === page ? 'bg-[#3C8EEE] text-white' : 'bg-zinc-100 text-gray-700 hover:bg-zinc-200'"
+                      (click)="goToHistoryPage(page)">
+                {{ page }}
+              </button>
+            }
+            <button class="flex items-center justify-center w-8 h-8 bg-white rounded cursor-pointer border-none hover:bg-zinc-100 transition-colors"
+                    (click)="goToHistoryPage(historyPage() + 1)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#374151"/>
+              </svg>
+            </button>
+            <button class="flex items-center justify-center w-8 h-8 bg-white rounded cursor-pointer border-none hover:bg-zinc-100 transition-colors"
+                    (click)="goToHistoryPage(historyTotalPages())">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6.41 6L5 7.41 9.58 12 5 16.59 6.41 18l6-6z" fill="#374151"/>
+                <path d="M13 6l-1.41 1.41L16.17 12l-4.58 4.59L13 18l6-6z" fill="#374151"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+  @if (activeTab() === 'partner') {
+    <adm-data-grid
+      [columns]="partnerColumns"
+      [data]="partnerData"
+      [contextMenuItems]="['수정', '삭제']"
+      searchPlaceholder="검색어를 입력하세요"
+      (contextMenuSelect)="onPartnerContextMenu($event)">
+      <button gridActions
+              class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+              (click)="openPartnerDrawer('add')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        등록
+      </button>
+    </adm-data-grid>
+  }
+</div>
+
+<!-- ===== 파트너 등록/수정 사이드 드로어 ===== -->
+@if (showPartnerDrawer()) {
+  <div class="fixed inset-0 z-[9998]" (click)="closePartnerDrawer()"></div>
+  <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closePartnerDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">
+      {{ partnerDrawerMode() === 'add' ? '파트너 등록' : '파트너 수정' }}
+    </h4>
+
+    <!-- 이미지 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-1">
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지</span>
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+      </div>
+      <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+      </div>
+      <input type="file" id="partnerImageInput" accept="image/*" class="hidden" (change)="onPartnerImageSelected($event)"/>
+      <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+           style="min-height: 103px;"
+           (click)="triggerFileInput('partnerImageInput')">
+        <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+          <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+      </div>
+      @if (partnerImage()) {
+        <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+          <img [src]="partnerImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+          <div class="flex items-center justify-between flex-1">
+            <div class="flex flex-col gap-1">
+              <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ partnerImage()!.name }}</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ partnerImage()!.size }}</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+              </svg>
+              <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removePartnerImage(); $event.stopPropagation()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 이름 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="파트너 이름을 입력하세요"
+             [value]="partnerForm().name"
+             (input)="updatePartnerField('name', $event)"/>
+    </div>
+
+    <!-- 링크 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">링크</span>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="https:// 로 시작하는 URL를 기재해주세요."
+             [value]="partnerForm().link"
+             (input)="updatePartnerField('link', $event)"/>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitPartnerDrawer()">
+        {{ partnerDrawerMode() === 'add' ? '등록' : '수정' }}
+      </button>
+    </div>
+
+  </div>
+}
+
+<!-- ===== 메인배너 수정 사이드 드로어 ===== -->
+@if (showBannerDrawer()) {
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0" role="button"
+       (click)="closeBannerDrawer()"
+       (keyup.escape)="closeBannerDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in overflow-y-auto">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeBannerDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">메인배너 등록</h4>
+
+    <!-- 폼 필드들 -->
+    <div class="flex flex-col gap-6">
+
+      <!-- 상태 * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <div class="relative">
+          <select class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-slate-800 outline-none focus:border-[#3C8EEE] transition-colors appearance-none cursor-pointer box-border"
+                  [value]="bannerForm().status"
+                  (change)="updateBannerField('status', $event)">
+            <option value="노출">노출</option>
+            <option value="숨김">숨김</option>
+          </select>
+          <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M7 10l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 비메오 링크 * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">비메오 링크</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-slate-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="비메오 링크를 입력하세요"
+               [value]="bannerForm().vimeoLink"
+               (input)="updateBannerField('vimeoLink', $event)"/>
+      </div>
+
+      <!-- 헤더 * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">헤더</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                  rows="3"
+                  maxlength="50"
+                  placeholder="Shift + Enter를 누르면 줄바꿈이 가능합니다."
+                  [value]="bannerForm().header"
+                  (input)="updateBannerField('header', $event)"></textarea>
+        <div class="flex justify-end">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ bannerForm().header.length }} / 50</span>
+        </div>
+      </div>
+
+      <!-- 내용 * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                  rows="3"
+                  maxlength="100"
+                  placeholder="Shift + Enter를 누르면 줄바꿈이 가능합니다."
+                  [value]="bannerForm().content"
+                  (input)="updateBannerField('content', $event)"></textarea>
+        <div class="flex justify-end">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ bannerForm().content.length }} / 100</span>
+        </div>
+      </div>
+
+      <!-- 이미지(PC) * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-1">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지(PC)</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+        </div>
+        <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+        </div>
+        <input type="file" id="pcImageInput" accept="image/*" class="hidden" (change)="onImageSelected($event, 'pc')"/>
+        <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+             style="min-height: 103px;"
+             (click)="triggerFileInput('pcImageInput')">
+          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+        </div>
+        @if (pcImage()) {
+          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+            <img [src]="pcImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+            <div class="flex items-center justify-between flex-1">
+              <div class="flex flex-col gap-1">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ pcImage()!.name }}</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ pcImage()!.size }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                  <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+                </svg>
+                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeImage('pc'); $event.stopPropagation()">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 이미지(모바일) * -->
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-1">
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지(모바일)</span>
+          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+        </div>
+        <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+        </div>
+        <input type="file" id="mobileImageInput" accept="image/*" class="hidden" (change)="onImageSelected($event, 'mobile')"/>
+        <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+             style="min-height: 103px;"
+             (click)="triggerFileInput('mobileImageInput')">
+          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+        </div>
+        @if (mobileImage()) {
+          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+            <img [src]="mobileImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+            <div class="flex items-center justify-between flex-1">
+              <div class="flex flex-col gap-1">
+                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ mobileImage()!.name }}</span>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ mobileImage()!.size }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                  <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+                </svg>
+                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeImage('mobile'); $event.stopPropagation()">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- 링크 -->
+      <div class="flex flex-col gap-2">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">링크</span>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="https:// 로 시작하는 URL를 기재해주세요."
+               [value]="bannerForm().link"
+               (input)="updateBannerField('link', $event)"/>
+      </div>
+
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitBannerForm()">
+        등록
+      </button>
+    </div>
+
+  </div>
+}
+
+<!-- ===== 히스토리 연도 사이드 드로어 ===== -->
+@if (showYearDrawer()) {
+  <div class="fixed inset-0 z-[9998]" (click)="closeYearDrawer()"></div>
+  <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md cursor-pointer bg-transparent border-none hover:bg-gray-100 transition-colors self-start"
+            (click)="closeYearDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">
+      {{ yearDrawerMode() === 'add' ? '히스토리 연도 추가' : '히스토리 연도 수정' }}
+    </span>
+
+    <!-- 연도 입력 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">연도</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="연도를 입력하세요"
+             [value]="yearDrawerValue()"
+             (input)="yearDrawerValue.set($any($event.target).value)"/>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitYearDrawer()">
+        {{ yearDrawerMode() === 'add' ? '등록' : '수정' }}
+      </button>
+    </div>
+
+  </div>
+}
+
+<!-- ===== 히스토리 항목 사이드 드로어 ===== -->
+@if (showHistoryItemDrawer()) {
+  <div class="fixed inset-0 z-[9998]" (click)="closeHistoryItemDrawer()"></div>
+  <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeHistoryItemDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">
+      {{ historyItemMode() === 'add' ? '히스토리 항목 추가' : '히스토리 항목 수정' }}
+    </h4>
+
+    <!-- 제목 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="제목을 입력하세요"
+             [value]="historyItemForm().title"
+             (input)="updateHistoryItemField('title', $event)"/>
+    </div>
+
+    <!-- 내용 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="내용을 입력하세요"
+             [value]="historyItemForm().content"
+             (input)="updateHistoryItemField('content', $event)"/>
+    </div>
+
+    <!-- 상세날짜 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">상세날짜</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="예: 2023.10~2023.12"
+             [value]="historyItemForm().date"
+             (input)="updateHistoryItemField('date', $event)"/>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitHistoryItemDrawer()">
+        {{ historyItemMode() === 'add' ? '등록' : '수정' }}
+      </button>
+    </div>
+
+  </div>
+}

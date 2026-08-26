@@ -1,0 +1,98 @@
+<div class="flex flex-col w-full min-h-screen">
+  <!-- ===== 상단 타이틀 바 ===== -->
+  <div class="flex items-center px-10 w-full h-[62px] rounded-xl shrink-0"
+       style="background: linear-gradient(270.26deg, #122D57 0%, #1C57B5 32.81%, #1C57B5 86.46%, #063681 100%);">
+    <div class="flex items-center justify-between w-full h-[46px]">
+      <!-- 좌: 로그인 -->
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-white">로그인</span>
+      <!-- 우: 권한 / 역할 -->
+      <div class="flex flex-col items-end gap-[1px]">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-white">{{ roleLabel }}</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-slate-300">{{ roleName }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 로그인 영역 ===== -->
+  <div class="flex justify-center items-center flex-1 w-full bg-white">
+    <div class="flex flex-col justify-center items-center p-10 gap-5 w-[500px] max-w-[calc(100%-40px)] bg-white rounded-md">
+      <!-- 아이콘 -->
+      <div class="flex justify-center items-center w-16 h-16 bg-[#3C8EEE] rounded-full shrink-0" style="backdrop-filter: blur(10px);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_520_54572)">
+            <path d="M10.9922 10.0039V12.0039H8.99219V14.0039H6.99219V12.0039H5.79219C5.39219 13.2039 4.29219 14.0039 2.99219 14.0039C1.29219 14.0039 -0.0078125 12.7039 -0.0078125 11.0039C-0.0078125 9.30391 1.29219 8.00391 2.99219 8.00391C4.29219 8.00391 5.39219 8.80391 5.79219 10.0039H10.9922ZM2.99219 10.0039C2.39219 10.0039 1.99219 10.4039 1.99219 11.0039C1.99219 11.6039 2.39219 12.0039 2.99219 12.0039C3.59219 12.0039 3.99219 11.6039 3.99219 11.0039C3.99219 10.4039 3.59219 10.0039 2.99219 10.0039ZM15.9922 14.0039C18.6922 14.0039 23.9922 15.3039 23.9922 18.0039V20.0039H7.99219V18.0039C7.99219 15.3039 13.2922 14.0039 15.9922 14.0039ZM15.9922 12.0039C13.7922 12.0039 11.9922 10.2039 11.9922 8.00391C11.9922 5.80391 13.7922 4.00391 15.9922 4.00391C18.1922 4.00391 19.9922 5.80391 19.9922 8.00391C19.9922 10.2039 18.1922 12.0039 15.9922 12.0039Z" fill="white"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_520_54572">
+              <rect width="24" height="24" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- 타이틀 -->
+      <h2 class="font-suit font-bold text-[28px] leading-[150%] tracking-[-0.04em] text-gray-700 m-0">로그인</h2>
+
+      <!-- 아이디 -->
+      <div class="flex flex-col gap-2 w-[420px] max-w-full">
+        <div class="flex items-center gap-[2px]">
+          <label for="login-email" class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">아이디</label>
+        </div>
+        <input
+          id="login-email"
+          type="text"
+          class="w-full h-10 px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 outline-none transition-colors duration-150 focus:border-[#3C8EEE] placeholder:text-gray-400"
+          placeholder="아이디를 입력해주세요"
+          [value]="email"
+          (input)="onEmailInput($event)"
+          (keydown.enter)="onLogin()"
+        />
+      </div>
+
+      <!-- 비밀번호 -->
+      <div class="flex flex-col gap-2 w-[420px] max-w-full">
+        <div class="flex items-center gap-[2px]">
+          <label for="login-password" class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">비밀번호</label>
+        </div>
+        <input
+          id="login-password"
+          type="password"
+          class="w-full h-10 px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 outline-none transition-colors duration-150 focus:border-[#3C8EEE] placeholder:text-gray-400"
+          placeholder="비밀번호를 입력해주세요"
+          [value]="password"
+          (input)="onPasswordInput($event)"
+          (keydown.enter)="onLogin()"
+        />
+      </div>
+
+      <!-- 자동 로그인 -->
+      <div class="flex items-center gap-1.5 w-[420px] max-w-full cursor-pointer select-none"
+           (click)="toggleAutoLogin()" role="checkbox" [attr.aria-checked]="autoLogin()" tabindex="0"
+           (keydown.enter)="toggleAutoLogin()" (keydown.space)="toggleAutoLogin(); $event.preventDefault()">
+        <div class="flex items-center justify-center w-6 h-6 border-2 rounded shrink-0 transition-colors duration-150"
+             [ngClass]="autoLogin() ? 'bg-[#3C8EEE] border-[#3C8EEE]' : 'bg-white border-gray-300'">
+          @if (autoLogin()) {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFFFFF">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          }
+        </div>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">자동 로그인</span>
+      </div>
+
+      <!-- 에러 메시지 -->
+      @if (showError()) {
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 w-[420px] max-w-full text-left">
+          아이디 또는 비밀번호가 올바르지 않습니다.
+        </span>
+      }
+
+      <!-- 로그인 버튼 -->
+      <button
+        class="flex justify-center items-center px-3 py-2 w-[420px] max-w-full h-10 bg-[#3C8EEE] border-none rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white cursor-pointer transition-colors duration-150 hover:bg-[#2B7CDB] active:bg-[#1D6BC4]"
+        (click)="onLogin()">
+        로그인
+      </button>
+    </div>
+  </div>
+</div>

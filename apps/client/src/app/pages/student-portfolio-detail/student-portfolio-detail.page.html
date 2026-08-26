@@ -1,13 +1,13 @@
-<main class="w-full min-h-screen bg-[#090909] flex flex-col items-center px-[100px] py-20 gap-10 box-border spd-page">
+<main class="w-full min-h-screen bg-[#090909] flex flex-col items-center px-0 pt-0 pb-10 md:px-[100px] md:py-20 gap-0 md:gap-10 box-border">
   <!-- 모바일 백 바 -->
-  <div class="spd-mobile-back">
+  <div class="flex md:hidden flex-row justify-start items-center px-5 py-[5px] w-full h-14 bg-[#090909] box-border">
     <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
     </button>
   </div>
 
   <!-- 헤더: 뒤로가기 + 타이틀 (데스크톱) -->
-  <div class="spd-desktop-header flex items-center gap-2.5 w-full max-w-[1400px]">
+  <div class="hidden md:flex items-center gap-2.5 w-full max-w-[1400px]">
     <button class="bg-transparent border-none cursor-pointer p-0 flex items-center" (click)="goBack()" aria-label="뒤로가기">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFFFFF"/></svg>
     </button>
@@ -15,14 +15,14 @@
   </div>
 
   <!-- 모바일 히어로 이미지 (데스크톱에서 숨김) -->
-  <div class="mobile-hero" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+  <div class="block md:hidden w-full h-[270px] bg-cover bg-center" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
 
   <!-- 콘텐츠 영역 -->
-  <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
+  <div class="flex flex-col items-center gap-5 md:gap-10 w-full max-w-[1400px] p-5 md:p-0 bg-[#0C0B10] md:bg-transparent">
     <!-- 작품 정보 카드 -->
-    <div class="w-full bg-zinc-900/80 rounded-2xl p-6 flex flex-col gap-6 box-border">
-      <div class="flex gap-6">
-        <div class="w-[136px] h-[102px] rounded-md shrink-0" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+    <div class="w-full bg-transparent md:bg-zinc-900/80 rounded-none md:rounded-2xl p-0 md:p-6 flex flex-col gap-3 md:gap-6 box-border">
+      <div class="flex flex-col md:flex-row gap-3 md:gap-6">
+        <div class="hidden md:block w-[136px] h-[102px] rounded-md shrink-0" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
         <div class="flex flex-col justify-center gap-3 flex-1">
           <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">식혜의 모험</h2>
           <div class="flex flex-wrap gap-6">
@@ -41,8 +41,8 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-2 p-5 bg-zinc-800/50 rounded-xl">
-        <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">작품 소개</span>
+      <div class="flex flex-col gap-2 p-4 md:p-5 bg-[#1F1F23] md:bg-zinc-800/50 rounded-xl">
+        <span class="font-suit font-medium md:font-semibold text-base leading-[150%] tracking-tight text-zinc-400 md:text-white">작품 소개</span>
         <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-300 m-0">
           케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다.
         </p>
@@ -54,22 +54,22 @@
       <!-- 기획서 섹션 -->
       <div class="flex items-center gap-0 w-full">
         <div class="flex-1 h-px bg-zinc-700"></div>
-        <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">기획서</span>
+        <span class="font-suit font-medium md:font-bold text-base md:text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">기획서</span>
         <div class="flex-1 h-px bg-zinc-700"></div>
       </div>
 
-      <div class="w-full max-w-[800px]">
+      <div class="w-full max-w-full md:max-w-[800px]">
         <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 1411px; border-radius: 8px;"></div>
       </div>
 
       <!-- 원고 섹션 -->
       <div class="flex items-center gap-0 w-full">
         <div class="flex-1 h-px bg-zinc-700"></div>
-        <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">원고</span>
+        <span class="font-suit font-medium md:font-bold text-base md:text-lg leading-[150%] tracking-tight text-white whitespace-nowrap px-5">원고</span>
         <div class="flex-1 h-px bg-zinc-700"></div>
       </div>
 
-      <div class="w-full max-w-[800px] relative overflow-hidden">
+      <div class="w-full max-w-full md:max-w-[800px] relative overflow-hidden">
         <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px;"></div>
         <div class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-[#090909] to-transparent pointer-events-none"></div>
       </div>
@@ -79,46 +79,21 @@
     </div>
 
     <!-- 하단: 문의하기 -->
-    <div class="flex items-center w-full mt-[60px]">
-      <div class="flex-1 h-px bg-zinc-700"></div>
-      <button class="w-[300px] h-12 bg-zinc-800 border-none rounded-3xl font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-colors duration-150 hover:bg-zinc-700 shrink-0" (click)="openInquiryModal()">문의하기</button>
-      <div class="flex-1 h-px bg-zinc-700"></div>
+    <div class="flex flex-col md:flex-row items-center w-full mt-[30px] md:mt-[60px] gap-3 md:gap-0">
+      <div class="hidden md:block flex-1 h-px bg-zinc-700"></div>
+      <button class="w-full md:w-[300px] h-12 bg-[#27272A] md:bg-zinc-800 border-none rounded-full md:rounded-3xl font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-colors duration-150 hover:bg-zinc-700 shrink-0" (click)="openInquiryModal()">문의하기</button>
+      <div class="hidden md:block flex-1 h-px bg-zinc-700"></div>
     </div>
   </div>
 
-  <!-- ===== 원고 뷰어 모달 ===== -->
-  @if (isViewerOpen()) {
-    <div class="viewer-overlay fixed inset-0 flex justify-center items-center p-0 md:p-16 bg-[#090909] md:bg-black/60 md:backdrop-blur-[30px] z-[1000]" tabindex="-1" (click)="onViewerOverlayClick($event)" (keydown.escape)="closeViewer()">
-      <div class="viewer-container flex flex-col gap-0 md:gap-2.5 w-full max-w-full md:max-w-[900px] h-full md:h-auto md:max-h-[90vh]">
-        <div class="viewer-header flex justify-between items-center w-full px-5 py-1 md:px-0 md:py-0 h-14 md:h-auto">
-          <div></div>
-          <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 transition-opacity duration-150 hover:opacity-70" (click)="closeViewer()" aria-label="닫기">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
-        </div>
+  <!-- ===== 원고 뷰어 (공통 컴포넌트) ===== -->
+  <app-image-viewer
+    [images]="manuscriptImages"
+    [isOpen]="isViewerOpen()"
+    [pageLabel]="'회'"
+    (closed)="closeViewer()"
+  />
 
-        <div class="viewer-body flex flex-col md:flex-row items-stretch md:items-center gap-0 md:gap-6 w-full flex-1 overflow-hidden">
-          <button class="viewer-arrow hidden md:flex" (click)="prevPage()" aria-label="이전">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
-          </button>
-
-          <div class="viewer-content flex-1 bg-[#1C1B20] rounded-none md:rounded-2xl p-5 md:p-6 overflow-hidden flex flex-col max-h-full md:max-h-[75vh] box-border">
-            <div class="flex items-center gap-1 pb-4">
-              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ currentViewerPage() }}회</span>
-              <span class="font-suit font-medium text-lg leading-[150%] tracking-tight text-zinc-500">/{{ totalPages }}회</span>
-            </div>
-            <div class="flex-1 overflow-y-auto rounded-lg">
-              <div class="w-full min-h-[400px] md:min-h-[600px] rounded-lg bg-cover bg-center" [style.background]="manuscriptImages[currentViewerPage() - 1].gradient"></div>
-            </div>
-          </div>
-
-          <button class="viewer-arrow hidden md:flex" (click)="nextPage()" aria-label="다음">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  }
 
   <!-- ===== 문의하기 모달 ===== -->
   @if (isInquiryOpen()) {

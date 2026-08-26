@@ -66,7 +66,7 @@
           </button>
           @if (isMoreOpen()) {
             <div class="sd-more-backdrop" (click)="closeMore()" (keydown.escape)="closeMore()" aria-hidden="true"></div>
-            <div class="sd-more-dropdown" (click)="$event.stopPropagation()">
+            <div class="sd-more-dropdown" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
               <button class="sd-more-item" (click)="onEdit()">수정</button>
               <button class="sd-more-item" (click)="onDelete()">삭제</button>
             </div>
@@ -161,7 +161,7 @@
 
 <!-- ===== 삭제 확인 모달 ===== -->
 @if (isDeleteModalOpen()) {
-  <div class="fd-del-backdrop" (click)="closeDeleteModal()"></div>
+  <div class="fd-del-backdrop" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()" aria-hidden="true"></div>
   <div class="fd-del-modal">
     <!-- 헤더 -->
     <div class="fd-del-header">

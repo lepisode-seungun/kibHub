@@ -30,6 +30,23 @@
   z-index: 1;
 }
 
+/* ===== 임시 하드코딩 타이틀 ===== */
+.banner-title {
+  position: absolute;
+  top: 31.8%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  letter-spacing: -0.04em;
+  color: #EEE6ED;
+  margin: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* ===== Floating Cards (image-only, matching Figma rects) ===== */
 .floating-card {
   position: absolute;

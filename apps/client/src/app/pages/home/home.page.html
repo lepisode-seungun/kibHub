@@ -6,11 +6,13 @@
   <section class="recent-comments" id="recent-comments">
     <h2 class="font-suit font-bold text-[32px] leading-[150%] tracking-tight text-white m-0">Recent comments</h2>
     <div class="carousel-wrapper">
-      <button class="carousel-arrow carousel-arrow--left" aria-label="이전" (click)="scrollLeft()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      @if (showCommentLeftArrow()) {
+        <button class="carousel-arrow carousel-arrow--left" aria-label="이전" (click)="scrollLeft()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      }
       <div class="cards-track" #track>
         @for (card of commentCards; track card.id) {
           <article class="comment-card">
@@ -45,12 +47,16 @@
           </article>
         }
       </div>
-      <button class="carousel-arrow carousel-arrow--right" aria-label="다음" (click)="scrollRight()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="carousel-fade"></div>
+      @if (showCommentRightFade()) {
+        <button class="carousel-arrow carousel-arrow--right" aria-label="다음" (click)="scrollRight()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      }
+      @if (showCommentRightFade()) {
+        <div class="carousel-fade"></div>
+      }
     </div>
   </section>
 
@@ -230,13 +236,25 @@
         }
       </div>
       <!-- Right Fade -->
-      <div class="mentor-carousel-fade"></div>
+      @if (showMentorRightFade()) {
+        <div class="mentor-carousel-fade"></div>
+      }
+      <!-- Left Arrow -->
+      @if (showMentorLeftArrow()) {
+        <button class="mentor-arrow mentor-arrow--left" aria-label="이전" (click)="scrollMentorLeft()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      }
       <!-- Right Arrow -->
-      <button class="mentor-arrow" aria-label="다음" (click)="scrollMentorRight()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      @if (showMentorRightFade()) {
+        <button class="mentor-arrow" aria-label="다음" (click)="scrollMentorRight()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      }
     </div>
   </section>
 
