@@ -19,34 +19,32 @@
         <span class="font-suit font-medium text-sm text-zinc-500 mt-1">관리자 페이지에서 명예의 전당 포트폴리오를 등록해 보세요.</span>
       </div>
     } @else {
-      @for (row of cardRows; track $index) {
-        <div class="card-row">
-          @for (card of row; track card.id) {
-            <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
-              <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
-                @if (card.thumbnailUrl) {
-                  <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
+      <div class="hall-of-fame-grid">
+        @for (card of cards; track card.id) {
+          <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
+            <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
+              @if (card.thumbnailUrl) {
+                <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
+              }
+              <div class="card-thumbnail-overlay">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex flex-col gap-3 px-1">
+              <div class="flex gap-1.5 items-center">
+                @if (card.badgeText) {
+                  <span class="badge badge--accent">{{ card.badgeText }}</span>
                 }
-                <div class="card-thumbnail-overlay">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
+                <span class="badge badge--outline">{{ card.statusText }}</span>
               </div>
-              <div class="flex flex-col gap-3 px-1">
-                <div class="flex gap-1.5 items-center">
-                  @if (card.badgeText) {
-                    <span class="badge badge--accent">{{ card.badgeText }}</span>
-                  }
-                  <span class="badge badge--outline">{{ card.statusText }}</span>
-                </div>
-                <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
-                <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0 line-clamp-2">{{ card.summary }}</p>
-              </div>
-            </article>
-          }
-        </div>
-      }
+              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
+              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0 line-clamp-2">{{ card.summary }}</p>
+            </div>
+          </article>
+        }
+      </div>
     }
   </section>
 

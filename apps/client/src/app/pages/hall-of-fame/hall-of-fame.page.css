@@ -12,16 +12,20 @@
   box-sizing: border-box;
 }
 
-/* Card Row */
-.card-row { display: flex; gap: 24px; width: 100%; }
+/* Card Grid */
+.hall-of-fame-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
+}
 
 /* Card */
 .card {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   opacity: 0;
   transform: translateY(20px);
   animation: card-enter 0.6s ease forwards;
@@ -110,13 +114,11 @@
 @media (max-width: 1440px) { .hall-of-fame { padding: 80px 60px; } }
 @media (max-width: 1200px) {
   .hall-of-fame { padding: 60px 40px; gap: 32px; }
-  .card-row { flex-wrap: wrap; }
-  .card { flex: 0 0 calc(50% - 12px); }
+  .hall-of-fame-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
   .hall-of-fame { padding: 40px 20px; gap: 24px; }
-  .card { flex: 0 0 100%; }
-  .card-row { gap: 20px; }
+  .hall-of-fame-grid { grid-template-columns: repeat(1, 1fr); gap: 20px; }
 }
 
 /* 모달 */
