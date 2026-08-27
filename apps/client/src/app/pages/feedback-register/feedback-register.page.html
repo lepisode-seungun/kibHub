@@ -90,7 +90,7 @@
 
         <!-- 업로드된 파일 리스트 -->
         <div class="flex flex-col gap-3 w-full">
-          @for (file of uploadedFiles; track $index) {
+          @for (file of uploadedFiles(); track $index) {
             <div class="flex justify-between items-center px-5 py-2 w-full h-14 border border-zinc-200 rounded-xl box-border">
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700">{{ file.name }} [{{ file.extension }}, {{ file.size }}]</span>
               <div class="flex items-center">
@@ -104,10 +104,10 @@
               </div>
             </div>
           }
-          @if (uploadedFiles.length > 0) {
+          @if (uploadedFiles().length > 0) {
             <div class="flex justify-between items-center px-5 py-2 w-full h-14 border border-zinc-200 rounded-xl box-border">
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700">{{ uploadedFiles[uploadedFiles.length - 1].name }} [{{ uploadedFiles[uploadedFiles.length - 1].extension }}, {{ uploadedFiles[uploadedFiles.length - 1].size }}]</span>
-              <button class="flex items-center gap-2 bg-transparent border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-red-400 p-0" (click)="removeFile(uploadedFiles.length - 1)">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-700">{{ uploadedFiles()[uploadedFiles().length - 1].name }} [{{ uploadedFiles()[uploadedFiles().length - 1].extension }}, {{ uploadedFiles()[uploadedFiles().length - 1].size }}]</span>
+              <button class="flex items-center gap-2 bg-transparent border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-red-400 p-0" (click)="removeFile(uploadedFiles().length - 1)">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#F87171"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                 <span>삭제</span>
               </button>

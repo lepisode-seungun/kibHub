@@ -29,14 +29,15 @@ interface Submission {
 export class AssignmentDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   assignmentId = '';
   bootcampId = '';
 
-  courseLabel = '과정1. 웹툰의 기초';
-  assignmentTitle = '강의명강의명강의명강의명강의명강의명강의명강의명강의명강의명';
-  dateRange = '2024년 1월 22일 ~ 2024년 1월 25일';
-  description = '강의 내용 에디터 작성 '.repeat(70);
+  courseLabel = '';
+  assignmentTitle = '';
+  dateRange = '';
+  description = '';
 
   isMaterialOpen = signal(true);
 
@@ -45,42 +46,49 @@ export class AssignmentDetailPage implements OnInit {
 
   /* 강의 섹션 */
   lectureType: '강의' | '과제' = '강의';
-  category = '카테고리';
-  lectureTitle = '강의명강의명강의명강의명강의명강의명강의명강의명강의명강의명';
-  duration = '13:27';
-  lectureDescription = '강의 내용 에디터 작성 '.repeat(70);
+  category = '';
+  lectureTitle = '';
+  duration = '';
+  lectureDescription = '';
 
   isPlaying = signal(false);
-  currentTime = '0:51';
-  totalTime = '2:31';
-  progress = 33;
+  currentTime = '0:00';
+  totalTime = '0:00';
+  progress = 0;
   volume = 73;
 
-  learningFiles: LearningFile[] = [
-    { name: '학습자료_웹툰기초_이론편.pdf' },
-    { name: '학습자료_웹툰기초_실습가이드.pdf' },
-    { name: '학습자료.pdf' },
-    { name: '참고자료.pdf' },
-    { name: '과제안내.pdf' },
-  ];
-
-  submissions: Submission[] = [
-    { id: 1, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-    { id: 2, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '피드백', author: '고식혜', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: true, isInstructor: true },
-    { id: 3, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '피드백', author: '고식혜', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: true, isInstructor: true },
-    { id: 4, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-    { id: 5, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-    { id: 6, title: '과제제출명 30자 이내 과제제출명 30자 이내 과제제출', badge: '과제제출', author: '김철수', date: '2024.01.20', fileName: '과제명 30자 이내 과제명 30자 이내', commentCount: 3, isReply: false, isInstructor: false },
-  ];
+  learningFiles: LearningFile[] = [];
+  submissions: Submission[] = [];
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.assignmentId = params.get('assignmentId') || '';
+      if (this.assignmentId) {
+        await this.loadAssignment(Number(this.assignmentId));
+      }
     });
     this.route.queryParamMap.subscribe((qp) => {
       this.returnTab = qp.get('tab') || '';
     });
+  }
+
+  private async loadAssignment(id: number): Promise<void> {
+    try {
+      const assignment: any = await this.api.assignments.findOne(id);
+      this.assignmentTitle = assignment.title || '';
+      this.description = assignment.body || '';
+      this.dateRange = assignment.deadlineStart && assignment.deadlineEnd
+        ? `${assignment.deadlineStart} ~ ${assignment.deadlineEnd}` : '';
+      if (assignment.course) {
+        this.courseLabel = assignment.course.title || '';
+      }
+      if (assignment.files && assignment.files.length > 0) {
+        this.learningFiles = assignment.files.map((f: any) => ({ name: f.name }));
+      }
+    } catch (err) {
+      console.error('과제 로드 실패:', err);
+    }
   }
 
   returnTab = '';

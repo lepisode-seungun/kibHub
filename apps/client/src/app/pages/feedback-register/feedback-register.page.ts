@@ -20,6 +20,7 @@ interface UploadedFile {
 export class FeedbackRegisterPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   bootcampId = '';
   submissionId = '';
@@ -30,13 +31,9 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
 
   title = '';
   content = '';
+  isSubmitting = signal(false);
 
-  uploadedFiles: UploadedFile[] = [
-    { name: '첨부파일명', extension: 'jpg', size: '93KB', status: 'uploading' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-  ];
+  uploadedFiles = signal<{ name: string; extension: string; size: string; status: 'uploading' | 'done' | 'error'; url?: string }[]>([]);
 
   constructor() {
     this.route.params.subscribe((params) => {
@@ -74,10 +71,10 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
   }
 
   removeFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
+    this.uploadedFiles.update(files => files.filter((_, i) => i !== index));
   }
 
-  onFileSelect(event: Event): void {
+  async onFileSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
 
@@ -85,12 +82,25 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
       const file = input.files[i];
       const ext = file.name.split('.').pop() || '';
       const sizeKB = Math.round(file.size / 1024);
-      this.uploadedFiles.push({
+      const idx = this.uploadedFiles().length;
+
+      this.uploadedFiles.update(files => [...files, {
         name: file.name.replace(`.${ext}`, ''),
         extension: ext,
         size: `${sizeKB}KB`,
-        status: 'done',
-      });
+        status: 'uploading' as const,
+      }]);
+
+      try {
+        const result = await this.api.upload.single(file, 'feedbacks');
+        this.uploadedFiles.update(files => files.map((f, j) =>
+          j === idx ? { ...f, status: 'done' as const, url: result.url } : f
+        ));
+      } catch {
+        this.uploadedFiles.update(files => files.map((f, j) =>
+          j === idx ? { ...f, status: 'error' as const } : f
+        ));
+      }
     }
     input.value = '';
   }
@@ -99,8 +109,21 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
     this.goBack();
   }
 
-  onSubmit(): void {
-    // TODO: API 연동 — FormData로 title, content, files 전송
-    this.goBack();
+  async onSubmit(): Promise<void> {
+    if (this.isSubmitting()) return;
+    this.isSubmitting.set(true);
+    try {
+      // TODO: 피드백 등록 API (서버에 피드백 엔드포인트 필요)
+      console.log('Feedback submit:', {
+        title: this.title,
+        content: this.content,
+        files: this.uploadedFiles().filter(f => f.status === 'done').map(f => ({ url: f.url, name: f.name + '.' + f.extension })),
+      });
+      this.goBack();
+    } catch (err) {
+      console.error('피드백 등록 실패:', err);
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 }

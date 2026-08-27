@@ -17,6 +17,7 @@ interface LearningFile {
 export class SubmissionDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   submissionId = '';
   bootcampId = '';
@@ -24,29 +25,22 @@ export class SubmissionDetailPage implements OnInit {
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('과제');
 
-  courseLabel = '과정1. 웹툰의 기초';
-  assignmentTitle = '강의명강의명강의명강의명강의명강의명강의명강의명강의명강의명';
+  courseLabel = '';
+  assignmentTitle = '';
   badge = '과제제출';
-  author = '고예림';
-  date = '2024.01.20';
-  fileName = '과제명 30자 이내 과제명 30자 이내';
-  description = '강의 내용 에디터 작성 '.repeat(70);
+  author = '';
+  date = '';
+  fileName = '';
+  description = '';
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
   isDeleteModalOpen = signal(false);
 
-  // TODO: 차후 계정 권한 API 연동
   isAuthor = true;
   isInstructor = false;
 
-  learningFiles: LearningFile[] = [
-    { name: '학습자료_웹툰기초_이론편.pdf' },
-    { name: '학습자료_웹툰기초_실습가이드.pdf' },
-    { name: '학습자료.pdf' },
-    { name: '참고자료.pdf' },
-    { name: '과제안내.pdf' },
-  ];
+  learningFiles: LearningFile[] = [];
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

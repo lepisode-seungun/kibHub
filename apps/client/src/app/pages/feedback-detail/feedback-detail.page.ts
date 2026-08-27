@@ -25,6 +25,7 @@ interface Comment {
 export class FeedbackDetailPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   ngOnDestroy(): void {
     document.body.style.overflow = '';
@@ -36,40 +37,23 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('과제');
 
-  courseLabel = '과정1. 웹툰의 기초';
-  assignmentTitle = '강의명강의명강의명강의명강의명강의명강의명강의명강의명강의명';
+  courseLabel = '';
+  assignmentTitle = '';
   badge = '피드백';
-  author = '고예림';
-  date = '2024.01.20';
-  fileName = '과제명 30자 이내 과제명 30자 이내';
-  description = '강의 내용 에디터 작성 '.repeat(70);
+  author = '';
+  date = '';
+  fileName = '';
+  description = '';
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
   isDeleteModalOpen = signal(false);
 
-  // TODO: 차후 계정 권한 API 연동
   isAuthor = false;
   isInstructor = true;
 
-  learningFiles: LearningFile[] = [
-    { name: '학습자료_웹툰기초_이론편.pdf' },
-    { name: '학습자료_웹툰기초_실습가이드.pdf' },
-    { name: '학습자료.pdf' },
-    { name: '참고자료.pdf' },
-    { name: '과제안내.pdf' },
-  ];
-
-  comments: Comment[] = [
-    { id: 1, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 2, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 3, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 4, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 5, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 6, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 7, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-    { id: 8, author: 'newon', date: '2024.01.20 13:12', content: '현재 제출한 과제 형식이 맞는지 문의드립니다.', avatarInitial: 'N' },
-  ];
+  learningFiles: LearningFile[] = [];
+  comments: Comment[] = [];
 
   newComment = '';
 
