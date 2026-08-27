@@ -9,7 +9,7 @@
       "continuous": true,
       "executor": "nx:run-commands",
       "options": {
-        "command": "cross-env TS_NODE_PROJECT=apps/server/tsconfig.json node --env-file=.env -r ts-node/register apps/server/src/main.ts"
+        "command": "npx tsx --tsconfig apps/server/tsconfig.json --env-file=.env apps/server/src/main.ts"
       }
     },
     "build": {

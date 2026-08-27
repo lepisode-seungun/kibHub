@@ -17,7 +17,8 @@
     }
   },
   "ts-node": {
-    "swc": true
+    "swc": true,
+    "esm": true
   },
   "include": ["src/**/*", "../../libs/shared/src/**/*"],
   "exclude": ["node_modules"]
