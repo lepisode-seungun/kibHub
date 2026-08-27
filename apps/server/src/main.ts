@@ -61,6 +61,7 @@ async function bootstrap() {
     .addTag('notices', '공지사항')
     .addTag('faqs', 'FAQ')
     .addTag('inquiries', '1:1문의')
+    .addTag('upload', '파일 업로드')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

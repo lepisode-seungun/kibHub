@@ -140,4 +140,29 @@ export class ApiService {
     query: (keyword: string): Promise<{ contents: Content[]; portfolios: Portfolio[] }> =>
       this.get(`/search?q=${encodeURIComponent(keyword)}`),
   };
+
+  // ===== Upload =====
+  readonly upload = {
+    /** 단일 파일 업로드 */
+    single: (file: File, folder = 'general'): Promise<{ url: string; path: string; originalName: string; size: number; mimeType: string }> => {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', folder);
+      return firstValueFrom(this.http.post<{ url: string; path: string; originalName: string; size: number; mimeType: string }>(
+        `${BASE}/upload`, fd, { withCredentials: true },
+      ));
+    },
+    /** 다중 파일 업로드 */
+    multiple: (files: File[], folder = 'general'): Promise<{ url: string; path: string; originalName: string; size: number; mimeType: string }[]> => {
+      const fd = new FormData();
+      files.forEach(f => fd.append('files', f));
+      fd.append('folder', folder);
+      return firstValueFrom(this.http.post<{ url: string; path: string; originalName: string; size: number; mimeType: string }[]>(
+        `${BASE}/upload/multiple`, fd, { withCredentials: true },
+      ));
+    },
+    /** 파일 삭제 */
+    delete: (path: string): Promise<{ success: boolean }> =>
+      this.del(`/upload?path=${encodeURIComponent(path)}`),
+  };
 }

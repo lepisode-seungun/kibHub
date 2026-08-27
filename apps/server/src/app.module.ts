@@ -11,6 +11,8 @@ import { PortfoliosModule } from './portfolios/portfolios.module';
 import { NoticesModule } from './notices/notices.module';
 import { FaqsModule } from './faqs/faqs.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
+import { SupabaseModule } from './supabase/supabase.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { InquiriesModule } from './inquiries/inquiries.module';
     NoticesModule,
     FaqsModule,
     InquiriesModule,
+    SupabaseModule,
+    UploadModule,
   ],
 })
 export class AppModule {}
