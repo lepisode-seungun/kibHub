@@ -112,7 +112,7 @@ export class PortfolioPage implements OnInit {
     name: '', bootcampName: '', workTitle: '',
     workIntro: '', launchPlatform: '', launchUrl: '',
   });
-  hofThumbnail = signal<{ name: string; size: string; preview: string } | null>(null);
+  hofThumbnail = signal<{ name: string; size: string; preview: string; rawFile?: File } | null>(null);
 
   openHofDrawer(): void { this.hofDrawerOpen.set(true); }
   closeHofDrawer(): void { this.hofDrawerOpen.set(false); }
@@ -131,6 +131,7 @@ export class PortfolioPage implements OnInit {
       this.hofThumbnail.set({
         name: file.name, size: `${Math.round(file.size / 1024)}KB`,
         preview: reader.result as string,
+        rawFile: file,
       });
     };
     reader.readAsDataURL(file);
@@ -140,14 +141,65 @@ export class PortfolioPage implements OnInit {
 
   async registerHof(): Promise<void> {
     const form = this.hofForm();
+    if (!form.name || !form.bootcampName) {
+      this.toast.error('이름과 부트캠프명은 필수입니다.');
+      return;
+    }
     try {
+      let thumbnailUrl = '';
+      const thumb = this.hofThumbnail();
+      if (thumb?.rawFile) {
+        const uploadRes = await this.api.upload.single(thumb.rawFile, 'portfolios');
+        thumbnailUrl = uploadRes.url;
+      }
+
       await this.api.portfolios.create({
-        userName: form.name, bootcampName: form.bootcampName,
-        workTitle: form.workTitle, workIntro: form.workIntro,
-        launchPlatform: form.launchPlatform, isHallOfFame: true,
+        userName: form.name,
+        bootcampName: form.bootcampName,
+        workTitle: form.workTitle,
+        workIntro: form.workIntro,
+        launchPlatform: form.launchPlatform,
+        launchUrl: form.launchUrl,
+        thumbnail: thumbnailUrl,
+        isHallOfFame: true,
       });
       this.hofDrawerOpen.set(false);
+      this.hofForm.set({ name: '', bootcampName: '', workTitle: '', workIntro: '', launchPlatform: '', launchUrl: '' });
+      this.hofThumbnail.set(null);
       this.toast.success('등록 완료 되었습니다.');
+      await this.loadHallOfFame();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '등록 실패');
+    }
+  }
+
+  async submitPortfolio(): Promise<void> {
+    const form = this.portfolioForm();
+    if (!form.name || !form.bootcampName) {
+      this.toast.error('이름과 부트캠프명은 필수입니다.');
+      return;
+    }
+    try {
+      let thumbnailUrl = '';
+      const thumb = this.thumbnailFile();
+      if (thumb?.rawFile) {
+        const uploadRes = await this.api.upload.single(thumb.rawFile, 'portfolios');
+        thumbnailUrl = uploadRes.url;
+      }
+
+      await this.api.portfolios.create({
+        userName: form.name,
+        bootcampName: form.bootcampName,
+        workTitle: form.workTitle,
+        authorName: form.authorName,
+        genre: form.genre,
+        workIntro: form.workIntro,
+        thumbnail: thumbnailUrl,
+        isHallOfFame: this.activeTab() === 'hallOfFame',
+      });
+      this.viewMode.set('list');
+      this.toast.success('등록 완료 되었습니다.');
+      await this.loadPortfolios();
       await this.loadHallOfFame();
     } catch (e: unknown) {
       this.toast.error(e instanceof Error ? e.message : '등록 실패');
@@ -216,8 +268,8 @@ export class PortfolioPage implements OnInit {
     );
   }
 
-  thumbnailFile = signal<{ name: string; size: string; preview: string } | null>(null);
-  planFile = signal<{ name: string; size: string; preview: string } | null>(null);
+  thumbnailFile = signal<{ name: string; size: string; preview: string; rawFile?: File } | null>(null);
+  planFile = signal<{ name: string; size: string; preview: string; rawFile?: File } | null>(null);
 
   onFileSelected(target: 'thumbnail' | 'plan', event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -225,7 +277,7 @@ export class PortfolioPage implements OnInit {
     const sizeKB = Math.round(file.size / 1024);
     const reader = new FileReader();
     reader.onload = () => {
-      const data = { name: file.name, size: `${sizeKB}KB`, preview: reader.result as string };
+      const data = { name: file.name, size: `${sizeKB}KB`, preview: reader.result as string, rawFile: file };
       if (target === 'thumbnail') this.thumbnailFile.set(data);
       else this.planFile.set(data);
     };

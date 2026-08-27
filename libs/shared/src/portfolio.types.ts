@@ -46,7 +46,12 @@ export interface CreatePortfolioDto {
   userName: string;
   bootcampName: string;
   workTitle?: string;
+  authorName?: string;
+  genre?: string;
   workIntro?: string;
   launchPlatform?: string;
+  launchUrl?: string;
+  thumbnail?: string;
+  status?: ContentStatus;
   isHallOfFame?: boolean;
 }
