@@ -1,0 +1,33 @@
+// ===== 1:1문의 =====
+model Inquiry {
+  id          Int           @id @default(autoincrement())
+  status      InquiryStatus @default(PENDING)
+  title       String
+  body        String        @default("")
+  authorId    Int
+  author      User          @relation(fields: [authorId], references: [id])
+  reply       String?
+  repliedAt   DateTime?
+  repliedById Int?
+  repliedBy   User?         @relation("repliedBy", fields: [repliedById], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  files       InquiryFile[]
+}
+
+enum InquiryStatus {
+  PENDING
+  COMPLETED
+}
+
+model InquiryFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  size      Int      @default(0)
+  mimeType  String   @default("")
+  inquiryId Int
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

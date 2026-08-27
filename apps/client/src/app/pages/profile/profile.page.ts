@@ -1,6 +1,8 @@
-import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Album {
   id: number;
@@ -25,9 +27,49 @@ interface ContentCard {
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.css'],
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit {
   @ViewChild('albumSlider') albumSlider!: ElementRef<HTMLDivElement>;
   private router = inject(Router);
+  private api = inject(ApiService);
+  private auth = inject(AuthService);
+
+  userName = signal('사용자');
+  userNickname = signal('닉네임');
+  userEmail = signal('');
+
+  ngOnInit(): void {
+    this.loadProfile();
+    this.loadContents();
+  }
+
+  private async loadProfile(): Promise<void> {
+    try {
+      const user = await this.api.users.me();
+      this.userName.set(user.name);
+      this.userNickname.set(user.nickname || user.name);
+      this.userEmail.set(user.email);
+    } catch (e) {
+      console.error('프로필 로드 실패:', e);
+    }
+  }
+
+  private async loadContents(): Promise<void> {
+    try {
+      const data = await this.api.contents.findAll();
+      if (data.length > 0) {
+        this.contents.set(data.map(c => ({
+          id: c.id,
+          title: c.title,
+          imageUrl: '',
+          authorName: c.author?.nickname || c.author?.name || '',
+          commentCount: 0,
+        })));
+        this.allCount.set(data.length);
+      }
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+    }
+  }
 
   /* ===== 배너 커버 ===== */
   /** 기본 커버 그라디언트 */

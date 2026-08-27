@@ -1,0 +1,65 @@
+// ===== 콘텐츠 =====
+model Content {
+  id         Int              @id @default(autoincrement())
+  status     ContentStatus    @default(VISIBLE)
+  type       ContentType
+  title      String
+  body       String           @default("")
+  thumbnail  String?
+  viewCount  Int              @default(0)
+  categoryId Int?
+  category   ContentCategory? @relation(fields: [categoryId], references: [id])
+  authorId   Int
+  author     User             @relation(fields: [authorId], references: [id])
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  comments   Comment[]
+}
+
+enum ContentStatus {
+  VISIBLE
+  HIDDEN
+}
+
+enum ContentType {
+  PORTFOLIO
+  REVIEW
+}
+
+model ContentCategory {
+  id        Int       @id @default(autoincrement())
+  name      String
+  sortOrder Int       @default(0)
+  contents  Content[]
+}
+
+// ===== 댓글 =====
+model Comment {
+  id          Int           @id @default(autoincrement())
+  status      ContentStatus @default(VISIBLE)
+  body        String
+  contentId   Int
+  content     Content       @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  authorId    Int
+  author      User          @relation(fields: [authorId], references: [id])
+  likeCount   Int           @default(0)
+  reportCount Int           @default(0)
+  createdAt   DateTime      @default(now())
+}
+
+// ===== 신고 =====
+model Report {
+  id         Int        @id @default(autoincrement())
+  type       ReportType
+  targetId   Int
+  reason     String     @default("")
+  reporterId Int
+  reporter   User       @relation(fields: [reporterId], references: [id])
+  createdAt  DateTime   @default(now())
+}
+
+enum ReportType {
+  CONTENT
+  COMMENT
+}

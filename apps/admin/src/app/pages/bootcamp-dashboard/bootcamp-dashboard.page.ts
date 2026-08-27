@@ -1,7 +1,25 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
+import { Bootcamp } from '../../shared/types';
+
+interface PersonRow {
+  id: number;
+  status: string;
+  name: string;
+  nickname: string;
+  phone: string;
+  email: string;
+}
+
+const BOOTCAMP_STATUS_MAP: Record<string, string> = {
+  PREPARING: '준비', RECRUITING: '모집', CLOSED: '마감',
+  OPERATING: '운영', ENDED: '종료',
+};
 
 @Component({
   selector: 'adm-bootcamp-dashboard',
@@ -10,31 +28,50 @@ import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
   templateUrl: './bootcamp-dashboard.page.html',
   styleUrl: './bootcamp-dashboard.page.css',
 })
-export class BootcampDashboardPage {
+export class BootcampDashboardPage implements OnInit {
+  private route = inject(ActivatedRoute);
+  private toast = inject(ToastService);
+  private api = inject(ApiService);
+
   // ===== 기본 정보 섹션 =====
   sectionOpen = signal(true);
   dropdownOpen = signal(false);
 
   info = {
-    id: 1,
-    status: '준비',
-    bootcampName: '케나즈 아카데미 초급반/중급반 13기',
-    createdAt: '2025-01-16 13:18',
-    recruitmentPeriod: '상시모집',
-    educationPeriod: '2025-01-16 ~ 2025-01-16',
+    id: 0,
+    status: '',
+    bootcampName: '',
+    createdAt: '',
+    recruitmentPeriod: '',
+    educationPeriod: '',
   };
 
-  toggleSection(): void {
-    this.sectionOpen.update(v => !v);
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id') || 1);
+    this.loadBootcamp(id);
   }
 
-  toggleDropdown(): void {
-    this.dropdownOpen.update(v => !v);
+  async loadBootcamp(id: number): Promise<void> {
+    try {
+      const b = await this.api.bootcamps.findOne(id);
+      this.info = {
+        id: b.id,
+        status: BOOTCAMP_STATUS_MAP[b.status] || b.status,
+        bootcampName: b.name,
+        createdAt: new Date(b.createdAt).toLocaleString('ko-KR'),
+        recruitmentPeriod: '상시모집',
+        educationPeriod: b.startDate && b.endDate
+          ? `${new Date(b.startDate).toLocaleDateString('ko-KR')} ~ ${new Date(b.endDate).toLocaleDateString('ko-KR')}`
+          : '-',
+      };
+    } catch (e) {
+      console.error('부트캠프 로드 실패:', e);
+    }
   }
 
-  onDropdownAction(action: string): void {
-    this.dropdownOpen.set(false);
-  }
+  toggleSection(): void { this.sectionOpen.update(v => !v); }
+  toggleDropdown(): void { this.dropdownOpen.update(v => !v); }
+  onDropdownAction(_action: string): void { this.dropdownOpen.set(false); }
 
   // ===== 강사 목록 섹션 =====
   instructorSectionOpen = signal(true);
@@ -49,21 +86,15 @@ export class BootcampDashboardPage {
     { key: 'delete', label: '', width: '40px', type: 'action' },
   ];
 
-  instructorData = [
-    { id: 1, status: '정상', name: '김민수', nickname: 'minsu_k', phone: '010-1234-5678', email: 'minsu@example.com' },
-    { id: 2, status: '정상', name: '이지은', nickname: 'jieun_art', phone: '010-2345-6789', email: 'jieun@example.com' },
-    { id: 3, status: '정상', name: '박서준', nickname: 'seojun_p', phone: '010-3456-7890', email: 'seojun@example.com' },
-  ];
+  instructorData: PersonRow[] = [];
 
-  toggleInstructorSection(): void {
-    this.instructorSectionOpen.update(v => !v);
-  }
+  toggleInstructorSection(): void { this.instructorSectionOpen.update(v => !v); }
 
   // ===== 강사 내보내기 다이얼로그 =====
   showInstructorRemoveDialog = signal(false);
-  selectedInstructor = signal<any>(null);
+  selectedInstructor = signal<PersonRow | null>(null);
 
-  removeInstructor(event: { key: string; row: any }): void {
+  removeInstructor(event: { key: string; row: PersonRow }): void {
     this.selectedInstructor.set(event.row);
     this.showInstructorRemoveDialog.set(true);
   }
@@ -84,25 +115,16 @@ export class BootcampDashboardPage {
 
   // ===== 수강생 목록 섹션 =====
   studentSectionOpen = signal(true);
-
   studentColumns = this.instructorColumns;
+  studentData: PersonRow[] = [];
 
-  studentData = [
-    { id: 1, status: '정상', name: '최유리', nickname: 'yuri_c', phone: '010-4567-8901', email: 'yuri@example.com' },
-    { id: 2, status: '정상', name: '한소희', nickname: 'sohee_h', phone: '010-5678-9012', email: 'sohee@example.com' },
-    { id: 3, status: '차단', name: '정우성', nickname: 'ws_jung', phone: '010-6789-0123', email: 'woosung@example.com' },
-    { id: 4, status: '정상', name: '김태리', nickname: 'taeri_k', phone: '010-7890-1234', email: 'taeri@example.com' },
-  ];
-
-  toggleStudentSection(): void {
-    this.studentSectionOpen.update(v => !v);
-  }
+  toggleStudentSection(): void { this.studentSectionOpen.update(v => !v); }
 
   // ===== 수강생 내보내기 다이얼로그 =====
   showRemoveDialog = signal(false);
-  selectedStudent = signal<any>(null);
+  selectedStudent = signal<PersonRow | null>(null);
 
-  removeStudent(event: { key: string; row: any }): void {
+  removeStudent(event: { key: string; row: PersonRow }): void {
     this.selectedStudent.set(event.row);
     this.showRemoveDialog.set(true);
   }
@@ -130,9 +152,7 @@ export class BootcampDashboardPage {
     this.instructorInviteForm.set({ email: '', role: '', name: '', phone: '' });
   }
 
-  closeInstructorDrawer(): void {
-    this.instructorDrawerOpen.set(false);
-  }
+  closeInstructorDrawer(): void { this.instructorDrawerOpen.set(false); }
 
   updateInstructorField(field: string, event: Event): void {
     const value = (event.target as HTMLInputElement).value;
@@ -160,9 +180,7 @@ export class BootcampDashboardPage {
     this.studentInviteForm.set({ email: '', role: '', name: '', phone: '' });
   }
 
-  closeStudentDrawer(): void {
-    this.studentDrawerOpen.set(false);
-  }
+  closeStudentDrawer(): void { this.studentDrawerOpen.set(false); }
 
   updateStudentField(field: string, event: Event): void {
     const value = (event.target as HTMLInputElement).value;

@@ -44,8 +44,11 @@ export class DataGridComponent {
   /** 페이지 사이즈 옵션 */
   pageSizeOptions = input<number[]>([10, 20, 30, 50]);
 
-  /** 컨텍스트 메뉴 항목 */
+  /** 컨텍스트 메뉴 항목 (정적) */
   contextMenuItems = input<string[]>([]);
+
+  /** 컨텍스트 메뉴 항목 (동적 — 행 데이터 기반) */
+  contextMenuItemsFn = input<((row: any) => string[]) | null>(null);
 
   /** 체크박스 표시 여부 */
   showCheckbox = input<boolean>(false);
@@ -126,6 +129,7 @@ export class DataGridComponent {
   ctxMenuY = signal(0);
   ctxMenuRow = signal<any>(null);
   ctxMenuHover = signal(-1);
+  ctxMenuDynamicItems = signal<string[]>([]);
 
   // 계산된 값
   filteredData = computed(() => {
@@ -192,7 +196,12 @@ export class DataGridComponent {
     event.preventDefault();
     this.rowContextMenu.emit({ row, x: event.clientX, y: event.clientY });
 
-    if (this.contextMenuItems().length > 0) {
+    // 동적 메뉴 함수가 있으면 행 데이터 기반으로 메뉴 아이템 생성
+    const fn = this.contextMenuItemsFn();
+    const items = fn ? fn(row) : this.contextMenuItems();
+
+    if (items.length > 0) {
+      this.ctxMenuDynamicItems.set(items);
       this.ctxMenuVisible.set(true);
       this.ctxMenuX.set(event.clientX);
       this.ctxMenuY.set(event.clientY);

@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 w-full">
   <!-- 상단: 검색 -->
   @if (showSearch()) {
     <div class="flex items-center justify-between">
@@ -44,7 +44,9 @@
     <!-- 데이터 행 -->
     @for (row of paginatedData(); track $index) {
       <div class="flex items-center w-full bg-white border-b border-gray-200 hover:bg-zinc-50 transition-colors cursor-pointer"
+           tabindex="0"
            (click)="onRowClick(row)"
+           (keyup.enter)="onRowClick(row)"
            (contextmenu)="onRowContextMenu($event, row)">
         @if (showCheckbox()) {
           <div class="flex items-center justify-center px-4 py-2" style="width: 40px; flex-shrink: 0;">
@@ -102,7 +104,10 @@
     <!-- 페이지 사이즈 -->
     <div class="relative">
       <div class="flex items-center gap-2 px-4 h-9 bg-white border-2 border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-colors"
-           (click)="togglePageSizeDropdown()">
+           role="button"
+           tabindex="0"
+           (click)="togglePageSizeDropdown()"
+           (keyup.enter)="togglePageSizeDropdown()">
         <span class="font-medium text-sm tracking-[-0.04em] text-gray-700" style="font-family: 'Pretendard', sans-serif;">{{ pageSize() }}</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200" [ngClass]="showPageSizeDropdown() ? 'rotate-180' : ''">
@@ -171,10 +176,13 @@
 <!-- 컨텍스트 메뉴 드롭다운 -->
 @if (ctxMenuVisible()) {
   <div class="fixed flex flex-col py-2 bg-white rounded-lg z-[1000]"
+       role="menu"
+       tabindex="-1"
        style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); width: 114px; border: 1px solid #F9FAFB;"
        [ngStyle]="{ left: ctxMenuX() + 'px', top: ctxMenuY() + 'px' }"
-       (click)="$event.stopPropagation()">
-    @for (item of contextMenuItems(); track item; let i = $index) {
+       (click)="$event.stopPropagation()"
+       (keydown)="$event.stopPropagation()">
+    @for (item of ctxMenuDynamicItems(); track item; let i = $index) {
       <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] transition-colors"
               style="height: 40px; width: 100%;"
               [ngClass]="ctxMenuHover() === i

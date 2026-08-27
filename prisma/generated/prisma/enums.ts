@@ -9,7 +9,96 @@
 * 🟢 You can import this file directly.
 */
 
+export const ApplicantStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ApplicantStatus = (typeof ApplicantStatus)[keyof typeof ApplicantStatus]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const BootcampStatus = {
+  PREPARING: 'PREPARING',
+  RECRUITING: 'RECRUITING',
+  OPERATING: 'OPERATING',
+  CLOSED: 'CLOSED',
+  ENDED: 'ENDED'
+} as const
+
+export type BootcampStatus = (typeof BootcampStatus)[keyof typeof BootcampStatus]
+
+
+export const ContentStatus = {
+  VISIBLE: 'VISIBLE',
+  HIDDEN: 'HIDDEN'
+} as const
+
+export type ContentStatus = (typeof ContentStatus)[keyof typeof ContentStatus]
+
+
+export const ContentType = {
+  PORTFOLIO: 'PORTFOLIO',
+  REVIEW: 'REVIEW'
+} as const
+
+export type ContentType = (typeof ContentType)[keyof typeof ContentType]
+
+
+export const ReportType = {
+  CONTENT: 'CONTENT',
+  COMMENT: 'COMMENT'
+} as const
+
+export type ReportType = (typeof ReportType)[keyof typeof ReportType]
+
+
+export const CourseStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus]
+
+
+export const InquiryStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type InquiryStatus = (typeof InquiryStatus)[keyof typeof InquiryStatus]
+
+
+export const NoticeType = {
+  BOOTCAMP: 'BOOTCAMP',
+  SUPPORT: 'SUPPORT'
+} as const
+
+export type NoticeType = (typeof NoticeType)[keyof typeof NoticeType]
+
+
+export const UserRole = {
+  STUDENT: 'STUDENT',
+  INSTRUCTOR: 'INSTRUCTOR',
+  ADMIN: 'ADMIN'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  BLOCKED: 'BLOCKED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const AdminRole = {
+  SUPER: 'SUPER',
+  NORMAL: 'NORMAL'
+} as const
+
+export type AdminRole = (typeof AdminRole)[keyof typeof AdminRole]

@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'adm-notice-register',
@@ -10,30 +11,61 @@ import { ToastService } from '../../shared/toast/toast.service';
   templateUrl: './notice-register.page.html',
   styleUrl: './notice-register.page.css',
 })
-export class NoticeRegisterPage {
+export class NoticeRegisterPage implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private location = inject(Location);
   private toast = inject(ToastService);
+  private api = inject(ApiService);
 
-  // 아코디언 상태
+  isEditMode = signal(false);
+  editId = signal<number | null>(null);
+
+  @ViewChild('editorContent', { static: false }) editorContent!: ElementRef<HTMLDivElement>;
+
   basicInfoOpen = signal(true);
   attachmentOpen = signal(true);
 
   toggleBasicInfo(): void { this.basicInfoOpen.update(v => !v); }
   toggleAttachment(): void { this.attachmentOpen.update(v => !v); }
 
-  // 폼 데이터
   pinned = signal('고정');
   status = signal('노출');
   title = signal('');
   content = signal('');
 
-  // 드롭다운
   showPinnedDropdown = signal(false);
   showStatusDropdown = signal(false);
 
   pinnedOptions = ['고정', '고정해제'];
   statusOptions = ['노출', '숨김'];
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      const id = Number(idParam);
+      this.isEditMode.set(true);
+      this.editId.set(id);
+      this.loadNotice(id);
+    }
+  }
+
+  async loadNotice(id: number): Promise<void> {
+    try {
+      const notice = await this.api.notices.findOne(id);
+      this.pinned.set(notice.pinned ? '고정' : '고정해제');
+      this.status.set(notice.status === 'HIDDEN' ? '숨김' : '노출');
+      this.title.set(notice.title);
+      this.content.set(notice.body || '');
+      setTimeout(() => {
+        if (this.editorContent) {
+          this.editorContent.nativeElement.innerText = notice.body || '';
+        }
+      });
+    } catch (e) {
+      console.error('공지 로드 실패:', e);
+    }
+  }
 
   selectPinned(value: string): void {
     this.pinned.set(value);
@@ -49,12 +81,7 @@ export class NoticeRegisterPage {
     this.title.set((event.target as HTMLInputElement).value);
   }
 
-  // 첨부파일
-  files = signal<{ name: string; size: string }[]>([
-    { name: '이미지.PNG', size: '10KB' },
-    { name: '이미지.PNG', size: '10KB' },
-    { name: '이미지.PNG', size: '10KB' },
-  ]);
+  files = signal<{ name: string; size: string }[]>([]);
 
   removeFile(index: number): void {
     this.files.update(list => list.filter((_, i) => i !== index));
@@ -73,17 +100,39 @@ export class NoticeRegisterPage {
     input.value = '';
   }
 
-  // 액션
+  triggerFileInput(): void {
+    document.getElementById('noticeFileInput')?.click();
+  }
+
   goBack(): void {
     this.location.back();
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (!this.title()) {
       this.toast.error('제목을 입력해주세요.');
       return;
     }
-    this.toast.success('등록 완료 되었습니다.');
-    this.location.back();
+
+    const body = {
+      title: this.title(),
+      body: this.editorContent?.nativeElement?.innerText || this.content(),
+      pinned: this.pinned() === '고정',
+      status: this.status() === '숨김' ? 'HIDDEN' : 'VISIBLE',
+      type: 'BOOTCAMP',
+    };
+
+    try {
+      if (this.isEditMode()) {
+        await this.api.notices.update(this.editId()!, body);
+        this.toast.success('수정 완료 되었습니다.');
+      } else {
+        await this.api.notices.create(body);
+        this.toast.success('등록 완료 되었습니다.');
+      }
+      this.location.back();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '처리 실패');
+    }
   }
 }

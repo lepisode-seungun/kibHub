@@ -1,0 +1,87 @@
+<adm-data-grid
+  [columns]="columns"
+  [data]="faqs()"
+  searchPlaceholder="검색어를 입력하세요"
+  [contextMenuItemsFn]="getContextMenuItems"
+  (contextMenuSelect)="onContextMenu($event)"
+  (rowClick)="onRowClick($event)">
+  <button gridActions
+          class="flex items-center justify-center gap-2 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
+          (click)="onRegister()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white">등록</span>
+  </button>
+</adm-data-grid>
+
+<!-- 삭제 확인 다이얼로그 -->
+@if (showDeleteDialog()) {
+  <adm-confirm-dialog
+    title="FAQ 삭제"
+    message="해당 FAQ를 삭제하시겠습니까?\n삭제 후 되돌릴 수 없습니다."
+    confirmText="삭제"
+    [details]="deleteDialogDetails()"
+    (confirm)="onDeleteConfirm()"
+    (cancel)="onDeleteCancel()">
+  </adm-confirm-dialog>
+}
+
+<!-- ===== FAQ 등록/수정 드로어 ===== -->
+@if (drawerOpen()) {
+  <div class="fixed inset-0 z-50 flex justify-end" (click)="closeDrawer()">
+    <div class="flex flex-col items-start p-6 gap-6 bg-white drawer-slide-in"
+         style="width: 522px; border-radius: 6px 0 0 6px;"
+         (click)="$event.stopPropagation()">
+
+      <!-- 닫기 버튼 -->
+      <div class="flex items-start w-full">
+        <button class="flex items-center justify-center p-1.5 rounded-md border-none bg-transparent cursor-pointer"
+                (click)="closeDrawer()">
+          <span class="font-suit font-bold text-base text-gray-700">&gt;&gt;</span>
+        </button>
+      </div>
+
+      <!-- 타이틀 -->
+      <div class="flex items-center gap-6 w-full">
+        <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">{{ drawerMode() === 'edit' ? 'FAQ 수정' : 'FAQ 등록' }}</h4>
+      </div>
+
+      <!-- 질문 -->
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">질문</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <input type="text"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#1E293B] outline-none focus:border-[#3C8EEE] transition-colors"
+               placeholder="질문을 입력하세요"
+               [value]="drawerForm().question"
+               (input)="updateDrawerField('question', $any($event.target).value)"
+               style="box-sizing: border-box;"/>
+      </div>
+
+      <!-- 답변 -->
+      <div class="flex flex-col gap-2 w-full flex-1">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">답변</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+        </div>
+        <textarea class="w-full flex-1 min-h-[200px] px-4 py-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#1E293B] outline-none focus:border-[#3C8EEE] transition-colors resize-none"
+                  placeholder="답변을 입력하세요"
+                  [value]="drawerForm().answer"
+                  (input)="updateDrawerField('answer', $any($event.target).value)"
+                  style="box-sizing: border-box;"></textarea>
+      </div>
+
+      <!-- 등록/수정 버튼 -->
+      <div class="flex flex-col justify-end items-center w-full">
+        <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white"
+                (click)="submitDrawer()">
+          {{ drawerMode() === 'edit' ? '수정' : '등록' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

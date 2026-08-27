@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
+import { ApiService } from '../../services/api.service';
 
 export interface Instructor {
   name: string;
@@ -27,6 +28,7 @@ export interface PortfolioFile {
 export class BootcampDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
+  private api = inject(ApiService);
 
 
   ngOnDestroy(): void {
@@ -88,7 +90,20 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     document.body.classList.add('page-bootcamp-detail');
     this.route.paramMap.subscribe((params) => {
       this.bootcampId = params.get('id') || '';
+      if (this.bootcampId) this.loadBootcamp(Number(this.bootcampId));
     });
+  }
+
+  private async loadBootcamp(id: number): Promise<void> {
+    try {
+      const bc = await this.api.bootcamps.findOne(id);
+      this.title = bc.name;
+      this.cohort = bc.name;
+      this.description = bc.description || this.description;
+      this.subtitle = bc.description || this.subtitle;
+    } catch (e) {
+      console.error('부트칠프 로드 실패:', e);
+    }
   }
 
   selectTab(tab: string): void {

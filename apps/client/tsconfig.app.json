@@ -4,10 +4,15 @@
     "outDir": "../../dist/out-tsc",
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "@kibhub/shared": ["../../libs/shared/src/index.ts"],
+      "@kibhub/shared/*": ["../../libs/shared/src/*"]
+    }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "../../libs/shared/src/**/*.ts"
   ],
   "exclude": [
     "src/**/*.spec.ts",

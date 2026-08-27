@@ -1,0 +1,56 @@
+// ===== 회원 (통합: 일반 + 관리자) =====
+model User {
+  id            Int         @id @default(autoincrement())
+  email         String      @unique
+  password      String
+  nickname      String      @default("")
+  name          String      @default("")
+  phone         String      @default("")
+  countryCode   String      @default("82")
+  birthday      String?
+  intro         String      @default("")
+  profileImage  String?
+  role          UserRole    @default(STUDENT)
+  status        UserStatus  @default(ACTIVE)
+  // 관리자 전용
+  adminRole     AdminRole?
+  loginId       String?     @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  sns            UserSns[]
+  contents       Content[]
+  comments       Comment[]
+  reports        Report[]
+  applicants     Applicant[]
+  inquiries      Inquiry[]
+  notices        Notice[]
+  faqs           Faq[]
+  inquiryReplies Inquiry[]   @relation("repliedBy")
+}
+
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  WITHDRAWN
+}
+
+enum AdminRole {
+  SUPER
+  NORMAL
+}
+
+model UserSns {
+  id     Int    @id @default(autoincrement())
+  type   String
+  label  String
+  url    String
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

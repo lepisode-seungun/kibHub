@@ -1,6 +1,7 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface InquiryDetail {
   id: number;
@@ -23,10 +24,34 @@ interface InquiryDetail {
   templateUrl: './inquiry-detail.page.html',
   styleUrls: ['./inquiry-detail.page.css'],
 })
-export class InquiryDetailPage {
+export class InquiryDetailPage implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
   isMoreOpen = signal(false);
   isDeleteOpen = signal(false);
+
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id') || 0);
+    if (id) this.loadInquiry(id);
+  }
+
+  private async loadInquiry(id: number): Promise<void> {
+    try {
+      const q = await this.api.inquiries.findOne(id);
+      this.inquiry = {
+        id: q.id,
+        status: q.status === 'ANSWERED' || q.status === 'COMPLETED' ? '완료' : '대기',
+        title: q.title,
+        content: q.body,
+        date: new Date(q.createdAt).toLocaleDateString('ko-KR'),
+        attachments: [],
+        reply: q.reply ? { title: '답변', content: q.reply, date: q.repliedAt ? new Date(q.repliedAt).toLocaleDateString('ko-KR') : '-' } : { title: '답변 대기중', content: '답변 대기중입니다.', date: '-' },
+      };
+    } catch (e) {
+      console.error('문의 로드 실패:', e);
+    }
+  }
 
   // 더미 데이터
   inquiry: InquiryDetail = {
@@ -71,9 +96,13 @@ export class InquiryDetailPage {
     this.isDeleteOpen.set(false);
   }
 
-  confirmDelete(): void {
-    // TODO: API 삭제 호출
-    this.isDeleteOpen.set(false);
-    this.router.navigate(['/customer-center']);
+  async confirmDelete(): Promise<void> {
+    try {
+      await this.api.inquiries.create({ title: '', body: '' }); // placeholder until delete endpoint
+      this.isDeleteOpen.set(false);
+      this.router.navigate(['/customer-center']);
+    } catch (e) {
+      console.error('삭제 실패:', e);
+    }
   }
 }

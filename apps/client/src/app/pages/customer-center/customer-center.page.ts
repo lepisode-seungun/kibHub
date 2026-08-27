@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface CcItem {
   id: number;
@@ -26,9 +27,11 @@ interface CcItem {
 })
 export class CustomerCenterPage implements OnInit, OnDestroy {
   private router = inject(Router);
+  private api = inject(ApiService);
 
   ngOnInit(): void {
     document.body.classList.add('page-customer-center');
+    this.loadAllData();
   }
 
   ngOnDestroy(): void {
@@ -76,6 +79,52 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
     { id: 19, category: 'FAQ', title: '견적문의는 어디서 하나요?', content: '', date: '2025.06.01', author: '관리자', answer: '수업은 온라인으로 진행되며, Zoom을 사용합니다.' },
     { id: 20, category: 'FAQ', title: '견적문의는 어디서 하나요?', content: '', date: '2025.06.01', author: '관리자', answer: '수료 후 취업 지원 프로그램을 이용하실 수 있습니다.' },
   ];
+
+  async loadAllData(): Promise<void> {
+    try {
+      const [notices, faqs, inquiries] = await Promise.all([
+        this.api.notices.findAll({ type: 'SUPPORT' }),
+        this.api.faqs.findAll(),
+        this.api.inquiries.findAll(),
+      ]);
+
+      const apiItems: CcItem[] = [
+        ...notices.map(n => ({
+          id: n.id,
+          category: '공지사항',
+          title: n.title,
+          content: n.body || '',
+          date: new Date(n.createdAt).toLocaleDateString('ko-KR'),
+          author: n.author?.nickname || '관리자',
+          pinned: n.pinned || false,
+        })),
+        ...inquiries.map(q => ({
+          id: q.id,
+          category: '1:1문의',
+          title: q.title,
+          content: q.body || '',
+          date: new Date(q.createdAt).toLocaleDateString('ko-KR'),
+          author: q.author?.nickname || q.author?.name || 'user',
+          status: (q.status === 'ANSWERED' ? '완료' : '대기') as '대기' | '완료',
+        })),
+        ...faqs.map(f => ({
+          id: f.id,
+          category: 'FAQ',
+          title: f.question,
+          content: '',
+          date: new Date(f.createdAt).toLocaleDateString('ko-KR'),
+          author: '관리자',
+          answer: f.answer,
+        })),
+      ];
+
+      if (apiItems.length > 0) {
+        this.allItems = apiItems;
+      }
+    } catch (e) {
+      console.error('고객센터 데이터 로드 실패:', e);
+    }
+  }
 
   get filteredItems(): CcItem[] {
     const tabItems = this.allItems.filter(i => i.category === this.activeTab());

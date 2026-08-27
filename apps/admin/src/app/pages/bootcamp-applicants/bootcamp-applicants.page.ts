@@ -1,8 +1,35 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
+import { Applicant } from '../../shared/types';
+
+interface ApplicantRow {
+  id: number;
+  status: string;
+  name: string;
+  phone: string;
+  email: string;
+  appliedAt: string;
+}
+
+const STATUS_MAP: Record<string, string> = {
+  PENDING: '대기', APPROVED: '합격', REJECTED: '불합격', CANCELLED: '취소',
+};
+
+function toApplicantRow(a: Applicant): ApplicantRow {
+  return {
+    id: a.id,
+    status: STATUS_MAP[a.status] || a.status,
+    name: a.user?.name || '',
+    phone: a.user?.phone || '',
+    email: a.user?.email || '',
+    appliedAt: new Date(a.createdAt).toLocaleString('ko-KR'),
+  };
+}
 
 @Component({
   selector: 'adm-bootcamp-applicants',
@@ -11,13 +38,18 @@ import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
   templateUrl: './bootcamp-applicants.page.html',
   styleUrl: './bootcamp-applicants.page.css',
 })
-export class BootcampApplicantsPage {
+export class BootcampApplicantsPage implements OnInit {
   private router = inject(Router);
-  selectedApplicants = signal<any[]>([]);
+  private route = inject(ActivatedRoute);
+  private toast = inject(ToastService);
+  private api = inject(ApiService);
+
+  selectedApplicants = signal<ApplicantRow[]>([]);
   statusDropdownOpen = signal(false);
   showPassDialog = signal(false);
 
-  bootcampName = '케나즈 아카데미 초급반/중급반 13기';
+  bootcampName = '';
+  bootcampId = 0;
 
   columns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
@@ -28,13 +60,24 @@ export class BootcampApplicantsPage {
     { key: 'appliedAt', label: '지원일시', width: '160px' },
   ];
 
-  applicantData = [
-    { id: 1, status: '정상', name: '고예림', phone: '010-1111-2222', email: 'yelim@lepisode.team', appliedAt: '2025-01-10 09:00' },
-    { id: 2, status: '정상', name: '이수진', phone: '010-3333-4444', email: 'sujin@lepisode.team', appliedAt: '2025-01-11 14:30' },
-    { id: 3, status: '차단', name: '박지호', phone: '010-5555-6666', email: 'jiho@lepisode.team', appliedAt: '2025-01-12 10:15' },
-    { id: 4, status: '정상', name: '김도윤', phone: '010-7777-8888', email: 'doyun@lepisode.team', appliedAt: '2025-01-13 16:45' },
-    { id: 5, status: '정상', name: '최서아', phone: '010-9999-0000', email: 'seoa@lepisode.team', appliedAt: '2025-01-14 11:20' },
-  ];
+  applicantData = signal<ApplicantRow[]>([]);
+
+  ngOnInit(): void {
+    this.bootcampId = Number(this.route.snapshot.paramMap.get('bootcampId') || this.route.parent?.snapshot.paramMap.get('id') || 1);
+    this.loadApplicants();
+  }
+
+  async loadApplicants(): Promise<void> {
+    try {
+      const data = await this.api.applicants.findByBootcamp(this.bootcampId);
+      this.applicantData.set(data.map(toApplicantRow));
+      if (data.length > 0 && data[0].bootcamp) {
+        this.bootcampName = data[0].bootcamp.name;
+      }
+    } catch (e) {
+      console.error('지원자 목록 로드 실패:', e);
+    }
+  }
 
   selectedLabel = computed(() => {
     const list = this.selectedApplicants();
@@ -43,38 +86,33 @@ export class BootcampApplicantsPage {
     return `${list[0].name} 외 ${list.length - 1}명`;
   });
 
-  onSelectionChange(selected: any[]): void {
+  onSelectionChange(selected: ApplicantRow[]): void {
     this.selectedApplicants.set(selected);
   }
 
-  onRowClick(row: any): void {
+  onRowClick(row: ApplicantRow): void {
     this.router.navigate(['/bootcamp/home/applicants', row.id]);
   }
 
-  toggleStatusDropdown(): void {
-    this.statusDropdownOpen.update(v => !v);
-  }
-
-  closeStatusDropdown(): void {
-    this.statusDropdownOpen.set(false);
-  }
+  toggleStatusDropdown(): void { this.statusDropdownOpen.update(v => !v); }
+  closeStatusDropdown(): void { this.statusDropdownOpen.set(false); }
 
   onPassClick(): void {
     this.statusDropdownOpen.set(false);
     this.showPassDialog.set(true);
   }
 
-  confirmPass(): void {
-    const selectedIds = new Set(this.selectedApplicants().map(a => a.id));
-    this.applicantData = this.applicantData.map(row =>
-      selectedIds.has(row.id) ? { ...row, status: '합격' } : row
-    );
+  async confirmPass(): Promise<void> {
+    const ids = this.selectedApplicants().map(a => a.id);
+    try {
+      await this.api.applicants.bulkUpdateStatus(ids, 'APPROVED');
+      this.toast.success('합격 처리 되었습니다.');
+      await this.loadApplicants();
+    } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.showPassDialog.set(false);
   }
 
-  cancelPassDialog(): void {
-    this.showPassDialog.set(false);
-  }
+  cancelPassDialog(): void { this.showPassDialog.set(false); }
 
   // ===== 불합격 다이얼로그 =====
   showFailDialog = signal(false);
@@ -84,23 +122,26 @@ export class BootcampApplicantsPage {
     this.showFailDialog.set(true);
   }
 
-  confirmFail(): void {
-    const selectedIds = new Set(this.selectedApplicants().map(a => a.id));
-    this.applicantData = this.applicantData.map(row =>
-      selectedIds.has(row.id) ? { ...row, status: '불합격' } : row
-    );
+  async confirmFail(): Promise<void> {
+    const ids = this.selectedApplicants().map(a => a.id);
+    try {
+      await this.api.applicants.bulkUpdateStatus(ids, 'REJECTED');
+      this.toast.success('불합격 처리 되었습니다.');
+      await this.loadApplicants();
+    } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.showFailDialog.set(false);
   }
 
-  cancelFailDialog(): void {
-    this.showFailDialog.set(false);
-  }
+  cancelFailDialog(): void { this.showFailDialog.set(false); }
 
-  changeStatus(status: string): void {
-    const selectedIds = new Set(this.selectedApplicants().map(a => a.id));
-    this.applicantData = this.applicantData.map(row =>
-      selectedIds.has(row.id) ? { ...row, status } : row
-    );
+  async changeStatus(status: string): Promise<void> {
+    const ids = this.selectedApplicants().map(a => a.id);
+    const statusMap: Record<string, string> = { '합격': 'APPROVED', '불합격': 'REJECTED', '대기': 'PENDING' };
+    try {
+      await this.api.applicants.bulkUpdateStatus(ids, statusMap[status] || status);
+      this.toast.success('상태 변경 완료');
+      await this.loadApplicants();
+    } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.statusDropdownOpen.set(false);
   }
 }

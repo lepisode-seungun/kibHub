@@ -1,7 +1,18 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
+import { Course, Lecture, Assignment } from '../../shared/types';
+
+interface LectureAssignmentRow {
+  id: number;
+  type: string;
+  thumbnail: string;
+  name: string;
+  createdAt: string;
+}
 
 @Component({
   selector: 'adm-course-detail',
@@ -10,53 +21,68 @@ import { DataGridComponent, GridColumn } from '../../components/data-grid/data-g
   templateUrl: './course-detail.page.html',
   styleUrl: './course-detail.page.css',
 })
-export class CourseDetailPage {
+export class CourseDetailPage implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toast = inject(ToastService);
+  private api = inject(ApiService);
+
   // 아코디언 상태
   basicInfoOpen = signal(true);
-
-  toggleBasicInfo(): void {
-    this.basicInfoOpen.update(v => !v);
-  }
+  toggleBasicInfo(): void { this.basicInfoOpen.update(v => !v); }
 
   // 더보기 드롭다운
   moreMenuOpen = signal(false);
+  toggleMoreMenu(): void { this.moreMenuOpen.update(v => !v); }
+  closeMoreMenu(): void { this.moreMenuOpen.set(false); }
 
-  toggleMoreMenu(): void {
-    this.moreMenuOpen.update(v => !v);
-  }
-
-  closeMoreMenu(): void {
+  onMoreMenuAction(_action: string): void {
     this.moreMenuOpen.set(false);
-  }
-
-  onMoreMenuAction(action: string): void {
-    this.moreMenuOpen.set(false);
-    // TODO: 숨김/수정/삭제 처리
   }
 
   // 기본 정보 데이터
-  courseData = {
-    id: 1,
-    status: '노출',
-    name: '웹툰의 기초',
-    createdAt: '2025-01-20 13:11',
-  };
+  courseData = { id: 0, status: '', name: '', createdAt: '' };
+
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('courseId') || this.route.snapshot.paramMap.get('id') || 0);
+    if (id) this.loadCourse(id);
+  }
+
+  async loadCourse(id: number): Promise<void> {
+    try {
+      const c = await this.api.courses.findOne(id);
+      const STATUS_MAP: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
+      this.courseData = {
+        id: c.id,
+        status: STATUS_MAP[c.status] || c.status,
+        name: c.name,
+        createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
+      };
+
+      // 강의 + 과제 합산 목록
+      const rows: LectureAssignmentRow[] = [];
+      if (c.lectures) {
+        c.lectures.forEach((l: Lecture) => {
+          rows.push({ id: l.id, type: '강의', thumbnail: '', name: l.title, createdAt: new Date(l.createdAt).toLocaleString('ko-KR') });
+        });
+      }
+      if (c.assignments) {
+        c.assignments.forEach((a: Assignment) => {
+          rows.push({ id: a.id, type: '과제', thumbnail: '', name: a.title, createdAt: new Date(a.createdAt).toLocaleString('ko-KR') });
+        });
+      }
+      this.lectureData = rows;
+    } catch (e) {
+      console.error('과정 상세 로드 실패:', e);
+    }
+  }
 
   // ===== 강의/과제 아코디언 =====
   lectureOpen = signal(true);
-
-  toggleLecture(): void {
-    this.lectureOpen.update(v => !v);
-  }
+  toggleLecture(): void { this.lectureOpen.update(v => !v); }
 
   lectureMenuOpen = signal(false);
-
-  toggleLectureMenu(): void {
-    this.lectureMenuOpen.update(v => !v);
-  }
-
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  toggleLectureMenu(): void { this.lectureMenuOpen.update(v => !v); }
 
   onLectureMenuAction(action: string): void {
     this.lectureMenuOpen.set(false);
@@ -76,15 +102,9 @@ export class CourseDetailPage {
     { key: 'menu', label: '', width: '50px', type: 'drag' },
   ];
 
-  lectureData = [
-    { id: 1, type: '강의', thumbnail: '', name: '웹툰 스토리 구성 기초', createdAt: '2025-08-20 14:30' },
-    { id: 2, type: '과제', thumbnail: '', name: '캐릭터 스케치 실습', createdAt: '2025-08-18 09:15' },
-    { id: 3, type: '강의', thumbnail: '', name: '디지털 채색 테크닉', createdAt: '2025-08-15 11:00' },
-    { id: 4, type: '과제', thumbnail: '', name: '4컷 만화 제출', createdAt: '2025-08-12 16:45' },
-    { id: 5, type: '강의', thumbnail: '', name: '배경 원근법 이론', createdAt: '2025-08-10 10:30' },
-  ];
+  lectureData: LectureAssignmentRow[] = [];
 
-  onLectureRowClick(row: any): void {
+  onLectureRowClick(row: LectureAssignmentRow): void {
     if (row.type === '강의') {
       this.router.navigate(['lecture', row.id], { relativeTo: this.route });
     } else if (row.type === '과제') {
@@ -92,4 +112,3 @@ export class CourseDetailPage {
     }
   }
 }
-

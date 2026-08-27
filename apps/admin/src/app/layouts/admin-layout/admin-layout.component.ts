@@ -58,15 +58,7 @@ export class AdminLayoutComponent implements OnInit {
         { label: '번역 관리', route: '/site/translation' },
       ],
     },
-    {
-      label: '관리자 관리',
-      icon: 'admin',
-      children: [
-        { label: '관리자 목록', route: '/admins' },
-        { label: '관리자 등록', route: '/admins/create' },
-        { label: '권한 설정', route: '/admins/permissions' },
-      ],
-    },
+    { label: '관리자 관리', icon: 'admin', route: '/admins' },
     {
       label: '고객센터 관리',
       icon: 'support',

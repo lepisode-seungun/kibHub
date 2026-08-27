@@ -1,0 +1,294 @@
+<adm-data-grid
+  [columns]="columns"
+  [data]="admins()"
+  searchPlaceholder="검색어를 입력하세요"
+  [contextMenuItemsFn]="getContextMenuItems"
+  (contextMenuSelect)="onContextMenu($event)"
+  (rowClick)="onRowClick($event)">
+  <button gridActions
+          class="flex items-center justify-center gap-2.5 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
+          (click)="onRegister()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white">등록</span>
+  </button>
+</adm-data-grid>
+
+<!-- ===== 등록 사이드 드로어 ===== -->
+@if (drawerOpen()) {
+  <div class="fixed inset-0 z-50 flex justify-end" style="background: rgba(0,0,0,0.3);"
+       role="dialog"
+       (click)="closeDrawer()"
+       (keyup.escape)="closeDrawer()"
+       tabindex="-1">
+    <div class="flex flex-col p-6 gap-6 bg-white drawer-slide-in"
+         style="width: 522px; height: 100vh; border-radius: 6px 0 0 6px; overflow-y: auto;"
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
+
+    <!-- 닫기 버튼 (>>) -->
+      <button class="flex items-center justify-center p-1.5 rounded-md border-none bg-transparent cursor-pointer self-start"
+              (click)="closeDrawer()">
+        <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+          <path d="M1.41 1.41L2.82 0l6 6-6 6-1.41-1.41L6.99 6z" fill="#374151"/>
+          <path d="M9.41 1.41L10.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+        </svg>
+      </button>
+
+    <!-- 타이틀 -->
+    <div class="flex items-center gap-6 w-full">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">{{ drawerMode() === 'edit' ? '관리자 수정' : '관리자 등록' }}</h4>
+    </div>
+
+    <!-- 힌트 바 -->
+    <div class="flex items-center px-2 py-1 gap-2 w-full bg-[#D9E9FE] rounded-md">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+        <path d="M8 4.5v4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="8" cy="11" r="0.8" fill="white"/>
+      </svg>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 flex-1">관리자는 '최고 관리자'권한을 가진 경우에만 가능합니다.</span>
+    </div>
+
+    <!-- 폼: 권한 (셀렉트) -->
+    <div class="flex flex-col items-start gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">권한</span>
+      </div>
+      <div class="relative w-full">
+        <div class="flex items-center justify-between w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md cursor-pointer hover:border-gray-400 transition-colors"
+             role="button" tabindex="0"
+             (click)="toggleRoleDropdown()"
+             (keyup.enter)="toggleRoleDropdown()">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800">{{ drawerForm().role }}</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               class="transition-transform duration-200" [ngClass]="roleDropdownOpen() ? 'rotate-180' : ''">
+            <path d="M7 10l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        @if (roleDropdownOpen()) {
+          <div class="absolute left-0 top-[calc(100%+4px)] z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <button class="w-full px-4 py-2 text-left font-suit font-medium text-base tracking-[-0.04em] border-none cursor-pointer transition-colors"
+                    [ngClass]="drawerForm().role === '최고 관리자' ? 'bg-[#ECF4FE] text-[#3C8EEE]' : 'bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE]'"
+                    (click)="selectRole('최고 관리자')">최고 관리자</button>
+            <button class="w-full px-4 py-2 text-left font-suit font-medium text-base tracking-[-0.04em] border-none cursor-pointer transition-colors"
+                    [ngClass]="drawerForm().role === '일반 관리자' ? 'bg-[#ECF4FE] text-[#3C8EEE]' : 'bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE]'"
+                    (click)="selectRole('일반 관리자')">일반 관리자</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- 폼: 아이디 (+ 중복확인) -->
+    <div class="flex flex-col items-start gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">아이디</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <div class="flex items-start gap-2 w-full">
+        <input type="text"
+               class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               placeholder="아이디를 입력하세요"
+               [value]="drawerForm().loginId"
+               (input)="updateField('loginId', $event)"/>
+        <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors font-suit font-medium text-base tracking-[-0.04em] text-white whitespace-nowrap"
+                (click)="checkIdDuplicate()">
+          중복확인
+        </button>
+      </div>
+      <!-- 중복확인 결과 메시지 -->
+      @if (idCheckStatus() === 'available') {
+        <div class="flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="6" stroke="#10B981" stroke-width="2"/>
+            <path d="M4.5 7L6.5 9L9.5 5" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#10B981]">사용 가능한 아이디입니다.</span>
+        </div>
+      }
+      @if (idCheckStatus() === 'duplicate') {
+        <div class="flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M4 4l6 6M10 4l-6 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#EF4444]">사용 중인 아이디입니다.</span>
+        </div>
+      }
+    </div>
+
+    <!-- 폼: 이름 -->
+    <div class="flex flex-col items-start gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+             style="box-sizing: border-box;"
+             placeholder="이름을 입력하세요"
+             [value]="drawerForm().name"
+             (input)="updateField('name', $event)"/>
+    </div>
+
+    <!-- 폼: 패스워드 -->
+    <div class="flex flex-col items-start gap-3 w-full">
+      <div class="flex flex-col items-start gap-2 w-full">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">패스워드</span>
+        </div>
+        <input type="password"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               style="box-sizing: border-box;"
+               placeholder="패스워드를 입력하세요"
+               [value]="drawerForm().password"
+               (input)="updateField('password', $event)"/>
+        <input type="password"
+               class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               style="box-sizing: border-box;"
+               placeholder="패스워드를 다시 입력하세요"
+               [value]="drawerForm().passwordConfirm"
+               (input)="updateField('passwordConfirm', $event)"/>
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 (flex-grow로 아래 고정) -->
+    <div class="flex flex-col justify-end items-center w-full flex-1">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white"
+              (click)="submitDrawer()">
+        {{ drawerMode() === 'edit' ? '수정' : '등록' }}
+      </button>
+    </div>
+
+    </div>
+
+  </div>
+}
+
+<!-- ===== 삭제 확인 모달 ===== -->
+@if (deleteModalOpen() && deleteTarget()) {
+  <div class="fixed inset-0 z-[3000] flex items-center justify-center"
+       style="background: rgba(0,0,0,0.3);">
+    <div class="flex flex-col justify-center items-center p-4 gap-6 bg-white"
+         style="width: 400px; border-radius: 16px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="12" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.2" fill="white"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">관리자 삭제</span>
+      </div>
+
+      <!-- 정보 영역 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full"
+           style="border-width: 1px 0; border-style: solid; border-color: #E5E7EB;">
+        <!-- 아이디 -->
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">아이디</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ deleteTarget()?.loginId }}</span>
+        </div>
+        <!-- 이름 -->
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ deleteTarget()?.name }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0"
+         style="max-width: 230px;">
+        해당 관리자를 삭제하시겠습니까?
+        <br>삭제 시 해당 관리자는 로그인 할 수 없게 되며, 삭제 후 되돌릴 수 없습니다.
+      </p>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full px-4">
+        <button class="flex-1 flex items-center justify-center h-10 bg-white border border-gray-200 cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                style="border-radius: 12px;"
+                (click)="cancelDelete()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 bg-[#EF4444] border-none cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                style="border-radius: 12px;"
+                (click)="confirmDelete()">
+          삭제
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ===== 차단/차단해제 확인 모달 ===== -->
+@if (blockModalOpen() && blockTarget()) {
+  <div class="fixed inset-0 z-[3000] flex items-center justify-center"
+       style="background: rgba(0,0,0,0.3);">
+    <div class="flex flex-col justify-center items-center p-4 gap-6 bg-white"
+         style="width: 400px; border-radius: 16px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="12" [attr.fill]="blockTarget()?.status === '정상' ? '#EF4444' : '#3C8EEE'"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.2" fill="white"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">{{ blockTarget()?.status === '정상' ? '관리자 차단' : '관리자 차단 해제' }}</span>
+      </div>
+
+      <!-- 정보 영역 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full"
+           style="border-width: 1px 0; border-style: solid; border-color: #E5E7EB;">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">아이디</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ blockTarget()?.loginId }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ blockTarget()?.name }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      @if (blockTarget()?.status === '정상') {
+        <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0"
+           style="max-width: 296px;">
+          해당 관리자를 차단하시겠습니까?
+          <br>차단 시 해당 관리자는 로그인 할 수 없게 됩니다.
+        </p>
+      } @else {
+        <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 text-center m-0"
+           style="max-width: 296px;">
+          해당 관리자의 차단을 해제하시겠습니까?
+          <br>차단 해제 시 해당 관리자는 다시 로그인할 수 있습니다.
+        </p>
+      }
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full px-4">
+        <button class="flex-1 flex items-center justify-center h-10 bg-white border border-gray-200 cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                style="border-radius: 12px;"
+                (click)="cancelBlock()">
+          취소
+        </button>
+        @if (blockTarget()?.status === '정상') {
+          <button class="flex-1 flex items-center justify-center h-10 bg-[#EF4444] border-none cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                  style="border-radius: 12px;"
+                  (click)="confirmBlock()">
+            차단
+          </button>
+        } @else {
+          <button class="flex-1 flex items-center justify-center h-10 bg-[#3C8EEE] border-none cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                  style="border-radius: 12px;"
+                  (click)="confirmBlock()">
+            차단해제
+          </button>
+        }
+      </div>
+
+    </div>
+  </div>
+}

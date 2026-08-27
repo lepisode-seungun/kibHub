@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-6 p-6">
   <adm-data-grid
     [columns]="columns"
-    [data]="applicantData"
+    [data]="applicantData()"
     [showCheckbox]="true"
     (selectionChange)="onSelectionChange($event)"
     (rowClick)="onRowClick($event)">
@@ -52,8 +52,10 @@
        (click)="cancelPassDialog()"
        (keydown.enter)="cancelPassDialog()">
     <div class="flex flex-col justify-center items-center p-4 bg-white rounded-2xl"
+         tabindex="-1"
          style="width: 400px; gap: 24px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);"
-         (click)="$event.stopPropagation()">
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
 
       <!-- 아이콘 + 타이틀 -->
       <div class="flex flex-col justify-center items-center gap-3">
@@ -105,8 +107,10 @@
        (click)="cancelFailDialog()"
        (keydown.enter)="cancelFailDialog()">
     <div class="flex flex-col justify-center items-center p-4 bg-white rounded-2xl"
+         tabindex="-1"
          style="width: 400px; gap: 24px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);"
-         (click)="$event.stopPropagation()">
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
 
       <!-- 아이콘 + 타이틀 -->
       <div class="flex flex-col justify-center items-center gap-3">

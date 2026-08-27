@@ -1,8 +1,10 @@
-import { Component, ElementRef, ViewChild, signal, inject, computed, AfterViewInit, NgZone } from '@angular/core';
+import { Component, ElementRef, ViewChild, signal, inject, computed, AfterViewInit, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
 import { SearchService } from '../../services/search.service';
+import { ApiService } from '../../services/api.service';
+import { Bootcamp, Content } from '@kibhub/shared';
 
 interface CommentCard {
   id: number;
@@ -55,12 +57,13 @@ interface BootcampCard {
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
-export class HomePage implements AfterViewInit {
+export class HomePage implements AfterViewInit, OnInit {
   @ViewChild('track') track!: ElementRef<HTMLDivElement>;
   @ViewChild('mentorTrack') mentorTrack!: ElementRef<HTMLDivElement>;
   @ViewChild('bootcampTrack') bootcampTrack!: ElementRef<HTMLDivElement>;
 
   private ngZone = inject(NgZone);
+  private api = inject(ApiService);
 
   /* ===== Carousel arrow / fade visibility ===== */
   showCommentLeftArrow = signal(false);
@@ -93,6 +96,56 @@ export class HomePage implements AfterViewInit {
 
   private searchService = inject(SearchService);
   searchQuery = this.searchService.searchQuery;
+
+  private readonly gradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+  ];
+
+  ngOnInit(): void {
+    this.loadBootcamps();
+    this.loadContents();
+  }
+
+  private async loadBootcamps(): Promise<void> {
+    try {
+      const bootcamps = await this.api.bootcamps.findAll();
+      if (bootcamps.length > 0) {
+        this.bootcampCards = bootcamps.map((b, i) => ({
+          id: b.id,
+          title: b.name,
+          description: b.description || '',
+          thumbnailGradient: this.gradients[i % this.gradients.length],
+          status: b.status === 'RECRUITING' ? '모집중' : '모집 마감',
+          deadline: '',
+        }));
+      }
+    } catch (e) {
+      console.error('부트칠프 로드 실패:', e);
+    }
+  }
+
+  private async loadContents(): Promise<void> {
+    try {
+      const contents = await this.api.contents.findAll();
+      if (contents.length > 0) {
+        this.contentCards = contents.slice(0, 12).map((c, i) => ({
+          id: c.id,
+          userName: c.author?.nickname || c.author?.name || 'user',
+          title: c.title,
+          thumbnailGradient: this.gradients[i % this.gradients.length],
+          rank: i < 4 ? i + 1 : null,
+          featured: i === 2,
+        }));
+      }
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+    }
+  }
 
   /* ===== Recent Comments ===== */
   commentCards: CommentCard[] = [

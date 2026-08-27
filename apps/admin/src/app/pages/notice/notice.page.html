@@ -26,12 +26,24 @@
     <!-- 데이터 그리드 (검색바 숨김) -->
     <adm-data-grid
       [columns]="columns"
-      [data]="notices"
+      [data]="notices()"
       [showSearch]="false"
-      [contextMenuItems]="['숨김', '고정해제', '수정', '삭제']"
+      [contextMenuItemsFn]="getContextMenuItems"
       (contextMenuSelect)="onContextMenu($event)"
       (rowClick)="onRowClick($event)">
     </adm-data-grid>
 
   </div>
 </div>
+
+<!-- 삭제 확인 다이얼로그 -->
+<adm-confirm-dialog
+  [visible]="showDeleteDialog()"
+  title="공지사항 삭제"
+  [details]="deleteDialogDetails()"
+  message="공지사항을 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다."
+  cancelText="취소"
+  confirmText="삭제"
+  (dialogCancel)="onDeleteCancel()"
+  (dialogConfirm)="onDeleteConfirm()">
+</adm-confirm-dialog>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-content-detail',
@@ -15,6 +16,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private api = inject(ApiService);
 
   /* Mock data — 나중에 API로 교체 */
   contentId = '';
@@ -167,8 +169,22 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.contentId = params['id'] || '1';
+      this.loadContent(Number(this.contentId));
     });
     document.body.classList.add('page-content-detail');
+  }
+
+  private async loadContent(id: number): Promise<void> {
+    try {
+      const content = await this.api.contents.findOne(id);
+      this.title = content.title;
+      this.description = content.body || this.description;
+      this.authorName = content.author?.nickname || content.author?.name || this.authorName;
+      this.category = content.category?.name || this.category;
+      this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+    }
   }
 
   ngOnDestroy(): void {

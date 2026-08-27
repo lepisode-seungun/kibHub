@@ -92,7 +92,7 @@ export class BootcampIntroPage {
   partnerForm = signal({ name: '', link: '' });
   partnerImage = signal<{ name: string; size: string; preview: string } | null>(null);
 
-  openPartnerDrawer(mode: 'add' | 'edit', row?: any): void {
+  openPartnerDrawer(mode: 'add' | 'edit', row?: { name: string; link: string }): void {
     this.partnerDrawerMode.set(mode);
     this.partnerForm.set({
       name: mode === 'edit' && row ? row.name : '',
@@ -135,7 +135,7 @@ export class BootcampIntroPage {
     // TODO: 파트너 등록/수정 로직
   }
 
-  onPartnerContextMenu(event: { action: string; row: any }): void {
+  onPartnerContextMenu(event: { action: string; row: { name: string; link: string } }): void {
     if (event.action === '수정') {
       this.openPartnerDrawer('edit', event.row);
     }
@@ -211,7 +211,7 @@ export class BootcampIntroPage {
   historyItemMode = signal<'add' | 'edit'>('add');
   historyItemForm = signal({ title: '', content: '', date: '' });
 
-  openHistoryItemDrawer(mode: 'add' | 'edit', item?: any): void {
+  openHistoryItemDrawer(mode: 'add' | 'edit', item?: { title: string; description: string; period: string }): void {
     this.historyItemMode.set(mode);
     this.historyItemForm.set({
       title: mode === 'edit' && item ? item.title : '',
@@ -264,7 +264,7 @@ export class BootcampIntroPage {
 
   // ===== 메인배너 수정 드로어 =====
   showBannerDrawer = signal(false);
-  bannerDrawerRow = signal<any>(null);
+  bannerDrawerRow = signal<{ id: number; status: string; link: string } | null>(null);
   bannerForm = signal({
     status: '',
     vimeoLink: '',
@@ -273,13 +273,13 @@ export class BootcampIntroPage {
     link: '',
   });
 
-  onBannerContextMenu(event: { action: string; row: any }): void {
+  onBannerContextMenu(event: { action: string; row: { id: number; status: string; link: string } }): void {
     if (event.action === '수정') {
       this.openBannerDrawer(event.row);
     }
   }
 
-  openBannerDrawer(row?: any): void {
+  openBannerDrawer(row?: { id: number; status: string; link: string }): void {
     if (row) {
       this.bannerDrawerRow.set(row);
       this.bannerForm.set({

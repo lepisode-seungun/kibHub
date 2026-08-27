@@ -1,23 +1,74 @@
-import express from 'express';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import { authRouter } from './routes/auth';
+import 'reflect-metadata';
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cookieParserFn = (cookieParser as any).default || cookieParser;
+import { AppModule } from './app.module';
+import { GlobalExceptionFilter } from './common/global-exception.filter';
 
-const app = express();
-const PORT = process.env['PORT'] || 3000;
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
 
-app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
-app.use(express.json());
-app.use(cookieParser());
+  // Global prefix
+  app.setGlobalPrefix('api');
 
-// Routes
-app.use('/api/auth', authRouter);
+  // Cookie parser
+  app.use(cookieParserFn());
 
-// Health check
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+  // CORS whitelist
+  const whitelist = [
+    'http://localhost:4200',  // client dev
+    'http://localhost:4300',  // admin dev
+  ];
+  app.enableCors({
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin || whitelist.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+  });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
+
+  // Global error handler
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Swagger
+  const config = new DocumentBuilder()
+    .setTitle('KIPHub API')
+    .setDescription('KIPHub 백엔드 API 문서')
+    .setVersion('1.0')
+    .addCookieAuth('kiphub_token')
+    .addTag('auth', '인증')
+    .addTag('users', '회원 관리')
+    .addTag('bootcamps', '부트캠프')
+    .addTag('courses', '과정/강의/과제')
+    .addTag('applicants', '지원자')
+    .addTag('contents', '콘텐츠/댓글/신고')
+    .addTag('portfolios', '포트폴리오/명예의전당')
+    .addTag('notices', '공지사항')
+    .addTag('faqs', 'FAQ')
+    .addTag('inquiries', '1:1문의')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  const port = process.env['PORT'] || 3000;
+  await app.listen(port);
+  console.log(`🚀 NestJS server running on http://localhost:${port}`);
+  console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
+}
+
+bootstrap();

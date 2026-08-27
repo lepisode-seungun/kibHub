@@ -1,0 +1,70 @@
+// ===== 과정 =====
+model Course {
+  id         Int          @id @default(autoincrement())
+  name       String
+  status     CourseStatus @default(PENDING)
+  sortOrder  Int          @default(0)
+  bootcampId Int
+  bootcamp   Bootcamp     @relation(fields: [bootcampId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  lectures    Lecture[]
+  assignments Assignment[]
+}
+
+enum CourseStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ===== 강의 =====
+model Lecture {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @default("")
+  sortOrder Int      @default(0)
+  courseId   Int
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  files     LectureFile[]
+}
+
+model LectureFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  size      Int      @default(0)
+  mimeType  String   @default("")
+  lectureId Int
+  lecture   Lecture   @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ===== 과제 =====
+model Assignment {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String    @default("")
+  dueDate   DateTime?
+  courseId   Int
+  course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  files     AssignmentFile[]
+}
+
+model AssignmentFile {
+  id           Int        @id @default(autoincrement())
+  name         String
+  url          String
+  size         Int        @default(0)
+  mimeType     String     @default("")
+  assignmentId Int
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}

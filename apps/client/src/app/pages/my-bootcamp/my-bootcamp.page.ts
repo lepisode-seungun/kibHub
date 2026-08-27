@@ -1,7 +1,8 @@
-import { Component, signal, inject, effect } from '@angular/core';
+import { Component, signal, inject, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 interface BootcampItem {
   id: number;
@@ -17,9 +18,10 @@ interface BootcampItem {
   templateUrl: './my-bootcamp.page.html',
   styleUrls: ['./my-bootcamp.page.css'],
 })
-export class MyBootcampPage {
+export class MyBootcampPage implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private api = inject(ApiService);
 
   tabs = ['전체', '수강완료', '수강 중', '마감'];
   activeTab = signal('전체');
@@ -35,12 +37,31 @@ export class MyBootcampPage {
   ];
 
   constructor() {
-    // 인증 확인 완료 후 비로그인 시 리다이렉트
     effect(() => {
       if (this.authService.authChecked() && !this.authService.isLoggedIn()) {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  ngOnInit(): void { this.loadBootcamps(); }
+
+  private async loadBootcamps(): Promise<void> {
+    try {
+      const bootcamps = await this.api.bootcamps.findAll();
+      if (bootcamps.length > 0) {
+        this.allItems = bootcamps.map(b => ({
+          id: b.id,
+          name: b.name,
+          status: b.status === 'RECRUITING' ? '수강 중' as const
+            : b.status === 'ENDED' ? '마감' as const
+            : '신청 완료' as const,
+          dateRange: '',
+        }));
+      }
+    } catch (e) {
+      console.error('부트칠프 로드 실패:', e);
+    }
   }
 
   get filteredItems(): BootcampItem[] {

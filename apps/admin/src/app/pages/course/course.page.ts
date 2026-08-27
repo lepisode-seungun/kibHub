@@ -1,7 +1,34 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
+import { Course } from '../../shared/types';
+
+interface CourseRow {
+  id: number;
+  status: string;
+  name: string;
+  lecture: number;
+  assignment: number;
+  createdAt: string;
+}
+
+const COURSE_STATUS_MAP: Record<string, string> = {
+  PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료',
+};
+
+function toCourseRow(c: Course): CourseRow {
+  return {
+    id: c.id,
+    status: COURSE_STATUS_MAP[c.status] || c.status,
+    name: c.name,
+    lecture: c.lectures?.length || 0,
+    assignment: c.assignments?.length || 0,
+    createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
+  };
+}
 
 @Component({
   selector: 'adm-course',
@@ -10,13 +37,16 @@ import { DataGridComponent, GridColumn } from '../../components/data-grid/data-g
   templateUrl: './course.page.html',
   styleUrl: './course.page.css',
 })
-export class CoursePage {
+export class CoursePage implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toast = inject(ToastService);
+  private api = inject(ApiService);
+
   columns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
     {
-      key: 'status',
-      label: '상태',
-      width: '100px',
+      key: 'status', label: '상태', width: '100px',
       badge: 'status',
       badgeStyles: {
         '진행중': 'bg-blue-50 text-[#3C8EEE] border-blue-200',
@@ -31,36 +61,47 @@ export class CoursePage {
     { key: 'menu', label: '', width: '50px', type: 'drag' },
   ];
 
-  data = [
-    { id: 1, status: '진행중', name: 'BD/만화 스토리텔링 기초', lecture: 12, assignment: 5, createdAt: '2025-08-20 14:30' },
-    { id: 2, status: '완료', name: '디지털 일러스트레이션 입문', lecture: 8, assignment: 3, createdAt: '2025-08-18 09:15' },
-    { id: 3, status: '대기', name: '웹툰 연출 마스터 클래스', lecture: 15, assignment: 7, createdAt: '2025-08-15 11:00' },
-    { id: 4, status: '진행중', name: '캐릭터 디자인 실무', lecture: 10, assignment: 4, createdAt: '2025-08-12 16:45' },
-    { id: 5, status: '완료', name: '배경 원화 테크닉', lecture: 6, assignment: 2, createdAt: '2025-08-10 10:30' },
-  ];
+  data = signal<CourseRow[]>([]);
+  bootcampId = 0;
 
   contextMenuItems = ['숨김', '수정', '삭제'];
+
+  ngOnInit(): void {
+    this.bootcampId = Number(this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || 1);
+    this.loadCourses();
+  }
+
+  async loadCourses(): Promise<void> {
+    try {
+      const courses = await this.api.courses.findByBootcamp(this.bootcampId);
+      this.data.set(courses.map(toCourseRow));
+    } catch (e) {
+      console.error('과정 로드 실패:', e);
+    }
+  }
 
   // ===== 과정 등록 드로어 =====
   drawerOpen = signal(false);
   courseCategory = signal('');
   courseName = signal('');
 
-  openDrawer(): void {
-    this.drawerOpen.set(true);
+  openDrawer(): void { this.drawerOpen.set(true); }
+  closeDrawer(): void { this.drawerOpen.set(false); }
+
+  async submitCourse(): Promise<void> {
+    const name = this.courseName().trim();
+    if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
+    try {
+      await this.api.courses.create(this.bootcampId, { name } as Partial<Course>);
+      this.toast.success('등록 완료 되었습니다.');
+      this.drawerOpen.set(false);
+      await this.loadCourses();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '등록 실패');
+    }
   }
 
-  closeDrawer(): void {
-    this.drawerOpen.set(false);
-  }
-
-  submitCourse(): void {
-    this.drawerOpen.set(false);
-    // TODO: 등록 처리
-  }
-  private router = inject(Router);
-
-  onRowClick(row: any): void {
+  onRowClick(row: CourseRow): void {
     this.router.navigate(['/bootcamp/home/curriculum', row.id]);
   }
 }

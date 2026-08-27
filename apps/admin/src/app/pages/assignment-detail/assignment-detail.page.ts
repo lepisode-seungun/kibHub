@@ -4,6 +4,21 @@ import { ToastService } from '../../shared/toast/toast.service';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ROLE_BADGES } from '../../shared/badge-styles';
 
+interface BoardRow {
+  id: number;
+  type: string;
+  title: string;
+  comments: number;
+  permission: string;
+  author: string;
+  createdAt: string;
+}
+
+interface SubmissionDetail extends BoardRow {
+  content: string;
+  files: { name: string; size: string }[];
+}
+
 @Component({
   selector: 'adm-assignment-detail',
   standalone: true,
@@ -91,9 +106,9 @@ export class AssignmentDetailPage {
 
   // 제출 과제 삭제 다이얼로그
   showBoardDeleteModal = signal(false);
-  boardDeleteRow = signal<any>(null);
+  boardDeleteRow = signal<BoardRow | null>(null);
 
-  onBoardContextMenu(event: { action: string; row: any }): void {
+  onBoardContextMenu(event: { action: string; row: BoardRow }): void {
     if (event.action === '삭제') {
       this.boardDeleteRow.set(event.row);
       this.showBoardDeleteModal.set(true);
@@ -117,9 +132,9 @@ export class AssignmentDetailPage {
 
   // 제출 과제 상세 사이드 드로어
   submissionDrawerOpen = signal(false);
-  selectedSubmission = signal<any>(null);
+  selectedSubmission = signal<SubmissionDetail | null>(null);
 
-  openSubmissionDrawer(row: any): void {
+  openSubmissionDrawer(row: BoardRow): void {
     this.selectedSubmission.set({
       ...row,
       content: '얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기 얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기',

@@ -51,7 +51,27 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  Applicant: 'Applicant',
+  Bootcamp: 'Bootcamp',
+  Content: 'Content',
+  ContentCategory: 'ContentCategory',
+  Comment: 'Comment',
+  Report: 'Report',
+  Course: 'Course',
+  Lecture: 'Lecture',
+  LectureFile: 'LectureFile',
+  Assignment: 'Assignment',
+  AssignmentFile: 'AssignmentFile',
+  Faq: 'Faq',
+  FaqFile: 'FaqFile',
+  Inquiry: 'Inquiry',
+  InquiryFile: 'InquiryFile',
+  Notice: 'Notice',
+  NoticeFile: 'NoticeFile',
+  Portfolio: 'Portfolio',
+  PortfolioFile: 'PortfolioFile',
+  User: 'User',
+  UserSns: 'UserSns'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -70,19 +90,301 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const ApplicantScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  userId: 'userId',
+  bootcampId: 'bootcampId',
+  interviewQuestions: 'interviewQuestions',
+  appliedAt: 'appliedAt'
+} as const
+
+export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
+
+
+export const BootcampScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  instructorName: 'instructorName',
+  description: 'description',
+  thumbnail: 'thumbnail',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BootcampScalarFieldEnum = (typeof BootcampScalarFieldEnum)[keyof typeof BootcampScalarFieldEnum]
+
+
+export const ContentScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  thumbnail: 'thumbnail',
+  viewCount: 'viewCount',
+  categoryId: 'categoryId',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContentScalarFieldEnum = (typeof ContentScalarFieldEnum)[keyof typeof ContentScalarFieldEnum]
+
+
+export const ContentCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  sortOrder: 'sortOrder'
+} as const
+
+export type ContentCategoryScalarFieldEnum = (typeof ContentCategoryScalarFieldEnum)[keyof typeof ContentCategoryScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  body: 'body',
+  contentId: 'contentId',
+  authorId: 'authorId',
+  likeCount: 'likeCount',
+  reportCount: 'reportCount',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const ReportScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  targetId: 'targetId',
+  reason: 'reason',
+  reporterId: 'reporterId',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
+
+
+export const CourseScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  sortOrder: 'sortOrder',
+  bootcampId: 'bootcampId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+
+
+export const LectureScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  sortOrder: 'sortOrder',
+  courseId: 'courseId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LectureScalarFieldEnum = (typeof LectureScalarFieldEnum)[keyof typeof LectureScalarFieldEnum]
+
+
+export const LectureFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  lectureId: 'lectureId',
+  createdAt: 'createdAt'
+} as const
+
+export type LectureFileScalarFieldEnum = (typeof LectureFileScalarFieldEnum)[keyof typeof LectureFileScalarFieldEnum]
+
+
+export const AssignmentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  dueDate: 'dueDate',
+  courseId: 'courseId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
+
+
+export const AssignmentFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  assignmentId: 'assignmentId',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentFileScalarFieldEnum = (typeof AssignmentFileScalarFieldEnum)[keyof typeof AssignmentFileScalarFieldEnum]
+
+
+export const FaqScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  question: 'question',
+  answer: 'answer',
+  image: 'image',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FaqScalarFieldEnum = (typeof FaqScalarFieldEnum)[keyof typeof FaqScalarFieldEnum]
+
+
+export const FaqFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  faqId: 'faqId',
+  createdAt: 'createdAt'
+} as const
+
+export type FaqFileScalarFieldEnum = (typeof FaqFileScalarFieldEnum)[keyof typeof FaqFileScalarFieldEnum]
+
+
+export const InquiryScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  authorId: 'authorId',
+  reply: 'reply',
+  repliedAt: 'repliedAt',
+  repliedById: 'repliedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InquiryScalarFieldEnum = (typeof InquiryScalarFieldEnum)[keyof typeof InquiryScalarFieldEnum]
+
+
+export const InquiryFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  inquiryId: 'inquiryId',
+  createdAt: 'createdAt'
+} as const
+
+export type InquiryFileScalarFieldEnum = (typeof InquiryFileScalarFieldEnum)[keyof typeof InquiryFileScalarFieldEnum]
+
+
+export const NoticeScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  pinned: 'pinned',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  bootcampId: 'bootcampId',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
+
+
+export const NoticeFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  noticeId: 'noticeId',
+  createdAt: 'createdAt'
+} as const
+
+export type NoticeFileScalarFieldEnum = (typeof NoticeFileScalarFieldEnum)[keyof typeof NoticeFileScalarFieldEnum]
+
+
+export const PortfolioScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  isHallOfFame: 'isHallOfFame',
+  thumbnail: 'thumbnail',
+  userName: 'userName',
+  bootcampName: 'bootcampName',
+  workTitle: 'workTitle',
+  authorName: 'authorName',
+  genre: 'genre',
+  workIntro: 'workIntro',
+  launchPlatform: 'launchPlatform',
+  launchUrl: 'launchUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PortfolioScalarFieldEnum = (typeof PortfolioScalarFieldEnum)[keyof typeof PortfolioScalarFieldEnum]
+
+
+export const PortfolioFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  episode: 'episode',
+  portfolioId: 'portfolioId',
+  createdAt: 'createdAt'
+} as const
+
+export type PortfolioFileScalarFieldEnum = (typeof PortfolioFileScalarFieldEnum)[keyof typeof PortfolioFileScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
   nickname: 'nickname',
+  name: 'name',
   phone: 'phone',
+  countryCode: 'countryCode',
+  birthday: 'birthday',
   intro: 'intro',
+  profileImage: 'profileImage',
   role: 'role',
+  status: 'status',
+  adminRole: 'adminRole',
+  loginId: 'loginId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const UserSnsScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  label: 'label',
+  url: 'url',
+  userId: 'userId'
+} as const
+
+export type UserSnsScalarFieldEnum = (typeof UserSnsScalarFieldEnum)[keyof typeof UserSnsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -93,10 +395,35 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

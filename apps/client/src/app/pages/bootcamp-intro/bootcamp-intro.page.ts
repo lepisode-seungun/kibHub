@@ -1,7 +1,8 @@
-import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
+import { ApiService } from '../../services/api.service';
 
 export interface BootcampCard {
   id: number;
@@ -20,7 +21,36 @@ export interface BootcampCard {
   templateUrl: './bootcamp-intro.page.html',
   styleUrl: './bootcamp-intro.page.css',
 })
-export class BootcampIntroPage {
+export class BootcampIntroPage implements OnInit, OnDestroy {
+  private api = inject(ApiService);
+
+  private readonly gradients = [
+    'linear-gradient(135deg, #5a3a8c, #2a1a50)',
+    'linear-gradient(135deg, #667eea, #764ba2)',
+    'linear-gradient(135deg, #f093fb, #f5576c)',
+    'linear-gradient(135deg, #4facfe, #00f2fe)',
+  ];
+
+  ngOnInit(): void { this.loadBootcamps(); }
+
+  private async loadBootcamps(): Promise<void> {
+    try {
+      const data = await this.api.bootcamps.findAll();
+      if (data.length > 0) {
+        this.bootcampCards = data.map((b, i) => ({
+          id: b.id,
+          name: b.name,
+          summary: b.description || '',
+          status: b.status === 'RECRUITING' ? 'recruiting' as const : 'closed' as const,
+          statusText: b.status === 'RECRUITING' ? '모집중' : '모집마감',
+          deadline: null,
+          thumbnailGradient: this.gradients[i % this.gradients.length],
+        }));
+      }
+    } catch (e) {
+      console.error('부트칠프 로드 실패:', e);
+    }
+  }
   bootcampCards: BootcampCard[] = [
     {
       id: 1,

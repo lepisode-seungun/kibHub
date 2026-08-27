@@ -1,0 +1,33 @@
+// ===== 공지사항 =====
+model Notice {
+  id         Int           @id @default(autoincrement())
+  type       NoticeType
+  pinned     Boolean       @default(false)
+  status     ContentStatus @default(VISIBLE)
+  title      String
+  body       String        @default("")
+  bootcampId Int?
+  bootcamp   Bootcamp?     @relation(fields: [bootcampId], references: [id])
+  authorId   Int
+  author     User          @relation(fields: [authorId], references: [id])
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  files      NoticeFile[]
+}
+
+enum NoticeType {
+  BOOTCAMP
+  SUPPORT
+}
+
+model NoticeFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  size      Int      @default(0)
+  mimeType  String   @default("")
+  noticeId  Int
+  notice    Notice   @relation(fields: [noticeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

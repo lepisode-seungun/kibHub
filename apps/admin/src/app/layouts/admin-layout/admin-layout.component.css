@@ -1,3 +1,8 @@
 :host {
   display: block;
 }
+
+/* router-outlet 뒤에 렌더링되는 페이지 컴포넌트가 전체 너비를 차지하도록 */
+::ng-deep router-outlet + * {
+  width: 100%;
+}

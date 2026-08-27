@@ -18,7 +18,107 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
+ * Model Applicant
+ * 
+ */
+export type Applicant = Prisma.ApplicantModel
+/**
+ * Model Bootcamp
+ * 
+ */
+export type Bootcamp = Prisma.BootcampModel
+/**
+ * Model Content
+ * 
+ */
+export type Content = Prisma.ContentModel
+/**
+ * Model ContentCategory
+ * 
+ */
+export type ContentCategory = Prisma.ContentCategoryModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model Report
+ * 
+ */
+export type Report = Prisma.ReportModel
+/**
+ * Model Course
+ * 
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model Lecture
+ * 
+ */
+export type Lecture = Prisma.LectureModel
+/**
+ * Model LectureFile
+ * 
+ */
+export type LectureFile = Prisma.LectureFileModel
+/**
+ * Model Assignment
+ * 
+ */
+export type Assignment = Prisma.AssignmentModel
+/**
+ * Model AssignmentFile
+ * 
+ */
+export type AssignmentFile = Prisma.AssignmentFileModel
+/**
+ * Model Faq
+ * 
+ */
+export type Faq = Prisma.FaqModel
+/**
+ * Model FaqFile
+ * 
+ */
+export type FaqFile = Prisma.FaqFileModel
+/**
+ * Model Inquiry
+ * 
+ */
+export type Inquiry = Prisma.InquiryModel
+/**
+ * Model InquiryFile
+ * 
+ */
+export type InquiryFile = Prisma.InquiryFileModel
+/**
+ * Model Notice
+ * 
+ */
+export type Notice = Prisma.NoticeModel
+/**
+ * Model NoticeFile
+ * 
+ */
+export type NoticeFile = Prisma.NoticeFileModel
+/**
+ * Model Portfolio
+ * 
+ */
+export type Portfolio = Prisma.PortfolioModel
+/**
+ * Model PortfolioFile
+ * 
+ */
+export type PortfolioFile = Prisma.PortfolioFileModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model UserSns
+ * 
+ */
+export type UserSns = Prisma.UserSnsModel

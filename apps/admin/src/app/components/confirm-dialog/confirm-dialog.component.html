@@ -1,0 +1,55 @@
+@if (visible()) {
+  <!-- 오버레이 -->
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 animate-[fadeIn_0.15s_ease-out] dialog-overlay"
+       (click)="onOverlayClick($event)"
+       (keydown.escape)="onCancel()"
+       tabindex="0">
+    <!-- 다이얼로그 컨테이너 -->
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white rounded-2xl animate-[scaleIn_0.15s_ease-out]"
+         style="box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);">
+
+      <!-- 상단: 아이콘 + 제목 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <!-- danger 아이콘 -->
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 17.5a1.167 1.167 0 1 1 0-2.333 1.167 1.167 0 0 1 0 2.333zm1.167-5.833a1.167 1.167 0 0 1-2.334 0V8.167a1.167 1.167 0 0 1 2.334 0V14z" fill="#EF4444"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">{{ title() }}</span>
+      </div>
+
+      <!-- 상세 정보 영역 -->
+      @if (details().length > 0) {
+        <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200" style="box-sizing: border-box;">
+          @for (detail of details(); track $index) {
+            <div class="flex items-center justify-between w-full min-h-[20px]">
+              <div class="flex items-center gap-2">
+                <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">{{ detail.label }}</span>
+              </div>
+              <div class="flex justify-end items-center flex-1 pl-6">
+                <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-right text-gray-800">{{ detail.value }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 경고 메시지 -->
+      @if (message()) {
+        <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-center text-gray-600">{{ message() }}</span>
+      }
+
+      <!-- 하단 버튼 -->
+      <div class="flex justify-center items-center gap-3 w-full">
+        <button class="flex-1 flex justify-center items-center px-4 py-2 h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="onCancel()">
+          {{ cancelText() }}
+        </button>
+        <button class="flex-1 flex justify-center items-center px-3 py-2 h-10 bg-red-500 border-none rounded-xl cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="onConfirm()">
+          {{ confirmText() }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

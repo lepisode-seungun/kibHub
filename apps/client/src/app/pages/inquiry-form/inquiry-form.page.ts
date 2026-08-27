@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface UploadFile {
   name: string;
@@ -30,6 +31,7 @@ export class InquiryFormPage {
     { name: '첨부파일명', ext: 'hwp', size: '93KB', status: 'done' },
   ];
   private router = inject(Router);
+  private api = inject(ApiService);
 
   removeFile(index: number): void {
     this.files.splice(index, 1);
@@ -47,7 +49,13 @@ export class InquiryFormPage {
     this.router.navigate(['/customer-center']);
   }
 
-  onSubmit(): void {
-    // TODO: API 연동
+  async onSubmit(): Promise<void> {
+    if (!this.title.trim() || !this.content.trim()) return;
+    try {
+      await this.api.inquiries.create({ title: this.title, body: this.content });
+      this.router.navigate(['/customer-center']);
+    } catch (e) {
+      console.error('문의 등록 실패:', e);
+    }
   }
 }

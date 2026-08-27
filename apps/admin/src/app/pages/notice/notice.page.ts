@@ -1,20 +1,35 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ConfirmDialogComponent, DialogDetailRow } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
+import { ApiService } from '../../services/api.service';
+import { Notice, NoticeRow } from '../../shared/types';
+
+function toNoticeRow(n: Notice): NoticeRow {
+  return {
+    id: n.id,
+    pinned: n.pinned ? '📌' : '',
+    status: n.status === 'HIDDEN' ? '숨김' : '노출',
+    title: n.title,
+    author: n.author?.nickname || n.author?.name || '관리자',
+    createdAt: new Date(n.createdAt).toLocaleString('ko-KR'),
+  };
+}
 
 @Component({
   selector: 'adm-notice',
   standalone: true,
-  imports: [CommonModule, DataGridComponent],
+  imports: [CommonModule, DataGridComponent, ConfirmDialogComponent],
   templateUrl: './notice.page.html',
   styleUrl: './notice.page.css',
 })
-export class NoticePage {
+export class NoticePage implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
+  private api = inject(ApiService);
 
   searchQuery = '';
 
@@ -31,46 +46,88 @@ export class NoticePage {
     { key: 'createdAt', label: '등록일시', width: '150px' },
   ];
 
-  notices = [
-    { id: 1, pinned: '📌', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 2, pinned: '📌', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 3, pinned: '', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 4, pinned: '', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 5, pinned: '', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 6, pinned: '', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-    { id: 7, pinned: '', status: '노출', title: '공지사항 제목 30자 이내', author: '고식혜', createdAt: '2025-01-15 13:00' },
-  ];
+  notices = signal<NoticeRow[]>([]);
 
-  onRowClick(row: any): void {
-    // TODO: navigate to notice detail
+  showDeleteDialog = signal(false);
+  deleteTarget = signal<NoticeRow | null>(null);
+  deleteDialogDetails = signal<DialogDetailRow[]>([]);
+
+  ngOnInit(): void { this.loadNotices(); }
+
+  async loadNotices(): Promise<void> {
+    try {
+      const data = await this.api.notices.findAll({ type: 'BOOTCAMP' });
+      this.notices.set(data.map(toNoticeRow));
+    } catch (e) {
+      console.error('공지 로드 실패:', e);
+    }
   }
+
+  onRowClick(_row: NoticeRow): void {}
 
   onRegister(): void {
     this.router.navigate(['/bootcamp/home/notices/new']);
   }
 
-  onContextMenu(event: { action: string; row: any }): void {
+  getContextMenuItems = (row: NoticeRow): string[] => {
+    const statusLabel = row.status === '노출' ? '숨김' : '노출';
+    const pinnedLabel = row.pinned ? '고정해제' : '고정';
+    return [statusLabel, pinnedLabel, '수정', '삭제'];
+  };
+
+  async onContextMenu(event: { action: string; row: NoticeRow }): Promise<void> {
     const { action, row } = event;
     switch (action) {
       case '숨김':
-        this.notices = this.notices.map(n =>
-          n.id === row.id ? { ...n, status: n.status === '숨김' ? '노출' : '숨김' } : n
-        );
-        this.toast.success(row.status === '노출' ? '숨김 처리 되었습니다.' : '노출 처리 되었습니다.');
+      case '노출':
+        try {
+          await this.api.notices.update(row.id, { status: row.status === '노출' ? 'HIDDEN' : 'VISIBLE' });
+          this.toast.success(row.status === '노출' ? '숨김 처리 되었습니다.' : '노출 처리 되었습니다.');
+          await this.loadNotices();
+        } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
         break;
       case '고정해제':
-        this.notices = this.notices.map(n =>
-          n.id === row.id ? { ...n, pinned: n.pinned ? '' : '📌' } : n
-        );
-        this.toast.success(row.pinned ? '고정 해제 되었습니다.' : '고정 되었습니다.');
+      case '고정':
+        try {
+          await this.api.notices.update(row.id, { pinned: !row.pinned });
+          this.toast.success(row.pinned ? '고정 해제 되었습니다.' : '고정 되었습니다.');
+          await this.loadNotices();
+        } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
         break;
       case '수정':
-        // TODO: open edit drawer or navigate
+        this.router.navigate([`/bootcamp/home/notices/${row.id}/edit`]);
         break;
       case '삭제':
-        this.notices = this.notices.filter(n => n.id !== row.id);
-        this.toast.success('삭제 완료 되었습니다.');
+        this.openDeleteDialog(row);
         break;
     }
+  }
+
+  private openDeleteDialog(row: NoticeRow): void {
+    this.deleteTarget.set(row);
+    this.deleteDialogDetails.set([
+      { label: '제목', value: row.title },
+      { label: '작성자', value: row.author },
+      { label: '등록일시', value: row.createdAt },
+    ]);
+    this.showDeleteDialog.set(true);
+  }
+
+  async onDeleteConfirm(): Promise<void> {
+    const target = this.deleteTarget();
+    if (target) {
+      try {
+        await this.api.notices.delete(target.id);
+        this.toast.success('삭제 완료 되었습니다.');
+        await this.loadNotices();
+      } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '삭제 실패'); }
+    }
+    this.showDeleteDialog.set(false);
+    this.deleteTarget.set(null);
+  }
+
+  onDeleteCancel(): void {
+    this.showDeleteDialog.set(false);
+    this.deleteTarget.set(null);
   }
 }

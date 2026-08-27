@@ -1,0 +1,28 @@
+<adm-data-grid
+  [columns]="columns"
+  [data]="notices()"
+  searchPlaceholder="검색어를 입력하세요"
+  [contextMenuItemsFn]="getContextMenuItems"
+  (contextMenuSelect)="onContextMenu($event)"
+  (rowClick)="onRowClick($event)">
+  <button gridActions
+          class="flex items-center justify-center gap-2 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
+          (click)="onRegister()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white">등록</span>
+  </button>
+</adm-data-grid>
+
+<!-- 삭제 확인 다이얼로그 -->
+@if (showDeleteDialog()) {
+  <adm-confirm-dialog
+    title="공지사항 삭제"
+    message="해당 공지사항을 삭제하시겠습니까?\n삭제 후 되돌릴 수 없습니다."
+    confirmText="삭제"
+    [details]="deleteDialogDetails()"
+    (confirm)="onDeleteConfirm()"
+    (cancel)="onDeleteCancel()">
+  </adm-confirm-dialog>
+}

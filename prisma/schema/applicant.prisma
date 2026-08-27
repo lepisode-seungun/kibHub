@@ -1,0 +1,19 @@
+// ===== 지원자 =====
+model Applicant {
+  id                 Int             @id @default(autoincrement())
+  status             ApplicantStatus @default(PENDING)
+  userId             Int
+  user               User            @relation(fields: [userId], references: [id])
+  bootcampId         Int
+  bootcamp           Bootcamp        @relation(fields: [bootcampId], references: [id])
+  interviewQuestions Json?
+  appliedAt          DateTime        @default(now())
+
+  @@unique([userId, bootcampId])
+}
+
+enum ApplicantStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}

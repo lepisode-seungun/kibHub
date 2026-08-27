@@ -1,0 +1,31 @@
+// ===== 포트폴리오 (통합: 일반 + 명예의 전당) =====
+model Portfolio {
+  id              Int           @id @default(autoincrement())
+  status          ContentStatus @default(VISIBLE)
+  isHallOfFame    Boolean       @default(false)
+  thumbnail       String?
+  userName        String
+  bootcampName    String
+  workTitle       String        @default("")
+  authorName      String        @default("")
+  genre           String        @default("")
+  workIntro       String        @default("")
+  launchPlatform  String?
+  launchUrl       String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  files           PortfolioFile[]
+}
+
+model PortfolioFile {
+  id          Int       @id @default(autoincrement())
+  name        String
+  url         String
+  size        Int       @default(0)
+  mimeType    String    @default("")
+  episode     Int?
+  portfolioId Int
+  portfolio   Portfolio  @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+}

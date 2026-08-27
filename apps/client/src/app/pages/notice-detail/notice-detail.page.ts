@@ -1,6 +1,7 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface AttachFile {
   name: string;
@@ -16,6 +17,7 @@ interface AttachFile {
 export class NoticeDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   noticeId = '';
   bootcampId = '';
@@ -36,11 +38,24 @@ export class NoticeDetailPage implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.bootcampId = params.get('bootcampId') || '';
-      this.noticeId = params.get('noticeId') || '';
+      this.noticeId = params.get('noticeId') || params.get('id') || '';
+      if (this.noticeId) this.loadNotice(Number(this.noticeId));
     });
     this.route.queryParamMap.subscribe((qp) => {
       this.returnTab = qp.get('tab') || '';
     });
+  }
+
+  private async loadNotice(id: number): Promise<void> {
+    try {
+      const notice = await this.api.notices.findOne(id);
+      this.noticeTitle = notice.title;
+      this.noticeContent = notice.body || this.noticeContent;
+      this.noticeDate = new Date(notice.createdAt).toLocaleDateString('ko-KR');
+      this.isPinned = notice.pinned;
+    } catch (e) {
+      console.error('공지사항 로드 실패:', e);
+    }
   }
 
   returnTab = '';

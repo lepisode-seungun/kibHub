@@ -28,6 +28,13 @@ export const appRoutes: Route[] = [
           ),
       },
       {
+        path: 'admins',
+        loadComponent: () =>
+          import('./pages/admins/admins.page').then(
+            (m) => m.AdminsPage
+          ),
+      },
+      {
         path: 'content',
         loadComponent: () =>
           import('./pages/content/content.page').then(
@@ -165,6 +172,48 @@ export const appRoutes: Route[] = [
         loadComponent: () =>
           import('./pages/notice-register/notice-register.page').then(
             (m) => m.NoticeRegisterPage
+          ),
+      },
+      {
+        path: 'bootcamp/home/notices/:id/edit',
+        loadComponent: () =>
+          import('./pages/notice-register/notice-register.page').then(
+            (m) => m.NoticeRegisterPage
+          ),
+      },
+      {
+        path: 'support/notices',
+        loadComponent: () =>
+          import('./pages/support-notices/support-notices.page').then(
+            (m) => m.SupportNoticesPage
+          ),
+      },
+      {
+        path: 'support/notices/new',
+        loadComponent: () =>
+          import('./pages/support-notices-register/support-notices-register.page').then(
+            (m) => m.SupportNoticesRegisterPage
+          ),
+      },
+      {
+        path: 'support/notices/:id/edit',
+        loadComponent: () =>
+          import('./pages/support-notices-register/support-notices-register.page').then(
+            (m) => m.SupportNoticesRegisterPage
+          ),
+      },
+      {
+        path: 'support/faq',
+        loadComponent: () =>
+          import('./pages/support-faq/support-faq.page').then(
+            (m) => m.SupportFaqPage
+          ),
+      },
+      {
+        path: 'support/inquiries',
+        loadComponent: () =>
+          import('./pages/support-inquiries/support-inquiries.page').then(
+            (m) => m.SupportInquiriesPage
           ),
       },
       {

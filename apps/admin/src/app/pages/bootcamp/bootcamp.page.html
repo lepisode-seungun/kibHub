@@ -1,6 +1,6 @@
 <adm-data-grid
   [columns]="gridColumns"
-  [data]="bootcampData"
+  [data]="bootcampData()"
   [contextMenuItems]="contextMenuItems"
   (contextMenuSelect)="onContextMenuAction($event)">
   <button gridActions

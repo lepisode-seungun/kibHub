@@ -1,7 +1,8 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 /** 허용 이미지 타입 */
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -28,9 +29,25 @@ export interface ProfileFormData {
   templateUrl: './profile-edit.page.html',
   styleUrls: ['./profile-edit.page.css'],
 })
-export class ProfileEditPage {
+export class ProfileEditPage implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private api = inject(ApiService);
+
+  private userId = 0;
+
+  ngOnInit(): void { this.loadProfile(); }
+
+  private async loadProfile(): Promise<void> {
+    try {
+      const user = await this.api.users.me();
+      this.userId = user.id;
+      this.nickname = user.nickname || '';
+      this.email = user.email;
+    } catch (e) {
+      console.error('프로필 로드 실패:', e);
+    }
+  }
 
   readonly userInitial = computed(() => this.authService.currentUser()?.initial ?? '');
   readonly userName = computed(() => this.authService.currentUser()?.nickname ?? '');
@@ -144,31 +161,20 @@ export class ProfileEditPage {
    * - 나머지 폼 데이터도 함께 전송
    */
   async onSave(): Promise<void> {
-    const formData = this.buildFormData();
-
-    // 아바타 파일이 있으면 FormData에 추가
-    if (this.avatarFile) {
-      formData.append('avatar', this.avatarFile, this.avatarFile.name);
+    try {
+      this.avatarUploading.set(true);
+      if (this.userId) {
+        await this.api.users.update(this.userId, {
+          nickname: this.nickname || undefined,
+          email: this.email || undefined,
+        });
+      }
+      this.router.navigate(['/']);
+    } catch (e) {
+      console.error('프로필 저장 실패:', e);
+    } finally {
+      this.avatarUploading.set(false);
     }
-
-    // TODO: API 연동
-    // try {
-    //   this.avatarUploading.set(true);
-    //   const res = await fetch('/api/user/profile', {
-    //     method: 'PUT',
-    //     credentials: 'include',
-    //     body: formData,
-    //   });
-    //   if (!res.ok) throw new Error('프로필 저장 실패');
-    //   const data = await res.json();
-    //   // authService에 유저 정보 갱신
-    // } catch (err) {
-    //   console.error(err);
-    // } finally {
-    //   this.avatarUploading.set(false);
-    // }
-
-    this.router.navigate(['/']);
   }
 
   onWithdraw(): void {

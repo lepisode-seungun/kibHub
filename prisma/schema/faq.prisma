@@ -1,0 +1,25 @@
+// ===== FAQ =====
+model Faq {
+  id        Int           @id @default(autoincrement())
+  status    ContentStatus @default(VISIBLE)
+  question  String
+  answer    String        @default("")
+  image     String?
+  authorId  Int
+  author    User          @relation(fields: [authorId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  files     FaqFile[]
+}
+
+model FaqFile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  size      Int      @default(0)
+  mimeType  String   @default("")
+  faqId     Int
+  faq       Faq      @relation(fields: [faqId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

@@ -38,3 +38,21 @@ export const MEMBER_STATUS_BADGES: Record<string, string> = {
   '차단': 'bg-red-50 border-red-300 text-red-500',
   '탈퇴': 'bg-zinc-50 border-zinc-200 text-zinc-500',
 };
+
+// ===== 관리자 상태 =====
+export const ADMIN_STATUS_BADGES: Record<string, string> = {
+  '정상': 'bg-emerald-50 border-emerald-300 text-emerald-600',
+  '차단': 'bg-red-50 border-red-300 text-red-500',
+};
+
+// ===== 관리자 권한 =====
+export const ADMIN_ROLE_BADGES: Record<string, string> = {
+  '최고 관리자': 'bg-blue-50 border-blue-300 text-blue-600',
+  '일반 관리자': 'bg-amber-50 border-amber-300 text-amber-600',
+};
+
+// ===== 문의 상태 =====
+export const INQUIRY_STATUS_BADGES: Record<string, string> = {
+  '대기': 'bg-amber-50 border-amber-300 text-amber-600',
+  '완료': 'bg-emerald-50 border-emerald-300 text-emerald-600',
+};
