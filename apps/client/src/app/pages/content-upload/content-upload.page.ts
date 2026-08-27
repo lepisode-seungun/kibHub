@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 import Cropper from 'cropperjs';
 
 interface CategoryChip {
@@ -34,6 +35,7 @@ interface ThumbCandidate {
 export class ContentUploadPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   contentType = '';
 

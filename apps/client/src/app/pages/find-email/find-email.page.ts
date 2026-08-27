@@ -1,6 +1,7 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-find-email',
@@ -10,6 +11,8 @@ import { RouterModule } from '@angular/router';
   styleUrl: './find-email.page.css',
 })
 export class FindEmailPage implements OnInit, OnDestroy {
+  private api = inject(ApiService);
+
   ngOnInit(): void {
     document.body.style.overflow = 'hidden';
   }
@@ -23,6 +26,7 @@ export class FindEmailPage implements OnInit, OnDestroy {
   birthday = '';
   countryCode = signal('+82');
   showCountryDropdown = signal(false);
+  foundEmail = signal('');
 
   countryCodes = ['+82', '+1', '+81', '+86', '+44'];
 
@@ -46,13 +50,19 @@ export class FindEmailPage implements OnInit, OnDestroy {
 
   findError = signal('');
 
-  onFindEmail(): void {
+  async onFindEmail(): Promise<void> {
     this.findError.set('');
+    this.foundEmail.set('');
     if (!this.name || !this.phone || !this.birthday) {
       this.findError.set('모든 항목을 입력해주세요.');
       return;
     }
-    // 추후 API 연결 — 현재는 이용자를 찾을 수 없는 상태로 처리
-    this.findError.set('존재하지 않는 사용자입니다. 정보를 확인 후 다시 시도해주세요.');
+    try {
+      const result = await this.api.auth.findEmail({ name: this.name, phone: this.phone });
+      this.foundEmail.set(result.email);
+    } catch {
+      this.findError.set('존재하지 않는 사용자입니다. 정보를 확인 후 다시 시도해주세요.');
+    }
   }
 }
+

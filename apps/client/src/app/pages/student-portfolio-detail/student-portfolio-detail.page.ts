@@ -1,8 +1,9 @@
 import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-student-portfolio-detail',
@@ -13,9 +14,25 @@ import { ImageViewerComponent } from '../../components/image-viewer/image-viewer
 })
 export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   private location = inject(Location);
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
+
+  portfolioId = '';
+  portfolioTitle = signal('');
+  portfolioAuthor = signal('');
 
   ngOnInit(): void {
     document.body.classList.add('page-portfolio-detail');
+    this.route.paramMap.subscribe(async (params) => {
+      this.portfolioId = params.get('id') || '';
+      if (this.portfolioId) {
+        try {
+          const p = await this.api.portfolios.findOne(Number(this.portfolioId));
+          this.portfolioTitle.set(p.title || '');
+          this.portfolioAuthor.set(p.description || '');
+        } catch { /* fallback to dummy */ }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -91,14 +108,16 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
     this.inquiryConsent.update(v => !v);
   }
 
-  submitInquiry(): void {
+  async submitInquiry(): Promise<void> {
     if (!this.canSubmitInquiry()) return;
-    // TODO: API 호출
-    console.log('문의 전송:', {
-      title: this.inquiryTitle(),
-      email: this.inquiryEmail(),
-      content: this.inquiryContent(),
-    });
+    try {
+      await this.api.inquiries.create({
+        title: this.inquiryTitle(),
+        body: this.inquiryContent(),
+      });
+    } catch {
+      // 에러 처리
+    }
     this.closeInquiryModal();
   }
 

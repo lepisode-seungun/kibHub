@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface AttachFile {
   name: string;
@@ -16,23 +17,32 @@ interface AttachFile {
 export class CcNoticeDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   noticeId = '';
 
-  isPinned = true;
-  noticeTitle = '공지사항 제목입니다.';
-  noticeDate = '2023. 01. 01';
-  noticeContent =
-    '공지사항 내용 입력하는 비교군의 MFCC정보와 입력한 음성 데이터의 MFCC 정보를 DTW알고리즘에 적용하여 시계열 스펙트럼을 만들고 각 경로에 해당하는 값을 더하여 0에 가까울수록 유사하다고 판 공지사항 내용 입력하는 비교군의 MFCC정보와 입력한 음성 데이터의 MFCC 정보를 DTW알고리즘에 적용하여 시계열 스펙트럼을 만들고 각 경로에 해당하는 값을 더하여 0에 가까울수록 유사하다고 판';
+  isPinned = false;
+  noticeTitle = signal('');
+  noticeDate = signal('');
+  noticeContent = signal('');
 
-  attachFiles: AttachFile[] = [
-    { name: 'hwp_첨부파일명...' },
-    { name: 'hwp_첨부파일명...' },
-  ];
+  attachFiles: AttachFile[] = [];
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.noticeId = params.get('id') || '';
+      if (this.noticeId) {
+        try {
+          const notice = await this.api.notices.findOne(Number(this.noticeId));
+          this.noticeTitle.set(notice.title || '');
+          this.noticeDate.set(notice.createdAt ? new Date(notice.createdAt).toLocaleDateString('ko-KR') : '');
+          this.noticeContent.set(notice.body || '');
+          this.isPinned = notice.pinned || false;
+        } catch {
+          // 없으면 목록으로
+          this.router.navigate(['/customer-center']);
+        }
+      }
     });
   }
 

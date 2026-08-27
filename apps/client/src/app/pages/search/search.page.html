@@ -37,7 +37,7 @@
     </div>
   } @else if (resultCount() > 0) {
     <div class="flex flex-wrap gap-6 w-full max-w-[1720px]">
-      @for (card of filteredResults(); track card.id) {
+      @for (card of results(); track card.id) {
         <article class="result-card" [style.background]="'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient">
           <div class="flex flex-col justify-between h-full">
             <div class="flex justify-between items-start">
