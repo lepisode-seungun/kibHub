@@ -1,6 +1,8 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'adm-assignment-register',
@@ -11,6 +13,17 @@ import { ApiService } from '../../services/api.service';
 })
 export class AssignmentRegisterPage {
   private location = inject(Location);
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private toast = inject(ToastService);
+
+  courseId = 0;
+
+  constructor() {
+    this.route.paramMap.subscribe((params) => {
+      this.courseId = Number(params.get('id')) || 0;
+    });
+  }
 
   // 아코디언
   basicInfoOpen = signal(true);
@@ -59,5 +72,26 @@ export class AssignmentRegisterPage {
 
   // 액션
   cancel(): void { this.location.back(); }
-  submit(): void { this.location.back(); }
+
+  isSubmitting = signal(false);
+
+  async submit(): Promise<void> {
+    if (this.isSubmitting()) return;
+    this.isSubmitting.set(true);
+    try {
+      await this.api.assignments.create(this.courseId, {
+        title: this.assignmentName(),
+        deadlineStart: this.deadlineStart(),
+        deadlineEnd: this.deadlineEnd(),
+        body: this.editorContent(),
+      } as any);
+      this.toast.success('등록 완료 되었습니다.');
+      this.location.back();
+    } catch (err) {
+      console.error('과제 등록 실패:', err);
+      this.toast.error('등록에 실패했습니다.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
 }

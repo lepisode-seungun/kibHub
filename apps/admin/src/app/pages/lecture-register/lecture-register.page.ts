@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
@@ -12,7 +13,17 @@ import { ToastService } from '../../shared/toast/toast.service';
 })
 export class LectureRegisterPage {
   private location = inject(Location);
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
   private toast = inject(ToastService);
+
+  courseId = 0;
+
+  constructor() {
+    this.route.paramMap.subscribe((params) => {
+      this.courseId = Number(params.get('id')) || 0;
+    });
+  }
 
   // 아코디언
   basicInfoOpen = signal(true);
@@ -147,8 +158,25 @@ export class LectureRegisterPage {
     this.location.back();
   }
 
-  submit(): void {
-    // TODO: 등록 처리
-    this.location.back();
+  isSubmitting = signal(false);
+
+  async submit(): Promise<void> {
+    if (this.isSubmitting()) return;
+    this.isSubmitting.set(true);
+    try {
+      await this.api.lectures.create(this.courseId, {
+        title: this.lectureName(),
+        category: this.category(),
+        videoUrl: this.videoUrl(),
+        body: this.editorContent(),
+      } as any);
+      this.toast.success('등록 완료 되었습니다.');
+      this.location.back();
+    } catch (err) {
+      console.error('강의 등록 실패:', err);
+      this.toast.error('등록에 실패했습니다.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 }

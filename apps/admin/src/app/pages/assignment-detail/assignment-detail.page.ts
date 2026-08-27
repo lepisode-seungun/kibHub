@@ -1,5 +1,6 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -27,8 +28,10 @@ interface SubmissionDetail extends BoardRow {
   templateUrl: './assignment-detail.page.html',
   styleUrl: './assignment-detail.page.css',
 })
-export class AssignmentDetailPage {
+export class AssignmentDetailPage implements OnInit {
   private location = inject(Location);
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
   private toast = inject(ToastService);
 
   // 아코디언 상태
@@ -54,37 +57,47 @@ export class AssignmentDetailPage {
 
   // 삭제 확인 모달
   showDeleteModal = signal(false);
-  confirmDelete(): void {
+  async confirmDelete(): Promise<void> {
+    try {
+      await this.api.assignments.delete(this.assignmentData.id);
+      this.toast.success('삭제 완료 되었습니다.');
+    } catch (err) {
+      console.error('과제 삭제 실패:', err);
+    }
     this.showDeleteModal.set(false);
-    this.toast.success('삭제 완료 되었습니다.');
     this.location.back();
   }
   cancelDelete(): void {
     this.showDeleteModal.set(false);
   }
 
-  // 샘플 데이터
-  courseData = {
-    id: 1,
-    status: '노출',
-    name: '웹툰의 기초',
-    createdAt: '2025-01-20 13:11',
-  };
+  courseData: any = {};
+  assignmentData: any = {};
 
-  assignmentData = {
-    id: 1,
-    name: '얼굴 그리기',
-    createdAt: '2025-01-20 13:11',
-    deadlineStart: '2025-01-20',
-    deadlineEnd: '2025-01-31',
-    videoUrl: 'https://vimeo.com/1048803857/8709552d2e',
-    videoDuration: '12:30',
-    content: '얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기 얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기',
-    materials: [
-      { name: '학습자료학습자료학습자료학습자료학습자료학습자료학습자료', size: '10.2MB' },
-      { name: '학습자료.pdf', size: '10.2MB' },
-    ],
-  };
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(async (params) => {
+      const id = params.get('id');
+      if (id) {
+        try {
+          const assignment: any = await this.api.assignments.findOne(Number(id));
+          this.assignmentData = {
+            id: assignment.id,
+            name: assignment.title || '',
+            createdAt: assignment.createdAt,
+            deadlineStart: assignment.deadlineStart || '',
+            deadlineEnd: assignment.deadlineEnd || '',
+            content: assignment.body || '',
+            materials: assignment.files || [],
+          };
+          if (assignment.course) {
+            this.courseData = { id: assignment.course.id, name: assignment.course.title || '' };
+          }
+        } catch (err) {
+          console.error('과제 로드 실패:', err);
+        }
+      }
+    });
+  }
 
   // 게시판 그리드
   boardColumns: GridColumn[] = [

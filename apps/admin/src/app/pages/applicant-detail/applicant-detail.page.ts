@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
 
@@ -10,41 +11,32 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './applicant-detail.page.html',
   styleUrl: './applicant-detail.page.css',
 })
-export class ApplicantDetailPage {
+export class ApplicantDetailPage implements OnInit {
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
+
   sectionOpen = signal(true);
   interviewOpen = signal(true);
   statusDropdownOpen = signal(false);
 
-  interviewQA = signal([
-    {
-      question: '앙굴렘 아카데미에 지원하게된 동기는 무엇인가요?',
-      answer: '지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑',
-    },
-    {
-      question: '앙굴렘 아카데미는 프랑스 앙굴렘에서 8~9월까지 진행되며, 합격자는 본인의 금액으로 숙식을 해결하여 오프라인 현장 강의에 참석해야합니다. 이에 동의하십니까?',
-      answer: '지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑',
-    },
-    {
-      question: '앙굴렘 아카데미는 프랑스 앙굴렘에서 8~9월까지 진행되며, 합격자는 본인의 금액으로 숙식을 해결하여 오프라인 현장 강의에 참석해야합니다. 이에 동의하십니까?',
-      answer: '지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑 지원자의 답변을 직접 타이핑',
-    },
-  ]);
+  interviewQA = signal<{ question: string; answer: string }[]>([]);
 
   statusBadges = APPLICANT_STATUS_BADGES;
 
-  applicant = {
-    id: 1,
-    status: '대기',
-    member: '고예림',
-    appliedAt: '2025-01-20 13:11',
-    name: '고예림',
-    phone: '+82 010-1234-4567',
-    email: 'yelim@lepisode.team',
-    address: '광주광역시 남구 대남대로 388 3층',
-    portfolioFile: { name: '학습자료.pdf', size: '10.2MB' },
-    portfolioLink: 'https://www.naver.com',
-    lastUpdate: '2025-01-20 13:11',
-  };
+  applicant: any = {};
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(async (params) => {
+      const id = params.get('id');
+      if (id) {
+        try {
+          this.applicant = await this.api.applicants.findOne(Number(id));
+        } catch (err) {
+          console.error('지원자 로드 실패:', err);
+        }
+      }
+    });
+  }
 
   toggleSection(): void {
     this.sectionOpen.update(v => !v);
@@ -62,8 +54,13 @@ export class ApplicantDetailPage {
     this.statusDropdownOpen.set(false);
   }
 
-  changeStatus(status: string): void {
-    this.applicant = { ...this.applicant, status };
+  async changeStatus(status: string): Promise<void> {
+    try {
+      this.applicant = await this.api.applicants.updateStatus(this.applicant.id, status);
+    } catch (err) {
+      console.error('상태 변경 실패:', err);
+      this.applicant = { ...this.applicant, status };
+    }
     this.statusDropdownOpen.set(false);
   }
 
