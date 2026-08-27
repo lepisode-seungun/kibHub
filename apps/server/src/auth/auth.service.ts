@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
@@ -7,7 +7,7 @@ const JWT_SECRET = process.env['JWT_SECRET'] || 'kiphub-jwt-secret-key-2026';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   generateToken(userId: number): string {
     return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });

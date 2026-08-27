@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CoursesService } from './courses.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -7,7 +7,7 @@ import { CreateCourseDto, CreateLectureDto, CreateAssignmentDto } from '@kibhub/
 @ApiTags('courses')
 @Controller()
 export class CoursesController {
-  constructor(private coursesService: CoursesService) {}
+  constructor(@Inject(CoursesService) private coursesService: CoursesService) {}
 
   // ===== 과정 =====
   @Get('bootcamps/:bootcampId/courses')

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../../../../prisma/generated/prisma/client';
 import { CreateInquiryDto, PaginatedResponse } from '@kibhub/shared';
@@ -6,7 +6,7 @@ import { paginate, parsePagination } from '../common/pagination';
 
 @Injectable()
 export class InquiriesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   async findAll(query?: { search?: string; status?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.InquiryWhereInput = {};

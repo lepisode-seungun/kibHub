@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ContentsService } from './contents.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -8,7 +8,7 @@ import { CreateContentDto, CreateReportDto } from '@kibhub/shared';
 @ApiTags('contents')
 @Controller()
 export class ContentsController {
-  constructor(private contentsService: ContentsService) {}
+  constructor(@Inject(ContentsService) private contentsService: ContentsService) {}
 
   // ===== 콘텐츠 =====
   @Get('contents')

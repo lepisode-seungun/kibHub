@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NoticesService } from './notices.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -7,7 +7,7 @@ import { CreateNoticeDto } from '@kibhub/shared';
 @ApiTags('notices')
 @Controller()
 export class NoticesController {
-  constructor(private noticesService: NoticesService) {}
+  constructor(@Inject(NoticesService) private noticesService: NoticesService) {}
 
   @Get('notices')
   findAll(@Query() query: { search?: string; type?: string; page?: string; limit?: string }) {

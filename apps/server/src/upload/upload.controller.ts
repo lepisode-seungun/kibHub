@@ -1,5 +1,4 @@
-import {
-  Controller,
+import { Inject, Controller,
   Post,
   Delete,
   Body,
@@ -7,8 +6,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
-  BadRequestException,
-} from '@nestjs/common';
+  BadRequestException, } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ApiTags, ApiConsumes, ApiBody, ApiOperation } from '@nestjs/swagger';
@@ -21,7 +19,7 @@ const multerOptions = { storage: memoryStorage() };
 @Controller('upload')
 @UseGuards(AuthGuard)
 export class UploadController {
-  constructor(private uploadService: UploadService) {}
+  constructor(@Inject(UploadService) private uploadService: UploadService) {}
 
   /** 단일 파일 업로드 */
   @Post()

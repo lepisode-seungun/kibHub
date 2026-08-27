@@ -1,11 +1,11 @@
-import { Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Inject, Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApplicantsService } from './applicants.service';
 
 @ApiTags('applicants')
 @Controller()
 export class ApplicantsController {
-  constructor(private applicantsService: ApplicantsService) {}
+  constructor(@Inject(ApplicantsService) private applicantsService: ApplicantsService) {}
 
   @Get('bootcamps/:bootcampId/applicants')
   findByBootcamp(@Param('bootcampId', ParseIntPipe) bootcampId: number) {

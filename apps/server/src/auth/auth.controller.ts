@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, Res, HttpStatus } from '@nestjs/common';
+import { Inject, Controller, Post, Get, Body, Req, Res, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -14,7 +14,7 @@ const COOKIE_OPTIONS = {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(@Inject(AuthService) private authService: AuthService) {}
 
   @Post('register')
   async register(

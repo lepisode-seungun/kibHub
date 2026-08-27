@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { InquiriesService } from './inquiries.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -8,7 +8,7 @@ import { CreateInquiryDto, InquiryReplyDto } from '@kibhub/shared';
 @ApiTags('inquiries')
 @Controller('inquiries')
 export class InquiriesController {
-  constructor(private inquiriesService: InquiriesService) {}
+  constructor(@Inject(InquiriesService) private inquiriesService: InquiriesService) {}
 
   @Get()
   findAll(@Query() query: { search?: string; status?: string; page?: string; limit?: string }) {

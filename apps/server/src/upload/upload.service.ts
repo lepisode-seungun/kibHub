@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
@@ -31,7 +31,7 @@ export interface UploadResult {
 
 @Injectable()
 export class UploadService {
-  constructor(private supabase: SupabaseService) {}
+  constructor(@Inject(SupabaseService) private supabase: SupabaseService) {}
 
   /** 단일 파일 업로드 */
   async uploadSingle(

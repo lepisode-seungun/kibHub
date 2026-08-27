@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PortfoliosService } from './portfolios.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -7,7 +7,7 @@ import { CreatePortfolioDto } from '@kibhub/shared';
 @ApiTags('portfolios')
 @Controller('portfolios')
 export class PortfoliosController {
-  constructor(private portfoliosService: PortfoliosService) {}
+  constructor(@Inject(PortfoliosService) private portfoliosService: PortfoliosService) {}
 
   @Get()
   findAll(@Query() query: { search?: string; isHallOfFame?: string; page?: string; limit?: string }) {

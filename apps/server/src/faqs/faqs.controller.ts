@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FaqsService } from './faqs.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -7,7 +7,7 @@ import { CreateFaqDto } from '@kibhub/shared';
 @ApiTags('faqs')
 @Controller('faqs')
 export class FaqsController {
-  constructor(private faqsService: FaqsService) {}
+  constructor(@Inject(FaqsService) private faqsService: FaqsService) {}
 
   @Get()
   findAll(@Query() query: { search?: string; status?: string; page?: string; limit?: string }) {
