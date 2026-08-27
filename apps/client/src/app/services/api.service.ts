@@ -114,4 +114,30 @@ export class ApiService {
   readonly reports = {
     create: (data: CreateReportDto): Promise<Report> => this.post<Report>('/reports', data),
   };
+
+  // ===== Auth =====
+  readonly auth = {
+    login: (data: { email: string; password: string }): Promise<{ token: string; user: User }> =>
+      this.post('/auth/login', data),
+    signup: (data: { email: string; password: string; name: string; nickname: string; phone?: string }): Promise<User> =>
+      this.post('/auth/signup', data),
+    me: (): Promise<User> => this.get<User>('/auth/me'),
+    findEmail: (data: { name: string; phone: string }): Promise<{ email: string }> =>
+      this.post('/auth/find-email', data),
+    resetPassword: (data: { email: string }): Promise<{ message: string }> =>
+      this.post('/auth/reset-password', data),
+    changeEmail: (data: { newEmail: string; password: string }): Promise<User> =>
+      this.patch<User>('/auth/change-email', data),
+    changePassword: (data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> =>
+      this.patch('/auth/change-password', data),
+    withdraw: (data: { password: string; reason?: string }): Promise<{ message: string }> =>
+      this.post('/auth/withdraw', data),
+    logout: (): Promise<{ message: string }> => this.post('/auth/logout', {}),
+  };
+
+  // ===== Search =====
+  readonly search = {
+    query: (keyword: string): Promise<{ contents: Content[]; portfolios: Portfolio[] }> =>
+      this.get(`/search?q=${encodeURIComponent(keyword)}`),
+  };
 }

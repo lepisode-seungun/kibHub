@@ -544,7 +544,7 @@
           @for (noti of notifications; track noti.id) {
             <div [ngClass]="noti.isRead ? 'noti-item noti-item-read' : 'noti-item'">
               <!-- 체크박스 -->
-              <div class="noti-checkbox-wrap" (click)="toggleNotiCheck(noti)">
+              <div class="noti-checkbox-wrap" role="checkbox" [attr.aria-checked]="noti.isChecked" tabindex="0" (click)="toggleNotiCheck(noti)" (keydown.enter)="toggleNotiCheck(noti)">
                 <div [ngClass]="noti.isChecked ? 'noti-checkbox noti-checkbox-checked' : 'noti-checkbox'">
                   @if (noti.isChecked) {
                     <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
