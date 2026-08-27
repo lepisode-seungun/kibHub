@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'adm-applicant-detail',

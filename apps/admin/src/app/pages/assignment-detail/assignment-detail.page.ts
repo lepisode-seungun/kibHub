@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ROLE_BADGES } from '../../shared/badge-styles';

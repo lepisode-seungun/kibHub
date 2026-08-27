@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({

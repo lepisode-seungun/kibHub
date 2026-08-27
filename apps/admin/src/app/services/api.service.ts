@@ -178,4 +178,19 @@ export class ApiService {
     reply: (id: number, data: InquiryReplyDto): Promise<Inquiry> => this.post<Inquiry>(`/inquiries/${id}/reply`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/inquiries/${id}`),
   };
+
+  // ===== Auth =====
+  readonly auth = {
+    login: (data: { email: string; password: string }): Promise<{ token: string; user: User }> =>
+      this.post('/auth/login', data),
+    me: (): Promise<User> => this.get<User>('/auth/me'),
+    logout: (): Promise<{ message: string }> => this.post('/auth/logout', {}),
+  };
+
+  // ===== Dashboard Stats =====
+  readonly dashboard = {
+    stats: (): Promise<{ users: number; bootcamps: number; contents: number; inquiries: number }> =>
+      this.get('/dashboard/stats'),
+  };
 }
+
