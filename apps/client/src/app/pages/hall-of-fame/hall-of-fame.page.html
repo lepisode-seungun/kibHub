@@ -5,55 +5,49 @@
   <section class="hall-of-fame" id="hall-of-fame">
     <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">명예의전당</h2>
 
-    @for (row of cardRows; track $index) {
-      <div class="card-row">
-        @for (card of row; track card.id) {
-          <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
-            <div class="card-thumbnail" [style.background]="card.thumbnailGradient">
-              <div class="card-thumbnail-overlay">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex flex-col gap-3 px-1">
-              <div class="flex gap-1.5 items-center">
-                @if (card.badgeText) {
-                  <span class="badge badge--accent">{{ card.badgeText }}</span>
-                }
-                <span class="badge badge--outline">{{ card.statusText }}</span>
-              </div>
-              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
-              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0">{{ card.summary }}</p>
-            </div>
-          </article>
-        }
+    @if (isLoading()) {
+      <div class="flex flex-col justify-center items-center py-20 w-full">
+        <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#7A48FF" stroke-width="4"></circle>
+          <path class="opacity-75" fill="#7A48FF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="font-suit font-medium text-sm text-zinc-400 mt-3">명예의 전당 포트폴리오를 불러오는 중입니다...</span>
       </div>
+    } @else if (cards.length === 0) {
+      <div class="flex flex-col justify-center items-center py-20 w-full border border-dashed border-zinc-800 rounded-2xl bg-[#121118]">
+        <span class="font-suit font-semibold text-lg text-zinc-300">등록된 명예의 전당 포트폴리오가 없습니다.</span>
+        <span class="font-suit font-medium text-sm text-zinc-500 mt-1">관리자 페이지에서 명예의 전당 포트폴리오를 등록해 보세요.</span>
+      </div>
+    } @else {
+      @for (row of cardRows; track $index) {
+        <div class="card-row">
+          @for (card of row; track card.id) {
+            <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
+              <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
+                @if (card.thumbnailUrl) {
+                  <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
+                }
+                <div class="card-thumbnail-overlay">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3 px-1">
+                <div class="flex gap-1.5 items-center">
+                  @if (card.badgeText) {
+                    <span class="badge badge--accent">{{ card.badgeText }}</span>
+                  }
+                  <span class="badge badge--outline">{{ card.statusText }}</span>
+                </div>
+                <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
+                <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0 line-clamp-2">{{ card.summary }}</p>
+              </div>
+            </article>
+          }
+        </div>
+      }
     }
-
-    <!-- Loading Spinner -->
-    <div class="flex flex-col justify-center items-center py-10 w-full">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-        <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
-          <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
-          <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
-          <animate id="a3" fill="freeze" attributeName="x" begin="a7.end" dur="0.2s" values="13;1"/>
-          <animate id="a4b" fill="freeze" attributeName="y" begin="a10.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
-          <animate id="a5" fill="freeze" attributeName="y" begin="a1.end" dur="0.2s" values="13;1"/>
-          <animate id="a6" fill="freeze" attributeName="x" begin="a2.end" dur="0.2s" values="1;13"/>
-          <animate id="a7b" fill="freeze" attributeName="y" begin="a3.end" dur="0.2s" values="1;13"/>
-          <animate id="a8" fill="freeze" attributeName="x" begin="a4b.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
-          <animate id="a4" fill="freeze" attributeName="x" begin="a5.end" dur="0.2s" values="13;1"/>
-          <animate id="a7" fill="freeze" attributeName="y" begin="a6.end" dur="0.2s" values="13;1"/>
-          <animate id="a10" fill="freeze" attributeName="x" begin="a7b.end" dur="0.2s" values="1;13"/>
-          <animate id="a12" fill="freeze" attributeName="y" begin="a8.end" dur="0.2s" values="1;13"/>
-        </rect>
-      </svg>
-    </div>
   </section>
 
   <!-- 상세 모달 -->
@@ -80,7 +74,7 @@
           </div>
 
           <div class="flex gap-5 w-full">
-            <div class="hof-modal-thumb" [style.background]="selectedCard()!.thumbnailGradient"></div>
+            <div class="hof-modal-thumb" [style.background]="selectedCard()!.thumbnailUrl ? 'url(' + selectedCard()!.thumbnailUrl + ') center/cover no-repeat' : selectedCard()!.thumbnailGradient"></div>
             <div class="flex flex-col gap-3 flex-1">
               <h3 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">{{ selectedCard()!.title }}</h3>
               <div class="flex flex-col gap-2">
@@ -95,15 +89,18 @@
                 <div class="flex items-center gap-2">
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">런칭 플랫폼</span>
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.platform }}</span>
-                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-accent cursor-pointer hover:opacity-80">바로가기 &gt;</span>
+                  @if (selectedCard()!.platformLink && selectedCard()!.platformLink !== '#') {
+                    <a [href]="selectedCard()!.platformLink" target="_blank" rel="noopener noreferrer" class="font-suit font-medium text-sm leading-[150%] tracking-tight text-accent hover:opacity-80 no-underline ml-1">바로가기 &gt;</a>
+                  }
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="flex flex-col gap-3 p-5 w-full bg-zinc-800/50 rounded-xl box-border">
-            <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">작품 소개</span>
-            <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-300 m-0">{{ selectedCard()!.description }}</p>
+          <!-- 작품소개 상세 -->
+          <div class="flex flex-col gap-2 p-4 bg-[#141318] rounded-xl border border-zinc-800">
+            <span class="font-suit font-semibold text-sm text-zinc-400">작품 소개</span>
+            <p class="font-suit font-medium text-sm leading-[160%] text-zinc-200 m-0 whitespace-pre-wrap">{{ selectedCard()!.description || '등록된 작품 소개가 없습니다.' }}</p>
           </div>
         </div>
       </div>

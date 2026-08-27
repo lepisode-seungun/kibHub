@@ -38,22 +38,27 @@ export class HallOfFamePage implements OnInit, OnDestroy {
     this.isLoading.set(true);
     try {
       const data = await this.api.portfolios.findHallOfFame();
-      this.cards = data.map((p: any, i: number) => ({
-        id: p.id,
-        thumbnailGradient: this.gradients[i % this.gradients.length],
-        thumbnailUrl: p.thumbnail || '',
-        badgeText: null,
-        statusText: p.genre || '',
-        bootcampName: p.bootcampName || '',
-        summary: p.workIntro || '',
-        link: p.launchUrl || '#',
-        title: p.workTitle || '',
-        studentName: p.userName || p.authorName || '',
-        cohort: p.bootcampName || '',
-        platform: p.launchPlatform || '',
-        platformLink: p.launchUrl || '#',
-        description: p.workIntro || '',
-      }));
+      this.cards = data.map((p: any, i: number) => {
+        const bgStyle = p.thumbnail
+          ? `url('${p.thumbnail}') center/cover no-repeat`
+          : this.gradients[i % this.gradients.length];
+        return {
+          id: p.id,
+          thumbnailGradient: bgStyle,
+          thumbnailUrl: p.thumbnail || '',
+          badgeText: p.genre || '명예의 전당',
+          statusText: p.userName ? `${p.userName} 수강생` : '수강생',
+          bootcampName: p.workTitle || p.bootcampName || '작품명 미정',
+          summary: p.workIntro || p.bootcampName || '',
+          link: p.launchUrl || '#',
+          title: p.workTitle || '작품명 미정',
+          studentName: p.userName || p.authorName || '수강생',
+          cohort: p.bootcampName || '',
+          platform: p.launchPlatform || '플랫폼',
+          platformLink: p.launchUrl || '#',
+          description: p.workIntro || '',
+        };
+      });
     } catch (e) {
       console.error('포트폴리오 로드 실패:', e);
     } finally {
