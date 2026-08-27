@@ -3,7 +3,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
 
-const BUCKET = 'uploads';
+const BUCKET = 'kiphub';
 
 const IMAGE_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
 const VIDEO_MIME = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];

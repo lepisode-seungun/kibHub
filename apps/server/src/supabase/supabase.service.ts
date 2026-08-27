@@ -52,8 +52,20 @@ export class SupabaseService implements OnModuleInit {
       .from(bucket)
       .getPublicUrl(path);
 
+    // Public 버킷이면 publicUrl 사용, Private면 signed URL 사용
+    let url = urlData.publicUrl;
+
+    // Private 버킷 대비: signed URL 생성 (1년)
+    const { data: signedData } = await this.client.storage
+      .from(bucket)
+      .createSignedUrl(path, 60 * 60 * 24 * 365);
+
+    if (signedData?.signedUrl) {
+      url = signedData.signedUrl;
+    }
+
     return {
-      url: urlData.publicUrl,
+      url,
       path,
     };
   }
