@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../../../prisma/generated/prisma/client';
+import { CreateCourseDto, CreateLectureDto, CreateAssignmentDto } from '@kibhub/shared';
 
 @Injectable()
 export class CoursesService {
@@ -9,9 +11,7 @@ export class CoursesService {
   findAllByBootcamp(bootcampId: number) {
     return this.prisma.course.findMany({
       where: { bootcampId },
-      include: {
-        _count: { select: { lectures: true, assignments: true } },
-      },
+      include: { _count: { select: { lectures: true, assignments: true } } },
       orderBy: { sortOrder: 'asc' },
     });
   }
@@ -26,12 +26,12 @@ export class CoursesService {
     });
   }
 
-  createCourse(bootcampId: number, data: any) {
-    return this.prisma.course.create({ data: { ...data, bootcampId } });
+  createCourse(bootcampId: number, data: CreateCourseDto) {
+    return this.prisma.course.create({ data: { ...data, bootcampId } as Prisma.CourseUncheckedCreateInput });
   }
 
-  updateCourse(id: number, data: any) {
-    return this.prisma.course.update({ where: { id }, data });
+  updateCourse(id: number, data: Partial<CreateCourseDto>) {
+    return this.prisma.course.update({ where: { id }, data: data as Prisma.CourseUpdateInput });
   }
 
   deleteCourse(id: number) {
@@ -47,12 +47,12 @@ export class CoursesService {
     });
   }
 
-  createLecture(courseId: number, data: any) {
-    return this.prisma.lecture.create({ data: { ...data, courseId } });
+  createLecture(courseId: number, data: CreateLectureDto) {
+    return this.prisma.lecture.create({ data: { ...data, courseId } as Prisma.LectureUncheckedCreateInput });
   }
 
-  updateLecture(id: number, data: any) {
-    return this.prisma.lecture.update({ where: { id }, data });
+  updateLecture(id: number, data: Partial<CreateLectureDto>) {
+    return this.prisma.lecture.update({ where: { id }, data: data as Prisma.LectureUpdateInput });
   }
 
   deleteLecture(id: number) {
@@ -68,12 +68,12 @@ export class CoursesService {
     });
   }
 
-  createAssignment(courseId: number, data: any) {
-    return this.prisma.assignment.create({ data: { ...data, courseId } });
+  createAssignment(courseId: number, data: CreateAssignmentDto) {
+    return this.prisma.assignment.create({ data: { ...data, courseId } as Prisma.AssignmentUncheckedCreateInput });
   }
 
-  updateAssignment(id: number, data: any) {
-    return this.prisma.assignment.update({ where: { id }, data });
+  updateAssignment(id: number, data: Partial<CreateAssignmentDto>) {
+    return this.prisma.assignment.update({ where: { id }, data: data as Prisma.AssignmentUpdateInput });
   }
 
   deleteAssignment(id: number) {

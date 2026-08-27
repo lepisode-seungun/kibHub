@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BootcampsService } from './bootcamps.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,7 +10,7 @@ export class BootcampsController {
   constructor(private bootcampsService: BootcampsService) {}
 
   @Get()
-  findAll(@Query() query: { search?: string; status?: string }) {
+  findAll(@Query() query: { search?: string; status?: string; page?: string; limit?: string }) {
     return this.bootcampsService.findAll(query);
   }
 

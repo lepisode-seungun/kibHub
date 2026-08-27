@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PortfoliosService } from './portfolios.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,7 +10,7 @@ export class PortfoliosController {
   constructor(private portfoliosService: PortfoliosService) {}
 
   @Get()
-  findAll(@Query() query: { search?: string; isHallOfFame?: string }) {
+  findAll(@Query() query: { search?: string; isHallOfFame?: string; page?: string; limit?: string }) {
     const isHallOfFame = query.isHallOfFame === 'true' ? true : query.isHallOfFame === 'false' ? false : undefined;
     return this.portfoliosService.findAll({ search: query.search, isHallOfFame });
   }

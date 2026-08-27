@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NoticesService } from './notices.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,7 +10,7 @@ export class NoticesController {
   constructor(private noticesService: NoticesService) {}
 
   @Get('notices')
-  findAll(@Query() query: { search?: string; type?: string }) {
+  findAll(@Query() query: { search?: string; type?: string; page?: string; limit?: string }) {
     return this.noticesService.findAll(query);
   }
 

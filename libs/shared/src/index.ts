@@ -7,3 +7,4 @@ export * from './bootcamp.types';
 export * from './content.types';
 export * from './portfolio.types';
 export * from './support.types';
+export * from './pagination.types';

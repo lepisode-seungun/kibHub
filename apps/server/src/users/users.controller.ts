@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+﻿import { Controller, Get, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,7 +10,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll(@Query() query: { search?: string; status?: string; role?: string }) {
+  findAll(@Query() query: { search?: string; status?: string; role?: string; page?: string; limit?: string }) {
     return this.usersService.findAll(query);
   }
 

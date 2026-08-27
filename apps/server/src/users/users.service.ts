@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../../../../prisma/generated/prisma/client';
+import { UpdateUserDto, PaginatedResponse } from '@kibhub/shared';
+import { paginate, parsePagination } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(query?: { search?: string; status?: string; role?: string }) {
-    const where: any = {};
-    if (query?.status) where.status = query.status;
-    if (query?.role) where.role = query.role;
+  async findAll(query?: { search?: string; status?: string; role?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
+    const where: Prisma.UserWhereInput = {};
+    if (query?.status) where.status = query.status as Prisma.UserWhereInput['status'];
+    if (query?.role) where.role = query.role as Prisma.UserWhereInput['role'];
     if (query?.search) {
       where.OR = [
         { email: { contains: query.search, mode: 'insensitive' } },
@@ -16,15 +19,21 @@ export class UsersService {
         { nickname: { contains: query.search, mode: 'insensitive' } },
       ];
     }
-    return this.prisma.user.findMany({
-      where,
-      select: {
-        id: true, email: true, nickname: true, name: true, phone: true,
-        countryCode: true, role: true, status: true, adminRole: true,
-        loginId: true, createdAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const select = {
+      id: true, email: true, nickname: true, name: true, phone: true,
+      countryCode: true, role: true, status: true, adminRole: true,
+      loginId: true, createdAt: true,
+    };
+
+    if (query?.page || query?.limit) {
+      const { page, limit, skip } = parsePagination(query);
+      const [data, total] = await Promise.all([
+        this.prisma.user.findMany({ where, select, orderBy: { createdAt: 'desc' }, skip, take: limit }),
+        this.prisma.user.count({ where }),
+      ]);
+      return paginate(data, total, page, limit);
+    }
+    return this.prisma.user.findMany({ where, select, orderBy: { createdAt: 'desc' } });
   }
 
   findOne(id: number) {
@@ -40,8 +49,8 @@ export class UsersService {
     });
   }
 
-  update(id: number, data: any) {
-    return this.prisma.user.update({ where: { id }, data });
+  update(id: number, data: UpdateUserDto) {
+    return this.prisma.user.update({ where: { id }, data: data as Prisma.UserUpdateInput });
   }
 
   updateStatus(id: number, status: 'ACTIVE' | 'BLOCKED') {
@@ -49,7 +58,10 @@ export class UsersService {
   }
 
   updateRole(id: number, role: string) {
-    return this.prisma.user.update({ where: { id }, data: { role: role as any } });
+    return this.prisma.user.update({
+      where: { id },
+      data: { role: role as Prisma.UserUpdateInput['role'] },
+    });
   }
 
   delete(id: number) {

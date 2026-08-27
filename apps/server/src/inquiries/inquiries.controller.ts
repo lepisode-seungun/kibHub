@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { InquiriesService } from './inquiries.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -11,7 +11,7 @@ export class InquiriesController {
   constructor(private inquiriesService: InquiriesService) {}
 
   @Get()
-  findAll(@Query() query: { search?: string; status?: string }) {
+  findAll(@Query() query: { search?: string; status?: string; page?: string; limit?: string }) {
     return this.inquiriesService.findAll(query);
   }
 

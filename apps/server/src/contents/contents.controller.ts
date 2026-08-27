@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+﻿import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ContentsService } from './contents.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -12,7 +12,7 @@ export class ContentsController {
 
   // ===== 콘텐츠 =====
   @Get('contents')
-  findAll(@Query() query: { search?: string; status?: string; type?: string }) {
+  findAll(@Query() query: { search?: string; status?: string; type?: string; page?: string; limit?: string }) {
     return this.contentsService.findAll(query);
   }
 
