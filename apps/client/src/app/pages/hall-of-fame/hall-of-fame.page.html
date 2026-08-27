@@ -1,5 +1,5 @@
 <main class="flex flex-col min-h-screen bg-[#09090B]">
-  <app-hero-banner />
+  <app-hero-banner (cardClick)="openCard($event)" />
 
   <!-- Hall of Fame Cards Section -->
   <section class="hall-of-fame" id="hall-of-fame">

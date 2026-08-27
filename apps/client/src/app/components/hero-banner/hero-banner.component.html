@@ -6,14 +6,27 @@
     class="banner-bg-svg"
   />
 
-  <!-- 임시 하드코딩 텍스트 (추후 유동 데이터로 교체) -->
+  <!-- 타이틀 -->
   <h1 class="banner-title">수강생 명예의 전당</h1>
 
-  <!-- Real Data Cards Overlay (image only, matching Figma) -->
+  <!-- Real Data Cards Overlay (matching bottom card layout and Figma positions) -->
   @for (card of floatingCards; track card.id; let i = $index) {
     <article class="floating-card"
              [attr.data-pos]="i"
-             [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ') center/cover no-repeat' : card.thumbnailGradient">
+             (click)="onSelectCard(card)"
+             (keydown.enter)="onSelectCard(card)"
+             role="button"
+             tabindex="0">
+      <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
+        @if (card.thumbnailUrl) {
+          <img [src]="card.thumbnailUrl" [alt]="card.title || card.bootcampName" class="w-full h-full object-cover rounded-lg" />
+        }
+        <div class="card-thumbnail-overlay">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
     </article>
   }
 </section>

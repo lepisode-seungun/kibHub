@@ -99,7 +99,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
     return card.id;
   }
 
-  openCard(card: PortfolioCard): void {
+  openCard(card: PortfolioCard | any): void {
     this.selectedCard.set(card);
     document.body.style.overflow = 'hidden';
   }
