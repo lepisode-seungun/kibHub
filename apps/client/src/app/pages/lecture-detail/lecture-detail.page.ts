@@ -45,13 +45,34 @@ export class LectureDetailPage implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.lectureId = params.get('lectureId') || '';
+      if (this.lectureId) {
+        await this.loadLecture(Number(this.lectureId));
+      }
     });
     this.route.queryParamMap.subscribe((qp) => {
       this.returnTab = qp.get('tab') || '';
     });
+  }
+
+  private async loadLecture(id: number): Promise<void> {
+    try {
+      const lecture: any = await this.api.lectures.findOne(id);
+      this.lectureTitle = lecture.title || '';
+      this.description = lecture.body || lecture.description || '';
+      this.duration = lecture.duration || '';
+      this.category = lecture.category || '';
+      if (lecture.course) {
+        this.courseLabel = lecture.course.title || '';
+      }
+      if (lecture.files && lecture.files.length > 0) {
+        this.learningFiles = lecture.files.map((f: any) => ({ name: f.name, url: f.url }));
+      }
+    } catch (err) {
+      console.error('강의 로드 실패:', err);
+    }
   }
 
   returnTab = '';

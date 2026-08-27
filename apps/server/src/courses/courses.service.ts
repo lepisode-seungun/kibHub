@@ -47,6 +47,14 @@ export class CoursesService {
     });
   }
 
+  findLecture(id: number) {
+    return this.prisma.lecture.findUnique({
+      where: { id },
+      include: { files: true, course: { select: { id: true, title: true, bootcampId: true } } },
+    });
+  }
+
+
   createLecture(courseId: number, data: CreateLectureDto) {
     return this.prisma.lecture.create({ data: { ...data, courseId } as Prisma.LectureUncheckedCreateInput });
   }
@@ -67,6 +75,14 @@ export class CoursesService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  findAssignment(id: number) {
+    return this.prisma.assignment.findUnique({
+      where: { id },
+      include: { files: true, course: { select: { id: true, title: true, bootcampId: true } } },
+    });
+  }
+
 
   createAssignment(courseId: number, data: CreateAssignmentDto) {
     return this.prisma.assignment.create({ data: { ...data, courseId } as Prisma.AssignmentUncheckedCreateInput });

@@ -20,6 +20,7 @@ interface UploadedFile {
 export class AssignmentSubmitPage {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private api = inject(ApiService);
 
   bootcampId = '';
   assignmentId = '';
@@ -29,13 +30,9 @@ export class AssignmentSubmitPage {
 
   title = '';
   content = '';
+  isSubmitting = signal(false);
 
-  uploadedFiles: UploadedFile[] = [
-    { name: '첨부파일명', extension: 'jpg', size: '93KB', status: 'uploading' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-    { name: '첨부파일명', extension: 'hwp', size: '93KB', status: 'done' },
-  ];
+  uploadedFiles = signal<{ name: string; extension: string; size: string; status: 'uploading' | 'done' | 'error'; url?: string; path?: string }[]>([]);
 
   constructor() {
     this.route.params.subscribe((params) => {
@@ -45,7 +42,6 @@ export class AssignmentSubmitPage {
   }
 
   selectDetailTab(tab: string): void {
-    // 탭 전환시 해당 페이지로 이동
     this.activeDetailTab.set(tab);
   }
 
@@ -56,10 +52,10 @@ export class AssignmentSubmitPage {
   }
 
   removeFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
+    this.uploadedFiles.update(files => files.filter((_, i) => i !== index));
   }
 
-  onFileSelect(event: Event): void {
+  async onFileSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
 
@@ -67,12 +63,27 @@ export class AssignmentSubmitPage {
       const file = input.files[i];
       const ext = file.name.split('.').pop() || '';
       const sizeKB = Math.round(file.size / 1024);
-      this.uploadedFiles.push({
+      const idx = this.uploadedFiles().length;
+
+      // UI에 uploading 상태로 추가
+      this.uploadedFiles.update(files => [...files, {
         name: file.name.replace(`.${ext}`, ''),
         extension: ext,
         size: `${sizeKB}KB`,
-        status: 'done',
-      });
+        status: 'uploading' as const,
+      }]);
+
+      // Supabase 업로드
+      try {
+        const result = await this.api.upload.single(file, 'assignments');
+        this.uploadedFiles.update(files => files.map((f, j) =>
+          j === idx ? { ...f, status: 'done' as const, url: result.url, path: result.path } : f
+        ));
+      } catch {
+        this.uploadedFiles.update(files => files.map((f, j) =>
+          j === idx ? { ...f, status: 'error' as const } : f
+        ));
+      }
     }
     input.value = '';
   }
@@ -81,8 +92,22 @@ export class AssignmentSubmitPage {
     this.goBack();
   }
 
-  onSubmit(): void {
-    // TODO: API 연동 — FormData로 title, content, files 전송
-    this.goBack();
+  async onSubmit(): Promise<void> {
+    if (this.isSubmitting()) return;
+    this.isSubmitting.set(true);
+    try {
+      // TODO: 과제 제출 API (서버에 과제 답변 엔드포인트 필요)
+      console.log('Submit:', {
+        assignmentId: this.assignmentId,
+        title: this.title,
+        content: this.content,
+        files: this.uploadedFiles().filter(f => f.status === 'done').map(f => ({ url: f.url, name: f.name + '.' + f.extension })),
+      });
+      this.goBack();
+    } catch (err) {
+      console.error('제출 실패:', err);
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 }

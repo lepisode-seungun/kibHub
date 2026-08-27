@@ -44,11 +44,13 @@ export class ApiService {
   // ===== Lectures =====
   readonly lectures = {
     findByCourse: (courseId: number): Promise<Lecture[]> => this.get<Lecture[]>(`/courses/${courseId}/lectures`),
+    findOne: (id: number): Promise<Lecture> => this.get<Lecture>(`/lectures/${id}`),
   };
 
   // ===== Assignments =====
   readonly assignments = {
     findByCourse: (courseId: number): Promise<Assignment[]> => this.get<Assignment[]>(`/courses/${courseId}/assignments`),
+    findOne: (id: number): Promise<Assignment> => this.get<Assignment>(`/assignments/${id}`),
   };
 
   // ===== Applicants =====

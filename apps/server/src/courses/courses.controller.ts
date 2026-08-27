@@ -44,6 +44,12 @@ export class CoursesController {
     return this.coursesService.findLectures(courseId);
   }
 
+  @Get('lectures/:id')
+  findLecture(@Param('id', ParseIntPipe) id: number) {
+    return this.coursesService.findLecture(id);
+  }
+
+
   @Post('courses/:courseId/lectures')
   @UseGuards(AuthGuard)
   createLecture(@Param('courseId', ParseIntPipe) courseId: number, @Body() data: CreateLectureDto) {
@@ -67,6 +73,12 @@ export class CoursesController {
   findAssignments(@Param('courseId', ParseIntPipe) courseId: number) {
     return this.coursesService.findAssignments(courseId);
   }
+
+  @Get('assignments/:id')
+  findAssignment(@Param('id', ParseIntPipe) id: number) {
+    return this.coursesService.findAssignment(id);
+  }
+
 
   @Post('courses/:courseId/assignments')
   @UseGuards(AuthGuard)

@@ -69,6 +69,7 @@ export class ApiService {
   // ===== Lectures =====
   readonly lectures = {
     findByCourse: (courseId: number): Promise<Lecture[]> => this.get<Lecture[]>(`/courses/${courseId}/lectures`),
+    findOne: (id: number): Promise<Lecture> => this.get<Lecture>(`/lectures/${id}`),
     create: (courseId: number, data: Partial<Lecture>): Promise<Lecture> => this.post<Lecture>(`/courses/${courseId}/lectures`, data),
     update: (id: number, data: Partial<Lecture>): Promise<Lecture> => this.patch<Lecture>(`/lectures/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/lectures/${id}`),
@@ -77,6 +78,7 @@ export class ApiService {
   // ===== Assignments =====
   readonly assignments = {
     findByCourse: (courseId: number): Promise<Assignment[]> => this.get<Assignment[]>(`/courses/${courseId}/assignments`),
+    findOne: (id: number): Promise<Assignment> => this.get<Assignment>(`/assignments/${id}`),
     create: (courseId: number, data: Partial<Assignment>): Promise<Assignment> => this.post<Assignment>(`/courses/${courseId}/assignments`, data),
     update: (id: number, data: Partial<Assignment>): Promise<Assignment> => this.patch<Assignment>(`/assignments/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/assignments/${id}`),

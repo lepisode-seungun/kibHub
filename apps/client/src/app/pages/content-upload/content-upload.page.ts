@@ -143,8 +143,37 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     this.isAlbumModalOpen.set(true);
   }
 
-  onContentFileSelect(): void {
-    // TODO: 콘텐츠 파일 업로드 로직
+  async onContentFileSelect(): Promise<void> {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = async () => {
+      if (!input.files) return;
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const id = Date.now() + i;
+        const sizeKB = (file.size / 1024).toFixed(2);
+
+        // UI에 uploading 상태로 추가
+        this.contentItems.update(items => [...items, {
+          id, fileName: file.name, size: `${sizeKB}KB`, thumbnailUrl: '', status: 'uploading' as const,
+        }]);
+
+        // Supabase 업로드
+        try {
+          const result = await this.api.upload.single(file, 'contents');
+          this.contentItems.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'done' as const, thumbnailUrl: result.url } : item
+          ));
+        } catch {
+          this.contentItems.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'error' as const } : item
+          ));
+        }
+      }
+    };
+    input.click();
   }
 
   removeContentItem(id: number): void {
