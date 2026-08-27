@@ -11,7 +11,9 @@
 
   <!-- Real Data Cards Overlay (image only, matching Figma) -->
   @for (card of floatingCards; track card.id; let i = $index) {
-    <article class="floating-card" [attr.data-pos]="i" [style.background]="card.thumbnailGradient">
+    <article class="floating-card"
+             [attr.data-pos]="i"
+             [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ') center/cover no-repeat' : card.thumbnailGradient">
     </article>
   }
 </section>
