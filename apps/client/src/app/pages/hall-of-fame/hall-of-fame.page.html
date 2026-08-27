@@ -22,10 +22,7 @@
       <div class="hall-of-fame-grid">
         @for (card of cards; track card.id) {
           <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
-            <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
-              @if (card.thumbnailUrl) {
-                <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
-              }
+            <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ') center/cover no-repeat' : card.thumbnailGradient">
               <div class="card-thumbnail-overlay">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
