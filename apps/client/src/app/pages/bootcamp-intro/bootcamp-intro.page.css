@@ -57,10 +57,29 @@
 .cards-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   padding: 0;
   gap: 24px;
   width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cards-row.dragging {
+  cursor: grabbing;
+}
+
+.cards-row.dragging * {
+  cursor: grabbing;
+}
+
+.cards-row::-webkit-scrollbar {
+  display: none;
 }
 
 /* ===== 부트캠프 카드 ===== */
@@ -70,11 +89,13 @@
   align-items: flex-start;
   padding: 0;
   gap: 20px;
-  flex: 1;
-  min-width: 0;
+  /* 4개 기준: (100% - 3 * 24px gap) / 4 */
+  flex: 0 0 calc((100% - 72px) / 4);
+  min-width: 240px;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  scroll-snap-align: start;
 }
 
 /* 썸네일 */
@@ -86,6 +107,7 @@
   background-position: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .card-thumbnail:hover {
@@ -193,7 +215,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 100px 200px;
   gap: 100px;
   width: 100%;
@@ -207,8 +229,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0;
-  gap: 60px;
+  padding: 60px 0 0 0;
+  gap: 36px;
   flex: 1;
   min-width: 0;
   max-width: 500px;
@@ -272,6 +294,60 @@
   align-items: center;
   gap: 24px;
   width: 100%;
+}
+
+/* 동적 콘텐츠 (에디터에서 생성된 HTML) — innerHTML에 적용 */
+:host ::ng-deep .academy-dynamic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  gap: 0;
+}
+
+:host ::ng-deep .academy-dynamic h2 {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+  margin: 0 0 48px 0;
+}
+
+:host ::ng-deep .academy-dynamic h2 + h2 {
+  margin-top: -40px;
+}
+
+:host ::ng-deep .academy-dynamic h2 br {
+  display: block;
+  content: "";
+  margin: 0;
+  line-height: 0;
+}
+
+:host ::ng-deep .academy-dynamic h3 {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+  margin: 0 0 12px 0;
+}
+
+:host ::ng-deep .academy-dynamic p,
+:host ::ng-deep .academy-dynamic div {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
+  margin: 0;
 }
 
 /* ===== 우측: 710×589.28 비율 컨테이너 ===== */
@@ -390,7 +466,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 0;
+  gap: 16px;
 }
 
 .feature-banner-row {
@@ -398,9 +474,15 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
 }
 
+.feature-banner-sep {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+  font-weight: 400;
+  user-select: none;
+}
 /* 코너 다이아몬드 — 컨테이너 기준 */
 .corner-dot {
   position: absolute;
@@ -527,12 +609,8 @@
     padding: 60px 40px;
   }
 
-  .cards-row {
-    flex-wrap: wrap;
-  }
-
   .bootcamp-card {
-    flex: 0 0 calc(50% - 12px);
+    flex: 0 0 calc((100% - 48px) / 3);
   }
 
   .academy-section {

@@ -114,34 +114,30 @@ export class HomePage implements AfterViewInit, OnInit {
   private async loadBootcamps(): Promise<void> {
     try {
       const bootcamps = await this.api.bootcamps.findAll();
-      if (bootcamps.length > 0) {
-        this.bootcampCards = bootcamps.map((b, i) => ({
-          id: b.id,
-          title: b.name,
-          description: b.description || '',
-          thumbnailGradient: this.gradients[i % this.gradients.length],
-          status: b.status === 'RECRUITING' ? '모집중' : '모집 마감',
-          deadline: '',
-        }));
-      }
+      this.bootcampCards = bootcamps.map((b, i) => ({
+        id: b.id,
+        title: b.name,
+        description: b.description || '',
+        thumbnailGradient: this.gradients[i % this.gradients.length],
+        status: b.status === 'RECRUITING' ? '모집중' : '모집 마감',
+        deadline: '',
+      }));
     } catch (e) {
-      console.error('부트칠프 로드 실패:', e);
+      console.error('부트캠프 로드 실패:', e);
     }
   }
 
   private async loadContents(): Promise<void> {
     try {
       const contents = await this.api.contents.findAll();
-      if (contents.length > 0) {
-        this.contentCards = contents.slice(0, 12).map((c, i) => ({
-          id: c.id,
-          userName: c.author?.nickname || c.author?.name || 'user',
-          title: c.title,
-          thumbnailGradient: this.gradients[i % this.gradients.length],
-          rank: i < 4 ? i + 1 : null,
-          featured: i === 2,
-        }));
-      }
+      this.contentCards = contents.slice(0, 12).map((c, i) => ({
+        id: c.id,
+        userName: c.author?.nickname || c.author?.name || 'user',
+        title: c.title,
+        thumbnailGradient: this.gradients[i % this.gradients.length],
+        rank: i < 4 ? i + 1 : null,
+        featured: i === 2,
+      }));
     } catch (e) {
       console.error('콘텐츠 로드 실패:', e);
     }
@@ -193,26 +189,7 @@ export class HomePage implements AfterViewInit, OnInit {
   }
 
   /* ===== Bootcamp ===== */
-  bootcampCards: BootcampCard[] = [
-    {
-      id: 1, title: '케나즈 아카데미 초급반',
-      description: '웹툰의 입문자, 초보자를 위한 커리큘럼',
-      thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      status: '모집중', deadline: '01.15 모집 마감',
-    },
-    {
-      id: 2, title: '케나즈 아카데미 중급반',
-      description: '실전 웹툰 제작을 위한 심화 과정',
-      thumbnailGradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      status: '모집중', deadline: '02.28 모집 마감',
-    },
-    {
-      id: 3, title: '케나즈 아카데미 고급반',
-      description: '글로벌 진출을 위한 프로 과정',
-      thumbnailGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      status: '모집 마감', deadline: '12.31 마감',
-    },
-  ];
+  bootcampCards: BootcampCard[] = [];
 
   scrollBootcampRight(): void {
     this.bootcampTrack.nativeElement.scrollBy({ left: 280, behavior: 'smooth' });
@@ -244,22 +221,7 @@ export class HomePage implements AfterViewInit, OnInit {
 
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
 
-  contentCards: ContentCard[] = [
-    { id: 1, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', rank: 1, featured: false },
-    { id: 2, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', rank: 1, featured: false },
-    { id: 3, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', rank: 1, featured: true,
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      commenter: 'yomi13', commentTime: '2분 전' },
-    { id: 4, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', rank: 1, featured: false },
-    { id: 5, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', rank: null, featured: false },
-    { id: 6, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)', rank: 1, featured: false },
-    { id: 7, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)', rank: 1, featured: false },
-    { id: 8, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)', rank: 1, featured: false },
-    { id: 9, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)', rank: 1, featured: false },
-    { id: 10, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)', rank: 1, featured: false },
-    { id: 11, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #f5576c 0%, #ff6a88 100%)', rank: 1, featured: false },
-    { id: 12, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #00c6fb 100%)', rank: 1, featured: false },
-  ];
+  contentCards: ContentCard[] = [];
 
   selectCategory(id: string): void {
     this.activeCategory.set(id);
@@ -313,20 +275,5 @@ export class HomePage implements AfterViewInit, OnInit {
   }
 
   /* ===== More Content ===== */
-  moreContentCards: ContentCard[] = [
-    { id: 101, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', rank: 1, featured: false },
-    { id: 102, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', rank: 1, featured: false },
-    { id: 103, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', rank: 1, featured: true,
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      commenter: 'yomi13', commentTime: '2분 전' },
-    { id: 104, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', rank: 1, featured: false },
-    { id: 105, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', rank: null, featured: false },
-    { id: 106, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)', rank: 1, featured: false },
-    { id: 107, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)', rank: 1, featured: false },
-    { id: 108, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)', rank: 1, featured: false },
-    { id: 109, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)', rank: 1, featured: false },
-    { id: 110, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)', rank: 1, featured: false },
-    { id: 111, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #f5576c 0%, #ff6a88 100%)', rank: 1, featured: false },
-    { id: 112, userName: 'newon', title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #00c6fb 100%)', rank: 1, featured: false },
-  ];
+  moreContentCards: ContentCard[] = [];
 }

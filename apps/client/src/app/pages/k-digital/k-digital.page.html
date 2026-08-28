@@ -26,11 +26,17 @@
       <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0 flex-1">부트캠프</h2>
     </div>
 
-    <!-- 1행 -->
-    <div class="kd-row">
-      @for (card of bootcampCards.slice(0, 4); track card.id) {
+    <!-- 동적 그리드 -->
+    <div class="kd-grid">
+      @for (card of bootcampCards(); track card.id) {
         <a class="kd-card" [routerLink]="['/k-digital', card.id]">
-          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
+          @if (card.thumbnailUrl) {
+            <div class="kd-thumb">
+              <img [src]="card.thumbnailUrl" alt="" class="w-full h-full object-cover" />
+            </div>
+          } @else {
+            <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
+          }
           <div class="flex flex-col gap-3 px-1">
             <div class="flex gap-1.5 items-center">
               <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
@@ -45,66 +51,30 @@
       }
     </div>
 
-    <!-- 2행 -->
-    <div class="kd-row">
-      @for (card of bootcampCards.slice(4, 8); track card.id) {
-        <a class="kd-card" [routerLink]="['/k-digital', card.id]">
-          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
-          <div class="flex flex-col gap-3 px-1">
-            <div class="flex gap-1.5 items-center">
-              <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
-              @if (card.deadline) {
-                <span class="flex items-center justify-center px-2 py-0.5 border border-zinc-500 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">{{ card.deadline }}</span>
-              }
-            </div>
-            <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.name }}</h3>
-            <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0">{{ card.summary }}</p>
-          </div>
-        </a>
+    <!-- 무한 스크롤 센티널 + 로딩 스피너 -->
+    <div #scrollSentinel class="flex flex-col justify-center items-center py-10 w-full" style="min-height: 60px;">
+      @if (isLoading()) {
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+          <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+            <animate id="kd1" fill="freeze" attributeName="x" begin="0;kd12.end" dur="0.2s" values="1;13"/>
+            <animate id="kd2" fill="freeze" attributeName="y" begin="kd4.end" dur="0.2s" values="1;13"/>
+            <animate id="kd3" fill="freeze" attributeName="x" begin="kd7.end" dur="0.2s" values="13;1"/>
+            <animate id="kd4b" fill="freeze" attributeName="y" begin="kd10.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+            <animate id="kd5" fill="freeze" attributeName="y" begin="kd1.end" dur="0.2s" values="13;1"/>
+            <animate id="kd6" fill="freeze" attributeName="x" begin="kd2.end" dur="0.2s" values="1;13"/>
+            <animate id="kd7b" fill="freeze" attributeName="y" begin="kd3.end" dur="0.2s" values="1;13"/>
+            <animate id="kd8" fill="freeze" attributeName="x" begin="kd4b.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+            <animate id="kd4" fill="freeze" attributeName="x" begin="kd5.end" dur="0.2s" values="13;1"/>
+            <animate id="kd7" fill="freeze" attributeName="y" begin="kd6.end" dur="0.2s" values="13;1"/>
+            <animate id="kd10" fill="freeze" attributeName="x" begin="kd7b.end" dur="0.2s" values="1;13"/>
+            <animate id="kd12" fill="freeze" attributeName="y" begin="kd8.end" dur="0.2s" values="1;13"/>
+          </rect>
+        </svg>
       }
-    </div>
-
-    <!-- 3행 -->
-    <div class="kd-row">
-      @for (card of bootcampCards.slice(8, 12); track card.id) {
-        <a class="kd-card" [routerLink]="['/k-digital', card.id]">
-          <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>
-          <div class="flex flex-col gap-3 px-1">
-            <div class="flex gap-1.5 items-center">
-              <span [ngClass]="card.status === 'recruiting' ? 'kd-status-badge kd-status--recruiting' : (card.status === 'closed' ? 'kd-status-badge kd-status--closed' : 'kd-status-badge')">{{ card.statusText }}</span>
-              @if (card.deadline) {
-                <span class="flex items-center justify-center px-2 py-0.5 border border-zinc-500 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-300">{{ card.deadline }}</span>
-              }
-            </div>
-            <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.name }}</h3>
-            <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0">{{ card.summary }}</p>
-          </div>
-        </a>
-      }
-    </div>
-
-    <!-- Loading Spinner -->
-    <div class="flex flex-col justify-center items-center py-10 w-full">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-        <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
-          <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
-          <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
-          <animate id="a3" fill="freeze" attributeName="x" begin="a7.end" dur="0.2s" values="13;1"/>
-          <animate id="a4b" fill="freeze" attributeName="y" begin="a10.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
-          <animate id="a5" fill="freeze" attributeName="y" begin="a1.end" dur="0.2s" values="13;1"/>
-          <animate id="a6" fill="freeze" attributeName="x" begin="a2.end" dur="0.2s" values="1;13"/>
-          <animate id="a7b" fill="freeze" attributeName="y" begin="a3.end" dur="0.2s" values="1;13"/>
-          <animate id="a8" fill="freeze" attributeName="x" begin="a4b.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
-          <animate id="a4" fill="freeze" attributeName="x" begin="a5.end" dur="0.2s" values="13;1"/>
-          <animate id="a7" fill="freeze" attributeName="y" begin="a6.end" dur="0.2s" values="13;1"/>
-          <animate id="a10" fill="freeze" attributeName="x" begin="a7b.end" dur="0.2s" values="1;13"/>
-          <animate id="a12" fill="freeze" attributeName="y" begin="a8.end" dur="0.2s" values="1;13"/>
-        </rect>
-      </svg>
     </div>
   </section>
 </main>

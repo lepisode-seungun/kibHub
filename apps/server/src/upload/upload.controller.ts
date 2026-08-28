@@ -2,7 +2,6 @@ import { Inject, Controller,
   Post,
   Delete,
   Body,
-  UseGuards,
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
@@ -10,14 +9,12 @@ import { Inject, Controller,
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ApiTags, ApiConsumes, ApiBody, ApiOperation } from '@nestjs/swagger';
-import { AuthGuard } from '../auth/auth.guard';
 import { UploadService, UploadResult } from './upload.service';
 
 const multerOptions = { storage: memoryStorage() };
 
 @ApiTags('upload')
 @Controller('upload')
-@UseGuards(AuthGuard)
 export class UploadController {
   constructor(@Inject(UploadService) private uploadService: UploadService) {}
 

@@ -53,48 +53,17 @@
   z-index: 10;
   width: 10.125%;    /* 194.4 / 1920 */
   aspect-ratio: 194.4 / 127.8;
-  border-radius: 8px;
+  border-radius: 5px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
 }
 
-.card-thumbnail {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.card-thumbnail-overlay {
-  position: absolute;
-  top: 8px; right: 8px;
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  border-radius: 6px;
-  color: #FFFFFF;
-  opacity: 0;
-  transform: translate(3px, -3px);
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 2;
-}
-
 .floating-card:hover {
-  box-shadow: 0 24px 48px rgba(122, 72, 255, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 24px 48px rgba(122, 72, 255, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.3);
   z-index: 20;
-  transform: scale(1.08) translateY(-6px) !important;
-}
-
-.floating-card:hover .card-thumbnail-overlay {
-  opacity: 1;
-  transform: translate(0, 0);
+  transform: scale(1.06) translateY(-6px) !important;
 }
 
 /* Exact positions from Figma SVG rect coordinates (x/1920, y/440) */

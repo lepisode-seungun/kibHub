@@ -13,11 +13,19 @@
     </div>
 
     <!-- 카드 목록 -->
-    <div class="cards-row">
-      @for (card of bootcampCards; track card.id) {
-        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]">
+    <div class="cards-row" #cardsRow
+         (mousedown)="onCardsMouseDown($event)"
+         (mouseleave)="onCardsMouseUp()">
+      @for (card of bootcampCards(); track card.id) {
+        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]" (click)="onCardClick($event, card.id)">
           <!-- 썸네일 -->
-          <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
+          @if (card.thumbnailUrl) {
+            <div class="card-thumbnail">
+              <img [src]="card.thumbnailUrl" alt="" class="w-full h-full object-cover" />
+            </div>
+          } @else {
+            <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
+          }
 
           <!-- 카드 정보 -->
           <div class="card-info">
@@ -48,29 +56,33 @@
     <div class="academy-left">
       <span class="academy-label">Introducing Our Academy</span>
 
-      <div class="academy-text-block">
-        <h2 class="academy-headline">
-          " 상상하는 모든 이야기를 현실로 "<br />
-          글로벌 웹툰 작가에 도전하세요!
-        </h2>
+      @if (academyIntroHtml()) {
+        <div class="academy-text-block academy-dynamic" [innerHTML]="academyIntroHtml()"></div>
+      } @else {
+        <div class="academy-text-block">
+          <h2 class="academy-headline">
+            " 상상하는 모든 이야기를 현실로 "<br />
+            글로벌 웹툰 작가에 도전하세요!
+          </h2>
 
-        <div class="academy-description-group">
-          <p class="academy-description">
-            상상으로만 펼쳐나가던 나의 세상.<br />
-            어디서 부터 어떻게 기획을 하고 만들어나갈지 막막했<br />던 이야기<br />
-            진학을 고민하는 학생, 비전을 고민하는 직장인,<br />
-            마음 속에 꿈을 품었던 그 누구라도 도전할 수 있습니다.
-          </p>
-          <p class="academy-description">
-            웹툰의 기초, 프로그램 사용법부터 기획, 제작, 완성까<br />지 !<br />
-            모듈화로 진행되는 코스를 통해 반복 학습은 물론
-            단계를 밟아 차근차근 배워나갑니다.
-          </p>
-          <p class="academy-description">
-            국내 정식 연재부터 글로벌 연재의 기회를 잡아보세요.
-          </p>
+          <div class="academy-description-group">
+            <p class="academy-description">
+              상상으로만 펼쳐나가던 나의 세상.<br />
+              어디서 부터 어떻게 기획을 하고 만들어나갈지 막막했<br />던 이야기<br />
+              진학을 고민하는 학생, 비전을 고민하는 직장인,<br />
+              마음 속에 꿈을 품었던 그 누구라도 도전할 수 있습니다.
+            </p>
+            <p class="academy-description">
+              웹툰의 기초, 프로그램 사용법부터 기획, 제작, 완성까<br />지 !<br />
+              모듈화로 진행되는 코스를 통해 반복 학습은 물론
+              단계를 밟아 차근차근 배워나갑니다.
+            </p>
+            <p class="academy-description">
+              국내 정식 연재부터 글로벌 연재의 기회를 잡아보세요.
+            </p>
+          </div>
         </div>
-      </div>
+      }
     </div>
 
     <!-- 우측: 비주얼 영역 (710×589.28 비율 컨테이너) -->
@@ -92,10 +104,10 @@
       <div class="feature-banner">
         <div class="feature-banner-inner">
           <div class="feature-banner-row">
-            <span class="feature-banner-text">웹툰 실무 전문 커리큘럼ㆍ</span>
+            <span class="feature-banner-text">웹툰 실무 전문 커리큘럼</span>
+            <span class="feature-banner-sep">·</span>
             <span class="feature-banner-text">현업 전문가 맞춤 피드백</span>
-          </div>
-          <div class="feature-banner-row">
+            <span class="feature-banner-sep">·</span>
             <span class="feature-banner-text">글로벌 진출 올인원 서포트</span>
           </div>
         </div>
@@ -134,15 +146,19 @@
   <!-- 비디오 프리뷰 섹션 -->
   <section class="video-preview-section" id="video-preview">
     <div class="video-card">
-      <!-- 재생 버튼 -->
-      <button class="play-btn" aria-label="영상 재생">
-        <svg class="play-circle" width="81" height="81" viewBox="0 0 81 81" fill="none">
-          <circle cx="40.385" cy="40.385" r="39.385" stroke="#FFFFFF" stroke-width="2"/>
-        </svg>
-        <svg class="play-icon" width="30" height="30" viewBox="0 0 30 30" fill="none">
-          <polygon points="5,0 30,15 5,30" fill="#D9D9D9"/>
-        </svg>
-      </button>
+      @if (videoEmbedUrl()) {
+        <iframe [src]="videoEmbedUrl()" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="border-radius: 20px;"></iframe>
+      } @else {
+        <!-- 재생 버튼 (폴백) -->
+        <button class="play-btn" aria-label="영상 재생">
+          <svg class="play-circle" width="81" height="81" viewBox="0 0 81 81" fill="none">
+            <circle cx="40.385" cy="40.385" r="39.385" stroke="#FFFFFF" stroke-width="2"/>
+          </svg>
+          <svg class="play-icon" width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <polygon points="5,0 30,15 5,30" fill="#D9D9D9"/>
+          </svg>
+        </button>
+      }
     </div>
   </section>
 

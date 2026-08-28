@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
@@ -12,6 +13,7 @@ export interface BootcampCard {
   statusText: string;
   deadline: string | null;
   thumbnailGradient: string;
+  thumbnailUrl: string | null;
 }
 
 @Component({
@@ -31,64 +33,119 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     'linear-gradient(135deg, #4facfe, #00f2fe)',
   ];
 
-  ngOnInit(): void { this.loadBootcamps(); }
+  private sanitizer = inject(DomSanitizer);
+
+  academyIntroHtml = signal<SafeHtml | null>(null);
+  videoEmbedUrl = signal<any>(null);
+
+  ngOnInit(): void {
+    this.loadBootcamps();
+    this.loadAcademyIntro();
+    this.loadVideoUrl();
+  }
+
+  private async loadAcademyIntro(): Promise<void> {
+    try {
+      const result = await this.api.siteSettings.get('academy_intro');
+      if (result.value) {
+        this.academyIntroHtml.set(this.sanitizer.bypassSecurityTrustHtml(result.value));
+      }
+    } catch (e) {
+      console.error('소개 콘텐츠 로드 실패:', e);
+    }
+  }
+
+  private async loadVideoUrl(): Promise<void> {
+    try {
+      const result = await this.api.siteSettings.get('video_url');
+      if (result.value) {
+        const embedUrl = this.toVideoEmbed(result.value);
+        this.videoEmbedUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl));
+      }
+    } catch (e) {
+      console.error('영상 URL 로드 실패:', e);
+    }
+  }
+
+  private toVideoEmbed(url: string): string {
+    // Vimeo
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    if (url.includes('player.vimeo.com')) return url;
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    if (url.includes('youtube.com/embed')) return url;
+    return url;
+  }
 
   private async loadBootcamps(): Promise<void> {
     try {
       const data = await this.api.bootcamps.findAll();
-      if (data.length > 0) {
-        this.bootcampCards = data.map((b, i) => ({
-          id: b.id,
-          name: b.name,
-          summary: b.description || '',
-          status: b.status === 'RECRUITING' ? 'recruiting' as const : 'closed' as const,
-          statusText: b.status === 'RECRUITING' ? '모집중' : '모집마감',
-          deadline: null,
-          thumbnailGradient: this.gradients[i % this.gradients.length],
-        }));
-      }
+      this.bootcampCards.set(data.map((b, i) => ({
+        id: b.id,
+        name: b.name,
+        summary: b.description || '',
+        status: b.status === 'RECRUITING' ? 'recruiting' as const : 'closed' as const,
+        statusText: b.status === 'RECRUITING' ? '모집중' : '모집마감',
+        deadline: null,
+        thumbnailGradient: this.gradients[i % this.gradients.length],
+        thumbnailUrl: b.thumbnail || null,
+      })));
     } catch (e) {
-      console.error('부트칠프 로드 실패:', e);
+      console.error('부트캠프 로드 실패:', e);
     }
   }
-  bootcampCards: BootcampCard[] = [
-    {
-      id: 1,
-      name: '케나즈 초급반 13기',
-      summary: '기초부터 탄탄하게',
-      status: 'recruiting',
-      statusText: '모집중',
-      deadline: '01.15 모집 마감',
-      thumbnailGradient: 'linear-gradient(135deg, #5a3a8c, #2a1a50)',
-    },
-    {
-      id: 2,
-      name: '케나즈 중급반 8기',
-      summary: '실전 웹툰 제작',
-      status: 'recruiting',
-      statusText: '모집중',
-      deadline: '01.15 모집 마감',
-      thumbnailGradient: 'linear-gradient(135deg, #667eea, #764ba2)',
-    },
-    {
-      id: 3,
-      name: '캐릭터 디자인 5기',
-      summary: '매력적인 캐릭터 만들기',
-      status: 'closed',
-      statusText: '모집마감',
-      deadline: null,
-      thumbnailGradient: 'linear-gradient(135deg, #f093fb, #f5576c)',
-    },
-    {
-      id: 4,
-      name: '스토리텔링 마스터',
-      summary: '이야기의 힘을 배우다',
-      status: 'recruiting',
-      statusText: '모집중',
-      deadline: '01.15 모집 마감',
-      thumbnailGradient: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-    },
-  ];
+  bootcampCards = signal<BootcampCard[]>([]);
+
+  // ===== 카드 드래그 스크롤 =====
+  @ViewChild('cardsRow') cardsRowRef!: ElementRef<HTMLDivElement>;
+  private isCardsDragging = false;
+  private hasDragged = false;
+  private cardsDragStartX = 0;
+  private cardsScrollLeft = 0;
+
+  onCardsMouseDown(event: MouseEvent): void {
+    const el = this.cardsRowRef?.nativeElement;
+    if (!el) return;
+    event.preventDefault();
+    this.isCardsDragging = true;
+    this.hasDragged = false;
+    this.cardsDragStartX = event.pageX - el.offsetLeft;
+    this.cardsScrollLeft = el.scrollLeft;
+    el.classList.add('dragging');
+    document.addEventListener('mousemove', this.boundCardsMouseMove);
+    document.addEventListener('mouseup', this.boundCardsMouseUp);
+  }
+
+  onCardsMouseUp(): void {
+    this.isCardsDragging = false;
+    this.cardsRowRef?.nativeElement?.classList.remove('dragging');
+    document.removeEventListener('mousemove', this.boundCardsMouseMove);
+    document.removeEventListener('mouseup', this.boundCardsMouseUp);
+  }
+
+  onCardClick(event: MouseEvent, cardId: number): void {
+    if (this.hasDragged) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+  }
+
+  private boundCardsMouseMove = (e: MouseEvent): void => {
+    if (!this.isCardsDragging) return;
+    e.preventDefault();
+    this.hasDragged = true;
+    const el = this.cardsRowRef.nativeElement;
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - this.cardsDragStartX) * 1.5;
+    el.scrollLeft = this.cardsScrollLeft - walk;
+  };
+
+  private boundCardsMouseUp = (): void => {
+    this.onCardsMouseUp();
+  };
 
   // History 쇼케이스 캐러셀
   showcaseImages: string[] = [
@@ -189,5 +246,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     document.removeEventListener('mousemove', this.boundMouseMove);
     document.removeEventListener('mouseup', this.boundMouseUp);
+    document.removeEventListener('mousemove', this.boundCardsMouseMove);
+    document.removeEventListener('mouseup', this.boundCardsMouseUp);
   }
 }

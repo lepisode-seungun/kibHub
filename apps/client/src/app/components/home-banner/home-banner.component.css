@@ -28,6 +28,10 @@
   z-index: 1;
 }
 
+.banner-bg--empty {
+  object-fit: unset;
+}
+
 /* ===== Text + Controls Overlay ===== */
 .banner-overlay {
   position: relative;

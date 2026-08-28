@@ -22,6 +22,7 @@ export interface CreateBootcampDto {
   name: string;
   instructorName?: string;
   description?: string;
+  thumbnail?: string;
   startDate?: Date | string;
   endDate?: Date | string;
 }

@@ -1,39 +1,55 @@
 <section class="home-banner" id="home-banner">
-  <!-- Full Background SVG -->
-  <img
-    class="banner-bg"
-    src="home-banner-illustration.svg"
-    alt=""
-    aria-hidden="true"
-  />
+  <!-- Full Background — 슬라이드별 이미지 동적 전환 -->
+  @if (totalSlides > 0) {
+    @if (hasImage) {
+      <img
+        class="banner-bg"
+        [src]="activeSlide.pcImage!"
+        alt=""
+        aria-hidden="true"
+      />
+    } @else {
+      <div class="banner-bg banner-bg--empty"
+           style="background: linear-gradient(135deg, #1a1033 0%, #0d0b1a 40%, #12101f 100%);"></div>
+    }
+  } @else {
+    <div class="banner-bg banner-bg--empty"
+         style="background: linear-gradient(135deg, #1a1033 0%, #0d0b1a 40%, #12101f 100%);"></div>
+  }
 
   <!-- Text + Controls Overlay -->
   <div class="banner-overlay">
-    <div class="flex flex-col items-start gap-3">
-      <h2 class="banner-title">{{ activeSlide.title }}</h2>
-      <p class="banner-subtitle">{{ activeSlide.subtitle }}</p>
-    </div>
+    @if (totalSlides > 0) {
+      <div class="flex flex-col items-start gap-3">
+        <h2 class="banner-title">{{ activeSlide.title }}</h2>
+        <p class="banner-subtitle">{{ activeSlide.subtitle }}</p>
+      </div>
 
-    <!-- Slider Controls -->
-    <div class="flex items-center gap-6 w-full">
-      <div class="banner-pagination">
-        <button class="banner-arrow" aria-label="이전 슬라이드" (click)="prevSlide()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ currentSlide() + 1 }}</span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">/</span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">{{ totalSlides }}</span>
-        <button class="banner-arrow" aria-label="다음 슬라이드" (click)="nextSlide()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+      <!-- Slider Controls -->
+      <div class="flex items-center gap-6 w-full">
+        <div class="banner-pagination">
+          <button class="banner-arrow" aria-label="이전 슬라이드" (click)="prevSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ currentSlide() + 1 }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">/</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">{{ totalSlides }}</span>
+          <button class="banner-arrow" aria-label="다음 슬라이드" (click)="nextSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="banner-progress-track">
+          <div class="banner-progress-bar" [style.width.%]="progressPercent"></div>
+        </div>
       </div>
-      <div class="banner-progress-track">
-        <div class="banner-progress-bar" [style.width.%]="progressPercent"></div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-2 w-full" style="opacity: 0.5;">
+        <span class="font-suit font-medium text-base text-zinc-500">등록된 배너가 없습니다</span>
       </div>
-    </div>
+    }
   </div>
 </section>

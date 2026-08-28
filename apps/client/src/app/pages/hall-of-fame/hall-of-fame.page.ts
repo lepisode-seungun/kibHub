@@ -1,6 +1,6 @@
-import { Component, signal, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeroBannerComponent } from '../../components/hero-banner/hero-banner.component';
+import { HeroBannerComponent, FloatingCard } from '../../components/hero-banner/hero-banner.component';
 import { ApiService } from '../../services/api.service';
 
 interface PortfolioCard {
@@ -38,7 +38,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
     this.isLoading.set(true);
     try {
       const data = await this.api.portfolios.findHallOfFame();
-      this.cards = data.map((p: any, i: number) => {
+      this.cards.set(data.map((p: any, i: number) => {
         const bgStyle = p.thumbnail
           ? `url('${p.thumbnail}') center/cover no-repeat`
           : this.gradients[i % this.gradients.length];
@@ -58,7 +58,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
           platformLink: p.launchUrl || '#',
           description: p.workIntro || '',
         };
-      });
+      }));
     } catch (e) {
       console.error('포트폴리오 로드 실패:', e);
     } finally {
@@ -85,21 +85,34 @@ export class HallOfFamePage implements OnInit, OnDestroy {
     'linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)',
   ];
 
-  cards: PortfolioCard[] = [];
+  cards = signal<PortfolioCard[]>([]);
 
-  get cardRows(): PortfolioCard[][] {
+  /** 히어로 배너에 전달할 카드 (최대 6장) */
+  bannerCards = computed<FloatingCard[]>(() =>
+    this.cards().map(c => ({
+      id: c.id,
+      bootcampName: c.bootcampName,
+      summary: c.summary,
+      statusText: c.statusText,
+      thumbnailGradient: c.thumbnailGradient,
+      thumbnailUrl: c.thumbnailUrl,
+    }))
+  );
+
+  cardRows = computed<PortfolioCard[][]>(() => {
     const rows: PortfolioCard[][] = [];
-    for (let i = 0; i < this.cards.length; i += 4) {
-      rows.push(this.cards.slice(i, i + 4));
+    const allCards = this.cards();
+    for (let i = 0; i < allCards.length; i += 4) {
+      rows.push(allCards.slice(i, i + 4));
     }
     return rows;
-  }
+  });
 
   trackByCardId(_index: number, card: PortfolioCard): number {
     return card.id;
   }
 
-  openCard(card: PortfolioCard | any): void {
+  openCard(card: PortfolioCard): void {
     this.selectedCard.set(card);
     document.body.style.overflow = 'hidden';
   }

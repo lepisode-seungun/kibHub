@@ -1,16 +1,27 @@
 <div class="editor-wrapper">
   <!-- 툴바 -->
   <div class="editor-toolbar">
-    <!-- 폰트 크기 드롭다운 -->
-    <div class="toolbar-group">
-      <button class="toolbar-btn font-size-btn" title="글꼴 크기">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M7.35 1C7.676 1 7.969 1.197 8.091 1.499L12.641 12.699C12.808 13.108 12.611 13.575 12.201 13.741C11.792 13.908 11.325 13.71 11.159 13.301L9.798 9.95H4.903L3.541 13.301C3.375 13.71 2.908 13.908 2.499 13.741C2.09 13.575 1.893 13.108 2.059 12.699L6.609 1.499C6.732 1.197 7.025 1 7.35 1ZM5.553 8.35H9.148L7.35 3.926L5.553 8.35Z" fill="#6B7280"/>
-        </svg>
+    <!-- Heading 드롭다운 -->
+    <div class="toolbar-group" style="position: relative;">
+      <button class="toolbar-btn font-size-btn" title="글꼴 크기" (click)="toggleHeadingMenu()">
+        <span class="font-suit font-medium text-sm text-gray-600">{{ currentHeading() }}</span>
         <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
           <path d="M4.121 4.845L6.835 2.934C7.184 2.594 6.943 2 6.456 2H1.544C1.057 2 0.816 2.594 1.165 2.934L3.121 4.845C3.332 5.052 3.668 5.052 3.879 4.845Z" fill="#8A9099"/>
         </svg>
       </button>
+      @if (headingOpen()) {
+        <div class="heading-dropdown">
+          <button class="heading-option" (click)="setHeading('h2', '헤드라인')">
+            <span style="font-size: 20px; font-weight: 700;">헤드라인</span>
+          </button>
+          <button class="heading-option" (click)="setHeading('h3', '서브타이틀')">
+            <span style="font-size: 16px; font-weight: 600;">서브타이틀</span>
+          </button>
+          <button class="heading-option" (click)="setHeading('p', '본문')">
+            <span style="font-size: 14px; font-weight: 400;">본문</span>
+          </button>
+        </div>
+      }
     </div>
 
     <div class="toolbar-divider"></div>
@@ -95,9 +106,11 @@
 
   <!-- 에디터 영역 -->
   <div class="editor-content"
+       #editorContent
        contenteditable="true"
        [attr.data-placeholder]="placeholder()"
        [style.min-height]="minHeight()"
-       (input)="onInput($event)">
+       (input)="onInput($event)"
+       (keydown)="onKeydown($event)">
   </div>
 </div>

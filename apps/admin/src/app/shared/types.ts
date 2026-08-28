@@ -29,6 +29,10 @@ export type {
 } from '@kibhub/shared';
 
 export type {
+  Banner, CreateBannerDto,
+} from '@kibhub/shared';
+
+export type {
   Notice, CreateNoticeDto, Faq, CreateFaqDto,
   Inquiry, CreateInquiryDto, InquiryReplyDto,
 } from '@kibhub/shared';

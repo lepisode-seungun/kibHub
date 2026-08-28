@@ -51,10 +51,15 @@
   <!-- 탭 콘텐츠 -->
   @if (activeTab() === 'intro') {
     <div class="flex flex-col gap-4">
-      <adm-text-editor placeholder="소개 내용을 입력하세요."></adm-text-editor>
+      <adm-text-editor
+        placeholder="소개 내용을 입력하세요."
+        [content]="academyIntroContent()"
+        (contentChange)="onAcademyIntroChange($event)"
+      ></adm-text-editor>
       <div class="flex justify-end">
         <button class="flex items-center justify-center px-3 py-2 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-                style="min-width: 71px;">
+                style="min-width: 71px;"
+                (click)="saveAcademyIntro()">
           저장
         </button>
       </div>
@@ -80,12 +85,13 @@
         <!-- 데이터 그리드 -->
         <adm-data-grid
           [columns]="bannerColumns"
-          [data]="bannerData"
+          [data]="bannerData()"
           [contextMenuItems]="['숨김', '수정', '삭제']"
           (contextMenuSelect)="onBannerContextMenu($event)"
           searchPlaceholder="검색어를 입력하세요">
           <button gridActions
-                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap">
+                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                  (click)="openBannerDrawer()">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
             </svg>
@@ -142,7 +148,11 @@
 
         <!-- 영상 미리보기 -->
         <div class="flex items-center justify-center p-6 rounded-xl" style="background: #F9FAFB; min-height: 514px;">
-          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">영상 미리보기</span>
+          @if (vimeoEmbedUrl()) {
+            <iframe [src]="vimeoEmbedUrl()" width="100%" height="480" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="border-radius: 8px;"></iframe>
+          } @else {
+            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">영상 미리보기</span>
+          }
         </div>
       }
 
@@ -169,9 +179,11 @@
           [columns]="posterColumns"
           [data]="posterData"
           [contextMenuItems]="['수정', '삭제']"
+          (contextMenuSelect)="onPosterContextMenu($event)"
           searchPlaceholder="검색어를 입력하세요">
           <button gridActions
-                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap">
+                  class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+                  (click)="openPosterDrawer('add')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
             </svg>
@@ -577,94 +589,22 @@
       </div>
 
       <!-- 이미지(PC) * -->
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-1">
-          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지(PC)</span>
-          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
-        </div>
-        <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
-            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
-            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
-          </svg>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
-        </div>
-        <input type="file" id="pcImageInput" accept="image/*" class="hidden" (change)="onImageSelected($event, 'pc')"/>
-        <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
-             style="min-height: 103px;"
-             (click)="triggerFileInput('pcImageInput')">
-          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
-            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
-          </svg>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
-        </div>
-        @if (pcImage()) {
-          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
-            <img [src]="pcImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
-            <div class="flex items-center justify-between flex-1">
-              <div class="flex flex-col gap-1">
-                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ pcImage()!.name }}</span>
-                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ pcImage()!.size }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
-                  <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
-                </svg>
-                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeImage('pc'); $event.stopPropagation()">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
+      <adm-image-upload
+        #pcUpload
+        label="이미지(PC)"
+        [required]="true"
+        hint="실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다."
+        (fileChange)="onPcImageChange($event)"
+      />
 
       <!-- 이미지(모바일) * -->
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-1">
-          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지(모바일)</span>
-          <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
-        </div>
-        <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
-            <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
-            <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
-          </svg>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
-        </div>
-        <input type="file" id="mobileImageInput" accept="image/*" class="hidden" (change)="onImageSelected($event, 'mobile')"/>
-        <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
-             style="min-height: 103px;"
-             (click)="triggerFileInput('mobileImageInput')">
-          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
-            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
-          </svg>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
-        </div>
-        @if (mobileImage()) {
-          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
-            <img [src]="mobileImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
-            <div class="flex items-center justify-between flex-1">
-              <div class="flex flex-col gap-1">
-                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ mobileImage()!.name }}</span>
-                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ mobileImage()!.size }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
-                  <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
-                </svg>
-                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removeImage('mobile'); $event.stopPropagation()">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
+      <adm-image-upload
+        #mobileUpload
+        label="이미지(모바일)"
+        [required]="true"
+        hint="실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다."
+        (fileChange)="onMobileImageChange($event)"
+      />
 
       <!-- 링크 -->
       <div class="flex flex-col gap-2">
@@ -797,6 +737,95 @@
       <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
               (click)="submitHistoryItemDrawer()">
         {{ historyItemMode() === 'add' ? '등록' : '수정' }}
+      </button>
+    </div>
+
+  </div>
+}
+
+<!-- ===== 포스터 등록/수정 사이드 드로어 ===== -->
+@if (showPosterDrawer()) {
+  <div class="fixed inset-0 z-[9998]" (click)="closePosterDrawer()"></div>
+  <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closePosterDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">
+      {{ posterDrawerMode() === 'add' ? '포스터 등록' : '포스터 수정' }}
+    </h4>
+
+    <!-- 이미지 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-1">
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">이미지</span>
+        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
+      </div>
+      <div class="flex items-start gap-2 px-2 py-1 rounded-md self-start" style="background: #D9E9FE;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="flex-shrink-0 mt-0.5">
+          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+          <text x="8" y="12" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="600" font-family="SUIT, sans-serif">i</text>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">실적 이미지로 지정하는 이미지는 납품실적에 배치됩니다.</span>
+      </div>
+      <input type="file" id="posterImageInput" accept="image/*" class="hidden" (change)="onPosterImageSelected($event)"/>
+      <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
+           style="min-height: 103px;"
+           (click)="triggerFileInput('posterImageInput')">
+        <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+          <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
+        </svg>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400 mt-2">사진 또는 파일을 드래그 할 수 있어요</span>
+      </div>
+      @if (posterImage()) {
+        <div class="flex items-start gap-2.5 p-2.5 bg-white border border-slate-200 rounded-md">
+          <img [src]="posterImage()!.preview" alt="" class="w-[35px] h-[46px] rounded object-cover"/>
+          <div class="flex items-center justify-between flex-1">
+            <div class="flex flex-col gap-1">
+              <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ posterImage()!.name }}</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ posterImage()!.size }}</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <svg width="15" height="12" viewBox="0 0 15 12" fill="none">
+                <path d="M4.65833 8.81667L1.18333 5.34167L0 6.51667L4.65833 11.175L14.6583 1.175L13.4833 0L4.65833 8.81667Z" fill="#10B981"/>
+              </svg>
+              <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0" (click)="removePosterImage(); $event.stopPropagation()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 5l10 10M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 제목 * -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="포스터 제목을 입력하세요"
+             [value]="posterForm().title"
+             (input)="updatePosterField('title', $event)"/>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex-1 flex flex-col justify-end">
+      <button class="w-full h-10 flex items-center justify-center bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitPosterDrawer()">
+        {{ posterDrawerMode() === 'add' ? '등록' : '수정' }}
       </button>
     </div>
 

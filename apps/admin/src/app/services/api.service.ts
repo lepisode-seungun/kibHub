@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   User, Bootcamp, Course, Lecture, Assignment, Applicant,
-  Content, ContentCategory, Comment, Report, Portfolio,
+  Content, ContentCategory, Comment, Report, Portfolio, Banner,
   Notice, Faq, Inquiry,
   CreateBootcampDto, UpdateUserDto, CreateNoticeDto, CreateFaqDto,
   CreatePortfolioDto, CreateContentDto, InquiryReplyDto, CreateReportDto,
-  ContentStatus,
+  CreateBannerDto, ContentStatus,
 } from '../shared/types';
 
 const BASE = '/api';
@@ -30,6 +30,10 @@ export class ApiService {
 
   private del<T>(url: string): Promise<T> {
     return firstValueFrom(this.http.delete<T>(`${BASE}${url}`, { withCredentials: true }));
+  }
+
+  private put<T>(url: string, body: unknown): Promise<T> {
+    return firstValueFrom(this.http.put<T>(`${BASE}${url}`, body, { withCredentials: true }));
   }
 
   // ===== Users =====
@@ -142,6 +146,16 @@ export class ApiService {
     delete: (id: number): Promise<void> => this.del<void>(`/portfolios/${id}`),
   };
 
+  // ===== Banners =====
+  readonly banners = {
+    findAll: (): Promise<Banner[]> => this.get<Banner[]>('/banners'),
+    findVisible: (): Promise<Banner[]> => this.get<Banner[]>('/banners/visible'),
+    findOne: (id: number): Promise<Banner> => this.get<Banner>(`/banners/${id}`),
+    create: (data: CreateBannerDto): Promise<Banner> => this.post<Banner>('/banners', data),
+    update: (id: number, data: Partial<CreateBannerDto>): Promise<Banner> => this.patch<Banner>(`/banners/${id}`, data),
+    delete: (id: number): Promise<void> => this.del<void>(`/banners/${id}`),
+  };
+
   // ===== Notices =====
   readonly notices = {
     findAll: (query?: Record<string, string>): Promise<Notice[]> => {
@@ -218,5 +232,11 @@ export class ApiService {
     /** 파일 삭제 */
     delete: (path: string): Promise<{ success: boolean }> =>
       this.del(`/upload?path=${encodeURIComponent(path)}`),
+  };
+
+  // ===== Site Settings =====
+  readonly siteSettings = {
+    get: (key: string): Promise<{ key: string; value: string }> => this.get(`/site-settings/${key}`),
+    set: (key: string, value: string): Promise<{ key: string; value: string }> => this.put(`/site-settings/${key}`, { value }),
   };
 }

@@ -13,6 +13,8 @@ import { FaqsModule } from './faqs/faqs.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { UploadModule } from './upload/upload.module';
+import { BannersModule } from './banners/banners.module';
+import { SiteSettingsModule } from './site-settings/site-settings.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { UploadModule } from './upload/upload.module';
     InquiriesModule,
     SupabaseModule,
     UploadModule,
+    BannersModule,
+    SiteSettingsModule,
   ],
 })
 export class AppModule {}

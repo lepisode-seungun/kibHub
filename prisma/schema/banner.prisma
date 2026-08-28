@@ -1,0 +1,14 @@
+// ===== 메인 배너 =====
+model Banner {
+  id          Int           @id @default(autoincrement())
+  status      ContentStatus @default(VISIBLE)
+  header      String
+  content     String        @default("")
+  link        String?
+  vimeoLink   String?
+  pcImage     String?
+  mobileImage String?
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   User, Bootcamp, Course, Lecture, Assignment, Applicant,
-  Content, Comment, Report, Portfolio, Notice, Faq, Inquiry,
+  Content, Comment, Report, Portfolio, Banner, Notice, Faq, Inquiry,
   CreateContentDto, CreateReportDto, UpdateUserDto,
 } from '@kibhub/shared';
 
@@ -32,6 +32,8 @@ export class ApiService {
   // ===== Bootcamps =====
   readonly bootcamps = {
     findAll: (): Promise<Bootcamp[]> => this.get<Bootcamp[]>('/bootcamps'),
+    findPaged: (page: number, limit: number): Promise<{ data: Bootcamp[]; meta: { total: number; page: number; limit: number; totalPages: number } }> =>
+      this.get(`/bootcamps?page=${page}&limit=${limit}`),
     findOne: (id: number): Promise<Bootcamp> => this.get<Bootcamp>(`/bootcamps/${id}`),
   };
 
@@ -76,6 +78,11 @@ export class ApiService {
     },
     findHallOfFame: (): Promise<Portfolio[]> => this.get<Portfolio[]>('/portfolios/hall-of-fame'),
     findOne: (id: number): Promise<Portfolio> => this.get<Portfolio>(`/portfolios/${id}`),
+  };
+
+  // ===== Banners =====
+  readonly banners = {
+    findVisible: (): Promise<Banner[]> => this.get<Banner[]>('/banners/visible'),
   };
 
   // ===== Notices =====
@@ -166,5 +173,10 @@ export class ApiService {
     /** 파일 삭제 */
     delete: (path: string): Promise<{ success: boolean }> =>
       this.del(`/upload?path=${encodeURIComponent(path)}`),
+  };
+
+  // ===== Site Settings =====
+  readonly siteSettings = {
+    get: (key: string): Promise<{ key: string; value: string }> => this.get(`/site-settings/${key}`),
   };
 }

@@ -1,6 +1,7 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
@@ -23,7 +24,7 @@ function toBootcampRow(b: Bootcamp): BootcampRow {
 @Component({
   selector: 'adm-bootcamp',
   standalone: true,
-  imports: [CommonModule, DataGridComponent],
+  imports: [CommonModule, DataGridComponent, ImageUploadComponent],
   templateUrl: './bootcamp.page.html',
   styleUrl: './bootcamp.page.css',
 })
@@ -78,7 +79,9 @@ export class BootcampPage implements OnInit {
     startDate: '',
     endDate: '',
   });
-  drawerThumbnail = signal<{ name: string; size: string; preview: string } | null>(null);
+
+  @ViewChild('thumbnailUpload') thumbnailUploadRef!: ImageUploadComponent;
+  thumbnailData = signal<ImageUploadData | null>(null);
 
   openDrawer(): void { this.drawerOpen.set(true); }
   closeDrawer(): void { this.drawerOpen.set(false); }
@@ -88,39 +91,33 @@ export class BootcampPage implements OnInit {
     this.drawerForm.update(f => ({ ...f, [field]: value }));
   }
 
-  onDrawerThumbnailSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.drawerThumbnail.set({
-        name: file.name,
-        size: `${Math.round(file.size / 1024)}KB`,
-        preview: reader.result as string,
-      });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  removeDrawerThumbnail(): void { this.drawerThumbnail.set(null); }
-
-  triggerFileInput(id: string): void {
-    document.getElementById(id)?.click();
+  onThumbnailChange(data: ImageUploadData | null): void {
+    this.thumbnailData.set(data);
   }
 
   async registerBootcamp(): Promise<void> {
     const form = this.drawerForm();
     try {
+      // 썸네일 업로드
+      let thumbnailUrl: string | undefined;
+      const thumb = this.thumbnailData();
+      if (thumb) {
+        const result = await this.api.upload.single(thumb.file, 'bootcamps');
+        thumbnailUrl = result.url;
+      }
+
       await this.api.bootcamps.create({
         name: form.bootcampName,
         instructorName: form.name,
         description: form.workIntro,
+        thumbnail: thumbnailUrl,
         startDate: form.startDate ? new Date(form.startDate) : undefined,
         endDate: form.endDate ? new Date(form.endDate) : undefined,
       });
       this.toast.success('등록 완료 되었습니다.');
       this.drawerOpen.set(false);
+      this.thumbnailData.set(null);
+      this.thumbnailUploadRef?.reset();
       await this.loadBootcamps();
     } catch (e: unknown) {
       this.toast.error(e instanceof Error ? e.message : '등록 실패');

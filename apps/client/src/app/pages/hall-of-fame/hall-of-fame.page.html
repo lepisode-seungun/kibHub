@@ -1,5 +1,5 @@
 <main class="flex flex-col min-h-screen bg-[#09090B]">
-  <app-hero-banner (cardClick)="openCard($event)" />
+  <app-hero-banner [cards]="bannerCards()" />
 
   <!-- Hall of Fame Cards Section -->
   <section class="hall-of-fame" id="hall-of-fame">
@@ -13,16 +13,19 @@
         </svg>
         <span class="font-suit font-medium text-sm text-zinc-400 mt-3">명예의 전당 포트폴리오를 불러오는 중입니다...</span>
       </div>
-    } @else if (cards.length === 0) {
+    } @else if (cards().length === 0) {
       <div class="flex flex-col justify-center items-center py-20 w-full border border-dashed border-zinc-800 rounded-2xl bg-[#121118]">
         <span class="font-suit font-semibold text-lg text-zinc-300">등록된 명예의 전당 포트폴리오가 없습니다.</span>
         <span class="font-suit font-medium text-sm text-zinc-500 mt-1">관리자 페이지에서 명예의 전당 포트폴리오를 등록해 보세요.</span>
       </div>
     } @else {
       <div class="hall-of-fame-grid">
-        @for (card of cards; track card.id) {
+        @for (card of cards(); track card.id) {
           <article class="card" (click)="openCard(card)" (keydown.enter)="openCard(card)" role="button" tabindex="0">
-            <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ') center/cover no-repeat' : card.thumbnailGradient">
+            <div class="card-thumbnail" [style.background]="card.thumbnailUrl ? 'none' : card.thumbnailGradient">
+              @if (card.thumbnailUrl) {
+                <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
+              }
               <div class="card-thumbnail-overlay">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

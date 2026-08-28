@@ -1,18 +1,59 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'adm-bootcamp-intro',
   standalone: true,
-  imports: [CommonModule, TextEditorComponent, DataGridComponent],
+  imports: [CommonModule, TextEditorComponent, DataGridComponent, ImageUploadComponent],
   templateUrl: './bootcamp-intro.page.html',
   styleUrl: './bootcamp-intro.page.css',
 })
-export class BootcampIntroPage {
+export class BootcampIntroPage implements OnInit {
+  private api = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
   activeTab = signal<'intro' | 'banner' | 'academy' | 'partner'>('intro');
+
+  // ===== 소개 탭 =====
+  academyIntroContent = signal('');
+  private academyIntroDraft = '';
+
+  ngOnInit(): void {
+    this.loadBanners();
+    this.loadAcademyIntro();
+    this.loadVideoUrl();
+  }
+
+  async loadAcademyIntro(): Promise<void> {
+    try {
+      const result = await this.api.siteSettings.get('academy_intro');
+      if (result.value) {
+        this.academyIntroContent.set(result.value);
+        this.academyIntroDraft = result.value;
+      }
+    } catch (e) {
+      console.error('소개 콘텐츠 로드 실패:', e);
+    }
+  }
+
+  onAcademyIntroChange(html: string): void {
+    this.academyIntroDraft = html;
+  }
+
+  async saveAcademyIntro(): Promise<void> {
+    try {
+      await this.api.siteSettings.set('academy_intro', this.academyIntroDraft);
+      alert('저장되었습니다.');
+    } catch (e) {
+      console.error('소개 콘텐츠 저장 실패:', e);
+      alert('저장에 실패했습니다.');
+    }
+  }
 
   setTab(tab: 'intro' | 'banner' | 'academy' | 'partner'): void {
     this.activeTab.set(tab);
@@ -39,18 +80,75 @@ export class BootcampIntroPage {
     { key: 'createdAt', label: '등록일시', width: '150px', headerColor: 'text-gray-600' },
   ];
 
-  bannerData = [
-    { id: 1, status: '노출', image: '', header: '프로모션 배너', content: '프로모션 배너프로모션 배너프로모션 배너프로모션 배너프로모션 배너', link: 'https://www.naver.com', createdAt: '2023-01-01 16:10' },
-    { id: 2, status: '노출', image: '', header: '프로모션 배너', content: '프로모션 배너프로모션 배너프로모션 배너프로모션 배너프로모션 배너', link: 'https://www.naver.com', createdAt: '2023-01-01 16:10' },
-    { id: 3, status: '숨김', image: '', header: '프로모션 배너', content: '프로모션 배너프로모션 배너프로모션 배너프로모션 배너프로모션 배너', link: 'https://www.naver.com', createdAt: '2023-01-01 16:10' },
-  ];
+  bannerData = signal<any[]>([]);
+
+  async loadBanners(): Promise<void> {
+    try {
+      const data = await this.api.banners.findAll();
+      this.bannerData.set(data.map(b => ({
+        id: b.id,
+        status: b.status === 'VISIBLE' ? '노출' : '숨김',
+        image: b.pcImage || '',
+        header: b.header,
+        content: b.content,
+        link: b.link || '',
+        createdAt: new Date(b.createdAt).toLocaleString('ko-KR'),
+        _raw: b,
+      })));
+    } catch (e) {
+      console.error('배너 로드 실패:', e);
+    }
+  }
 
   // ===== 영상 관리 =====
   videoSectionExpanded = signal(true);
   vimeoLink = signal('');
+  vimeoEmbedUrl = signal<SafeResourceUrl | null>(null);
 
   toggleVideoSection(): void {
     this.videoSectionExpanded.update(v => !v);
+  }
+
+  onVimeoLinkInput(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.vimeoLink.set(val);
+  }
+
+  async loadVideoUrl(): Promise<void> {
+    try {
+      const result = await this.api.siteSettings.get('video_url');
+      if (result.value) {
+        this.vimeoLink.set(result.value);
+        this.vimeoEmbedUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.toVideoEmbed(result.value)));
+      }
+    } catch (e) {
+      console.error('영상 URL 로드 실패:', e);
+    }
+  }
+
+  async registerVimeoLink(): Promise<void> {
+    const url = this.vimeoLink();
+    if (!url.trim()) { alert('비메오 링크를 입력하세요.'); return; }
+    try {
+      await this.api.siteSettings.set('video_url', url);
+      this.vimeoEmbedUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.toVideoEmbed(url)));
+      alert('영상이 등록되었습니다.');
+    } catch (e) {
+      console.error('영상 등록 실패:', e);
+      alert('영상 등록에 실패했습니다.');
+    }
+  }
+
+  private toVideoEmbed(url: string): string {
+    // Vimeo
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    if (url.includes('player.vimeo.com')) return url;
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    if (url.includes('youtube.com/embed')) return url;
+    return url;
   }
 
   // ===== 아카데미 현역 - 포스터 관리 =====
@@ -85,6 +183,59 @@ export class BootcampIntroPage {
     { id: 2, logo: '', name: 'Kakao Page', link: 'https://kakaopage.com' },
     { id: 3, logo: '', name: 'Naver Webtoon', link: 'https://webtoon.naver.com' },
   ];
+
+  // ===== 포스터 드로어 =====
+  showPosterDrawer = signal(false);
+  posterDrawerMode = signal<'add' | 'edit'>('add');
+  posterForm = signal({ title: '' });
+  posterImage = signal<{ name: string; size: string; preview: string } | null>(null);
+
+  openPosterDrawer(mode: 'add' | 'edit', row?: { title: string }): void {
+    this.posterDrawerMode.set(mode);
+    this.posterForm.set({ title: mode === 'edit' && row ? row.title : '' });
+    this.posterImage.set(null);
+    this.showPosterDrawer.set(true);
+  }
+
+  closePosterDrawer(): void {
+    this.showPosterDrawer.set(false);
+  }
+
+  updatePosterField(field: string, event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.posterForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  onPosterImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const sizeKB = Math.round(file.size / 1024);
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.posterImage.set({
+        name: file.name,
+        size: `${sizeKB}KB`,
+        preview: reader.result as string,
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removePosterImage(): void {
+    this.posterImage.set(null);
+  }
+
+  submitPosterDrawer(): void {
+    this.showPosterDrawer.set(false);
+    // TODO: 포스터 등록/수정 로직
+  }
+
+  onPosterContextMenu(event: { action: string; row: { title: string } }): void {
+    if (event.action === '수정') {
+      this.openPosterDrawer('edit', event.row);
+    }
+    // TODO: 삭제 로직
+  }
 
   // ===== 파트너 드로어 =====
   showPartnerDrawer = signal(false);
@@ -254,14 +405,6 @@ export class BootcampIntroPage {
     },
   ];
 
-  onVimeoLinkInput(event: Event): void {
-    this.vimeoLink.set((event.target as HTMLInputElement).value);
-  }
-
-  registerVimeoLink(): void {
-    // TODO: 비메오 링크 등록 로직
-  }
-
   // ===== 메인배너 수정 드로어 =====
   showBannerDrawer = signal(false);
   bannerDrawerRow = signal<{ id: number; status: string; link: string } | null>(null);
@@ -273,25 +416,48 @@ export class BootcampIntroPage {
     link: '',
   });
 
-  onBannerContextMenu(event: { action: string; row: { id: number; status: string; link: string } }): void {
+  onBannerContextMenu(event: { action: string; row: any }): void {
     if (event.action === '수정') {
       this.openBannerDrawer(event.row);
+    } else if (event.action === '삭제') {
+      this.deleteBanner(event.row._raw?.id || event.row.id);
+    } else if (event.action === '숨김') {
+      this.toggleBannerStatus(event.row._raw?.id || event.row.id, 'HIDDEN');
     }
   }
 
-  openBannerDrawer(row?: { id: number; status: string; link: string }): void {
+  async deleteBanner(id: number): Promise<void> {
+    try {
+      await this.api.banners.delete(id);
+      await this.loadBanners();
+    } catch (e) {
+      console.error('배너 삭제 실패:', e);
+    }
+  }
+
+  async toggleBannerStatus(id: number, status: string): Promise<void> {
+    try {
+      await this.api.banners.update(id, { status });
+      await this.loadBanners();
+    } catch (e) {
+      console.error('배너 상태 변경 실패:', e);
+    }
+  }
+
+  openBannerDrawer(row?: any): void {
     if (row) {
-      this.bannerDrawerRow.set(row);
+      const raw = row._raw;
+      this.bannerDrawerRow.set(raw || row);
       this.bannerForm.set({
-        status: row.status || '',
-        vimeoLink: row.link || '',
-        header: '',
-        content: '',
-        link: '',
+        status: row.status || '노출',
+        vimeoLink: raw?.vimeoLink || '',
+        header: raw?.header || row.header || '',
+        content: raw?.content || row.content || '',
+        link: raw?.link || row.link || '',
       });
     } else {
       this.bannerDrawerRow.set(null);
-      this.bannerForm.set({ status: '', vimeoLink: '', header: '', content: '', link: '' });
+      this.bannerForm.set({ status: '노출', vimeoLink: '', header: '', content: '', link: '' });
     }
     this.showBannerDrawer.set(true);
   }
@@ -305,48 +471,70 @@ export class BootcampIntroPage {
     this.bannerForm.update(f => ({ ...f, [field]: value }));
   }
 
-  // ===== 이미지 업로드 =====
-  pcImage = signal<{ name: string; size: string; preview: string } | null>(null);
-  mobileImage = signal<{ name: string; size: string; preview: string } | null>(null);
-
   triggerFileInput(inputId: string): void {
-    const input = document.getElementById(inputId) as HTMLInputElement;
-    input?.click();
+    (document.getElementById(inputId) as HTMLInputElement)?.click();
   }
 
-  onImageSelected(event: Event, type: 'pc' | 'mobile'): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
+  // ===== 이미지 업로드 =====
+  @ViewChild('pcUpload') pcUploadRef!: ImageUploadComponent;
+  @ViewChild('mobileUpload') mobileUploadRef!: ImageUploadComponent;
 
-    const sizeKB = Math.round(file.size / 1024);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imageData = {
-        name: file.name,
-        size: `${sizeKB}KB`,
-        preview: reader.result as string,
-      };
-      if (type === 'pc') {
-        this.pcImage.set(imageData);
-      } else {
-        this.mobileImage.set(imageData);
+  pcImageData = signal<ImageUploadData | null>(null);
+  mobileImageData = signal<ImageUploadData | null>(null);
+
+  onPcImageChange(data: ImageUploadData | null): void {
+    this.pcImageData.set(data);
+  }
+
+  onMobileImageChange(data: ImageUploadData | null): void {
+    this.mobileImageData.set(data);
+  }
+
+  async submitBannerForm(): Promise<void> {
+    const form = this.bannerForm();
+    const editRow = this.bannerDrawerRow();
+    const status = form.status === '숨김' ? 'HIDDEN' : 'VISIBLE';
+
+    try {
+      // 이미지 업로드
+      let pcImageUrl: string | undefined;
+      let mobileImageUrl: string | undefined;
+
+      const pc = this.pcImageData();
+      const mobile = this.mobileImageData();
+
+      if (pc) {
+        const result = await this.api.upload.single(pc.file, 'banners');
+        pcImageUrl = result.url;
       }
-    };
-    reader.readAsDataURL(file);
-  }
+      if (mobile) {
+        const result = await this.api.upload.single(mobile.file, 'banners');
+        mobileImageUrl = result.url;
+      }
 
-  removeImage(type: 'pc' | 'mobile'): void {
-    if (type === 'pc') {
-      this.pcImage.set(null);
-    } else {
-      this.mobileImage.set(null);
+      const bannerData: any = {
+        status,
+        header: form.header,
+        content: form.content,
+        link: form.link || undefined,
+        vimeoLink: form.vimeoLink || undefined,
+      };
+      if (pcImageUrl) bannerData.pcImage = pcImageUrl;
+      if (mobileImageUrl) bannerData.mobileImage = mobileImageUrl;
+
+      if (editRow) {
+        await this.api.banners.update(editRow.id, bannerData);
+      } else {
+        await this.api.banners.create(bannerData);
+      }
+      this.showBannerDrawer.set(false);
+      this.pcImageData.set(null);
+      this.mobileImageData.set(null);
+      this.pcUploadRef?.reset();
+      this.mobileUploadRef?.reset();
+      await this.loadBanners();
+    } catch (e) {
+      console.error('배너 저장 실패:', e);
     }
-  }
-
-  submitBannerForm(): void {
-    this.showBannerDrawer.set(false);
-    this.pcImage.set(null);
-    this.mobileImage.set(null);
-    // TODO: 배너 등록/수정 로직
   }
 }

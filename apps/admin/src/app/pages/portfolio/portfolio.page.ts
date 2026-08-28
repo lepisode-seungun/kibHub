@@ -106,6 +106,22 @@ export class PortfolioPage implements OnInit {
     this.viewMode.set('list');
   }
 
+  // ===== 컨텍스트 메뉴 핸들러 =====
+  async onContextMenuSelect(event: { action: string; row: PortfolioRow }): Promise<void> {
+    if (event.action === '삭제') {
+      try {
+        await this.api.portfolios.delete(event.row.id);
+        this.toast.success('삭제가 완료 되었습니다.');
+        await this.loadPortfolios();
+        await this.loadHallOfFame();
+      } catch (e: unknown) {
+        this.toast.error(e instanceof Error ? e.message : '삭제 실패');
+      }
+    } else if (event.action === '수정') {
+      this.openDetail(event.row);
+    }
+  }
+
   // ===== 명예의 전당 등록 드로어 =====
   hofDrawerOpen = signal(false);
   hofForm = signal({

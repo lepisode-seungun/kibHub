@@ -522,10 +522,6 @@ export type ContentScalarRelationFilter = {
   isNot?: Prisma.ContentWhereInput
 }
 
-export type EnumContentStatusFieldUpdateOperationsInput = {
-  set?: $Enums.ContentStatus
-}
-
 export type EnumContentTypeFieldUpdateOperationsInput = {
   set?: $Enums.ContentType
 }

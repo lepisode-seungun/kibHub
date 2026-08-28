@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Applicant: 'Applicant',
+  Banner: 'Banner',
   Bootcamp: 'Bootcamp',
   Content: 'Content',
   ContentCategory: 'ContentCategory',
@@ -70,6 +71,7 @@ export const ModelName = {
   NoticeFile: 'NoticeFile',
   Portfolio: 'Portfolio',
   PortfolioFile: 'PortfolioFile',
+  SiteSetting: 'SiteSetting',
   User: 'User',
   UserSns: 'UserSns'
 } as const
@@ -100,6 +102,23 @@ export const ApplicantScalarFieldEnum = {
 } as const
 
 export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
+
+
+export const BannerScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  header: 'header',
+  content: 'content',
+  link: 'link',
+  vimeoLink: 'vimeoLink',
+  pcImage: 'pcImage',
+  mobileImage: 'mobileImage',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BannerScalarFieldEnum = (typeof BannerScalarFieldEnum)[keyof typeof BannerScalarFieldEnum]
 
 
 export const BootcampScalarFieldEnum = {
@@ -352,6 +371,16 @@ export const PortfolioFileScalarFieldEnum = {
 } as const
 
 export type PortfolioFileScalarFieldEnum = (typeof PortfolioFileScalarFieldEnum)[keyof typeof PortfolioFileScalarFieldEnum]
+
+
+export const SiteSettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

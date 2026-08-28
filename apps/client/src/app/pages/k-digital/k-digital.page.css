@@ -32,13 +32,16 @@
   background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
 }
 
-.kd-row { display: flex; gap: 24px; }
+.kd-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
 
 .kd-card {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 1;
   min-width: 0;
   cursor: pointer;
   text-decoration: none;
@@ -50,6 +53,7 @@
   aspect-ratio: 412 / 272;
   border-radius: 8px;
   transition: transform 0.2s ease;
+  overflow: hidden;
 }
 
 .kd-card:hover .kd-thumb { transform: scale(1.02); }
@@ -78,12 +82,15 @@
 
 @media (max-width: 1200px) {
   .kd-grid-section { padding: 40px 20px; }
-  .kd-row { flex-wrap: wrap; }
-  .kd-card { flex: 0 0 calc(50% - 12px); }
+  .kd-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .kd-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
 @media (max-width: 640px) {
-  .kd-card { flex: 0 0 100%; }
+  .kd-grid { grid-template-columns: 1fr; }
 }
 
 /* 모바일 히어로 기본 숨김 */

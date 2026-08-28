@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Applicant.ts'
+export type * from './models/Banner.ts'
 export type * from './models/Bootcamp.ts'
 export type * from './models/Content.ts'
 export type * from './models/ContentCategory.ts'
@@ -27,6 +28,7 @@ export type * from './models/Notice.ts'
 export type * from './models/NoticeFile.ts'
 export type * from './models/Portfolio.ts'
 export type * from './models/PortfolioFile.ts'
+export type * from './models/SiteSetting.ts'
 export type * from './models/User.ts'
 export type * from './models/UserSns.ts'
 export type * from './commonInputTypes.ts'

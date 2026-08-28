@@ -501,14 +501,6 @@ export type BootcampUpdateOneRequiredWithoutApplicantsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BootcampUpdateToOneWithWhereWithoutApplicantsInput, Prisma.BootcampUpdateWithoutApplicantsInput>, Prisma.BootcampUncheckedUpdateWithoutApplicantsInput>
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }

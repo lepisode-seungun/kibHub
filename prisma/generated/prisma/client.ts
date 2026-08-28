@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type Applicant = Prisma.ApplicantModel
 /**
+ * Model Banner
+ * 
+ */
+export type Banner = Prisma.BannerModel
+/**
  * Model Bootcamp
  * 
  */
@@ -136,6 +141,11 @@ export type Portfolio = Prisma.PortfolioModel
  * 
  */
 export type PortfolioFile = Prisma.PortfolioFileModel
+/**
+ * Model SiteSetting
+ * 
+ */
+export type SiteSetting = Prisma.SiteSettingModel
 /**
  * Model User
  * 
