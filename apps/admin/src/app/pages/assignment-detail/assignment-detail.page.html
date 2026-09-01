@@ -20,21 +20,21 @@
       <div class="flex items-center gap-3 w-full">
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.id }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData().id }}</span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
           <span class="inline-flex items-center px-2 py-1 bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]" style="width: fit-content;">
-            {{ courseData.status }}
+            {{ courseData().status }}
           </span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">과정명</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.name }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData().name }}</span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData.createdAt }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ courseData().createdAt }}</span>
         </div>
       </div>
     }
@@ -77,19 +77,19 @@
       <div class="flex items-start gap-3 w-full">
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData.id }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData().id }}</span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">과제명</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData.name }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData().name }}</span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData.createdAt }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData().createdAt }}</span>
         </div>
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">제출기한</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData.deadlineStart }} - {{ assignmentData.deadlineEnd }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ assignmentData().deadlineStart }} - {{ assignmentData().deadlineEnd }}</span>
         </div>
       </div>
     }
@@ -106,10 +106,20 @@
           <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <!-- 수정 버튼 -->
-      <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors">
-        바로가기
-      </button>
+      <!-- 수정/취소/저장 버튼 -->
+      @if (contentEditMode()) {
+        <div class="flex items-center gap-2">
+          <button class="flex items-center justify-center px-3 h-10 bg-white border border-gray-300 rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600 hover:bg-gray-50 transition-colors"
+                  (click)="cancelContentEdit()">취소</button>
+          <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                  (click)="saveContentEdit()">저장</button>
+        </div>
+      } @else {
+        <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors"
+                (click)="startContentEdit()">
+          수정
+        </button>
+      }
     </div>
 
     @if (assignmentContentOpen()) {
@@ -121,7 +131,15 @@
           <!-- 썸네일 -->
           <div class="flex flex-col py-1.5 gap-2 flex-1">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">썸네일</span>
-            <div class="w-[346px] h-[217px] bg-gray-50 rounded-xl"></div>
+            @if (contentEditMode() ? getYoutubeThumbnail(contentEditVideoUrl()) : getYoutubeThumbnail(assignmentData().videoUrl)) {
+              <img [src]="contentEditMode() ? getYoutubeThumbnail(contentEditVideoUrl()) : getYoutubeThumbnail(assignmentData().videoUrl)"
+                   alt="썸네일" class="rounded-xl object-cover"
+                   style="width: 346px; height: 217px;" />
+            } @else {
+              <div class="flex items-center justify-center rounded-xl bg-gray-50" style="width: 346px; height: 217px;">
+                <span class="font-suit font-medium text-sm text-gray-400">유튜브 링크를 입력하면 썸네일이 표시됩니다</span>
+              </div>
+            }
           </div>
 
           <!-- 오른쪽: 영상 + 학습자료 -->
@@ -130,29 +148,68 @@
             <!-- 영상 -->
             <div class="flex flex-col py-1.5 gap-2">
               <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">영상</span>
-              <div class="flex items-start gap-2.5 px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
-                <svg width="22" height="22" viewBox="0 0 19 16" fill="none" class="shrink-0">
-                  <path d="M18.3333 3.67919C18.2508 5.46669 17.0042 7.91419 14.5933 11.0309C12.1 14.2942 9.99167 15.8984 8.25 15.8984C7.19583 15.8984 6.28833 14.9084 5.54583 12.9192C5.04167 11.1225 4.58333 9.30752 4.07 7.49252C3.52 5.51252 2.93333 4.52252 2.29167 4.52252C2.16333 4.52252 1.68667 4.81586 0.861667 5.39335L0 4.27502C0.916667 3.47752 1.79667 2.68002 2.67667 1.88252C3.88667 0.837521 4.79417 0.287521 5.39 0.232521C6.82 0.0858547 7.7 1.07585 8.03 3.16586C8.3875 5.43002 8.635 6.83252 8.7725 7.38252C9.16667 9.25252 9.625 10.1692 10.1292 10.1692C10.5142 10.1692 11.0917 9.58252 11.8617 8.36335C12.6317 7.15335 13.0442 6.22752 13.0992 5.58586C13.2092 4.54085 12.7967 4.01835 11.8617 4.01835C11.4217 4.01835 10.9725 4.11919 10.505 4.32085C11.4033 1.36002 13.1267 -0.0791453 15.6658 0.00335467C17.5542 0.0583547 18.4433 1.28669 18.3333 3.67919Z" fill="#3C8EEE"/>
-                </svg>
-                <div class="flex items-center gap-2">
-                  <a class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 underline" [href]="assignmentData.videoUrl" target="_blank">{{ assignmentData.videoUrl }}</a>
-                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ assignmentData.videoDuration }}</span>
+              @if (contentEditMode()) {
+                <input type="text"
+                       class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                       style="height: 40px;"
+                       [value]="contentEditVideoUrl()"
+                       (input)="contentEditVideoUrl.set($any($event.target).value)"
+                       placeholder="https://www.youtube.com/watch?v=..." />
+              } @else {
+                <div class="flex items-start gap-2.5 px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="shrink-0">
+                    <path d="M23.5 6.19c-.28-1.04-1.1-1.87-2.14-2.14C19.43 3.5 12 3.5 12 3.5s-7.43 0-9.36.55C1.6 4.32.78 5.15.5 6.19 0 8.13 0 12 0 12s0 3.87.5 5.81c.28 1.04 1.1 1.87 2.14 2.14C4.57 20.5 12 20.5 12 20.5s7.43 0 9.36-.55c1.04-.27 1.86-1.1 2.14-2.14.5-1.94.5-5.81.5-5.81s0-3.87-.5-5.81z" fill="#FF0000"/>
+                    <path d="M9.75 15.02l6.19-3.02L9.75 8.98v6.04z" fill="white"/>
+                  </svg>
+                  <div class="flex items-center gap-2">
+                    @if (assignmentData().videoUrl) {
+                      <a class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 underline"
+                         [href]="assignmentData().videoUrl" target="_blank">{{ assignmentData().videoUrl }}</a>
+                    } @else {
+                      <span class="font-suit font-medium text-sm text-gray-400">영상 링크 없음</span>
+                    }
+                  </div>
                 </div>
-              </div>
+              }
             </div>
 
             <!-- 학습자료 -->
             <div class="flex flex-col py-1.5 gap-2">
               <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">학습자료</span>
-              @for (mat of assignmentData.materials; track mat.name) {
-                <div class="flex items-start gap-2.5 px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
-                  <svg width="22" height="22" viewBox="0 0 17 16" fill="none" class="shrink-0">
-                    <path d="M9.16667 0V8.78717L12.8333 5.1205L14.1295 6.41667L8.25 12.2962L2.3705 6.41667L3.66667 5.1205L7.33333 8.78717V0H9.16667ZM0 13.75H16.5V15.5833H0V13.75Z" fill="#3C8EEE"/>
+
+              <!-- 편집 모드: 업로드 영역 -->
+              @if (contentEditMode()) {
+                <label class="flex flex-col items-center justify-center gap-2 w-full py-4 px-4 border border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#3C8EEE] transition-colors"
+                       [class.opacity-50]="isUploading()"
+                       [class.pointer-events-none]="isUploading()">
+                  <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
+                    <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
                   </svg>
-                  <div class="flex items-center gap-2">
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">
+                    {{ isUploading() ? '업로드 중...' : '파일을 클릭하거나 드래그하여 업로드' }}
+                  </span>
+                  <input type="file" class="hidden" multiple (change)="onMaterialFileSelect($event)" />
+                </label>
+              }
+
+              <!-- 파일 목록 -->
+              @for (mat of assignmentData().materials; track mat.id || mat.name) {
+                <div class="flex items-center justify-between px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
+                  <div class="flex items-center gap-2.5">
+                    <svg width="22" height="22" viewBox="0 0 17 16" fill="none" class="shrink-0">
+                      <path d="M9.16667 0V8.78717L12.8333 5.1205L14.1295 6.41667L8.25 12.2962L2.3705 6.41667L3.66667 5.1205L7.33333 8.78717V0H9.16667ZM0 13.75H16.5V15.5833H0V13.75Z" fill="#3C8EEE"/>
+                    </svg>
                     <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ mat.name }}</span>
-                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">({{ mat.size }})</span>
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">({{ mat.size ? (mat.size / 1024 | number:'1.0-0') + 'KB' : '' }})</span>
                   </div>
+                  @if (contentEditMode()) {
+                    <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-1 rounded-md hover:bg-red-50 transition-colors"
+                            (click)="removeMaterial(mat.id)">
+                      <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                        <path d="M5 5L15 15M15 5L5 15" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  }
                 </div>
               }
             </div>
@@ -163,7 +220,15 @@
         <!-- 내용 -->
         <div class="flex flex-col py-1.5 gap-2 w-full">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
-          <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0" style="word-break: break-all;">{{ assignmentData.content }}</p>
+          @if (contentEditMode()) {
+            <textarea class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                      style="min-height: 150px;"
+                      [value]="editContentValue()"
+                      (input)="editContentValue.set($any($event.target).value)"
+                      placeholder="내용을 입력하세요"></textarea>
+          } @else {
+            <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0" style="word-break: break-all;">{{ assignmentData().content }}</p>
+          }
         </div>
 
       </div>
@@ -221,11 +286,11 @@
 
         <div class="flex items-center justify-between">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">과제명</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ assignmentData.name }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ assignmentData().name }}</span>
         </div>
         <div class="flex items-center justify-between">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">등록일시</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ assignmentData.createdAt }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ assignmentData().createdAt }}</span>
         </div>
       </div>
 
@@ -406,6 +471,59 @@
         </div>
       }
 
+    </div>
+  </div>
+}
+
+<!-- ===== 과제 수정 드로어 ===== -->
+@if (editDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeEditDrawer()"
+       (keydown.enter)="closeEditDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeEditDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">과제 수정</span>
+
+    <!-- 과제명 -->
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">과제명</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             style="height: 40px;"
+             [value]="editTitle()"
+             (input)="editTitle.set($any($event.target).value)"
+             placeholder="과제명을 입력하세요" />
+    </div>
+
+    <!-- 내용 -->
+    <div class="flex flex-col gap-2 w-full">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+      <textarea
+             class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+             style="min-height: 120px;"
+             [value]="editContent()"
+             (input)="editContent.set($any($event.target).value)"
+             placeholder="내용을 입력하세요"></textarea>
+    </div>
+
+    <div class="flex flex-col flex-1 justify-end">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitEdit()">
+        수정
+      </button>
     </div>
   </div>
 }

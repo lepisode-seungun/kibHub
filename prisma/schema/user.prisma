@@ -27,6 +27,8 @@ model User {
   notices        Notice[]
   faqs           Faq[]
   inquiryReplies Inquiry[]   @relation("repliedBy")
+  submissions    Submission[]
+  submissionComments SubmissionComment[]
 }
 
 enum UserRole {

@@ -44,4 +44,20 @@ export class BootcampsService {
   delete(id: number) {
     return this.prisma.bootcamp.delete({ where: { id } });
   }
+
+  async getInterviewSettings(id: number) {
+    const bootcamp = await this.prisma.bootcamp.findUnique({
+      where: { id },
+      select: { interviewSettings: true },
+    });
+    return (bootcamp?.interviewSettings as any[]) || [];
+  }
+
+  updateInterviewSettings(id: number, questions: { text: string }[]) {
+    return this.prisma.bootcamp.update({
+      where: { id },
+      data: { interviewSettings: questions as any },
+      select: { id: true, interviewSettings: true },
+    });
+  }
 }

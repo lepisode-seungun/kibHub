@@ -257,6 +257,15 @@
   flex-shrink: 0;
 }
 
+.user-avatar-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #52525B;
+  flex-shrink: 0;
+}
+
 .user-name {
   font-family: var(--font-family);
   font-weight: 600;

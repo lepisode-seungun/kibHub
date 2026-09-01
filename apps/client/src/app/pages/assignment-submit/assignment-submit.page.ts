@@ -96,12 +96,13 @@ export class AssignmentSubmitPage {
     if (this.isSubmitting()) return;
     this.isSubmitting.set(true);
     try {
-      // TODO: 과제 제출 API (서버에 과제 답변 엔드포인트 필요)
-      console.log('Submit:', {
-        assignmentId: this.assignmentId,
+      const files = this.uploadedFiles()
+        .filter(f => f.status === 'done')
+        .map(f => ({ url: f.url!, name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
+      await this.api.submissions.create(Number(this.assignmentId), {
         title: this.title,
         content: this.content,
-        files: this.uploadedFiles().filter(f => f.status === 'done').map(f => ({ url: f.url, name: f.name + '.' + f.extension })),
+        files,
       });
       this.goBack();
     } catch (err) {

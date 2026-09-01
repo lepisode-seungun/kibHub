@@ -1,10 +1,12 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
 
 interface LearningFile {
   name: string;
+  url?: string;
 }
 
 @Component({
@@ -18,31 +20,27 @@ export class LectureDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
 
   lectureId = '';
   bootcampId = '';
 
-  courseLabel = '과정1. 웹툰의 기초';
-  lectureType: '강의' | '과제' = '강의';
-  category = '카테고리';
-  lectureTitle = '강의명강의명강의명강의명강의명강의명강의명강의명강의명강의명';
-  duration = '13:27';
-  description = '강의 내용 에디터 작성 '.repeat(70);
+  courseLabel = signal('');
+  lectureType = signal<'강의' | '과제'>('강의');
+  category = signal('');
+  lectureTitle = signal('');
+  duration = signal('');
+  description = signal('');
+  videoUrl = signal('');
 
   isPlaying = signal(false);
-  currentTime = '0:51';
-  totalTime = '2:31';
-  progress = 33;
-  volume = 73;
+  currentTime = '0:00';
+  totalTime = '0:00';
+  progress = 0;
   isMaterialOpen = signal(true);
 
-  learningFiles: LearningFile[] = [
-    { name: '학습자료_웹툰기초_이론편.pdf' },
-    { name: '학습자료_웹툰기초_실습가이드.pdf' },
-    { name: '학습자료.pdf' },
-    { name: '참고자료.pdf' },
-    { name: '과제안내.pdf' },
-  ];
+  learningFiles = signal<LearningFile[]>([]);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
@@ -60,19 +58,30 @@ export class LectureDetailPage implements OnInit {
   private async loadLecture(id: number): Promise<void> {
     try {
       const lecture: any = await this.api.lectures.findOne(id);
-      this.lectureTitle = lecture.title || '';
-      this.description = lecture.body || lecture.description || '';
-      this.duration = lecture.duration || '';
-      this.category = lecture.category || '';
+      this.lectureTitle.set(lecture.title || '');
+      this.description.set(lecture.content || lecture.body || '');
+      this.duration.set(lecture.duration || '');
+      this.category.set(lecture.category || '');
+      this.videoUrl.set(lecture.videoUrl || '');
       if (lecture.course) {
-        this.courseLabel = lecture.course.title || '';
+        this.courseLabel.set(lecture.course.name || lecture.course.title || '');
       }
       if (lecture.files && lecture.files.length > 0) {
-        this.learningFiles = lecture.files.map((f: any) => ({ name: f.name, url: f.url }));
+        this.learningFiles.set(lecture.files.map((f: any) => ({ name: f.name, url: f.url })));
+      } else {
+        this.learningFiles.set([]);
       }
+      this.cdr.markForCheck();
     } catch (err) {
       console.error('강의 로드 실패:', err);
     }
+  }
+
+  get youtubeEmbedUrl(): SafeResourceUrl | null {
+    const url = this.videoUrl();
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    return match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
   }
 
   returnTab = '';

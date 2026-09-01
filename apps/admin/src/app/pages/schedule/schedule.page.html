@@ -26,7 +26,7 @@
 <div class="flex flex-col p-6 gap-2.5 flex-1">
 
   @if (activeTab() === 'schedule') {
-    <!-- 에디터 영역 -->
+    <!-- 이용약관 에디터 영역 -->
     <div class="flex flex-col w-full border border-gray-300 rounded-lg overflow-hidden">
       <!-- 에디터 툴바 -->
       <div class="flex items-start p-3 gap-4 bg-gray-50 border-b border-gray-100" style="border-radius: 8px 8px 0 0;">
@@ -93,20 +93,23 @@
       <!-- 에디터 본문 -->
       <textarea class="w-full border-none outline-none resize-none p-4 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 bg-white box-border"
                 style="min-height: 326px;"
-                placeholder="내용을 입력하세요"
-                [value]="editorContent()"
-                (input)="updateEditorContent($event)"></textarea>
+                placeholder="이용약관 내용을 입력하세요"
+                [value]="termsContent()"
+                (input)="updateTermsContent($event)"></textarea>
     </div>
     <!-- 저장 버튼 -->
     <div class="flex justify-end mt-2">
-      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-              style="width: 52px; height: 40px;">
+      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+              style="width: 52px; height: 40px;"
+              [disabled]="isSaving()"
+              (click)="saveTerms()">
         저장
       </button>
     </div>
   }
 
   @if (activeTab() === 'management') {
+    <!-- 개인정보처리방침 에디터 영역 -->
     <div class="flex flex-col w-full border border-gray-300 rounded-lg overflow-hidden">
       <div class="flex items-start p-3 gap-4 bg-gray-50 border-b border-gray-100" style="border-radius: 8px 8px 0 0;">
         <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
@@ -137,13 +140,15 @@
       </div>
       <textarea class="w-full border-none outline-none resize-none p-4 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 bg-white box-border"
                 style="min-height: 326px;"
-                placeholder="내용을 입력하세요"
-                [value]="editorContent()"
-                (input)="updateEditorContent($event)"></textarea>
+                placeholder="개인정보처리방침 내용을 입력하세요"
+                [value]="privacyContent()"
+                (input)="updatePrivacyContent($event)"></textarea>
     </div>
     <div class="flex justify-end mt-2">
-      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-              style="width: 52px; height: 40px;">
+      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+              style="width: 52px; height: 40px;"
+              [disabled]="isSaving()"
+              (click)="savePrivacy()">
         저장
       </button>
     </div>

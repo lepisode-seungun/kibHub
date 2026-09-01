@@ -44,9 +44,17 @@
 
           <!-- 이미지 스크롤 영역 -->
           <div class="iv-image-scroll">
-            <div class="iv-image" [style.background]="images[currentPage() - 1].gradient"></div>
+            @if (images[currentPage() - 1].url) {
+              <img [src]="images[currentPage() - 1].url" alt="" class="iv-image" style="object-fit: contain; background: #000;" />
+            } @else {
+              <div class="iv-image" [style.background]="images[currentPage() - 1].gradient"></div>
+            }
             <!-- 모바일: 다음 이미지 미리보기 -->
-            <div class="iv-image iv-image-mobile-next" [style.background]="images[currentPage() < totalPages ? currentPage() : 0].gradient"></div>
+            @if (images[currentPage() < totalPages ? currentPage() : 0].url) {
+              <img [src]="images[currentPage() < totalPages ? currentPage() : 0].url" alt="" class="iv-image iv-image-mobile-next" style="object-fit: contain; background: #000;" />
+            } @else {
+              <div class="iv-image iv-image-mobile-next" [style.background]="images[currentPage() < totalPages ? currentPage() : 0].gradient"></div>
+            }
           </div>
         </div>
 

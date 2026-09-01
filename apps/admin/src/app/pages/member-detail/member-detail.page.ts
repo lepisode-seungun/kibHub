@@ -68,16 +68,18 @@ export class MemberDetailPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
 
+  loading = signal(true);
+
   sections = signal<Record<string, boolean>>({
     basic: true, extra: true, bootcamp: true,
     content: false, portfolio: false, comment: false,
   });
 
-  member: MemberDetail = {
+  member = signal<MemberDetail>({
     id: 0, status: '', role: '', email: '', name: '', nickname: '',
     countryCode: '82', phone: '', birthday: '', createdAt: '',
     intro: '', profileImage: '', sns: [],
-  };
+  });
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -85,11 +87,30 @@ export class MemberDetailPage implements OnInit {
   }
 
   async loadMember(id: number): Promise<void> {
+    this.loading.set(true);
     try {
       const u = await this.api.users.findOne(id);
-      this.member = toMemberDetail(u);
+      this.member.set(toMemberDetail(u));
     } catch (e) {
       console.error('회원 상세 로드 실패:', e);
+    }
+
+    // 지원 내역 로드 (실패해도 회원 데이터는 유지)
+    try {
+      const applications = await this.api.applicants.findByUser(id);
+      const statusMap: Record<string, string> = {
+        PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+      };
+      this.bootcampHistory.set(applications.map((a: any) => ({
+        id: a.id,
+        status: statusMap[a.status] || a.status,
+        name: a.bootcamp?.name || '-',
+        appliedAt: a.appliedAt ? new Date(a.appliedAt).toLocaleDateString('ko-KR') : '-',
+      })));
+    } catch (e) {
+      console.error('지원 내역 로드 실패:', e);
+    } finally {
+      this.loading.set(false);
     }
   }
 
@@ -101,7 +122,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'appliedAt', label: '지원일', width: '140px' },
   ];
 
-  bootcampHistory: BootcampHistoryRow[] = [];
+  bootcampHistory = signal<BootcampHistoryRow[]>([]);
 
   // ===== 참여 부트캠프 그리드 =====
   contentColumns: GridColumn[] = [
@@ -164,7 +185,7 @@ export class MemberDetailPage implements OnInit {
 
   onBlock(): void {
     this.showKebabMenu.set(false);
-    if (this.member.status === '차단') this.showUnblockPopup.set(true);
+    if (this.member().status === '차단') this.showUnblockPopup.set(true);
     else this.showBlockPopup.set(true);
   }
 
@@ -174,8 +195,8 @@ export class MemberDetailPage implements OnInit {
 
   async confirmBlock(): Promise<void> {
     try {
-      await this.api.users.block(this.member.id, 'BLOCKED');
-      this.member.status = '차단';
+      await this.api.users.block(this.member().id, 'BLOCKED');
+      this.member.update(m => ({ ...m, status: '차단' }));
       this.toast.success('차단 되었습니다.');
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '차단 실패'); }
     this.showBlockPopup.set(false);
@@ -187,8 +208,8 @@ export class MemberDetailPage implements OnInit {
 
   async confirmUnblock(): Promise<void> {
     try {
-      await this.api.users.block(this.member.id, 'ACTIVE');
-      this.member.status = '정상';
+      await this.api.users.block(this.member().id, 'ACTIVE');
+      this.member.update(m => ({ ...m, status: '정상' }));
       this.toast.success('차단 해제 되었습니다.');
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '해제 실패'); }
     this.showUnblockPopup.set(false);
@@ -216,8 +237,8 @@ export class MemberDetailPage implements OnInit {
     if (!this.selectedRole()) return;
     try {
       const roleMap: Record<string, string> = { '일반': 'STUDENT', '강사': 'INSTRUCTOR', '관리자': 'ADMIN' };
-      await this.api.users.updateRole(this.member.id, roleMap[this.selectedRole()] || 'STUDENT');
-      this.member.role = this.selectedRole();
+      await this.api.users.updateRole(this.member().id, roleMap[this.selectedRole()] || 'STUDENT');
+      this.member.update(m => ({ ...m, role: this.selectedRole() }));
       this.toast.success('권한이 변경되었습니다.');
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '권한 변경 실패'); }
     this.showRoleDrawer.set(false);
@@ -266,8 +287,8 @@ export class MemberDetailPage implements OnInit {
       const body: UpdateUserDto = {};
       if (this.editEmail()) body.email = this.editEmail();
       if (this.editPassword()) body.password = this.editPassword();
-      await this.api.users.update(this.member.id, body);
-      if (body.email) this.member.email = body.email;
+      await this.api.users.update(this.member().id, body);
+      if (body.email) this.member.update(m => ({ ...m, email: body.email! }));
       this.toast.success('수정 완료 되었습니다.');
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '수정 실패'); }
     this.showEditDrawer.set(false);
@@ -280,5 +301,69 @@ export class MemberDetailPage implements OnInit {
 
   getRoleClass(role: string): string {
     return ROLE_BADGES[role] || 'bg-zinc-50 border-zinc-200 text-zinc-500';
+  }
+
+  // ===== 추가 정보 수정 드로어 =====
+  showExtraDrawer = signal(false);
+  editNickname = signal('');
+  editIntro = signal('');
+  editProfileImage = signal('');
+  editSns = signal<{ type: string; label: string; url: string }[]>([]);
+
+  openExtraDrawer(): void {
+    const m = this.member();
+    this.editNickname.set(m.nickname);
+    this.editIntro.set(m.intro);
+    this.editProfileImage.set(m.profileImage);
+    this.editSns.set((m.sns || []).map(s => ({ type: s.type, label: s.label, url: s.url })));
+    this.showExtraDrawer.set(true);
+  }
+
+  closeExtraDrawer(): void { this.showExtraDrawer.set(false); }
+
+  onExtraField(field: 'nickname' | 'intro', event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    if (field === 'nickname') this.editNickname.set(val);
+    else this.editIntro.set(val);
+  }
+
+  onSnsField(index: number, field: 'label' | 'url', event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.editSns.update(list => list.map((s, i) => i === index ? { ...s, [field]: val } : s));
+  }
+
+  private readonly snsLabelMap: Record<string, string> = {
+    LINK: '링크', INSTAGRAM: '인스타그램', TWITTER: 'X (Twitter)', YOUTUBE: '유튜브',
+  };
+
+  onSnsType(index: number, event: Event): void {
+    const type = (event.target as HTMLSelectElement).value;
+    const label = this.snsLabelMap[type] || type;
+    this.editSns.update(list => list.map((s, i) => i === index ? { ...s, type, label } : s));
+  }
+
+  addSnsRow(): void {
+    this.editSns.update(list => [...list, { type: 'LINK', label: '링크', url: '' }]);
+  }
+
+  removeSnsRow(index: number): void {
+    this.editSns.update(list => list.filter((_, i) => i !== index));
+  }
+
+  async submitExtraEdit(): Promise<void> {
+    try {
+      const body: UpdateUserDto = {
+        nickname: this.editNickname(),
+      };
+      await this.api.users.update(this.member().id, body);
+      this.member.update(m => ({
+        ...m,
+        nickname: this.editNickname(),
+        intro: this.editIntro(),
+        profileImage: this.editProfileImage(),
+      }));
+      this.toast.success('추가 정보가 수정되었습니다.');
+    } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '수정 실패'); }
+    this.showExtraDrawer.set(false);
   }
 }

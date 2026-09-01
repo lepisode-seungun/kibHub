@@ -6,6 +6,8 @@ export interface User {
   email: string;
   nickname: string;
   initial: string;
+  profileImage?: string | null;
+  role?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -109,6 +111,21 @@ export class AuthService {
       return { available: data.available };
     } catch {
       return { available: false, error: '서버에 연결할 수 없습니다.' };
+    }
+  }
+
+  /** 현재 유저 정보 갱신 (프로필 수정 후) */
+  async refreshUser(): Promise<void> {
+    try {
+      const res = await fetch('/api/auth/me', {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        this._currentUser.set(data.user);
+      }
+    } catch {
+      // 무시
     }
   }
 

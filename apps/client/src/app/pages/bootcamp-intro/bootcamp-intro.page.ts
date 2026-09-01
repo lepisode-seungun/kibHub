@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnDestroy, OnInit, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -42,7 +42,42 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     this.loadBootcamps();
     this.loadAcademyIntro();
     this.loadVideoUrl();
+    this.loadPosters();
+    this.loadHistories();
+    this.loadPartners().then(() => {
+      setTimeout(() => this.initMarquee(), 300);
+    });
   }
+
+  // ===== JS 기반 마키 애니메이션 =====
+  private marqueeAnimIds: number[] = [];
+
+  private initMarquee(): void {
+    const tracks = document.querySelectorAll('.partner-marquee-track');
+    tracks.forEach((track, i) => {
+      const el = track as HTMLElement;
+      const firstSet = el.querySelector('.marquee-set') as HTMLElement;
+      if (!firstSet) return;
+      const setWidth = firstSet.offsetWidth;
+      if (setWidth === 0) return;
+
+      const speed = 0.5; // px per frame
+      const direction = i === 0 ? -1 : 1; // 1행: 왼쪽, 2행: 오른쪽
+      let pos = direction === -1 ? 0 : -setWidth;
+
+      el.style.transform = `translateX(${pos}px)`;
+
+      const animate = () => {
+        pos += speed * direction;
+        if (direction === -1 && pos <= -setWidth) pos = 0;
+        if (direction === 1 && pos >= 0) pos = -setWidth;
+        el.style.transform = `translateX(${pos}px)`;
+        this.marqueeAnimIds.push(requestAnimationFrame(animate));
+      };
+      this.marqueeAnimIds.push(requestAnimationFrame(animate));
+    });
+  }
+
 
   private async loadAcademyIntro(): Promise<void> {
     try {
@@ -153,6 +188,48 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   ];
   showcaseIndex = 0;
 
+  private async loadPosters(): Promise<void> {
+    try {
+      const data = await this.api.posters.findAll();
+      if (data.length > 0) {
+        this.showcaseImages = data.map((p: any) => p.imageUrl);
+        this.showcaseIndex = 0;
+      }
+    } catch (e) {
+      console.error('포스터 로드 실패:', e);
+    }
+  }
+
+  historyGroups = signal<{ year: string; items: any[] }[]>([]);
+
+  private async loadHistories(): Promise<void> {
+    try {
+      const data = await this.api.histories.findAll();
+      if (data.length > 0) {
+        this.historyGroups.set(data);
+      }
+    } catch (e) {
+      console.error('히스토리 로드 실패:', e);
+    }
+  }
+
+  // ===== 파트너 로고 =====
+  private allPartners = signal<any[]>([]);
+
+  partnerLogosRow1 = computed(() => this.allPartners());
+  partnerLogosRow2 = computed(() => this.allPartners());
+
+  private async loadPartners(): Promise<void> {
+    try {
+      const data = await this.api.partners.findAll();
+      if (data.length > 0) {
+        this.allPartners.set(data);
+      }
+    } catch (e) {
+      console.error('파트너 로드 실패:', e);
+    }
+  }
+
   get showcaseCurrent(): number {
     return this.showcaseIndex + 1;
   }
@@ -244,6 +321,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.marqueeAnimIds.forEach(id => cancelAnimationFrame(id));
     document.removeEventListener('mousemove', this.boundMouseMove);
     document.removeEventListener('mouseup', this.boundMouseUp);
     document.removeEventListener('mousemove', this.boundCardsMouseMove);

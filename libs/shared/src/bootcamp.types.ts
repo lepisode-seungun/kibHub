@@ -3,6 +3,14 @@ import { User } from './user.types';
 
 // ===== Bootcamp =====
 
+export interface RecruitInstructor {
+  name: string;
+  summary: string;
+  photo: string;
+  badge: string;
+  work: string;
+}
+
 export interface Bootcamp {
   id: number;
   name: string;
@@ -12,6 +20,10 @@ export interface Bootcamp {
   thumbnail: string | null;
   startDate: string | null;
   endDate: string | null;
+  recruitIntro: string;
+  recruitCurriculum: string;
+  recruitReview: string;
+  recruitInstructors?: RecruitInstructor[];
   createdAt: string;
   updatedAt?: string;
   applicants?: Applicant[];
@@ -25,6 +37,10 @@ export interface CreateBootcampDto {
   thumbnail?: string;
   startDate?: Date | string;
   endDate?: Date | string;
+  recruitIntro?: string;
+  recruitCurriculum?: string;
+  recruitReview?: string;
+  recruitInstructors?: RecruitInstructor[];
 }
 
 // ===== Applicant =====
@@ -112,6 +128,8 @@ export interface CreateCourseDto {
 
 export interface CreateLectureDto {
   title: string;
+  category?: string;
+  videoUrl?: string;
   content?: string;
   sortOrder?: number;
 }

@@ -59,6 +59,8 @@ export class ApiService {
     create: (data: CreateBootcampDto): Promise<Bootcamp> => this.post<Bootcamp>('/bootcamps', data),
     update: (id: number, data: Partial<CreateBootcampDto>): Promise<Bootcamp> => this.patch<Bootcamp>(`/bootcamps/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/bootcamps/${id}`),
+    getInterviewSettings: (id: number): Promise<{ text: string }[]> => this.get(`/bootcamps/${id}/interview-settings`),
+    updateInterviewSettings: (id: number, questions: { text: string }[]): Promise<any> => this.patch(`/bootcamps/${id}/interview-settings`, { questions }),
   };
 
   // ===== Courses =====
@@ -88,9 +90,29 @@ export class ApiService {
     delete: (id: number): Promise<void> => this.del<void>(`/assignments/${id}`),
   };
 
+  // ===== Submissions =====
+  readonly submissions = {
+    findByAssignment: (assignmentId: number): Promise<any[]> => this.get(`/assignments/${assignmentId}/submissions`),
+    findOne: (id: number): Promise<any> => this.get(`/submissions/${id}`),
+    create: (assignmentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
+      this.post(`/assignments/${assignmentId}/submissions`, data),
+    createFeedback: (parentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
+      this.post(`/submissions/${parentId}/feedback`, data),
+    update: (id: number, data: { title?: string; content?: string }): Promise<any> => this.patch(`/submissions/${id}`, data),
+    delete: (id: number): Promise<any> => this.del(`/submissions/${id}`),
+  };
+
+  // ===== Submission Comments =====
+  readonly submissionComments = {
+    findBySubmission: (submissionId: number): Promise<any[]> => this.get(`/submissions/${submissionId}/comments`),
+    create: (submissionId: number, data: { body: string }): Promise<any> => this.post(`/submissions/${submissionId}/comments`, data),
+    delete: (id: number): Promise<any> => this.del(`/submission-comments/${id}`),
+  };
+
   // ===== Applicants =====
   readonly applicants = {
     findByBootcamp: (bootcampId: number): Promise<Applicant[]> => this.get<Applicant[]>(`/bootcamps/${bootcampId}/applicants`),
+    findByUser: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/applicants`),
     findOne: (id: number): Promise<Applicant> => this.get<Applicant>(`/applicants/${id}`),
     updateStatus: (id: number, status: string): Promise<Applicant> => this.patch<Applicant>(`/applicants/${id}/status`, { status }),
     bulkUpdateStatus: (ids: number[], status: string): Promise<void> => this.patch<void>('/applicants/bulk-status', { ids, status }),
@@ -238,5 +260,60 @@ export class ApiService {
   readonly siteSettings = {
     get: (key: string): Promise<{ key: string; value: string }> => this.get(`/site-settings/${key}`),
     set: (key: string, value: string): Promise<{ key: string; value: string }> => this.put(`/site-settings/${key}`, { value }),
+  };
+
+  // ===== Posters =====
+  readonly posters = {
+    findAll: (): Promise<any[]> => this.get('/posters'),
+    create: (data: { imageUrl: string; displayOrder?: number }): Promise<any> => this.post('/posters', data),
+    update: (id: number, data: { imageUrl?: string; displayOrder?: number }): Promise<any> => this.put(`/posters/${id}`, data),
+    delete: (id: number): Promise<void> => this.del(`/posters/${id}`),
+  };
+
+  // ===== Histories =====
+  readonly histories = {
+    findAll: (): Promise<{ year: string; items: any[] }[]> => this.get('/histories'),
+    findAllFlat: (): Promise<any[]> => this.get('/histories/flat'),
+    create: (data: { year: string; title: string; description?: string; period: string; displayOrder?: number }): Promise<any> => this.post('/histories', data),
+    update: (id: number, data: any): Promise<any> => this.put(`/histories/${id}`, data),
+    delete: (id: number): Promise<void> => this.del(`/histories/${id}`),
+    deleteByYear: (year: string): Promise<void> => this.del(`/histories/year/${year}`),
+  };
+
+  // ===== Partners =====
+  readonly partners = {
+    findAll: (): Promise<any[]> => this.get('/partners'),
+    create: (data: { name: string; logoUrl: string; link?: string; displayOrder?: number }): Promise<any> => this.post('/partners', data),
+    update: (id: number, data: any): Promise<any> => this.put(`/partners/${id}`, data),
+    delete: (id: number): Promise<void> => this.del(`/partners/${id}`),
+  };
+
+  // ===== Upload =====
+  uploadFile(file: File, folder = 'general'): Promise<{ url: string; name: string; size: number; mimeType: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+    return firstValueFrom(this.http.post<any>(`${BASE}/upload`, formData, { withCredentials: true }));
+  }
+
+  uploadFiles(files: File[], folder = 'general'): Promise<{ url: string; name: string; size: number; mimeType: string }[]> {
+    const formData = new FormData();
+    files.forEach(f => formData.append('files', f));
+    formData.append('folder', folder);
+    return firstValueFrom(this.http.post<any>(`${BASE}/upload/multiple`, formData, { withCredentials: true }));
+  }
+
+  // ===== Lecture Files =====
+  readonly lectureFiles = {
+    add: (lectureId: number, data: { name: string; url: string; size?: number; mimeType?: string }): Promise<any> =>
+      this.post(`/lectures/${lectureId}/files`, data),
+    delete: (fileId: number): Promise<void> => this.del(`/lecture-files/${fileId}`),
+  };
+
+  // ===== Assignment Files =====
+  readonly assignmentFiles = {
+    add: (assignmentId: number, data: { name: string; url: string; size?: number; mimeType?: string }): Promise<any> =>
+      this.post(`/assignments/${assignmentId}/files`, data),
+    delete: (fileId: number): Promise<void> => this.del(`/assignment-files/${fileId}`),
   };
 }

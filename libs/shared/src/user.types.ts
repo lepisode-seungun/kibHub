@@ -44,8 +44,13 @@ export interface UpdateUserDto {
   nickname?: string;
   name?: string;
   phone?: string;
+  countryCode?: string;
+  birthday?: string;
+  intro?: string;
+  profileImage?: string | null;
   adminRole?: AdminRole | null;
   role?: string;
   status?: string;
   loginId?: string;
+  sns?: { type: string; label: string; url: string }[];
 }

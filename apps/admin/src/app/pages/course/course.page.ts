@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { Course } from '../../shared/types';
 
 interface CourseRow {
@@ -42,6 +43,7 @@ export class CoursePage implements OnInit {
   private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private bootcampCtx = inject(BootcampContextService);
 
   columns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
@@ -67,7 +69,7 @@ export class CoursePage implements OnInit {
   contextMenuItems = ['숨김', '수정', '삭제'];
 
   ngOnInit(): void {
-    this.bootcampId = Number(this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || 1);
+    this.bootcampId = Number(this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || this.bootcampCtx.currentBootcampId() || 0);
     this.loadCourses();
   }
 

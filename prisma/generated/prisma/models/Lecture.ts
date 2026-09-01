@@ -41,6 +41,8 @@ export type LectureSumAggregateOutputType = {
 export type LectureMinAggregateOutputType = {
   id: number | null
   title: string | null
+  category: string | null
+  videoUrl: string | null
   content: string | null
   sortOrder: number | null
   courseId: number | null
@@ -51,6 +53,8 @@ export type LectureMinAggregateOutputType = {
 export type LectureMaxAggregateOutputType = {
   id: number | null
   title: string | null
+  category: string | null
+  videoUrl: string | null
   content: string | null
   sortOrder: number | null
   courseId: number | null
@@ -61,6 +65,8 @@ export type LectureMaxAggregateOutputType = {
 export type LectureCountAggregateOutputType = {
   id: number
   title: number
+  category: number
+  videoUrl: number
   content: number
   sortOrder: number
   courseId: number
@@ -85,6 +91,8 @@ export type LectureSumAggregateInputType = {
 export type LectureMinAggregateInputType = {
   id?: true
   title?: true
+  category?: true
+  videoUrl?: true
   content?: true
   sortOrder?: true
   courseId?: true
@@ -95,6 +103,8 @@ export type LectureMinAggregateInputType = {
 export type LectureMaxAggregateInputType = {
   id?: true
   title?: true
+  category?: true
+  videoUrl?: true
   content?: true
   sortOrder?: true
   courseId?: true
@@ -105,6 +115,8 @@ export type LectureMaxAggregateInputType = {
 export type LectureCountAggregateInputType = {
   id?: true
   title?: true
+  category?: true
+  videoUrl?: true
   content?: true
   sortOrder?: true
   courseId?: true
@@ -202,6 +214,8 @@ export type LectureGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type LectureGroupByOutputType = {
   id: number
   title: string
+  category: string
+  videoUrl: string
   content: string
   sortOrder: number
   courseId: number
@@ -235,6 +249,8 @@ export type LectureWhereInput = {
   NOT?: Prisma.LectureWhereInput | Prisma.LectureWhereInput[]
   id?: Prisma.IntFilter<"Lecture"> | number
   title?: Prisma.StringFilter<"Lecture"> | string
+  category?: Prisma.StringFilter<"Lecture"> | string
+  videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
@@ -247,6 +263,8 @@ export type LectureWhereInput = {
 export type LectureOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
@@ -262,6 +280,8 @@ export type LectureWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.LectureWhereInput[]
   NOT?: Prisma.LectureWhereInput | Prisma.LectureWhereInput[]
   title?: Prisma.StringFilter<"Lecture"> | string
+  category?: Prisma.StringFilter<"Lecture"> | string
+  videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
@@ -274,6 +294,8 @@ export type LectureWhereUniqueInput = Prisma.AtLeast<{
 export type LectureOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
@@ -292,6 +314,8 @@ export type LectureScalarWhereWithAggregatesInput = {
   NOT?: Prisma.LectureScalarWhereWithAggregatesInput | Prisma.LectureScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Lecture"> | number
   title?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
+  category?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
+  videoUrl?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
   content?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
   sortOrder?: Prisma.IntWithAggregatesFilter<"Lecture"> | number
   courseId?: Prisma.IntWithAggregatesFilter<"Lecture"> | number
@@ -301,6 +325,8 @@ export type LectureScalarWhereWithAggregatesInput = {
 
 export type LectureCreateInput = {
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   createdAt?: Date | string
@@ -312,6 +338,8 @@ export type LectureCreateInput = {
 export type LectureUncheckedCreateInput = {
   id?: number
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   courseId: number
@@ -322,6 +350,8 @@ export type LectureUncheckedCreateInput = {
 
 export type LectureUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,6 +363,8 @@ export type LectureUpdateInput = {
 export type LectureUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -344,6 +376,8 @@ export type LectureUncheckedUpdateInput = {
 export type LectureCreateManyInput = {
   id?: number
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   courseId: number
@@ -353,6 +387,8 @@ export type LectureCreateManyInput = {
 
 export type LectureUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,6 +398,8 @@ export type LectureUpdateManyMutationInput = {
 export type LectureUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -382,6 +420,8 @@ export type LectureOrderByRelationAggregateInput = {
 export type LectureCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
@@ -398,6 +438,8 @@ export type LectureAvgOrderByAggregateInput = {
 export type LectureMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
@@ -408,6 +450,8 @@ export type LectureMaxOrderByAggregateInput = {
 export type LectureMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
@@ -484,6 +528,8 @@ export type LectureUpdateOneRequiredWithoutFilesNestedInput = {
 
 export type LectureCreateWithoutCourseInput = {
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   createdAt?: Date | string
@@ -494,6 +540,8 @@ export type LectureCreateWithoutCourseInput = {
 export type LectureUncheckedCreateWithoutCourseInput = {
   id?: number
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   createdAt?: Date | string
@@ -533,6 +581,8 @@ export type LectureScalarWhereInput = {
   NOT?: Prisma.LectureScalarWhereInput | Prisma.LectureScalarWhereInput[]
   id?: Prisma.IntFilter<"Lecture"> | number
   title?: Prisma.StringFilter<"Lecture"> | string
+  category?: Prisma.StringFilter<"Lecture"> | string
+  videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
@@ -542,6 +592,8 @@ export type LectureScalarWhereInput = {
 
 export type LectureCreateWithoutFilesInput = {
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   createdAt?: Date | string
@@ -552,6 +604,8 @@ export type LectureCreateWithoutFilesInput = {
 export type LectureUncheckedCreateWithoutFilesInput = {
   id?: number
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   courseId: number
@@ -577,6 +631,8 @@ export type LectureUpdateToOneWithWhereWithoutFilesInput = {
 
 export type LectureUpdateWithoutFilesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,6 +643,8 @@ export type LectureUpdateWithoutFilesInput = {
 export type LectureUncheckedUpdateWithoutFilesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -597,6 +655,8 @@ export type LectureUncheckedUpdateWithoutFilesInput = {
 export type LectureCreateManyCourseInput = {
   id?: number
   title: string
+  category?: string
+  videoUrl?: string
   content?: string
   sortOrder?: number
   createdAt?: Date | string
@@ -605,6 +665,8 @@ export type LectureCreateManyCourseInput = {
 
 export type LectureUpdateWithoutCourseInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -615,6 +677,8 @@ export type LectureUpdateWithoutCourseInput = {
 export type LectureUncheckedUpdateWithoutCourseInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -625,6 +689,8 @@ export type LectureUncheckedUpdateWithoutCourseInput = {
 export type LectureUncheckedUpdateManyWithoutCourseInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -665,6 +731,8 @@ export type LectureCountOutputTypeCountFilesArgs<ExtArgs extends runtime.Types.E
 export type LectureSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
+  videoUrl?: boolean
   content?: boolean
   sortOrder?: boolean
   courseId?: boolean
@@ -678,6 +746,8 @@ export type LectureSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type LectureSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
+  videoUrl?: boolean
   content?: boolean
   sortOrder?: boolean
   courseId?: boolean
@@ -689,6 +759,8 @@ export type LectureSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type LectureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
+  videoUrl?: boolean
   content?: boolean
   sortOrder?: boolean
   courseId?: boolean
@@ -700,6 +772,8 @@ export type LectureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type LectureSelectScalar = {
   id?: boolean
   title?: boolean
+  category?: boolean
+  videoUrl?: boolean
   content?: boolean
   sortOrder?: boolean
   courseId?: boolean
@@ -707,7 +781,7 @@ export type LectureSelectScalar = {
   updatedAt?: boolean
 }
 
-export type LectureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content" | "sortOrder" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["lecture"]>
+export type LectureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "videoUrl" | "content" | "sortOrder" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["lecture"]>
 export type LectureInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   files?: boolean | Prisma.Lecture$filesArgs<ExtArgs>
@@ -729,6 +803,8 @@ export type $LecturePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     title: string
+    category: string
+    videoUrl: string
     content: string
     sortOrder: number
     courseId: number
@@ -1161,6 +1237,8 @@ export interface Prisma__LectureClient<T, Null = never, ExtArgs extends runtime.
 export interface LectureFieldRefs {
   readonly id: Prisma.FieldRef<"Lecture", 'Int'>
   readonly title: Prisma.FieldRef<"Lecture", 'String'>
+  readonly category: Prisma.FieldRef<"Lecture", 'String'>
+  readonly videoUrl: Prisma.FieldRef<"Lecture", 'String'>
   readonly content: Prisma.FieldRef<"Lecture", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Lecture", 'Int'>
   readonly courseId: Prisma.FieldRef<"Lecture", 'Int'>

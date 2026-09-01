@@ -35,6 +35,7 @@ export class ApiService {
     findPaged: (page: number, limit: number): Promise<{ data: Bootcamp[]; meta: { total: number; page: number; limit: number; totalPages: number } }> =>
       this.get(`/bootcamps?page=${page}&limit=${limit}`),
     findOne: (id: number): Promise<Bootcamp> => this.get<Bootcamp>(`/bootcamps/${id}`),
+    getInterviewSettings: (id: number): Promise<{ text: string }[]> => this.get(`/bootcamps/${id}/interview-settings`),
   };
 
   // ===== Courses =====
@@ -55,9 +56,37 @@ export class ApiService {
     findOne: (id: number): Promise<Assignment> => this.get<Assignment>(`/assignments/${id}`),
   };
 
+  // ===== Submissions =====
+  readonly submissions = {
+    findByAssignment: (assignmentId: number): Promise<any[]> => this.get(`/assignments/${assignmentId}/submissions`),
+    findOne: (id: number): Promise<any> => this.get(`/submissions/${id}`),
+    create: (assignmentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
+      this.post(`/assignments/${assignmentId}/submissions`, data),
+    createFeedback: (parentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
+      this.post(`/submissions/${parentId}/feedback`, data),
+    update: (id: number, data: { title?: string; content?: string }): Promise<any> => this.patch(`/submissions/${id}`, data),
+    delete: (id: number): Promise<any> => this.del(`/submissions/${id}`),
+  };
+
+  // ===== Submission Comments =====
+  readonly submissionComments = {
+    findBySubmission: (submissionId: number): Promise<any[]> => this.get(`/submissions/${submissionId}/comments`),
+    create: (submissionId: number, data: { body: string }): Promise<any> => this.post(`/submissions/${submissionId}/comments`, data),
+    delete: (id: number): Promise<any> => this.del(`/submission-comments/${id}`),
+  };
+
   // ===== Applicants =====
   readonly applicants = {
-    apply: (bootcampId: number): Promise<Applicant> => this.post<Applicant>(`/bootcamps/${bootcampId}/applicants`, {}),
+    apply: (bootcampId: number, data: {
+      applicantName: string;
+      phone?: string;
+      email?: string;
+      address?: string;
+      portfolioUrl?: string;
+      portfolioFiles?: { url: string; originalName: string; size: number }[];
+      motivation?: string;
+    }): Promise<Applicant> => this.post<Applicant>(`/bootcamps/${bootcampId}/applicants`, data),
+    findByUser: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/applicants`),
   };
 
   // ===== Contents =====
@@ -108,7 +137,10 @@ export class ApiService {
 
   // ===== Users (profile) =====
   readonly users = {
-    me: (): Promise<User> => this.get<User>('/auth/me'),
+    me: async (): Promise<User> => {
+      const res = await this.get<{ user: User }>('/auth/me');
+      return res.user;
+    },
     findOne: (id: number): Promise<User> => this.get<User>(`/users/${id}`),
     update: (id: number, data: UpdateUserDto): Promise<User> => this.patch<User>(`/users/${id}`, data),
   };
@@ -178,5 +210,20 @@ export class ApiService {
   // ===== Site Settings =====
   readonly siteSettings = {
     get: (key: string): Promise<{ key: string; value: string }> => this.get(`/site-settings/${key}`),
+  };
+
+  // ===== Posters =====
+  readonly posters = {
+    findAll: (): Promise<any[]> => this.get('/posters'),
+  };
+
+  // ===== Histories =====
+  readonly histories = {
+    findAll: (): Promise<{ year: string; items: any[] }[]> => this.get('/histories'),
+  };
+
+  // ===== Partners =====
+  readonly partners = {
+    findAll: (): Promise<any[]> => this.get('/partners'),
   };
 }

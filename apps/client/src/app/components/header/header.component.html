@@ -56,7 +56,11 @@
         <!-- User Profile -->
         <div class="user-profile" id="user-profile-btn">
           <a routerLink="/profile-edit" class="user-avatar-link" aria-label="프로필 편집">
-            <span class="user-avatar">{{ userInitial() }}</span>
+            @if (userProfileImage()) {
+              <img class="user-avatar-img" [src]="userProfileImage()" alt="프로필" />
+            } @else {
+              <span class="user-avatar">{{ userInitial() }}</span>
+            }
           </a>
           <a routerLink="/profile" class="user-name-link">{{ userName() }}</a>
         </div>
@@ -251,8 +255,12 @@
 
       <!-- 모바일 전용: 유저 프로필 -->
       <div class="flex items-center gap-2.5 w-full drawer-mobile-only">
-        <a routerLink="/profile-edit" class="flex items-center justify-center w-12 h-12 bg-[#434343] border border-[#565757] rounded-full no-underline flex-shrink-0" (click)="closeSidebar()">
-          <span class="font-suit font-medium text-xs text-[#E0E0E0]">{{ userInitial() }}</span>
+        <a routerLink="/profile-edit" class="flex items-center justify-center w-12 h-12 bg-[#434343] border border-[#565757] rounded-full no-underline flex-shrink-0 overflow-hidden" (click)="closeSidebar()">
+          @if (userProfileImage()) {
+            <img class="w-full h-full object-cover" [src]="userProfileImage()" alt="프로필" />
+          } @else {
+            <span class="font-suit font-medium text-xs text-[#E0E0E0]">{{ userInitial() }}</span>
+          }
         </a>
         <a routerLink="/profile" class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-white no-underline truncate" (click)="closeSidebar()">{{ userName() }}</a>
         <a routerLink="/upload" class="flex items-center justify-center gap-1 px-3 h-10 bg-gradient-to-r from-[#7A48FF] to-[#5FCCB6] border border-white/12 rounded-full no-underline flex-shrink-0" (click)="closeSidebar()">

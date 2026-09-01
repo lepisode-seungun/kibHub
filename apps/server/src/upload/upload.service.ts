@@ -12,6 +12,7 @@ const DOC_MIME = [
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/vnd.hancom.hwp',
+  'application/haansofthwpx.hwpx',
   'application/zip',
 ];
 
@@ -80,9 +81,14 @@ export class UploadService {
 
   /** 유효성 검증 */
   private validate(file: Express.Multer.File): void {
-    if (!ALLOWED_MIME.includes(file.mimetype)) {
+    const ext = extname(file.originalname).toLowerCase();
+    const allowedExts = ['.hwpx'];
+    const mimeAllowed = ALLOWED_MIME.includes(file.mimetype);
+    const extAllowed = file.mimetype === 'application/octet-stream' && allowedExts.includes(ext);
+
+    if (!mimeAllowed && !extAllowed) {
       throw new BadRequestException(
-        `허용되지 않는 파일 형식: ${file.mimetype}`,
+        `허용되지 않는 파일 형식: ${file.mimetype} (${ext})`,
       );
     }
 

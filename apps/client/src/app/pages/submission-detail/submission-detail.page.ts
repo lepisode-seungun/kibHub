@@ -1,10 +1,12 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface LearningFile {
   name: string;
+  url?: string;
 }
 
 @Component({
@@ -18,39 +20,71 @@ export class SubmissionDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   submissionId = '';
   bootcampId = '';
+  assignmentId = '';
 
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('과제');
 
-  courseLabel = '';
-  assignmentTitle = '';
-  badge = '과제제출';
-  author = '';
-  date = '';
-  fileName = '';
-  description = '';
+  courseLabel = signal('');
+  assignmentTitle = signal('');
+  badge = signal('과제제출');
+  author = signal('');
+  date = signal('');
+  fileName = signal('');
+  description = signal('');
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
   isDeleteModalOpen = signal(false);
 
-  isAuthor = true;
-  isInstructor = false;
+  isAuthor = signal(false);
+  isInstructor = signal(false);
 
-  learningFiles: LearningFile[] = [];
+  learningFiles = signal<LearningFile[]>([]);
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.submissionId = params.get('submissionId') || '';
+      if (this.submissionId) {
+        await this.loadSubmission(Number(this.submissionId));
+      }
     });
   }
 
+  private async loadSubmission(id: number): Promise<void> {
+    try {
+      const s: any = await this.api.submissions.findOne(id);
+      this.assignmentTitle.set(s.title || '');
+      this.description.set(s.content || '');
+      this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
+      this.author.set(s.author?.name || s.author?.nickname || '');
+      this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
+      this.fileName.set(s.files?.[0]?.name || '');
+      this.learningFiles.set((s.files || []).map((f: any) => ({ name: f.name, url: f.url })));
+      if (s.assignment) {
+        this.courseLabel.set(s.assignment.course?.name || '');
+        this.assignmentId = String(s.assignment.id);
+      }
+      // 권한 체크
+      const user = this.authService.currentUser();
+      this.isAuthor.set(user?.id === s.authorId);
+      this.isInstructor.set(user?.role === 'INSTRUCTOR' || user?.role === 'ADMIN');
+      this.cdr.markForCheck();
+    } catch (err) {
+      console.error('제출 상세 로드 실패:', err);
+    }
+  }
+
   goBack(): void {
-    if (this.bootcampId) {
+    if (this.bootcampId && this.assignmentId) {
+      this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', this.assignmentId]);
+    } else if (this.bootcampId) {
       this.router.navigate(['/my-bootcamp', this.bootcampId]);
     } else {
       this.router.navigate(['/my-bootcamp']);
@@ -90,11 +124,14 @@ export class SubmissionDetailPage implements OnInit {
     this.isDeleteModalOpen.set(false);
   }
 
-  confirmDelete(): void {
-    // TODO: API 호출
-    console.log('제출과제 삭제:', this.submissionId);
-    this.isDeleteModalOpen.set(false);
-    this.goBack();
+  async confirmDelete(): Promise<void> {
+    try {
+      await this.api.submissions.delete(Number(this.submissionId));
+      this.isDeleteModalOpen.set(false);
+      this.goBack();
+    } catch (err) {
+      console.error('제출과제 삭제 실패:', err);
+    }
   }
 
   onRegisterFeedback(): void {

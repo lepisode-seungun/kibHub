@@ -1,7 +1,8 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
 
 interface NavItem {
   label: string;
@@ -20,6 +21,7 @@ interface NavItem {
 })
 export class AdminLayoutComponent implements OnInit {
   private router = inject(Router);
+  readonly bootcampCtx = inject(BootcampContextService);
 
   expandedMenus = signal<Set<string>>(new Set());
   navMode = signal<'main' | 'bootcampHome'>('main');
@@ -71,7 +73,7 @@ export class AdminLayoutComponent implements OnInit {
   ];
 
   // ===== 홈 관리 전용 네비게이션 =====
-  bootcampTitle = signal('케나즈 아카데미 초급반/중급반 13기');
+  bootcampTitle = computed(() => this.bootcampCtx.currentBootcampName() || '부트캠프');
 
   homeNavItems: NavItem[] = [
     { label: '홈으로', icon: 'home', action: 'backToMain' },
@@ -122,6 +124,11 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   private syncFromUrl(url: string): void {
+    // bootcamp/home 경로면 자동으로 bootcampHome 모드 전환
+    if (url.startsWith('/bootcamp/home') && this.bootcampCtx.currentBootcampId()) {
+      this.navMode.set('bootcampHome');
+    }
+
     const match = this.findBestMatch(url);
     if (match) {
       this.currentMenuTitle = match.label;
@@ -154,6 +161,12 @@ export class AdminLayoutComponent implements OnInit {
 
   navigateTo(route: string, label: string, action?: string): void {
     if (action === 'switchToBootcampHome') {
+      if (!this.bootcampCtx.currentBootcampId()) {
+        // 부트캠프 미선택 시 목록으로 이동
+        this.currentMenuTitle = '부트캠프 목록';
+        this.router.navigate(['/bootcamp']);
+        return;
+      }
       this.navMode.set('bootcampHome');
       this.currentMenuTitle = '대시보드';
       this.router.navigate(['/bootcamp/home/dashboard']);
@@ -161,6 +174,7 @@ export class AdminLayoutComponent implements OnInit {
     }
     if (action === 'backToMain') {
       this.navMode.set('main');
+      this.bootcampCtx.clear();
       this.currentMenuTitle = '부트캠프 목록';
       this.router.navigate(['/bootcamp']);
       return;

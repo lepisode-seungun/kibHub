@@ -1,15 +1,20 @@
 // ===== 부트캠프 =====
 model Bootcamp {
-  id              Int             @id @default(autoincrement())
-  name            String
-  instructorName  String          @default("")
-  description     String          @default("")
-  thumbnail       String?
-  startDate       DateTime?
-  endDate         DateTime?
-  status          BootcampStatus  @default(PREPARING)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id                Int            @id @default(autoincrement())
+  name              String
+  instructorName    String         @default("")
+  description       String         @default("")
+  thumbnail         String?
+  startDate         DateTime?
+  endDate           DateTime?
+  status            BootcampStatus @default(PREPARING)
+  recruitIntro      String         @default("")
+  recruitCurriculum String         @default("")
+  recruitReview     String         @default("")
+  recruitInstructors  Json?
+  interviewSettings   Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   courses    Course[]
   applicants Applicant[]

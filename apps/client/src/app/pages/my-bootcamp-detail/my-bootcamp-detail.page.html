@@ -21,14 +21,14 @@
               <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
             </svg>
           </button>
-          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus }}</span>
-          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle }}</h1>
+          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus() }}</span>
+          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle() }}</h1>
         </div>
 
         <!-- 모바일: 뱃지 위, 제목 아래 -->
         <div class="md:hidden flex flex-col items-start gap-2">
-          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus }}</span>
-          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle }}</h1>
+          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus() }}</span>
+          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle() }}</h1>
         </div>
 
         <!-- 교육 기간 -->
@@ -37,7 +37,7 @@
             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#A1A1AA" opacity="0.5"/>
             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v6h18V6c0-1.1-.9-2-2-2z" fill="#A1A1AA"/>
           </svg>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange() }}</span>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
       </div>
 
       <div class="flex flex-col items-start w-full bg-white">
-        @for (section of courseSections; track section.id) {
+        @for (section of courseSections(); track section.id) {
           <div class="mbd-course-header" role="button" tabindex="0" (click)="toggleSection(section)" (keydown.enter)="toggleSection(section)">
             <div class="flex items-center gap-3 flex-1">
               <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-accent">{{ section.number }}</span>
@@ -94,7 +94,11 @@
                 @if (card.type === '강의') {
                   <div class="mbd-lecture-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
                     <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
-                      <div class="mbd-thumb-placeholder"></div>
+                      @if (card.thumbnail) {
+                        <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
+                      } @else {
+                        <div class="mbd-thumb-placeholder"></div>
+                      }
                     </div>
                     <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
                       <div class="flex items-start gap-2">
@@ -117,7 +121,11 @@
                 } @else {
                   <div class="mbd-lecture-card mbd-assignment-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
                     <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
-                      <div class="mbd-thumb-placeholder"></div>
+                      @if (card.thumbnail) {
+                        <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
+                      } @else {
+                        <div class="mbd-thumb-placeholder"></div>
+                      }
                     </div>
                     <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
                       <div class="flex items-start gap-2">
@@ -185,8 +193,8 @@
         @for (card of filteredLectures; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
             <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
-              @if (card.hasImage) {
-                <div class="mbd-thumb-placeholder"></div>
+              @if (card.thumbnail) {
+                <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
               } @else {
                 <div class="at-thumb-gradient">
                   <span class="at-thumb-text">{{ card.title }}</span>
@@ -259,8 +267,8 @@
         @for (card of filteredAssignments; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
             <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
-              @if (card.hasImage) {
-                <div class="mbd-thumb-placeholder"></div>
+              @if (card.thumbnail) {
+                <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
               } @else {
                 <div class="at-thumb-gradient">
                   <span class="at-thumb-text">{{ card.title }}</span>

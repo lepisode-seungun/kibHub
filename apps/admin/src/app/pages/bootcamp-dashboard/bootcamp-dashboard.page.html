@@ -42,21 +42,21 @@
         <div class="info-row">
           <div class="info-field">
             <span class="field-label">ID</span>
-            <span class="field-value">{{ info.id }}</span>
+            <span class="field-value">{{ info().id }}</span>
           </div>
           <div class="info-field">
             <span class="field-label">상태</span>
             <div class="status-badge">
-              <span>{{ info.status }}</span>
+              <span>{{ info().status }}</span>
             </div>
           </div>
           <div class="info-field">
             <span class="field-label">부트캠프명</span>
-            <span class="field-value">{{ info.bootcampName }}</span>
+            <span class="field-value">{{ info().bootcampName }}</span>
           </div>
           <div class="info-field">
             <span class="field-label">등록일시</span>
-            <span class="field-value">{{ info.createdAt }}</span>
+            <span class="field-value">{{ info().createdAt }}</span>
           </div>
         </div>
 
@@ -64,11 +64,11 @@
         <div class="info-row">
           <div class="info-field">
             <span class="field-label">모집기간</span>
-            <span class="field-value">{{ info.recruitmentPeriod }}</span>
+            <span class="field-value">{{ info().recruitmentPeriod }}</span>
           </div>
           <div class="info-field">
             <span class="field-label">교육기간</span>
-            <span class="field-value">{{ info.educationPeriod }}</span>
+            <span class="field-value">{{ info().educationPeriod }}</span>
           </div>
         </div>
       </div>
@@ -116,7 +116,7 @@
       <div class="info-header-left">
         <button class="section-toggle" (click)="toggleStudentSection()">
           <span class="info-title">수강생 목록</span>
-          <span class="data-count">({{ studentData.length }})</span>
+          <span class="data-count">({{ studentData().length }})</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                class="toggle-arrow"
                [class.collapsed]="!studentSectionOpen()">
@@ -138,7 +138,7 @@
     @if (studentSectionOpen()) {
       <adm-data-grid
         [columns]="studentColumns"
-        [data]="studentData"
+        [data]="studentData()"
         [showSearch]="false"
         (actionClick)="removeStudent($event)">
       </adm-data-grid>
@@ -359,7 +359,7 @@
       <div class="dialog-info">
         <div class="dialog-info-row">
           <span class="dialog-info-label">부트캠프</span>
-          <span class="dialog-info-value">{{ info.bootcampName }}</span>
+          <span class="dialog-info-value">{{ info().bootcampName }}</span>
         </div>
         <div class="dialog-info-row">
           <span class="dialog-info-label">이름</span>
@@ -398,7 +398,7 @@
       <div class="dialog-info">
         <div class="dialog-info-row">
           <span class="dialog-info-label">부트캠프</span>
-          <span class="dialog-info-value">{{ info.bootcampName }}</span>
+          <span class="dialog-info-value">{{ info().bootcampName }}</span>
         </div>
         <div class="dialog-info-row">
           <span class="dialog-info-label">이름</span>

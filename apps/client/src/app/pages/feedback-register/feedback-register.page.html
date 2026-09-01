@@ -37,13 +37,13 @@
 
     <!-- 폼 컨테이너 -->
     <div class="fbr-form-card">
-      <!-- 일정명 -->
+      <!-- 제목 -->
       <div class="flex flex-col gap-2 w-full">
         <div class="flex items-center gap-1">
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">제목</span>
           <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
         </div>
-        <input class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-150 placeholder:text-zinc-400 focus:border-accent box-border" type="text" placeholder="입력해주세요." [(value)]="title" />
+        <input class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-150 placeholder:text-zinc-400 focus:border-accent box-border" type="text" placeholder="제목을 입력해주세요." [value]="title" (input)="title = $any($event.target).value" />
       </div>
 
       <!-- 내용 -->

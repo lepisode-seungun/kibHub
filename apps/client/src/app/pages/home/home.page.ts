@@ -65,6 +65,8 @@ export class HomePage implements AfterViewInit, OnInit {
   private ngZone = inject(NgZone);
   private api = inject(ApiService);
 
+  isLoading = signal(true);
+
   /* ===== Carousel arrow / fade visibility ===== */
   showCommentLeftArrow = signal(false);
   showMentorLeftArrow = signal(false);
@@ -107,8 +109,9 @@ export class HomePage implements AfterViewInit, OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadBootcamps();
-    this.loadContents();
+    Promise.all([this.loadBootcamps(), this.loadContents()]).finally(() => {
+      this.isLoading.set(false);
+    });
   }
 
   private async loadBootcamps(): Promise<void> {

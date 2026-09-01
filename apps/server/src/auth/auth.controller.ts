@@ -29,7 +29,7 @@ export class AuthController {
       const token = this.authService.generateToken(user.id);
       res.cookie('kiphub_token', token, COOKIE_OPTIONS);
       return res.status(HttpStatus.CREATED).json({
-        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N' },
+        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N', profileImage: user.profileImage || null },
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '회원가입 실패';
@@ -47,7 +47,7 @@ export class AuthController {
       const token = this.authService.generateToken(user.id);
       res.cookie('kiphub_token', token, COOKIE_OPTIONS);
       return res.json({
-        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N' },
+        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N', profileImage: user.profileImage || null },
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '로그인 실패';

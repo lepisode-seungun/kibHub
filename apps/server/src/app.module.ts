@@ -15,6 +15,9 @@ import { SupabaseModule } from './supabase/supabase.module';
 import { UploadModule } from './upload/upload.module';
 import { BannersModule } from './banners/banners.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
+import { PostersModule } from './posters/posters.module';
+import { HistoriesModule } from './histories/histories.module';
+import { PartnersModule } from './partners/partners.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { SiteSettingsModule } from './site-settings/site-settings.module';
     UploadModule,
     BannersModule,
     SiteSettingsModule,
+    PostersModule,
+    HistoriesModule,
+    PartnersModule,
   ],
 })
 export class AppModule {}

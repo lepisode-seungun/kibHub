@@ -27,6 +27,9 @@ export class BootcampIntroPage implements OnInit {
     this.loadBanners();
     this.loadAcademyIntro();
     this.loadVideoUrl();
+    this.loadPosters();
+    this.loadHistories();
+    this.loadPartners();
   }
 
   async loadAcademyIntro(): Promise<void> {
@@ -161,14 +164,24 @@ export class BootcampIntroPage implements OnInit {
   posterColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '80px' },
     { key: 'image', label: '이미지', width: '200px', type: 'image' },
-    { key: 'title', label: '제목' },
     { key: 'createdAt', label: '등록일시', headerColor: 'text-gray-600' },
   ];
 
-  posterData = [
-    { id: 1, image: '', title: '프로모션 배너', createdAt: '2023-01-01 16:10' },
-    { id: 2, image: '', title: '프로모션 배너', createdAt: '2023-01-01 16:10' },
-  ];
+  posterData = signal<any[]>([]);
+
+  async loadPosters(): Promise<void> {
+    try {
+      const data = await this.api.posters.findAll();
+      this.posterData.set(data.map(p => ({
+        id: p.id,
+        image: p.imageUrl || '',
+        createdAt: new Date(p.createdAt).toLocaleString('ko-KR'),
+        _raw: p,
+      })));
+    } catch (e) {
+      console.error('포스터 로드 실패:', e);
+    }
+  }
 
   // ===== 파트너 탭 =====
   partnerColumns: GridColumn[] = [
@@ -176,34 +189,42 @@ export class BootcampIntroPage implements OnInit {
     { key: 'logo', label: '로고', width: '200px', type: 'image' },
     { key: 'name', label: '이름' },
     { key: 'link', label: '링크' },
+    { key: 'createdAt', label: '등록일시', headerColor: 'text-gray-600' },
   ];
 
-  partnerData = [
-    { id: 1, logo: '', name: 'Apple Books', link: 'https://apple.com' },
-    { id: 2, logo: '', name: 'Kakao Page', link: 'https://kakaopage.com' },
-    { id: 3, logo: '', name: 'Naver Webtoon', link: 'https://webtoon.naver.com' },
-  ];
+  partnerData = signal<any[]>([]);
+
+  async loadPartners(): Promise<void> {
+    try {
+      const data = await this.api.partners.findAll();
+      this.partnerData.set(data.map(p => ({
+        id: p.id,
+        logo: p.logoUrl || '',
+        name: p.name,
+        link: p.link || '',
+        createdAt: new Date(p.createdAt).toLocaleString('ko-KR'),
+        _raw: p,
+      })));
+    } catch (e) {
+      console.error('파트너 로드 실패:', e);
+    }
+  }
 
   // ===== 포스터 드로어 =====
   showPosterDrawer = signal(false);
   posterDrawerMode = signal<'add' | 'edit'>('add');
-  posterForm = signal({ title: '' });
-  posterImage = signal<{ name: string; size: string; preview: string } | null>(null);
+  posterImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
+  private editingPosterId: number | null = null;
 
-  openPosterDrawer(mode: 'add' | 'edit', row?: { title: string }): void {
+  openPosterDrawer(mode: 'add' | 'edit', row?: any): void {
     this.posterDrawerMode.set(mode);
-    this.posterForm.set({ title: mode === 'edit' && row ? row.title : '' });
+    this.editingPosterId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.posterImage.set(null);
     this.showPosterDrawer.set(true);
   }
 
   closePosterDrawer(): void {
     this.showPosterDrawer.set(false);
-  }
-
-  updatePosterField(field: string, event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.posterForm.update(f => ({ ...f, [field]: value }));
   }
 
   onPosterImageSelected(event: Event): void {
@@ -216,6 +237,7 @@ export class BootcampIntroPage implements OnInit {
         name: file.name,
         size: `${sizeKB}KB`,
         preview: reader.result as string,
+        file,
       });
     };
     reader.readAsDataURL(file);
@@ -225,26 +247,45 @@ export class BootcampIntroPage implements OnInit {
     this.posterImage.set(null);
   }
 
-  submitPosterDrawer(): void {
-    this.showPosterDrawer.set(false);
-    // TODO: 포스터 등록/수정 로직
+  async submitPosterDrawer(): Promise<void> {
+    const img = this.posterImage();
+    if (!img?.file) { alert('이미지를 업로드하세요.'); return; }
+    try {
+      const uploaded = await this.api.upload.single(img.file, 'posters');
+      await this.api.posters.create({ imageUrl: uploaded.url });
+      this.showPosterDrawer.set(false);
+      await this.loadPosters();
+      alert('포스터가 등록되었습니다.');
+    } catch (e) {
+      console.error('포스터 등록 실패:', e);
+      alert('등록에 실패했습니다.');
+    }
   }
 
-  onPosterContextMenu(event: { action: string; row: { title: string } }): void {
-    if (event.action === '수정') {
-      this.openPosterDrawer('edit', event.row);
+  async onPosterContextMenu(event: { action: string; row: any }): Promise<void> {
+    if (event.action === '삭제') {
+      const id = event.row._raw?.id || event.row.id;
+      if (!confirm('포스터를 삭제하시겠습니까?')) return;
+      try {
+        await this.api.posters.delete(id);
+        await this.loadPosters();
+      } catch (e) {
+        console.error('포스터 삭제 실패:', e);
+        alert('삭제에 실패했습니다.');
+      }
     }
-    // TODO: 삭제 로직
   }
 
   // ===== 파트너 드로어 =====
   showPartnerDrawer = signal(false);
   partnerDrawerMode = signal<'add' | 'edit'>('add');
   partnerForm = signal({ name: '', link: '' });
-  partnerImage = signal<{ name: string; size: string; preview: string } | null>(null);
+  partnerImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
+  private editingPartnerId: number | null = null;
 
-  openPartnerDrawer(mode: 'add' | 'edit', row?: { name: string; link: string }): void {
+  openPartnerDrawer(mode: 'add' | 'edit', row?: any): void {
     this.partnerDrawerMode.set(mode);
+    this.editingPartnerId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.partnerForm.set({
       name: mode === 'edit' && row ? row.name : '',
       link: mode === 'edit' && row ? row.link : '',
@@ -272,6 +313,7 @@ export class BootcampIntroPage implements OnInit {
         name: file.name,
         size: `${sizeKB}KB`,
         preview: reader.result as string,
+        file,
       });
     };
     reader.readAsDataURL(file);
@@ -281,16 +323,49 @@ export class BootcampIntroPage implements OnInit {
     this.partnerImage.set(null);
   }
 
-  submitPartnerDrawer(): void {
-    this.showPartnerDrawer.set(false);
-    // TODO: 파트너 등록/수정 로직
+  async submitPartnerDrawer(): Promise<void> {
+    const form = this.partnerForm();
+    if (!form.name.trim()) { alert('이름을 입력하세요.'); return; }
+    try {
+      if (this.partnerDrawerMode() === 'add') {
+        let logoUrl = '';
+        const img = this.partnerImage();
+        if (img?.file) {
+          const uploaded = await this.api.upload.single(img.file, 'partners');
+          logoUrl = uploaded.url;
+        }
+        await this.api.partners.create({ name: form.name, logoUrl, link: form.link });
+      } else if (this.editingPartnerId) {
+        const updateData: any = { name: form.name, link: form.link };
+        const img = this.partnerImage();
+        if (img?.file) {
+          const uploaded = await this.api.upload.single(img.file, 'partners');
+          updateData.logoUrl = uploaded.url;
+        }
+        await this.api.partners.update(this.editingPartnerId, updateData);
+      }
+      this.showPartnerDrawer.set(false);
+      await this.loadPartners();
+    } catch (e) {
+      console.error('파트너 저장 실패:', e);
+      alert('저장에 실패했습니다.');
+    }
   }
 
-  onPartnerContextMenu(event: { action: string; row: { name: string; link: string } }): void {
+  async onPartnerContextMenu(event: { action: string; row: any }): Promise<void> {
     if (event.action === '수정') {
       this.openPartnerDrawer('edit', event.row);
+    } else if (event.action === '삭제') {
+      const id = event.row._raw?.id || event.row.id;
+      if (!confirm('파트너를 삭제하시겠습니까?')) return;
+      try {
+        await this.api.partners.delete(id);
+        await this.loadPartners();
+      } catch (e) {
+        console.error('파트너 삭제 실패:', e);
+        alert('삭제에 실패했습니다.');
+      }
     }
-    // TODO: 삭제 로직
   }
 
   // ===== 아카데미 현역 - 히스토리 관리 =====
@@ -344,30 +419,80 @@ export class BootcampIntroPage implements OnInit {
     this.showYearDrawer.set(false);
   }
 
-  submitYearDrawer(): void {
+  async submitYearDrawer(): Promise<void> {
+    const year = this.yearDrawerValue();
+    if (!year.trim()) { alert('연도를 입력하세요.'); return; }
+    // 이미 존재하는 연도인지 체크
+    const existing = this.historyData().find(g => g.year === year.trim());
+    if (existing) { alert(`${year}년은 이미 존재합니다.`); return; }
+    // 빈 연도 폴더를 추가 (정렬: 내림차순)
+    const current = [...this.historyData(), { year: year.trim(), items: [] }];
+    current.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+    this.historyData.set(current);
     this.showYearDrawer.set(false);
-    // TODO: 연도 등록/수정 로직
   }
 
-  onYearAction(year: string, action: string): void {
+  async onYearAction(year: string, action: string): Promise<void> {
     this.activeYearMenu.set(null);
     if (action === '수정') {
       this.openYearDrawer('edit', year);
+    } else if (action === '삭제') {
+      if (!confirm(`${year}년의 모든 히스토리를 삭제하시겠습니까?`)) return;
+      try {
+        await this.api.histories.deleteByYear(year);
+        // 로컬에서도 즉시 제거
+        this.historyData.update(data => data.filter(g => g.year !== year));
+      } catch (e) {
+        // DB에 항목이 없었던 빈 폴더면 로컬에서만 제거
+        this.historyData.update(data => data.filter(g => g.year !== year));
+      }
     }
-    // TODO: 삭제 로직
+  }
+
+  // ===== 히스토리 항목 우클릭 메뉴 =====
+  activeHistoryItemMenu = signal<{ year: string; index: number } | null>(null);
+
+  toggleHistoryItemMenu(year: string, index: number, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const current = this.activeHistoryItemMenu();
+    if (current && current.year === year && current.index === index) {
+      this.activeHistoryItemMenu.set(null);
+    } else {
+      this.activeHistoryItemMenu.set({ year, index });
+    }
+  }
+
+  async onHistoryItemAction(year: string, item: any, action: string): Promise<void> {
+    this.activeHistoryItemMenu.set(null);
+    if (action === '수정') {
+      this.openHistoryItemDrawer('edit', item, year);
+    } else if (action === '삭제') {
+      if (!confirm('이 항목을 삭제하시겠습니까?')) return;
+      try {
+        await this.api.histories.delete(item.id);
+        await this.loadHistories();
+      } catch (e) {
+        console.error('항목 삭제 실패:', e);
+        alert('삭제에 실패했습니다.');
+      }
+    }
   }
 
   // ===== 히스토리 항목 드로어 =====
   showHistoryItemDrawer = signal(false);
   historyItemMode = signal<'add' | 'edit'>('add');
-  historyItemForm = signal({ title: '', content: '', date: '' });
+  historyItemForm = signal({ title: '', content: '', date: '', year: '' });
+  private editingHistoryItemId: number | null = null;
 
-  openHistoryItemDrawer(mode: 'add' | 'edit', item?: { title: string; description: string; period: string }): void {
+  openHistoryItemDrawer(mode: 'add' | 'edit', item?: any, year?: string): void {
     this.historyItemMode.set(mode);
+    this.editingHistoryItemId = mode === 'edit' && item ? item.id : null;
     this.historyItemForm.set({
       title: mode === 'edit' && item ? item.title : '',
-      content: mode === 'edit' && item ? item.description : '',
+      content: mode === 'edit' && item ? (item.description || '') : '',
       date: mode === 'edit' && item ? item.period : '',
+      year: year || '',
     });
     this.showHistoryItemDrawer.set(true);
   }
@@ -381,29 +506,45 @@ export class BootcampIntroPage implements OnInit {
     this.historyItemForm.update(f => ({ ...f, [field]: value }));
   }
 
-  submitHistoryItemDrawer(): void {
-    this.showHistoryItemDrawer.set(false);
-    // TODO: 항목 등록/수정 로직
+  async submitHistoryItemDrawer(): Promise<void> {
+    const form = this.historyItemForm();
+    if (!form.year.trim() || !form.title.trim() || !form.date.trim()) {
+      alert('연도, 제목, 상세날짜를 입력하세요.');
+      return;
+    }
+    try {
+      if (this.historyItemMode() === 'add') {
+        await this.api.histories.create({
+          year: form.year,
+          title: form.title,
+          description: form.content || undefined,
+          period: form.date,
+        });
+      } else if (this.editingHistoryItemId) {
+        await this.api.histories.update(this.editingHistoryItemId, {
+          title: form.title,
+          description: form.content || undefined,
+          period: form.date,
+        });
+      }
+      this.showHistoryItemDrawer.set(false);
+      await this.loadHistories();
+    } catch (e) {
+      console.error('히스토리 항목 저장 실패:', e);
+      alert('저장에 실패했습니다.');
+    }
   }
 
-  historyData = [
-    {
-      year: '2024',
-      items: [
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-      ],
-    },
-    {
-      year: '2023',
-      items: [
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-        { title: 'KENAZ X APPLE BOOKS', description: '글로벌 진출 웹툰 아카데미', period: '2023.10~2023.12' },
-      ],
-    },
-  ];
+  historyData = signal<{ year: string; items: any[] }[]>([]);
+
+  async loadHistories(): Promise<void> {
+    try {
+      const data = await this.api.histories.findAll();
+      this.historyData.set(data);
+    } catch (e) {
+      console.error('히스토리 로드 실패:', e);
+    }
+  }
 
   // ===== 메인배너 수정 드로어 =====
   showBannerDrawer = signal(false);

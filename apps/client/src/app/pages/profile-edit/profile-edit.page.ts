@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, OnInit } from '@angular/core';
+import { Component, signal, inject, computed, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -33,6 +33,7 @@ export class ProfileEditPage implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   private userId = 0;
 
@@ -42,10 +43,41 @@ export class ProfileEditPage implements OnInit {
     try {
       const user = await this.api.users.me();
       this.userId = user.id;
+      this.editName = user.name || '';
       this.nickname = user.nickname || '';
       this.email = user.email;
+      this.phone = user.phone || '';
+      this.birthday = user.birthday || '';
+      this.bio = user.intro || '';
+
+      // 국가코드 매핑
+      if (user.countryCode) {
+        const code = '+' + user.countryCode;
+        const found = this.countryCodes.find(c => c.code === code);
+        if (found) {
+          this.selectedCountry = found;
+          this.phonePrefix = found.code;
+        }
+      }
+
+      // 프로필 이미지
+      if (user.profileImage) {
+        this.avatarPreviewUrl.set(user.profileImage);
+      }
+
+      // SNS
+      if (user.sns && user.sns.length > 0) {
+        for (const s of user.sns) {
+          if (s.type === 'LINK') this.snsLink = s.url;
+          else if (s.type === 'INSTAGRAM') this.snsInstagram = s.url;
+          else if (s.type === 'TWITTER') this.snsTwitter = s.url;
+          else if (s.type === 'YOUTUBE') this.snsYoutube = s.url;
+        }
+      }
     } catch (e) {
       console.error('프로필 로드 실패:', e);
+    } finally {
+      this.cdr.detectChanges();
     }
   }
 
@@ -86,9 +118,11 @@ export class ProfileEditPage implements OnInit {
   }
 
   /* ===== 폼 필드 ===== */
+  editName = '';
   nickname = '';
   phonePrefix = '';
   phone = '';
+  birthday = '';
   email = '';
   password = '';
   snsLink = '';
@@ -155,23 +189,65 @@ export class ProfileEditPage implements OnInit {
     this.router.navigate(['/']);
   }
 
+  saveSuccess = signal(false);
+  saveError = signal<string | null>(null);
+
   /**
    * 저장 핸들러
-   * - avatarFile이 있으면 FormData로 API 전송
-   * - 나머지 폼 데이터도 함께 전송
+   * - avatarFile이 있으면 upload API로 이미지 업로드 후 URL 획득
+   * - 모든 폼 데이터를 users.update로 전송
    */
   async onSave(): Promise<void> {
+    if (!this.userId) {
+      this.saveError.set('로그인이 필요합니다. 다시 로그인해주세요.');
+      return;
+    }
+    this.saveError.set(null);
     try {
       this.avatarUploading.set(true);
-      if (this.userId) {
-        await this.api.users.update(this.userId, {
-          nickname: this.nickname || undefined,
-          email: this.email || undefined,
-        });
+
+      // 프로필 이미지 업로드
+      let profileImageUrl: string | undefined;
+      if (this.avatarFile) {
+        const result = await this.api.upload.single(this.avatarFile, 'profiles');
+        profileImageUrl = result.url;
       }
-      this.router.navigate(['/']);
-    } catch (e) {
+
+      // 국가코드 ('+82' → '82')
+      const countryCode = this.phonePrefix ? this.phonePrefix.replace('+', '') : undefined;
+
+      const snsData: { type: string; label: string; url: string }[] = [];
+      if (this.snsLink) snsData.push({ type: 'LINK', label: '링크', url: this.snsLink });
+      if (this.snsInstagram) snsData.push({ type: 'INSTAGRAM', label: '인스타그램', url: this.snsInstagram });
+      if (this.snsTwitter) snsData.push({ type: 'TWITTER', label: 'X (Twitter)', url: this.snsTwitter });
+      if (this.snsYoutube) snsData.push({ type: 'YOUTUBE', label: '유튜브', url: this.snsYoutube });
+
+      const updateData = {
+        name: this.editName || undefined,
+        nickname: this.nickname || undefined,
+        phone: this.phone || undefined,
+        countryCode: countryCode,
+        birthday: this.birthday || undefined,
+        intro: this.bio || undefined,
+        profileImage: profileImageUrl || undefined,
+        sns: snsData,
+      };
+
+      console.log('프로필 저장 요청:', { userId: this.userId, data: updateData });
+
+      // 사용자 정보 업데이트
+      await this.api.users.update(this.userId, updateData);
+
+      // 인증 사용자 정보 갱신
+      await this.authService.refreshUser();
+
+      // 성공 표시 후 프로필 페이지로 이동
+      this.saveSuccess.set(true);
+      setTimeout(() => this.router.navigate(['/profile']), 800);
+    } catch (e: unknown) {
       console.error('프로필 저장 실패:', e);
+      const msg = e instanceof Error ? e.message : '프로필 저장에 실패했습니다.';
+      this.saveError.set(msg);
     } finally {
       this.avatarUploading.set(false);
     }
@@ -179,25 +255,5 @@ export class ProfileEditPage implements OnInit {
 
   onWithdraw(): void {
     this.router.navigate(['/withdraw']);
-  }
-
-  /* ===== 헬퍼 ===== */
-  /**
-   * 폼 필드를 FormData로 변환
-   * - multipart/form-data로 아바타 + 텍스트 필드 한번에 전송 가능
-   */
-  private buildFormData(): FormData {
-    const fd = new FormData();
-    fd.append('nickname', this.nickname);
-    fd.append('phonePrefix', this.phonePrefix);
-    fd.append('phone', this.phone);
-    fd.append('email', this.email);
-    if (this.password) fd.append('password', this.password);
-    fd.append('snsLink', this.snsLink);
-    fd.append('snsInstagram', this.snsInstagram);
-    fd.append('snsTwitter', this.snsTwitter);
-    fd.append('snsYoutube', this.snsYoutube);
-    fd.append('bio', this.bio);
-    return fd;
   }
 }

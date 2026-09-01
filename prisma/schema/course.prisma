@@ -23,6 +23,8 @@ enum CourseStatus {
 model Lecture {
   id        Int      @id @default(autoincrement())
   title     String
+  category  String   @default("")
+  videoUrl  String   @default("")
   content   String   @default("")
   sortOrder Int      @default(0)
   courseId   Int
@@ -49,13 +51,15 @@ model Assignment {
   id        Int       @id @default(autoincrement())
   title     String
   content   String    @default("")
+  videoUrl  String    @default("")
   dueDate   DateTime?
   courseId   Int
   course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  files     AssignmentFile[]
+  files       AssignmentFile[]
+  submissions Submission[]
 }
 
 model AssignmentFile {
@@ -66,5 +70,51 @@ model AssignmentFile {
   mimeType     String     @default("")
   assignmentId Int
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+// ===== 과제 제출 =====
+model Submission {
+  id           Int              @id @default(autoincrement())
+  title        String
+  content      String           @default("")
+  type         SubmissionType   @default(SUBMISSION)
+  assignmentId Int
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  authorId     Int
+  author       User             @relation(fields: [authorId], references: [id])
+  parentId     Int?
+  parent       Submission?      @relation("SubmissionReplies", fields: [parentId], references: [id])
+  replies      Submission[]     @relation("SubmissionReplies")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  files        SubmissionFile[]
+  comments     SubmissionComment[]
+}
+
+enum SubmissionType {
+  SUBMISSION
+  FEEDBACK
+}
+
+model SubmissionFile {
+  id           Int        @id @default(autoincrement())
+  name         String
+  url          String
+  size         Int        @default(0)
+  mimeType     String     @default("")
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+}
+
+model SubmissionComment {
+  id           Int        @id @default(autoincrement())
+  body         String
+  authorId     Int
+  author       User       @relation(fields: [authorId], references: [id])
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
 }

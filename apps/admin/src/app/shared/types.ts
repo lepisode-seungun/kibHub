@@ -17,7 +17,7 @@ export type {
 
 export type {
   Bootcamp, CreateBootcampDto, Applicant, Course, Lecture, LectureFile,
-  Assignment, AssignmentFile,
+  Assignment, AssignmentFile, RecruitInstructor,
 } from '@kibhub/shared';
 
 export type {

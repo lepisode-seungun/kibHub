@@ -47,51 +47,34 @@
     <div class="flex gap-5 w-full max-w-[1400px]">
       <div class="ad-lecture-video-wrap">
         <div class="ad-lecture-video-player">
-          <div class="ad-video-backdrop"></div>
-          <div class="ad-video-controls">
-            <div class="ad-vc-timeline">
-              <span class="ad-vc-time">{{ currentTime }}</span>
-              <div class="ad-vc-progress-bar">
-                <div class="ad-vc-progress-bg"></div>
-                <div class="ad-vc-progress-fill" [style.width.%]="progress"></div>
-                <div class="ad-vc-progress-thumb" [style.left.%]="progress"></div>
-              </div>
-              <span class="ad-vc-time">{{ totalTime }}</span>
-            </div>
-            <div class="ad-vc-main-controls">
-              <button class="ad-vc-ctrl-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
-              </button>
-              <button class="ad-vc-play-btn" (click)="togglePlay()">
-                @if (isPlaying()) {
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#FFFFFF"/></svg>
-                } @else {
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7z" fill="#FFFFFF"/></svg>
-                }
-              </button>
-              <button class="ad-vc-ctrl-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
-              </button>
-            </div>
-          </div>
+          @if (youtubeEmbedUrl) {
+            <iframe [src]="youtubeEmbedUrl"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    style="width: 100%; height: 100%; border-radius: 12px;"></iframe>
+          } @else {
+            <div class="ad-video-backdrop"></div>
+          }
         </div>
       </div>
 
       <div class="ad-lecture-sidebar">
-        <span class="ad-ls-course-label">{{ courseLabel }}</span>
+        <span class="ad-ls-course-label">{{ courseLabel() }}</span>
         <div class="ad-ls-badge-row">
           <div class="ad-ls-badges">
             <svg width="40" height="25" viewBox="0 0 40 25" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="25" rx="6" fill="#52525B"/><path d="M15.308 8.06V8.774C15.308 9.558 15.2847 10.3187 15.238 11.056C15.2007 11.7933 15.1073 12.6567 14.958 13.646L13.768 13.548C14.0107 12.1013 14.132 10.6033 14.132 9.054H9.078V8.06H15.308ZM8.406 15.382C8.89133 15.382 9.74067 15.3727 10.954 15.354V11.588H12.158V15.312C13.642 15.2653 14.944 15.172 16.064 15.032L16.134 15.928C14.202 16.236 11.6773 16.39 8.56 16.39L8.406 15.382ZM16.792 6.73H17.996V11.868H19.928V12.876H17.996V19.05H16.792V6.73ZM30.6663 6.73V19.05H29.5043V6.73H30.6663ZM20.0403 15.718C20.871 15.2047 21.515 14.444 21.9723 13.436C22.439 12.428 22.6723 11.3453 22.6723 10.188V9.152H20.3763V8.144H25.9903V9.152H23.8483V10.188C23.8483 11.2893 24.0723 12.3207 24.5203 13.282C24.9683 14.234 25.603 14.9527 26.4243 15.438L25.6963 16.32C25.127 15.9747 24.637 15.4987 24.2263 14.892C23.8157 14.276 23.4983 13.576 23.2743 12.792C23.0503 13.6413 22.7283 14.3973 22.3083 15.06C21.8883 15.7227 21.3797 16.2407 20.7823 16.614L20.0403 15.718ZM25.0663 11.14H27.0403V7.01H28.1743V18.434H27.0403V12.134H25.0663V11.14Z" fill="#E4E4E7"/></svg>
           </div>
           <div class="ad-ls-duration">
             <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6667V1.66667H2.5V0H4.16667V1.66667H10.8333V0H12.5V1.66667H15V8.0625C14.7361 7.9375 14.4653 7.83333 14.1875 7.75C13.9097 7.66667 13.625 7.60417 13.3333 7.5625V6.66667H1.66667V15H6.91667C7.01389 15.3056 7.12861 15.5972 7.26083 15.875C7.39306 16.1528 7.54917 16.4167 7.72917 16.6667H0ZM12.5 17.5C11.3472 17.5 10.3647 17.0936 9.5525 16.2808C8.74028 15.4681 8.33389 14.4856 8.33333 13.3333C8.33278 12.1811 8.73917 11.1986 9.5525 10.3858C10.3658 9.57306 11.3483 9.16667 12.5 9.16667C13.6517 9.16667 14.6344 9.57306 15.4483 10.3858C16.2622 11.1986 16.6683 12.1811 16.6667 13.3333C16.665 14.4856 16.2586 15.4683 15.4475 16.2817C14.6364 17.095 13.6539 17.5011 12.5 17.5ZM13.8958 15.3125L14.4792 14.7292L12.9167 13.1667V10.8333H12.0833V13.5L13.8958 15.3125Z" fill="#A1A1AA"/></svg>
-            <span>{{ dateRange }}</span>
+            <span>{{ dateRange() }}</span>
           </div>
         </div>
-        <h2 class="ad-ls-title">{{ lectureTitle }}</h2>
+        <h2 class="ad-ls-title">{{ assignmentTitle() }}</h2>
         <div class="ad-ls-divider"></div>
         <div class="ad-ls-description-wrap">
-          <p class="ad-ls-description">{{ lectureDescription }}</p>
+          <p class="ad-ls-description">{{ description() }}</p>
         </div>
 
         <!-- 학습자료 -->
@@ -105,7 +88,7 @@
           @if (isMaterialOpen()) {
             <div class="ad-ls-materials-body">
               <div class="ad-ls-files-grid">
-                @for (file of learningFiles; track file.name) {
+                @for (file of learningFiles(); track file.name) {
                   <div class="ad-ls-file-chip">
                     <span class="ad-ls-file-name">{{ file.name }}</span>
                     <button class="ad-ls-file-download" aria-label="다운로드">
@@ -138,14 +121,14 @@
         <div class="as-header">
           <div class="as-header-left">
             <h2 class="as-title">과제 제출</h2>
-            <span class="as-count">({{ submissions.length }})</span>
+            <span class="as-count">({{ submissions().length }})</span>
           </div>
           <button class="as-submit-btn" (click)="navigateToSubmit()">과제 제출</button>
         </div>
 
         <!-- 필터 바 -->
         <div class="as-filter-bar">
-          <span class="as-total">전체 {{ submissions.length }}</span>
+          <span class="as-total">전체 {{ submissions().length }}</span>
           <div class="as-filter-right">
             <div class="as-dropdown">
               <span class="as-dropdown-text">최신순</span>
@@ -164,7 +147,15 @@
         </div>
 
         <!-- 과제 제출 리스트 -->
-        @for (item of submissions; track item.id) {
+        @if (submissions().length === 0) {
+          <div class="flex flex-col items-center justify-center gap-3 py-12 w-full">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z" fill="#E4E4E7"/>
+            </svg>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">제출된 과제가 없습니다</span>
+          </div>
+        }
+        @for (item of submissions(); track item.id) {
           <div [ngClass]="item.isReply ? 'as-item as-item-reply' : 'as-item'">
             @if (item.isReply) {
               <div class="as-reply-line">
@@ -217,9 +208,11 @@
         }
 
         <!-- 더보기 버튼 -->
-        <div class="as-loadmore-wrap">
-          <button class="as-loadmore-btn">더보기</button>
-        </div>
+        @if (submissions().length > 0) {
+          <div class="as-loadmore-wrap">
+            <button class="as-loadmore-btn">더보기</button>
+          </div>
+        }
       </div>
     </section>
   </main>

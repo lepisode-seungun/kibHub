@@ -112,8 +112,9 @@
               <div class="absolute left-1/2 -translate-x-1/2 top-6 w-[114px] bg-white border border-gray-50 rounded-lg py-2 z-10"
                    style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
                 <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
-                        (click)="hidePortfolio()">숨김</button>
-                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors">수정</button>
+                        (click)="toggleVisibility()">{{ detailData()!.status === '숨김' ? '노출' : '숨김' }}</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="editFromDetail()">수정</button>
                 <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
                         (click)="deletePortfolio()">삭제</button>
               </div>
@@ -190,9 +191,20 @@
           </button>
         </div>
         @if (detailManuscriptExpanded()) {
-          <div class="flex items-center justify-center w-full rounded bg-gray-200" style="height: 509px;">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600">이미지</span>
-          </div>
+          @if (detailManuscripts().length > 0) {
+            <div class="flex flex-col gap-4">
+              @for (ms of detailManuscripts(); track ms.episode) {
+                <div class="flex flex-col gap-2">
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ ms.episode }}회</span>
+                  <img [src]="ms.url" [alt]="ms.name" class="w-full rounded-lg border border-gray-200" />
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="flex items-center justify-center w-full rounded bg-gray-100 border border-dashed border-gray-300" style="height: 200px;">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">등록된 원고가 없습니다.</span>
+            </div>
+          }
         }
       </div>
 
@@ -209,9 +221,13 @@
           </button>
         </div>
         @if (detailPlanExpanded()) {
-          <div class="flex items-center justify-center w-full rounded bg-gray-200" style="height: 509px;">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600">이미지</span>
-          </div>
+          @if (detailPlanUrl()) {
+            <img [src]="detailPlanUrl()" alt="기획서" class="w-full rounded-lg border border-gray-200" />
+          } @else {
+            <div class="flex items-center justify-center w-full rounded bg-gray-100 border border-dashed border-gray-300" style="height: 200px;">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">등록된 기획서가 없습니다.</span>
+            </div>
+          }
         }
       </div>
 
@@ -247,8 +263,9 @@
               <div class="absolute left-1/2 -translate-x-1/2 top-6 w-[114px] bg-white border border-gray-50 rounded-lg py-2 z-10"
                    style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);">
                 <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
-                        (click)="hidePortfolio()">숨김</button>
-                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors">수정</button>
+                        (click)="toggleVisibility()">{{ detailData()!.status === '숨김' ? '노출' : '숨김' }}</button>
+                <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
+                        (click)="editFromDetail()">수정</button>
                 <button class="flex items-center justify-center w-full py-2 px-3 bg-white hover:bg-gray-50 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 transition-colors"
                         (click)="deletePortfolio()">삭제</button>
               </div>

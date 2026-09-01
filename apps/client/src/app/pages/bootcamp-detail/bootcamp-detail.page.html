@@ -69,7 +69,7 @@
           </div>
         </div>
         <div class="af-input-row">
-          <input class="af-input af-input-flex" type="text" placeholder="주소를 입력해주세요." [(ngModel)]="form.address" name="address" readonly>
+          <input class="af-input af-input-flex" type="text" placeholder="주소를 입력해주세요." [value]="form.address" name="address" readonly>
           <button class="af-btn-outline" (click)="onSearchAddress()">주소검색</button>
         </div>
         <input class="af-input" type="text" placeholder="상세주소를 입력해주세요." [(ngModel)]="form.addressDetail" name="addressDetail">
@@ -134,29 +134,20 @@
         </div>
       </div>
 
-      <!-- 폼 그룹 6: Q1 지원 동기 -->
-      <div class="af-form-group">
-        <div class="af-label-row">
-          <div class="af-label-wrap">
-            <span class="af-q-label">Q</span>
-            <span class="af-label">부트캠프에 지원하게 된 동기는 무엇인가요?</span>
-          </div>
-        </div>
-        <textarea class="af-textarea" placeholder="입력해주세요." [(ngModel)]="form.motivation" name="motivation"></textarea>
-      </div>
-
-      <!-- 폼 그룹 7: Q2 동의 -->
-      <div class="af-form-group">
-        <div class="af-label-row">
-          <div class="af-label-wrap-col">
+      <!-- 동적 사전인터뷰 질문 -->
+      @for (q of interviewQuestions(); track $index) {
+        <div class="af-form-group">
+          <div class="af-label-row">
             <div class="af-label-wrap">
               <span class="af-q-label">Q</span>
-              <span class="af-label">해당 부트캠프는 오프라인 현장 강의에 참석해야 합니다. 이에 동의하십니까?</span>
+              <span class="af-label">{{ q.text }}</span>
             </div>
           </div>
+          <textarea class="af-textarea" placeholder="입력해주세요."
+                    [(ngModel)]="form.interviewAnswers[$index]"
+                    [name]="'interview_' + $index"></textarea>
         </div>
-        <textarea class="af-textarea" placeholder="입력해주세요." [(ngModel)]="form.agreement" name="agreement"></textarea>
-      </div>
+      }
 
       <!-- 개인정보 동의 -->
       <div class="af-privacy-box" (click)="onPrivacyClick()" (keydown.enter)="onPrivacyClick()" tabindex="0" role="checkbox" [attr.aria-checked]="form.privacyAgreed">
@@ -310,8 +301,8 @@
   <section class="bd-hero" id="bd-hero">
     <img class="bd-hero-bg" src="/images/bd-hero-bg.svg" alt="" aria-hidden="true">
     <div class="bd-hero-content">
-      <h1 class="bd-hero-title font-suit font-bold text-[32px] leading-[150%] tracking-tight text-zinc-50 m-0 text-center">{{ title }}</h1>
-      <p class="bd-hero-subtitle font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-400 text-center m-0">{{ subtitle }}</p>
+      <h1 class="bd-hero-title font-suit font-bold text-[32px] leading-[150%] tracking-tight text-zinc-50 m-0 text-center">{{ title() }}</h1>
+      <p class="bd-hero-subtitle font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-400 text-center m-0">킵허브 아티스트가 알려주는, 실무를 위한 실전 노하우</p>
       <button class="bd-hero-cta" (click)="onApply()">지원하기</button>
     </div>
   </section>
@@ -326,7 +317,7 @@
             <path d="M6.66667 6.66667C5.75 6.66667 4.96528 6.34028 4.3125 5.6875C3.65972 5.03472 3.33333 4.25 3.33333 3.33333C3.33333 2.41667 3.65972 1.63194 4.3125 0.979167C4.96528 0.326389 5.75 0 6.66667 0C7.58333 0 8.36806 0.326389 9.02083 0.979167C9.67361 1.63194 10 2.41667 10 3.33333C10 4.25 9.67361 5.03472 9.02083 5.6875C8.36806 6.34028 7.58333 6.66667 6.66667 6.66667ZM15.3333 15.6667L13.25 13.5833C12.9583 13.75 12.6458 13.8889 12.3125 14C11.9792 14.1111 11.625 14.1667 11.25 14.1667C10.2083 14.1667 9.32306 13.8022 8.59417 13.0733C7.86528 12.3444 7.50056 11.4589 7.5 10.4167C7.49944 9.37444 7.86417 8.48917 8.59417 7.76083C9.32417 7.0325 10.2094 6.66778 11.25 6.66667C12.2906 6.66556 13.1761 7.03028 13.9067 7.76083C14.6372 8.49139 15.0017 9.37667 15 10.4167C15 10.7917 14.9444 11.1458 14.8333 11.4792C14.7222 11.8125 14.5833 12.125 14.4167 12.4167L16.5 14.5C16.6528 14.6528 16.7292 14.8472 16.7292 15.0833C16.7292 15.3194 16.6528 15.5139 16.5 15.6667C16.3472 15.8194 16.1528 15.8958 15.9167 15.8958C15.6806 15.8958 15.4861 15.8194 15.3333 15.6667ZM11.25 12.5C11.8333 12.5 12.3264 12.2986 12.7292 11.8958C13.1319 11.4931 13.3333 11 13.3333 10.4167C13.3333 9.83333 13.1319 9.34028 12.7292 8.9375C12.3264 8.53472 11.8333 8.33333 11.25 8.33333C10.6667 8.33333 10.1736 8.53472 9.77083 8.9375C9.36806 9.34028 9.16667 9.83333 9.16667 10.4167C9.16667 11 9.36806 11.4931 9.77083 11.8958C10.1736 12.2986 10.6667 12.5 11.25 12.5ZM1.66667 13.3333C1.20833 13.3333 0.816111 13.1703 0.49 12.8442C0.163889 12.5181 0.000555556 12.1256 0 11.6667V11.0208C0 10.5486 0.118056 10.1111 0.354167 9.70833C0.590278 9.30556 0.916667 9 1.33333 8.79167C1.95833 8.47222 2.64944 8.19806 3.40667 7.96917C4.16389 7.74028 4.99361 7.59083 5.89583 7.52083C6.0625 7.50694 6.1875 7.57639 6.27083 7.72917C6.35417 7.88194 6.36111 8.04167 6.29167 8.20833C6.13889 8.55556 6.02417 8.91333 5.9475 9.28167C5.87083 9.65 5.83278 10.0214 5.83333 10.3958C5.83333 10.7569 5.86472 11.1217 5.9275 11.49C5.99028 11.8583 6.09778 12.2089 6.25 12.5417C6.33333 12.7361 6.32639 12.9167 6.22917 13.0833C6.13194 13.25 5.98611 13.3333 5.79167 13.3333H1.66667Z" fill="#A1A1AA"/>
           </svg>
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">기수</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ cohort }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ cohort() }}</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -336,7 +327,7 @@
             <path d="M15 14.1667C15 14.3877 14.9122 14.5996 14.7559 14.7559C14.5996 14.9122 14.3877 15 14.1667 15C13.9457 15 13.7337 14.9122 13.5774 14.7559C13.4211 14.5996 13.3333 14.3877 13.3333 14.1667C13.3333 13.9457 13.4211 13.7337 13.5774 13.5774C13.7337 13.4211 13.9457 13.3333 14.1667 13.3333C14.3877 13.3333 14.5996 13.4211 14.7559 13.5774C14.9122 13.7337 15 13.9457 15 14.1667ZM15 10.8333C15 11.0543 14.9122 11.2663 14.7559 11.4226C14.5996 11.5789 14.3877 11.6667 14.1667 11.6667C13.9457 11.6667 13.7337 11.5789 13.5774 11.4226C13.4211 11.2663 13.3333 11.0543 13.3333 10.8333C13.3333 10.6123 13.4211 10.4004 13.5774 10.2441C13.7337 10.0878 13.9457 10 14.1667 10C14.3877 10 14.5996 10.0878 14.7559 10.2441C14.9122 10.4004 15 10.6123 15 10.8333ZM10.8333 14.1667C10.8333 14.3877 10.7455 14.5996 10.5893 14.7559C10.433 14.9122 10.221 15 10 15C9.77899 15 9.56702 14.9122 9.41074 14.7559C9.25446 14.5996 9.16667 14.3877 9.16667 14.1667C9.16667 13.9457 9.25446 13.7337 9.41074 13.5774C9.56702 13.4211 9.77899 13.3333 10 13.3333C10.221 13.3333 10.433 13.4211 10.5893 13.5774C10.7455 13.7337 10.8333 13.9457 10.8333 14.1667ZM10.8333 10.8333C10.8333 11.0543 10.7455 11.2663 10.5893 11.4226C10.433 11.5789 10.221 11.6667 10 11.6667C9.77899 11.6667 9.56702 11.5789 9.41074 11.4226C9.25446 11.2663 9.16667 11.0543 9.16667 10.8333C9.16667 10.6123 9.25446 10.4004 9.41074 10.2441C9.56702 10.0878 9.77899 10 10 10C10.221 10 10.433 10.0878 10.5893 10.2441C10.7455 10.4004 10.8333 10.6123 10.8333 10.8333ZM6.66667 14.1667C6.66667 14.3877 6.57887 14.5996 6.42259 14.7559C6.26631 14.9122 6.05435 15 5.83333 15C5.61232 15 5.40036 14.9122 5.24408 14.7559C5.0878 14.5996 5 14.3877 5 14.1667C5 13.9457 5.0878 13.7337 5.24408 13.5774C5.40036 13.4211 5.61232 13.3333 5.83333 13.3333C6.05435 13.3333 6.26631 13.4211 6.42259 13.5774C6.57887 13.7337 6.66667 13.9457 6.66667 14.1667ZM6.66667 10.8333C6.66667 11.0543 6.57887 11.2663 6.42259 11.4226C6.26631 11.5789 6.05435 11.6667 5.83333 11.6667C5.61232 11.6667 5.40036 11.5789 5.24408 11.4226C5.0878 11.2663 5 11.0543 5 10.8333C5 10.6123 5.0878 10.4004 5.24408 10.2441C5.40036 10.0878 5.61232 10 5.83333 10C6.05435 10 6.26631 10.0878 6.42259 10.2441C6.57887 10.4004 6.66667 10.6123 6.66667 10.8333Z" fill="#A1A1AA"/>
           </svg>
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">모집기간</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ recruitPeriod }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ recruitPeriod() }}</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -344,7 +335,7 @@
             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"></path>
           </svg>
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">교육기간</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ eduPeriod }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ eduPeriod() }}</span>
         </div>
       </div>
     </div>
@@ -367,13 +358,17 @@
   <!-- 콘텐츠 영역 -->
   <section class="bd-content" id="bd-content">
     <div class="flex flex-col items-center gap-10 w-full max-w-[1400px]">
-      <!-- 에디터 작성 -->
+      <!-- 부트캠프 소개 -->
       <div class="flex flex-col items-start gap-10 w-full">
-        <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">에디터 작성</h3>
-        <p class="bd-block-desc">{{ description }}</p>
-        <div class="bd-editor-placeholder">
-          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
-        </div>
+        <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">부트캠프 소개</h3>
+        @if (recruitIntro()) {
+          <div class="bd-block-desc w-full" [innerHTML]="safeIntroHtml()"></div>
+        } @else {
+          <p class="bd-block-desc">{{ description() }}</p>
+          <div class="bd-editor-placeholder">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
+          </div>
+        }
       </div>
 
       <!-- 커리큐럼 -->
@@ -382,11 +377,13 @@
           <h3 class="bd-section-heading font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0">커리큐럼 소개</h3>
           <div class="w-full h-px bg-[rgba(63,63,70,1)]"></div>
         </div>
-        <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 m-0 text-center">에디터 작성</h4>
-        <p class="bd-block-desc text-center">{{ description }}</p>
-        <div class="bd-editor-placeholder">
-          <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
-        </div>
+        @if (recruitCurriculum()) {
+          <div class="bd-block-desc w-full" [innerHTML]="safeCurriculumHtml()"></div>
+        } @else {
+          <div class="bd-editor-placeholder">
+            <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
+          </div>
+        }
       </div>
 
     </div>
@@ -403,9 +400,13 @@
           </svg>
         </button>
         <div class="bd-instructor-slider w-full h-[358px] md:h-auto items-center md:items-start" #instructorSlider>
-          @for (inst of instructors; track $index) {
+          @for (inst of instructors(); track $index) {
             <div class="bd-instructor-card !w-[300px] !min-w-[300px] h-[358px] md:h-auto gap-5 shrink-0 snap-start" [style.width]="instructorCardWidth" [style.min-width]="instructorCardWidth">
-              <div class="bd-instructor-photo w-[300px] md:w-full h-[230px] rounded-lg"></div>
+              @if (inst.photo) {
+                <img [src]="inst.photo" alt="" class="bd-instructor-photo w-[300px] md:w-full h-[230px] rounded-lg object-cover" />
+              } @else {
+                <div class="bd-instructor-photo w-[300px] md:w-full h-[230px] rounded-lg"></div>
+              }
               <div class="flex flex-col items-start px-1 gap-3 w-full box-border">
                 <div class="flex flex-col gap-2">
                   <span class="font-suit font-bold text-lg md:text-xl leading-[150%] tracking-tight text-white">{{ inst.name }}</span>
@@ -429,25 +430,23 @@
     </div>
   </section>
 
-  <!-- 부트캠프 소개 섹션 -->
+  <!-- 부트캠프 후기 섹션 -->
   <section class="bd-intro-section" id="bd-intro-section">
-    <div class="flex flex-col items-center gap-[100px] w-full max-w-[1400px]">
-      <!-- 타이틀 + 구분선 -->
-      <div class="flex flex-col items-start gap-6 w-full">
-        <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-50 m-0">부트캠프 소개</h4>
-        <div class="bd-intro-divider"></div>
-      </div>
-
+    <div class="flex flex-col items-center gap-[60px] w-full max-w-[1400px]">
       <!-- 스텝 아이콘 -->
       <div class="flex items-center gap-2.5">
         <img src="/images/bd-steps.svg" alt="" height="63">
       </div>
 
-      <!-- 에디터 작성 -->
-      <div class="flex flex-col items-center gap-10">
-        <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 text-center">에디터 작성</span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">부트캠프 후기 작성</span>
-      </div>
+      <!-- 에디터 작성 영역 -->
+      @if (recruitReview()) {
+        <div class="bd-block-desc w-full" [innerHTML]="safeReviewHtml()"></div>
+      } @else {
+        <div class="flex flex-col items-center gap-10">
+          <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 text-center">에디터 작성</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">부트캠프 후기 작성</span>
+        </div>
+      }
     </div>
   </section>
 

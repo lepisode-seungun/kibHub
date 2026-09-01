@@ -23,14 +23,54 @@ export class ApplicantDetailPage implements OnInit {
 
   statusBadges = APPLICANT_STATUS_BADGES;
 
-  applicant: any = {};
+  applicant = signal<any>({});
+
+  private readonly STATUS_MAP: Record<string, string> = {
+    PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+  };
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
       const id = params.get('id');
       if (id) {
         try {
-          this.applicant = await this.api.applicants.findOne(Number(id));
+          const raw = await this.api.applicants.findOne(Number(id));
+          const iq = (raw as any).interviewQuestions as Record<string, any> | null;
+          const files = iq?.['portfolioFiles'] as { url: string; originalName: string; size: number }[] || [];
+          const firstFile = files.length > 0 ? files[0] : null;
+          this.applicant.set({
+            ...raw,
+            status: this.STATUS_MAP[raw.status] || raw.status,
+            name: iq?.['applicantName'] || raw.user?.name || '',
+            phone: iq?.['phone'] || raw.user?.phone || '',
+            email: iq?.['email'] || raw.user?.email || '',
+            address: iq?.['address'] || '',
+            portfolioLink: iq?.['portfolioUrl'] || '',
+            portfolioFile: firstFile ? { name: firstFile.originalName, size: this.formatSize(firstFile.size), url: firstFile.url } : null,
+            portfolioFiles: files,
+            motivation: iq?.['motivation'] || '',
+            member: raw.user?.name || '',
+            appliedAt: new Date((raw as any).appliedAt || raw.createdAt).toLocaleString('ko-KR'),
+            lastUpdate: new Date((raw as any).appliedAt || raw.createdAt).toLocaleString('ko-KR'),
+          });
+
+          // 사전 인터뷰 Q&A 파싱
+          const motivation = iq?.['motivation'] || '';
+          if (motivation) {
+            const qaList = motivation.split('\n\n')
+              .filter((block: string) => block.trim())
+              .map((block: string) => {
+                const lines = block.split('\n');
+                const questionLine = lines.find((l: string) => l.startsWith('Q. ')) || '';
+                const answerLine = lines.find((l: string) => l.startsWith('A. ')) || '';
+                return {
+                  question: questionLine.replace(/^Q\.\s*/, ''),
+                  answer: answerLine.replace(/^A\.\s*/, ''),
+                };
+              })
+              .filter((qa: any) => qa.question);
+            this.interviewQA.set(qaList);
+          }
         } catch (err) {
           console.error('지원자 로드 실패:', err);
         }
@@ -54,18 +94,29 @@ export class ApplicantDetailPage implements OnInit {
     this.statusDropdownOpen.set(false);
   }
 
+  private readonly REVERSE_STATUS_MAP: Record<string, string> = {
+    '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING',
+  };
+
   async changeStatus(status: string): Promise<void> {
+    const apiStatus = this.REVERSE_STATUS_MAP[status] || status;
     try {
-      this.applicant = await this.api.applicants.updateStatus(this.applicant.id, status);
+      const updated = await this.api.applicants.updateStatus(this.applicant().id, apiStatus);
+      this.applicant.update(a => ({ ...a, ...updated, status: this.STATUS_MAP[updated.status] || updated.status }));
     } catch (err) {
       console.error('상태 변경 실패:', err);
-      this.applicant = { ...this.applicant, status };
     }
     this.statusDropdownOpen.set(false);
   }
 
   getBadgeClass(status: string): string {
     return this.statusBadges[status] || '';
+  }
+
+  private formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
   }
 
   // ===== 사전인터뷰 설정 드로어 =====

@@ -1,10 +1,10 @@
-import { Controller, Get, Put, Param, Body } from '@nestjs/common';
+import { Inject, Controller, Get, Put, Param, Body } from '@nestjs/common';
 
 import { SiteSettingsService } from './site-settings.service';
 
 @Controller('site-settings')
 export class SiteSettingsController {
-  constructor(private readonly service: SiteSettingsService) {}
+  constructor(@Inject(SiteSettingsService) private readonly service: SiteSettingsService) {}
 
   @Get(':key')
   async get(@Param('key') key: string) {

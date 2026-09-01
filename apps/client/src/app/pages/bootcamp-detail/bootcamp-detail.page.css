@@ -157,7 +157,7 @@
 /* bd-content-inner, bd-block, bd-block-header, bd-block-title, bd-block-subtitle, bd-block-desc, bd-editor-text -> TW inline */
 
 .bd-block-desc {
-  max-width: 620px;
+  width: 100%;
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
@@ -167,6 +167,40 @@
   margin: 0;
   white-space: pre-line;
 }
+
+:host ::ng-deep .bd-block-desc img {
+  max-width: 50% !important;
+  max-height: 300px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+/* 에디터 <font> 태그 - 색상 미지정 시 부모 색상 상속 */
+:host ::ng-deep .bd-block-desc font:not([color]) {
+  color: inherit !important;
+}
+
+/* 검은색(#000000) 글씨를 어두운 배경에서 보이도록 회색으로 치환 */
+:host ::ng-deep .bd-block-desc font[color="#000000"],
+:host ::ng-deep .bd-block-desc font[color="black"],
+:host ::ng-deep .bd-block-desc span[style*="color: rgb(0, 0, 0)"],
+:host ::ng-deep .bd-block-desc span[style*="color: black"],
+:host ::ng-deep .bd-block-desc [style*="color:#000000"],
+:host ::ng-deep .bd-block-desc [style*="color: #000000"] {
+  color: #A1A1AA !important;
+}
+
+/* font size 속성 매핑 */
+:host ::ng-deep .bd-block-desc font[size="1"] { font-size: 10px; }
+:host ::ng-deep .bd-block-desc font[size="2"] { font-size: 13px; }
+:host ::ng-deep .bd-block-desc font[size="3"] { font-size: 16px; }
+:host ::ng-deep .bd-block-desc font[size="4"] { font-size: 18px; }
+:host ::ng-deep .bd-block-desc font[size="5"] { font-size: 24px; }
+:host ::ng-deep .bd-block-desc font[size="6"] { font-size: 32px; }
+:host ::ng-deep .bd-block-desc font[size="7"] { font-size: 48px; }
 
 .bd-editor-placeholder {
   display: flex;
@@ -1253,7 +1287,6 @@
   .bd-block-desc {
     font-size: 14px;
     max-width: 100%;
-    text-align: center;
   }
 
   .bd-editor-placeholder {

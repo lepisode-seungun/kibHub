@@ -50,7 +50,9 @@ export class AssignmentDetailPage implements OnInit {
   toggleAssignmentInfoMenu(): void { this.assignmentInfoMenuOpen.update(v => !v); }
   onAssignmentInfoMenuAction(action: string): void {
     this.assignmentInfoMenuOpen.set(false);
-    if (action === 'delete') {
+    if (action === 'edit') {
+      this.openEditDrawer();
+    } else if (action === 'delete') {
       this.showDeleteModal.set(true);
     }
   }
@@ -59,7 +61,7 @@ export class AssignmentDetailPage implements OnInit {
   showDeleteModal = signal(false);
   async confirmDelete(): Promise<void> {
     try {
-      await this.api.assignments.delete(this.assignmentData.id);
+      await this.api.assignments.delete(this.assignmentData().id);
       this.toast.success('삭제 완료 되었습니다.');
     } catch (err) {
       console.error('과제 삭제 실패:', err);
@@ -71,32 +73,43 @@ export class AssignmentDetailPage implements OnInit {
     this.showDeleteModal.set(false);
   }
 
-  courseData: any = {};
-  assignmentData: any = {};
+  courseData = signal<any>({});
+  assignmentData = signal<any>({});
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(async (params) => {
-      const id = params.get('id');
-      if (id) {
-        try {
-          const assignment: any = await this.api.assignments.findOne(Number(id));
-          this.assignmentData = {
-            id: assignment.id,
-            name: assignment.title || '',
-            createdAt: assignment.createdAt,
-            deadlineStart: assignment.deadlineStart || '',
-            deadlineEnd: assignment.deadlineEnd || '',
-            content: assignment.body || '',
-            materials: assignment.files || [],
-          };
-          if (assignment.course) {
-            this.courseData = { id: assignment.course.id, name: assignment.course.title || '' };
-          }
-        } catch (err) {
-          console.error('과제 로드 실패:', err);
-        }
+    const assignmentId = this.route.snapshot.paramMap.get('assignmentId')
+      || this.route.snapshot.paramMap.get('id') || '';
+    if (assignmentId) {
+      this.loadAssignment(Number(assignmentId));
+      this.loadBoardData(Number(assignmentId));
+    }
+  }
+
+  private async loadAssignment(id: number): Promise<void> {
+    try {
+      const assignment: any = await this.api.assignments.findOne(id);
+      this.assignmentData.set({
+        id: assignment.id,
+        name: assignment.title || '',
+        createdAt: assignment.createdAt,
+        deadlineStart: assignment.deadlineStart || assignment.dueDate || '',
+        deadlineEnd: assignment.deadlineEnd || '',
+        content: assignment.content || assignment.body || '',
+        videoUrl: assignment.videoUrl || '',
+        materials: assignment.files || [],
+      });
+      if (assignment.course) {
+        const SM: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
+        this.courseData.set({
+          id: assignment.course.id,
+          name: assignment.course.name || assignment.course.title || '',
+          status: SM[assignment.course.status] || assignment.course.status || '',
+          createdAt: assignment.course.createdAt ? new Date(assignment.course.createdAt).toLocaleString('ko-KR') : '',
+        });
       }
-    });
+    } catch (err) {
+      console.error('과제 로드 실패:', err);
+    }
   }
 
   // 게시판 그리드
@@ -110,13 +123,27 @@ export class AssignmentDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  boardData = [
-    { id: 1, type: '공지', title: '과제 제출 안내', comments: 3, permission: '관리자', author: '관리자', createdAt: '2025-01-20 13:11' },
-    { id: 2, type: '질문', title: '과제 제출 기한 연장 가능한가요?', comments: 1, permission: '일반', author: '홍길동', createdAt: '2025-01-21 09:30' },
-    { id: 3, type: '질문', title: '참고자료 관련 질문드립니다', comments: 0, permission: '일반', author: '김민수', createdAt: '2025-01-22 14:20' },
-    { id: 4, type: '공지', title: '과제 평가 기준 안내', comments: 5, permission: '강사', author: '관리자', createdAt: '2025-01-23 10:00' },
-    { id: 5, type: '질문', title: '파일 형식 관련 문의', comments: 2, permission: '일반', author: '이영희', createdAt: '2025-01-24 16:45' },
-  ];
+  boardData: BoardRow[] = [];
+
+  private async loadBoardData(assignmentId: number): Promise<void> {
+    try {
+      const list: any[] = await this.api.submissions.findByAssignment(assignmentId);
+      this.boardData = list.map((s: any) => {
+        const roleMap: Record<string, string> = { ADMIN: '관리자', INSTRUCTOR: '강사', STUDENT: '일반' };
+        return {
+          id: s.id,
+          type: s.type === 'FEEDBACK' ? '피드백' : '제출',
+          title: s.title,
+          comments: s._count?.comments || 0,
+          permission: roleMap[s.author?.role] || '일반',
+          author: s.author?.name || s.author?.nickname || '',
+          createdAt: new Date(s.createdAt).toLocaleString('ko-KR'),
+        };
+      });
+    } catch (err) {
+      console.error('제출 목록 로드 실패:', err);
+    }
+  }
 
   // 제출 과제 삭제 다이얼로그
   showBoardDeleteModal = signal(false);
@@ -129,11 +156,16 @@ export class AssignmentDetailPage implements OnInit {
     }
   }
 
-  confirmBoardDelete(): void {
+  async confirmBoardDelete(): Promise<void> {
     const row = this.boardDeleteRow();
     if (row) {
-      this.boardData = this.boardData.filter(r => r.id !== row.id);
-      this.toast.success('삭제 완료 되었습니다.');
+      try {
+        await this.api.submissions.delete(row.id);
+        this.boardData = this.boardData.filter(r => r.id !== row.id);
+        this.toast.success('삭제 완료 되었습니다.');
+      } catch (err) {
+        console.error('제출 과제 삭제 실패:', err);
+      }
     }
     this.showBoardDeleteModal.set(false);
     this.boardDeleteRow.set(null);
@@ -148,23 +180,135 @@ export class AssignmentDetailPage implements OnInit {
   submissionDrawerOpen = signal(false);
   selectedSubmission = signal<SubmissionDetail | null>(null);
 
-  openSubmissionDrawer(row: BoardRow): void {
-    this.selectedSubmission.set({
-      ...row,
-      content: '얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기 얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기얼굴 그리기',
-      files: [
-        { name: '학습자료학습자료학습자료학습자료학습자료학습자료학습자료', size: '10.2MB' },
-        { name: '학습자료.pdf', size: '10.2MB' },
-      ],
-    });
-    this.submissionDrawerOpen.set(true);
+  async openSubmissionDrawer(row: BoardRow): Promise<void> {
+    try {
+      const detail: any = await this.api.submissions.findOne(row.id);
+      const roleMap: Record<string, string> = { ADMIN: '관리자', INSTRUCTOR: '강사', STUDENT: '일반' };
+      this.selectedSubmission.set({
+        ...row,
+        content: detail.content || '',
+        files: (detail.files || []).map((f: any) => ({
+          name: f.name,
+          size: f.size ? `${(f.size / 1024).toFixed(1)}KB` : '',
+        })),
+      });
+      this.submissionDrawerOpen.set(true);
+    } catch (err) {
+      console.error('제출 상세 로드 실패:', err);
+      // 실패 시 기본 데이터로 열기
+      this.selectedSubmission.set({ ...row, content: '', files: [] });
+      this.submissionDrawerOpen.set(true);
+    }
   }
 
   closeSubmissionDrawer(): void {
     this.submissionDrawerOpen.set(false);
   }
 
-  goBack(): void {
-    this.location.back();
+  // ===== 수정 드로어 =====
+  editDrawerOpen = signal(false);
+  editTitle = signal('');
+  editContent = signal('');
+
+  openEditDrawer(): void {
+    const d = this.assignmentData();
+    this.editTitle.set(d.name || '');
+    this.editContent.set(d.content || '');
+    this.editDrawerOpen.set(true);
   }
+
+  closeEditDrawer(): void {
+    this.editDrawerOpen.set(false);
+  }
+
+  async submitEdit(): Promise<void> {
+    const title = this.editTitle().trim();
+    if (!title) { this.toast.error('과제명을 입력해주세요.'); return; }
+    try {
+      const assignmentId = this.assignmentData().id;
+      await this.api.assignments.update(assignmentId, { title, content: this.editContent() } as any);
+      this.toast.success('수정 완료 되었습니다.');
+      this.editDrawerOpen.set(false);
+      await this.loadAssignment(assignmentId);
+    } catch (e) {
+      this.toast.error('수정에 실패했습니다.');
+    }
+  }
+
+  // ===== 상세 내용 인라인 편집 =====
+  contentEditMode = signal(false);
+  editContentValue = signal('');
+  contentEditVideoUrl = signal('');
+
+  startContentEdit(): void {
+    const d = this.assignmentData();
+    this.editContentValue.set(d.content || '');
+    this.contentEditVideoUrl.set(d.videoUrl || '');
+    this.contentEditMode.set(true);
+  }
+
+  cancelContentEdit(): void {
+    this.contentEditMode.set(false);
+  }
+
+  getYoutubeThumbnail(url: string): string {
+    if (!url) return '';
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
+  }
+
+  async saveContentEdit(): Promise<void> {
+    try {
+      const id = this.assignmentData().id;
+      await this.api.assignments.update(id, {
+        content: this.editContentValue(),
+        videoUrl: this.contentEditVideoUrl(),
+      } as any);
+      this.toast.success('수정 완료 되었습니다.');
+      this.contentEditMode.set(false);
+      await this.loadAssignment(id);
+    } catch (e) {
+      this.toast.error('수정에 실패했습니다.');
+    }
+  }
+
+  // ===== 학습자료 파일 업로드/삭제 =====
+  isUploading = signal(false);
+
+  async onMaterialFileSelect(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    this.isUploading.set(true);
+    try {
+      const files = Array.from(input.files);
+      for (const file of files) {
+        const uploaded = await this.api.uploadFile(file, 'assignments');
+        await this.api.assignmentFiles.add(this.assignmentData().id, {
+          name: file.name,
+          url: uploaded.url,
+          size: file.size,
+          mimeType: file.type,
+        });
+      }
+      this.toast.success(`${files.length}개 파일 업로드 완료`);
+      await this.loadAssignment(this.assignmentData().id);
+    } catch (e) {
+      this.toast.error('파일 업로드에 실패했습니다.');
+    } finally {
+      this.isUploading.set(false);
+      input.value = '';
+    }
+  }
+
+  async removeMaterial(fileId: number): Promise<void> {
+    try {
+      await this.api.assignmentFiles.delete(fileId);
+      this.toast.success('파일이 삭제되었습니다.');
+      await this.loadAssignment(this.assignmentData().id);
+    } catch (e) {
+      this.toast.error('파일 삭제에 실패했습니다.');
+    }
+  }
+
+  goBack(): void { this.location.back(); }
 }

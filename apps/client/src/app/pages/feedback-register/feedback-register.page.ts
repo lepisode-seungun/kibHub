@@ -113,11 +113,14 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
     if (this.isSubmitting()) return;
     this.isSubmitting.set(true);
     try {
-      // TODO: 피드백 등록 API (서버에 피드백 엔드포인트 필요)
-      console.log('Feedback submit:', {
+      const files = this.uploadedFiles()
+        .filter(f => f.status === 'done')
+        .map(f => ({ url: f.url!, name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
+      const parentId = Number(this.submissionId || this.feedbackId);
+      await this.api.submissions.createFeedback(parentId, {
         title: this.title,
         content: this.content,
-        files: this.uploadedFiles().filter(f => f.status === 'done').map(f => ({ url: f.url, name: f.name + '.' + f.extension })),
+        files,
       });
       this.goBack();
     } catch (err) {

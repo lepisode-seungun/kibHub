@@ -61,125 +61,58 @@
   <section class="portfolio-grid-section" id="portfolio-grid">
     <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">수강생 포트폴리오</h2>
 
-    <!-- 1행 -->
-    <div class="portfolio-row">
-      <article class="portfolio-card" routerLink="/student-portfolio/1">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
+    @if (isLoading()) {
+      <div class="flex justify-center items-center py-20">
+        <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#7A48FF" stroke-width="4"></circle>
+          <path class="opacity-75" fill="#7A48FF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    } @else {
+      @for (row of portfolioRows(); track $index) {
+        <div class="portfolio-row">
+          @for (card of row; track card.id) {
+            <article class="portfolio-card" [routerLink]="'/student-portfolio/' + card.id">
+              <div class="portfolio-thumb" [style.background]="card.thumbnail ? 'none' : card.gradient">
+                @if (card.thumbnail) {
+                  <img [src]="card.thumbnail" [alt]="card.workTitle" class="w-full h-full object-cover rounded-lg" />
+                }
+              </div>
+              <div class="flex flex-col gap-3 px-1">
+                <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ card.workTitle || card.bootcampName || '작품명' }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ card.userName || '수강생' }}</span>
+              </div>
+            </article>
+          }
         </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/2">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/3">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #f093fb, #f5576c);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/4">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-    </div>
-
-    <!-- 2행 -->
-    <div class="portfolio-row">
-      <article class="portfolio-card" routerLink="/student-portfolio/5">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #43e97b, #38f9d7);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/6">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #fa709a, #fee140);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/7">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/8">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-    </div>
-
-    <!-- 3행 -->
-    <div class="portfolio-row">
-      <article class="portfolio-card" routerLink="/student-portfolio/9">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #a1c4fd, #c2e9fb);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/10">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #d4fc79, #96e6a1);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/11">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #84fab0, #8fd3f4);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-      <article class="portfolio-card" routerLink="/student-portfolio/12">
-        <div class="portfolio-thumb" style="background: linear-gradient(135deg, #cfd9df, #e2ebf0);"></div>
-        <div class="flex flex-col gap-3 px-1">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">부트캠프명</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">요약설명</span>
-        </div>
-      </article>
-    </div>
+      }
+    }
 
     <!-- Loading Spinner -->
-    <div class="flex flex-col justify-center items-center py-10 w-full">
-      <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-        <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
-          <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
-          <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
-          <animate id="a3" fill="freeze" attributeName="x" begin="a7.end" dur="0.2s" values="13;1"/>
-          <animate id="a4b" fill="freeze" attributeName="y" begin="a10.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
-          <animate id="a5" fill="freeze" attributeName="y" begin="a1.end" dur="0.2s" values="13;1"/>
-          <animate id="a6" fill="freeze" attributeName="x" begin="a2.end" dur="0.2s" values="1;13"/>
-          <animate id="a7b" fill="freeze" attributeName="y" begin="a3.end" dur="0.2s" values="1;13"/>
-          <animate id="a8" fill="freeze" attributeName="x" begin="a4b.end" dur="0.2s" values="13;1"/>
-        </rect>
-        <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
-          <animate id="a4" fill="freeze" attributeName="x" begin="a5.end" dur="0.2s" values="13;1"/>
-          <animate id="a7" fill="freeze" attributeName="y" begin="a6.end" dur="0.2s" values="13;1"/>
-          <animate id="a10" fill="freeze" attributeName="x" begin="a7b.end" dur="0.2s" values="1;13"/>
-          <animate id="a12" fill="freeze" attributeName="y" begin="a8.end" dur="0.2s" values="1;13"/>
-        </rect>
-      </svg>
-    </div>
+    @if (isLoading()) {
+      <div class="flex flex-col justify-center items-center py-10 w-full">
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+          <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+            <animate id="a1" fill="freeze" attributeName="x" begin="0;a12.end" dur="0.2s" values="1;13"/>
+            <animate id="a2" fill="freeze" attributeName="y" begin="a4.end" dur="0.2s" values="1;13"/>
+            <animate id="a3" fill="freeze" attributeName="x" begin="a7.end" dur="0.2s" values="13;1"/>
+            <animate id="a4b" fill="freeze" attributeName="y" begin="a10.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+            <animate id="a5" fill="freeze" attributeName="y" begin="a1.end" dur="0.2s" values="13;1"/>
+            <animate id="a6" fill="freeze" attributeName="x" begin="a2.end" dur="0.2s" values="1;13"/>
+            <animate id="a7b" fill="freeze" attributeName="y" begin="a3.end" dur="0.2s" values="1;13"/>
+            <animate id="a8" fill="freeze" attributeName="x" begin="a4b.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+            <animate id="a4" fill="freeze" attributeName="x" begin="a5.end" dur="0.2s" values="13;1"/>
+            <animate id="a7" fill="freeze" attributeName="y" begin="a6.end" dur="0.2s" values="13;1"/>
+            <animate id="a10" fill="freeze" attributeName="x" begin="a7b.end" dur="0.2s" values="1;13"/>
+            <animate id="a12" fill="freeze" attributeName="y" begin="a8.end" dur="0.2s" values="1;13"/>
+          </rect>
+        </svg>
+      </div>
+    }
   </section>
 
 </main>

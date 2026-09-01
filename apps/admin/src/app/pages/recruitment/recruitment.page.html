@@ -64,8 +64,9 @@
     <div class="flex flex-col w-full border border-gray-300 rounded-lg overflow-hidden">
       <!-- 에디터 툴바 -->
       <div class="flex items-start p-3 gap-4 bg-gray-50 border-b border-gray-100" style="border-radius: 8px 8px 0 0;">
-        <!-- 폰트 드롭다운 -->
-        <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <!-- 폰트 크기 -->
+        <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onFontSize()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M3 15h3l1-3h6l1 3h3L11 3H9L3 15zm5.5-5L10 6l1.5 4H8.5z" fill="#6B7280"/>
           </svg>
@@ -74,40 +75,57 @@
           </svg>
         </button>
         <!-- Italic -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onItalic()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M8 3h6M6 17h6M10 3L8 17" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
         <!-- Bold -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onBold()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M5 3h5.5a3.5 3.5 0 0 1 0 7H5V3zm0 7h6.5a3.5 3.5 0 0 1 0 7H5v-7z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
         <!-- Underline -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onUnderline()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M5 3v6a5 5 0 0 0 10 0V3M3 18h14" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
         <!-- Link -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onLink()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M8.5 12.5l3-3M7 14l-1.5 1.5a2.12 2.12 0 0 1-3-3L4 11M13 9l1.5-1.5a2.12 2.12 0 0 0-3-3L10 6" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
-        <!-- Emoji -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="7.5" stroke="#6B7280" stroke-width="1.5"/>
-            <circle cx="7.5" cy="8.5" r="1" fill="#6B7280"/>
-            <circle cx="12.5" cy="8.5" r="1" fill="#6B7280"/>
-            <path d="M7 12.5a3.5 3.5 0 0 0 6 0" stroke="#6B7280" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <!-- 글씨색 -->
+        <div class="relative">
+          <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                  title="글씨색"
+                  (mousedown)="$event.preventDefault(); onFontColor()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 14h8L10 4 6 14zm2.5-2L10 7l1.5 5h-3z" fill="#6B7280"/>
+              <rect x="3" y="16" width="14" height="2" rx="0.5" fill="#EF4444"/>
+            </svg>
+          </button>
+          @if (colorPaletteOpen()) {
+            <div class="color-palette">
+              @for (color of colorPresets; track color) {
+                <button class="color-swatch"
+                        [style.background]="color"
+                        [title]="color"
+                        (mousedown)="$event.preventDefault(); applyColor(color)"></button>
+              }
+            </div>
+          }
+        </div>
         <!-- Image -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onImage()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <rect x="2" y="3" width="16" height="14" rx="2" stroke="#6B7280" stroke-width="1.5"/>
             <circle cx="7" cy="8" r="1.5" stroke="#6B7280" stroke-width="1"/>
@@ -115,7 +133,8 @@
           </svg>
         </button>
         <!-- List -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onUnorderedList()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M6 5h11M6 10h11M6 15h11" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
             <circle cx="3" cy="5" r="1" fill="#6B7280"/>
@@ -124,7 +143,8 @@
           </svg>
         </button>
         <!-- Numbered List -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onOrderedList()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M8 4h10M8 10h10M8 16h10" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
             <path d="M3.75 5.5H2.875V2.875H2V2H3.75V5.5Z" fill="#6B7280"/>
@@ -133,35 +153,42 @@
           </svg>
         </button>
         <!-- Left Align -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onAlignLeft()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M2 4h16M2 8h12M2 12h16M2 16h12" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
         <!-- Center Align -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onAlignCenter()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M2 4h16M5 8h10M2 12h16M5 16h10" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
         <!-- Right Align -->
-        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
+        <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity"
+                (mousedown)="$event.preventDefault(); onAlignRight()">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M2 4h16M6 8h12M2 12h16M6 16h12" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
-      <!-- 에디터 본문 -->
-      <textarea class="w-full border-none outline-none resize-none p-4 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 bg-white box-border"
-                style="min-height: 326px;"
-                placeholder="내용을 입력하세요"
-                [value]="getCurrentContent()"
-                (input)="updateContent($event)"></textarea>
+      <!-- 에디터 본문 (contenteditable) -->
+      <div #editorBody
+           class="editor-body w-full border-none outline-none p-4 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 bg-white box-border overflow-y-auto"
+           style="min-height: 326px;"
+           contenteditable="true"
+           (input)="onEditorInput()"
+           (click)="onEditorClick($event)"
+           data-placeholder="내용을 입력하세요"></div>
     </div>
     <!-- 저장 버튼 -->
     <div class="flex justify-end mt-2">
-      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-              style="width: 52px; height: 40px;">
+      <button class="flex items-center justify-center px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+              style="width: 52px; height: 40px;"
+              [disabled]="isSaving()"
+              (click)="saveCurrentTab()">
         저장
       </button>
     </div>
@@ -187,8 +214,11 @@
     </div>
     <adm-data-grid
       [columns]="instructorColumns"
-      [data]="instructorData"
-      [showSearch]="false">
+      [data]="instructorData()"
+      [showSearch]="false"
+      [contextMenuItems]="['수정', '삭제']"
+      (rowClick)="editInstructor(instructorData().indexOf($event))"
+      (contextMenuSelect)="onInstructorContextMenu($event)">
     </adm-data-grid>
   }
 
@@ -213,61 +243,16 @@
     </button>
 
     <!-- 타이틀 -->
-    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">강사등록</span>
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">{{ isEditMode ? '강사수정' : '강사등록' }}</span>
 
     <!-- 썸네일 섹션 -->
-    <div class="flex flex-col gap-2 w-full">
-      <!-- 라벨 -->
-      <div class="flex items-center gap-1">
-        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-gray-800">썸네일</span>
-        <span class="font-suit font-medium text-base leading-[22px] tracking-[-0.04em] text-[#1693C9]">*</span>
-      </div>
-
-      <!-- 힌트 -->
-      <div class="flex items-center gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
-          <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="700">i</text>
-        </svg>
-        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">권장 사이즈 000px * 000px</span>
-      </div>
-
-      <!-- 업로드 영역 -->
-      <div class="flex flex-col gap-3 w-full">
-        <!-- 드래그 존 -->
-        <label class="flex flex-col items-center justify-center gap-2 w-full py-6 px-4 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-[#3C8EEE] transition-colors">
-          <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
-            <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
-          </svg>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">사진 또는 파일을 드래그 할 수 있어요</span>
-          <input type="file" class="hidden" accept="image/*" (change)="onInstructorFileSelect($event)" />
-        </label>
-
-        <!-- 파일 프리뷰 -->
-        @if (instructorFile()) {
-          <div class="flex items-start gap-2.5 p-2.5 bg-white border border-[#E2E8F0] rounded-md">
-            <div class="w-[35px] h-[46px] rounded bg-gray-100 shrink-0"></div>
-            <div class="flex items-center justify-between flex-1" style="min-height: 46px;">
-              <div class="flex flex-col gap-1">
-                <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ instructorFile()!.name }}</span>
-                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ instructorFile()!.size }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M3 10.5L7.5 15L17 5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0"
-                        (click)="removeInstructorFile()">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 5L15 15M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
+    <adm-image-upload
+      label="썸네일"
+      [required]="true"
+      hint="권장 사이즈 400px * 500px"
+      [existingUrl]="instructorExistingPhoto()"
+      (fileChange)="onInstructorImageChange($event)">
+    </adm-image-upload>
 
     <!-- 이름 -->
     <div class="flex flex-col gap-2 w-full">
@@ -294,14 +279,10 @@
              style="height: 40px;"
              [value]="instructorSummary()"
              (input)="instructorSummary.set($any($event.target).value)"
-             placeholder="요약설명을 입력하세요"
-             maxlength="10" />
-      <div class="flex justify-end">
-        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ instructorSummary().length }} / 10</span>
-      </div>
+             placeholder="요약설명을 입력하세요" />
     </div>
 
-    <!-- 대표작 -->
+    <!-- 대표작 (뱃지 라벨) -->
     <div class="flex flex-col gap-2 w-full">
       <div class="flex items-center gap-0.5">
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">대표작</span>
@@ -310,20 +291,34 @@
       <input type="text"
              class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
              style="height: 40px;"
-             [value]="instructorTitle()"
-             (input)="instructorTitle.set($any($event.target).value)"
-             placeholder="대표작을 입력하세요"
+             [value]="instructorBadge()"
+             (input)="instructorBadge.set($any($event.target).value)"
+             placeholder="예: 대표작"
              maxlength="10" />
       <div class="flex justify-end">
-        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ instructorTitle().length }} / 10</span>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ instructorBadge().length }} / 10</span>
       </div>
     </div>
 
-    <!-- 하단 등록 버튼 -->
+    <!-- 대표작 내용 -->
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">대표작 내용</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             style="height: 40px;"
+             [value]="instructorWork()"
+             (input)="instructorWork.set($any($event.target).value)"
+             placeholder="대표작 내용을 입력하세요" />
+    </div>
+
+    <!-- 하단 등록/수정 버튼 -->
     <div class="flex flex-col flex-1 justify-end">
       <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
               (click)="submitInstructor()">
-        등록
+        {{ isEditMode ? '수정' : '등록' }}
       </button>
     </div>
   </div>

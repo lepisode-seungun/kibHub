@@ -62,6 +62,14 @@ export const CourseStatus = {
 export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus]
 
 
+export const SubmissionType = {
+  SUBMISSION: 'SUBMISSION',
+  FEEDBACK: 'FEEDBACK'
+} as const
+
+export type SubmissionType = (typeof SubmissionType)[keyof typeof SubmissionType]
+
+
 export const InquiryStatus = {
   PENDING: 'PENDING',
   COMPLETED: 'COMPLETED'

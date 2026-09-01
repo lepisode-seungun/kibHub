@@ -35,27 +35,27 @@
     <!-- 콘텐츠 카드 -->
     <div class="sd-content-card">
       <!-- 과정명 -->
-      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel }}</span>
+      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel() }}</span>
 
       <!-- 배지 + 메타 -->
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2 w-full">
-        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">{{ badge }}</span>
+        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">{{ badge() }}</span>
         <span class="sd-meta-divider"></span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ author }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ author() }}</span>
         <span class="sd-meta-divider"></span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ date }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ date() }}</span>
         <span class="sd-meta-divider"></span>
         <div class="flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
             <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
           </svg>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ fileName }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ fileName() }}</span>
         </div>
       </div>
 
       <!-- 제목 + 더보기 -->
       <div class="flex justify-between items-start w-full gap-2.5">
-        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle }}</h2>
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle() }}</h2>
         <div class="sd-more-wrap">
           <button class="sd-more-btn" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -80,7 +80,7 @@
       <!-- 설명 콘텐츠 (스크롤) -->
       <div class="sd-description-wrap">
         <div class="sd-description-scroll">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description }}</p>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description() }}</p>
         </div>
       </div>
 
@@ -95,7 +95,7 @@
         @if (isMaterialOpen()) {
           <div class="sd-materials-body">
             <div class="flex flex-wrap gap-3">
-              @for (file of learningFiles; track file.name) {
+              @for (file of learningFiles(); track file.name) {
                 <div class="sd-file-chip">
                   <span class="sd-file-name">{{ file.name }}</span>
                   <button class="sd-file-download" aria-label="다운로드">
@@ -117,7 +117,7 @@
       <!-- 댓글 헤더 -->
       <div class="flex items-center gap-1">
         <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">댓글</span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-accent">{{ comments.length }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-accent">{{ comments().length }}</span>
       </div>
 
       <!-- 댓글 리스트 -->
@@ -137,7 +137,7 @@
         </div>
 
         <!-- 댓글 아이템 -->
-        @for (comment of comments; track comment.id; let last = $last) {
+        @for (comment of comments(); track comment.id; let last = $last) {
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-3">
               <div class="flex items-center gap-2">
@@ -184,12 +184,12 @@
         <div class="fd-del-row fd-del-row-top">
           <span class="fd-del-label">제목</span>
           <div class="fd-del-divider"></div>
-          <span class="fd-del-value">{{ assignmentTitle }}</span>
+          <span class="fd-del-value">{{ assignmentTitle() }}</span>
         </div>
         <div class="fd-del-row fd-del-row-bottom">
           <span class="fd-del-label">등록일</span>
           <div class="fd-del-divider"></div>
-          <span class="fd-del-value">{{ date }}</span>
+          <span class="fd-del-value">{{ date() }}</span>
         </div>
       </div>
       <!-- 경고 문구: 데스크톱 -->

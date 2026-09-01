@@ -78,6 +78,21 @@ export type Assignment = Prisma.AssignmentModel
  */
 export type AssignmentFile = Prisma.AssignmentFileModel
 /**
+ * Model Submission
+ * 
+ */
+export type Submission = Prisma.SubmissionModel
+/**
+ * Model SubmissionFile
+ * 
+ */
+export type SubmissionFile = Prisma.SubmissionFileModel
+/**
+ * Model SubmissionComment
+ * 
+ */
+export type SubmissionComment = Prisma.SubmissionCommentModel
+/**
  * Model Faq
  * 
  */
@@ -87,6 +102,11 @@ export type Faq = Prisma.FaqModel
  * 
  */
 export type FaqFile = Prisma.FaqFileModel
+/**
+ * Model History
+ * 
+ */
+export type History = Prisma.HistoryModel
 /**
  * Model Inquiry
  * 
@@ -108,6 +128,11 @@ export type Notice = Prisma.NoticeModel
  */
 export type NoticeFile = Prisma.NoticeFileModel
 /**
+ * Model Partner
+ * 
+ */
+export type Partner = Prisma.PartnerModel
+/**
  * Model Portfolio
  * 
  */
@@ -117,6 +142,11 @@ export type Portfolio = Prisma.PortfolioModel
  * 
  */
 export type PortfolioFile = Prisma.PortfolioFileModel
+/**
+ * Model Poster
+ * 
+ */
+export type Poster = Prisma.PosterModel
 /**
  * Model SiteSetting
  * 

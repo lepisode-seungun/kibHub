@@ -1,11 +1,11 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
-import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
+import { MEMBER_STATUS_BADGES, APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
-import { Bootcamp } from '../../shared/types';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
+import { Bootcamp, Applicant } from '../../shared/types';
 
 interface PersonRow {
   id: number;
@@ -29,32 +29,38 @@ const BOOTCAMP_STATUS_MAP: Record<string, string> = {
   styleUrl: './bootcamp-dashboard.page.css',
 })
 export class BootcampDashboardPage implements OnInit {
-  private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private bootcampCtx = inject(BootcampContextService);
 
   // ===== 기본 정보 섹션 =====
   sectionOpen = signal(true);
   dropdownOpen = signal(false);
 
-  info = {
+  info = signal({
     id: 0,
     status: '',
     bootcampName: '',
     createdAt: '',
     recruitmentPeriod: '',
     educationPeriod: '',
-  };
+  });
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id') || 1);
-    this.loadBootcamp(id);
+    const id = this.bootcampCtx.currentBootcampId();
+    if (id) {
+      this.bootcampId = id;
+      this.loadBootcamp(id);
+      this.loadApplicants(id);
+    }
   }
+
+  bootcampId = 0;
 
   async loadBootcamp(id: number): Promise<void> {
     try {
       const b = await this.api.bootcamps.findOne(id);
-      this.info = {
+      this.info.set({
         id: b.id,
         status: BOOTCAMP_STATUS_MAP[b.status] || b.status,
         bootcampName: b.name,
@@ -63,9 +69,31 @@ export class BootcampDashboardPage implements OnInit {
         educationPeriod: b.startDate && b.endDate
           ? `${new Date(b.startDate).toLocaleDateString('ko-KR')} ~ ${new Date(b.endDate).toLocaleDateString('ko-KR')}`
           : '-',
-      };
+      });
     } catch (e) {
       console.error('부트캠프 로드 실패:', e);
+    }
+  }
+
+  async loadApplicants(bootcampId: number): Promise<void> {
+    try {
+      const data = await this.api.applicants.findByBootcamp(bootcampId);
+      const STATUS_MAP: Record<string, string> = {
+        PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+      };
+      this.studentData.set(data.map((a: any) => {
+        const iq = a.interviewQuestions as Record<string, string> | null;
+        return {
+          id: a.id,
+          status: STATUS_MAP[a.status] || a.status,
+          name: iq?.['applicantName'] || a.user?.name || '',
+          nickname: '',
+          phone: iq?.['phone'] || a.user?.phone || '',
+          email: iq?.['email'] || a.user?.email || '',
+        };
+      }));
+    } catch (e) {
+      console.error('지원자 목록 로드 실패:', e);
     }
   }
 
@@ -115,8 +143,15 @@ export class BootcampDashboardPage implements OnInit {
 
   // ===== 수강생 목록 섹션 =====
   studentSectionOpen = signal(true);
-  studentColumns = this.instructorColumns;
-  studentData: PersonRow[] = [];
+  studentColumns: GridColumn[] = [
+    { key: 'id', label: '순번', width: '60px' },
+    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: APPLICANT_STATUS_BADGES },
+    { key: 'name', label: '이름' },
+    { key: 'phone', label: '연락처' },
+    { key: 'email', label: '이메일' },
+    { key: 'delete', label: '', width: '40px', type: 'action' },
+  ];
+  studentData = signal<PersonRow[]>([]);
 
   toggleStudentSection(): void { this.studentSectionOpen.update(v => !v); }
 
@@ -132,7 +167,7 @@ export class BootcampDashboardPage implements OnInit {
   confirmRemoveStudent(): void {
     const student = this.selectedStudent();
     if (student) {
-      this.studentData = this.studentData.filter(d => d.id !== student.id);
+      this.studentData.update(list => list.filter(d => d.id !== student.id));
     }
     this.showRemoveDialog.set(false);
     this.selectedStudent.set(null);
@@ -190,11 +225,11 @@ export class BootcampDashboardPage implements OnInit {
   submitStudentInvite(): void {
     const form = this.studentInviteForm();
     if (form.email && form.name) {
-      const nextId = this.studentData.length + 1;
-      this.studentData = [...this.studentData, {
+      const nextId = this.studentData().length + 1;
+      this.studentData.update(list => [...list, {
         id: nextId, status: '정상', name: form.name,
         nickname: '', phone: form.phone, email: form.email,
-      }];
+      }]);
       this.closeStudentDrawer();
     }
   }

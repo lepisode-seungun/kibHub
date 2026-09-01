@@ -1,10 +1,12 @@
-import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface LearningFile {
   name: string;
+  url?: string;
 }
 
 interface Comment {
@@ -26,6 +28,8 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnDestroy(): void {
     document.body.style.overflow = '';
@@ -33,39 +37,79 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
 
   feedbackId = '';
   bootcampId = '';
+  assignmentId = '';
 
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('과제');
 
-  courseLabel = '';
-  assignmentTitle = '';
-  badge = '피드백';
-  author = '';
-  date = '';
-  fileName = '';
-  description = '';
+  courseLabel = signal('');
+  assignmentTitle = signal('');
+  badge = signal('피드백');
+  author = signal('');
+  date = signal('');
+  fileName = signal('');
+  description = signal('');
 
   isMaterialOpen = signal(true);
   isMoreOpen = signal(false);
   isDeleteModalOpen = signal(false);
 
-  isAuthor = false;
-  isInstructor = true;
+  isAuthor = signal(false);
+  isInstructor = signal(false);
 
-  learningFiles: LearningFile[] = [];
-  comments: Comment[] = [];
+  learningFiles = signal<LearningFile[]>([]);
+  comments = signal<Comment[]>([]);
 
-  newComment = '';
+  newComment = signal('');
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.feedbackId = params.get('feedbackId') || '';
+      if (this.feedbackId) {
+        await this.loadFeedback(Number(this.feedbackId));
+      }
     });
   }
 
+  private async loadFeedback(id: number): Promise<void> {
+    try {
+      const s: any = await this.api.submissions.findOne(id);
+      this.assignmentTitle.set(s.title || '');
+      this.description.set(s.content || '');
+      this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
+      this.author.set(s.author?.name || s.author?.nickname || '');
+      this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
+      this.fileName.set(s.files?.[0]?.name || '');
+      this.learningFiles.set((s.files || []).map((f: any) => ({ name: f.name, url: f.url })));
+      if (s.assignment) {
+        this.courseLabel.set(s.assignment.course?.name || '');
+        this.assignmentId = String(s.assignment.id);
+      }
+      // 댓글 로드
+      if (s.comments) {
+        this.comments.set(s.comments.map((c: any) => ({
+          id: c.id,
+          author: c.author?.name || c.author?.nickname || '',
+          date: new Date(c.createdAt).toLocaleDateString('ko-KR'),
+          content: c.body,
+          avatarInitial: (c.author?.name || c.author?.nickname || '?')[0].toUpperCase(),
+        })));
+      }
+      // 권한 체크
+      const user = this.authService.currentUser();
+      this.isAuthor.set(user?.id === s.authorId);
+      this.isInstructor.set(user?.role === 'INSTRUCTOR' || user?.role === 'ADMIN');
+      this.cdr.markForCheck();
+    } catch (err) {
+      console.error('피드백 상세 로드 실패:', err);
+    }
+  }
+
   goBack(): void {
-    if (this.bootcampId) {
+    if (this.bootcampId && this.assignmentId) {
+      this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', this.assignmentId]);
+    } else if (this.bootcampId) {
       this.router.navigate(['/my-bootcamp', this.bootcampId]);
     } else {
       this.router.navigate(['/my-bootcamp']);
@@ -109,11 +153,15 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  confirmDelete(): void {
-    this.isDeleteModalOpen.set(false);
-    document.body.style.overflow = '';
-    // TODO: API 삭제 요청 후 목록으로 이동
-    this.goBack();
+  async confirmDelete(): Promise<void> {
+    try {
+      await this.api.submissions.delete(Number(this.feedbackId));
+      this.isDeleteModalOpen.set(false);
+      document.body.style.overflow = '';
+      this.goBack();
+    } catch (err) {
+      console.error('피드백 삭제 실패:', err);
+    }
   }
 
   onRegisterFeedback(): void {
@@ -124,18 +172,24 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
   }
 
   onCommentInput(event: Event): void {
-    this.newComment = (event.target as HTMLTextAreaElement).value;
+    this.newComment.set((event.target as HTMLTextAreaElement).value);
   }
 
-  submitComment(): void {
-    if (!this.newComment.trim()) return;
-    this.comments.push({
-      id: this.comments.length + 1,
-      author: 'newon',
-      date: new Date().toLocaleDateString('ko-KR'),
-      content: this.newComment.trim(),
-      avatarInitial: 'N',
-    });
-    this.newComment = '';
+  async submitComment(): Promise<void> {
+    if (!this.newComment().trim()) return;
+    try {
+      const c: any = await this.api.submissionComments.create(Number(this.feedbackId), { body: this.newComment().trim() });
+      this.comments.update(list => [...list, {
+        id: c.id,
+        author: c.author?.name || c.author?.nickname || '',
+        date: new Date(c.createdAt).toLocaleDateString('ko-KR'),
+        content: c.body,
+        avatarInitial: (c.author?.name || c.author?.nickname || '?')[0].toUpperCase(),
+      }]);
+      this.newComment.set('');
+      this.cdr.markForCheck();
+    } catch (err) {
+      console.error('댓글 등록 실패:', err);
+    }
   }
 }

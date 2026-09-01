@@ -313,6 +313,8 @@ export type UserWhereInput = {
   notices?: Prisma.NoticeListRelationFilter
   faqs?: Prisma.FaqListRelationFilter
   inquiryReplies?: Prisma.InquiryListRelationFilter
+  submissions?: Prisma.SubmissionListRelationFilter
+  submissionComments?: Prisma.SubmissionCommentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -341,6 +343,8 @@ export type UserOrderByWithRelationInput = {
   notices?: Prisma.NoticeOrderByRelationAggregateInput
   faqs?: Prisma.FaqOrderByRelationAggregateInput
   inquiryReplies?: Prisma.InquiryOrderByRelationAggregateInput
+  submissions?: Prisma.SubmissionOrderByRelationAggregateInput
+  submissionComments?: Prisma.SubmissionCommentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -372,6 +376,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notices?: Prisma.NoticeListRelationFilter
   faqs?: Prisma.FaqListRelationFilter
   inquiryReplies?: Prisma.InquiryListRelationFilter
+  submissions?: Prisma.SubmissionListRelationFilter
+  submissionComments?: Prisma.SubmissionCommentListRelationFilter
 }, "id" | "email" | "loginId">
 
 export type UserOrderByWithAggregationInput = {
@@ -445,6 +451,8 @@ export type UserCreateInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -473,6 +481,8 @@ export type UserUncheckedCreateInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -500,6 +510,8 @@ export type UserUpdateInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -528,6 +540,8 @@ export type UserUncheckedUpdateInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -717,6 +731,34 @@ export type UserUpdateOneRequiredWithoutReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportsInput, Prisma.UserUpdateWithoutReportsInput>, Prisma.UserUncheckedUpdateWithoutReportsInput>
 }
 
+export type UserCreateNestedOneWithoutSubmissionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionsInput, Prisma.UserUncheckedCreateWithoutSubmissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSubmissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionsInput, Prisma.UserUncheckedCreateWithoutSubmissionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionsInput
+  upsert?: Prisma.UserUpsertWithoutSubmissionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmissionsInput, Prisma.UserUpdateWithoutSubmissionsInput>, Prisma.UserUncheckedUpdateWithoutSubmissionsInput>
+}
+
+export type UserCreateNestedOneWithoutSubmissionCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionCommentsInput, Prisma.UserUncheckedCreateWithoutSubmissionCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSubmissionCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSubmissionCommentsInput, Prisma.UserUncheckedCreateWithoutSubmissionCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSubmissionCommentsInput
+  upsert?: Prisma.UserUpsertWithoutSubmissionCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmissionCommentsInput, Prisma.UserUpdateWithoutSubmissionCommentsInput>, Prisma.UserUncheckedUpdateWithoutSubmissionCommentsInput>
+}
+
 export type UserCreateNestedOneWithoutFaqsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFaqsInput, Prisma.UserUncheckedCreateWithoutFaqsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFaqsInput
@@ -825,6 +867,8 @@ export type UserCreateWithoutApplicantsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutApplicantsInput = {
@@ -852,6 +896,8 @@ export type UserUncheckedCreateWithoutApplicantsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutApplicantsInput = {
@@ -894,6 +940,8 @@ export type UserUpdateWithoutApplicantsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicantsInput = {
@@ -921,6 +969,8 @@ export type UserUncheckedUpdateWithoutApplicantsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutContentsInput = {
@@ -947,6 +997,8 @@ export type UserCreateWithoutContentsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutContentsInput = {
@@ -974,6 +1026,8 @@ export type UserUncheckedCreateWithoutContentsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutContentsInput = {
@@ -1016,6 +1070,8 @@ export type UserUpdateWithoutContentsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContentsInput = {
@@ -1043,6 +1099,8 @@ export type UserUncheckedUpdateWithoutContentsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1069,6 +1127,8 @@ export type UserCreateWithoutCommentsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1096,6 +1156,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1138,6 +1200,8 @@ export type UserUpdateWithoutCommentsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1165,6 +1229,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -1191,6 +1257,8 @@ export type UserCreateWithoutReportsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1218,6 +1286,8 @@ export type UserUncheckedCreateWithoutReportsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1260,6 +1330,8 @@ export type UserUpdateWithoutReportsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1287,6 +1359,268 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutSubmissionsInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutSubmissionsInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutSubmissionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionsInput, Prisma.UserUncheckedCreateWithoutSubmissionsInput>
+}
+
+export type UserUpsertWithoutSubmissionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionsInput, Prisma.UserUncheckedUpdateWithoutSubmissionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionsInput, Prisma.UserUncheckedCreateWithoutSubmissionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSubmissionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionsInput, Prisma.UserUncheckedUpdateWithoutSubmissionsInput>
+}
+
+export type UserUpdateWithoutSubmissionsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSubmissionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutSubmissionCommentsInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutSubmissionCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionCommentsInput, Prisma.UserUncheckedCreateWithoutSubmissionCommentsInput>
+}
+
+export type UserUpsertWithoutSubmissionCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionCommentsInput, Prisma.UserUncheckedUpdateWithoutSubmissionCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSubmissionCommentsInput, Prisma.UserUncheckedCreateWithoutSubmissionCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSubmissionCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSubmissionCommentsInput, Prisma.UserUncheckedUpdateWithoutSubmissionCommentsInput>
+}
+
+export type UserUpdateWithoutSubmissionCommentsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutFaqsInput = {
@@ -1313,6 +1647,8 @@ export type UserCreateWithoutFaqsInput = {
   inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutFaqsInput = {
@@ -1340,6 +1676,8 @@ export type UserUncheckedCreateWithoutFaqsInput = {
   inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutFaqsInput = {
@@ -1382,6 +1720,8 @@ export type UserUpdateWithoutFaqsInput = {
   inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFaqsInput = {
@@ -1409,6 +1749,8 @@ export type UserUncheckedUpdateWithoutFaqsInput = {
   inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutInquiriesInput = {
@@ -1435,6 +1777,8 @@ export type UserCreateWithoutInquiriesInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutInquiriesInput = {
@@ -1462,6 +1806,8 @@ export type UserUncheckedCreateWithoutInquiriesInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutInquiriesInput = {
@@ -1493,6 +1839,8 @@ export type UserCreateWithoutInquiryRepliesInput = {
   inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutInquiryRepliesInput = {
@@ -1520,6 +1868,8 @@ export type UserUncheckedCreateWithoutInquiryRepliesInput = {
   inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutInquiryRepliesInput = {
@@ -1562,6 +1912,8 @@ export type UserUpdateWithoutInquiriesInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiriesInput = {
@@ -1589,6 +1941,8 @@ export type UserUncheckedUpdateWithoutInquiriesInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUpsertWithoutInquiryRepliesInput = {
@@ -1626,6 +1980,8 @@ export type UserUpdateWithoutInquiryRepliesInput = {
   inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
@@ -1653,6 +2009,8 @@ export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
   inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutNoticesInput = {
@@ -1679,6 +2037,8 @@ export type UserCreateWithoutNoticesInput = {
   inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutNoticesInput = {
@@ -1706,6 +2066,8 @@ export type UserUncheckedCreateWithoutNoticesInput = {
   inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutNoticesInput = {
@@ -1748,6 +2110,8 @@ export type UserUpdateWithoutNoticesInput = {
   inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNoticesInput = {
@@ -1775,6 +2139,8 @@ export type UserUncheckedUpdateWithoutNoticesInput = {
   inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutSnsInput = {
@@ -1801,6 +2167,8 @@ export type UserCreateWithoutSnsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutSnsInput = {
@@ -1828,6 +2196,8 @@ export type UserUncheckedCreateWithoutSnsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutSnsInput = {
@@ -1870,6 +2240,8 @@ export type UserUpdateWithoutSnsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSnsInput = {
@@ -1897,6 +2269,8 @@ export type UserUncheckedUpdateWithoutSnsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 
@@ -1914,6 +2288,8 @@ export type UserCountOutputType = {
   notices: number
   faqs: number
   inquiryReplies: number
+  submissions: number
+  submissionComments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1926,6 +2302,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notices?: boolean | UserCountOutputTypeCountNoticesArgs
   faqs?: boolean | UserCountOutputTypeCountFaqsArgs
   inquiryReplies?: boolean | UserCountOutputTypeCountInquiryRepliesArgs
+  submissions?: boolean | UserCountOutputTypeCountSubmissionsArgs
+  submissionComments?: boolean | UserCountOutputTypeCountSubmissionCommentsArgs
 }
 
 /**
@@ -2001,6 +2379,20 @@ export type UserCountOutputTypeCountInquiryRepliesArgs<ExtArgs extends runtime.T
   where?: Prisma.InquiryWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubmissionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSubmissionCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SubmissionCommentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2028,6 +2420,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notices?: boolean | Prisma.User$noticesArgs<ExtArgs>
   faqs?: boolean | Prisma.User$faqsArgs<ExtArgs>
   inquiryReplies?: boolean | Prisma.User$inquiryRepliesArgs<ExtArgs>
+  submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
+  submissionComments?: boolean | Prisma.User$submissionCommentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2099,6 +2493,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notices?: boolean | Prisma.User$noticesArgs<ExtArgs>
   faqs?: boolean | Prisma.User$faqsArgs<ExtArgs>
   inquiryReplies?: boolean | Prisma.User$inquiryRepliesArgs<ExtArgs>
+  submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
+  submissionComments?: boolean | Prisma.User$submissionCommentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2116,6 +2512,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notices: Prisma.$NoticePayload<ExtArgs>[]
     faqs: Prisma.$FaqPayload<ExtArgs>[]
     inquiryReplies: Prisma.$InquiryPayload<ExtArgs>[]
+    submissions: Prisma.$SubmissionPayload<ExtArgs>[]
+    submissionComments: Prisma.$SubmissionCommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2537,6 +2935,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notices<T extends Prisma.User$noticesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$noticesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NoticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   faqs<T extends Prisma.User$faqsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$faqsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FaqPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   inquiryReplies<T extends Prisma.User$inquiryRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$inquiryRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  submissions<T extends Prisma.User$submissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  submissionComments<T extends Prisma.User$submissionCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3188,6 +3588,54 @@ export type User$inquiryRepliesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.InquiryScalarFieldEnum | Prisma.InquiryScalarFieldEnum[]
+}
+
+/**
+ * User.submissions
+ */
+export type User$submissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Submission
+   */
+  select?: Prisma.SubmissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Submission
+   */
+  omit?: Prisma.SubmissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubmissionInclude<ExtArgs> | null
+  where?: Prisma.SubmissionWhereInput
+  orderBy?: Prisma.SubmissionOrderByWithRelationInput | Prisma.SubmissionOrderByWithRelationInput[]
+  cursor?: Prisma.SubmissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubmissionScalarFieldEnum | Prisma.SubmissionScalarFieldEnum[]
+}
+
+/**
+ * User.submissionComments
+ */
+export type User$submissionCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SubmissionComment
+   */
+  select?: Prisma.SubmissionCommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SubmissionComment
+   */
+  omit?: Prisma.SubmissionCommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubmissionCommentInclude<ExtArgs> | null
+  where?: Prisma.SubmissionCommentWhereInput
+  orderBy?: Prisma.SubmissionCommentOrderByWithRelationInput | Prisma.SubmissionCommentOrderByWithRelationInput[]
+  cursor?: Prisma.SubmissionCommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SubmissionCommentScalarFieldEnum | Prisma.SubmissionCommentScalarFieldEnum[]
 }
 
 /**

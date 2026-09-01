@@ -47,38 +47,38 @@
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
             <span class="inline-flex items-center self-start px-2 py-1 rounded-full border text-sm font-suit font-medium whitespace-nowrap"
-                  [ngClass]="getStatusClass(member.status)">{{ member.status }}</span>
+                  [ngClass]="getStatusClass(member().status)">{{ member().status }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">권한</span>
             <span class="inline-flex items-center self-start px-2 py-1 rounded-lg border text-sm font-suit font-medium whitespace-nowrap"
-                  [ngClass]="getRoleClass(member.role)">{{ member.role }}</span>
+                  [ngClass]="getRoleClass(member().role)">{{ member().role }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이메일</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.email }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().email }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.name }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().name }}</span>
           </div>
         </div>
         <div class="grid grid-cols-4 gap-3">
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">국가번호</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.countryCode }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().countryCode }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">연락처</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.phone }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().phone }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">생년월일</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.birthday }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().birthday }}</span>
           </div>
           <div class="flex flex-col gap-2 py-1.5">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">가입일시</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.createdAt }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().createdAt }}</span>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
         </svg>
       </div>
       <button class="px-3 py-2 bg-white border border-[#3C8EEE] rounded-md font-suit font-medium text-base tracking-[-0.04em] text-[#3C8EEE] cursor-pointer hover:bg-blue-50 transition-colors"
-              (click)="$event.stopPropagation()">
+              (click)="openExtraDrawer(); $event.stopPropagation()">
         정보 수정
       </button>
     </button>
@@ -105,13 +105,13 @@
       <div class="grid grid-cols-4 gap-3">
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">닉네임</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member.nickname }}</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ member().nickname }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">프로필</span>
           <div class="w-[100px] h-[100px] rounded-full bg-gray-200 overflow-hidden">
-            @if (member.profileImage) {
-              <img [src]="member.profileImage" class="w-full h-full object-cover" alt="프로필"/>
+            @if (member().profileImage) {
+              <img [src]="member().profileImage" class="w-full h-full object-cover" alt="프로필"/>
             } @else {
               <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="#9CA3AF">
@@ -124,21 +124,34 @@
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">SNS</span>
           <div class="flex flex-col gap-2">
-            @for (sns of member.sns; track sns.label) {
+            @for (sns of member().sns; track $index) {
               <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center w-6 h-6 bg-zinc-50 border border-zinc-100 rounded">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
-                    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-                  </svg>
+                <div class="flex items-center justify-center w-6 h-6 bg-zinc-50 border border-zinc-100 rounded flex-shrink-0">
+                  @switch (sns.type) {
+                    @case ('INSTAGRAM') {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.333a3.333 3.333 0 1 1 0-6.666 3.333 3.333 0 0 1 0 6.666zM18.538 6.462a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
+                    }
+                    @case ('TWITTER') {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    }
+                    @case ('YOUTUBE') {
+                      <svg width="14" height="12" viewBox="0 0 24 18" fill="#9CA3AF"><path d="M23.498 3.174a3.012 3.012 0 0 0-2.12-2.136C19.505.5 12 .5 12 .5s-7.505 0-9.378.538A3.012 3.012 0 0 0 .502 3.174C0 5.065 0 9 0 9s0 3.935.502 5.826a3.012 3.012 0 0 0 2.12 2.136C4.495 17.5 12 17.5 12 17.5s7.505 0 9.378-.538a3.012 3.012 0 0 0 2.12-2.136C24 12.935 24 9 24 9s0-3.935-.502-5.826zM9.545 12.727V5.273L15.818 9l-6.273 3.727z"/></svg>
+                    }
+                    @default {
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                    }
+                  }
                 </div>
-                <span class="font-suit text-sm text-gray-400">{{ sns.label }}</span>
+                @if (sns.url) {
+                  <a [href]="sns.url" target="_blank" rel="noopener" class="font-suit text-sm text-indigo-500 hover:underline truncate max-w-[200px]">{{ sns.url }}</a>
+                }
               </div>
             }
           </div>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">소개</span>
-          <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[266px]">{{ member.intro }}</p>
+          <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[266px]">{{ member().intro }}</p>
         </div>
       </div>
     }
@@ -150,7 +163,7 @@
             (click)="toggleSection('bootcamp')">
       <div class="flex items-center gap-3">
         <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프 지원 내역</span>
-        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ bootcampHistory.length }})</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ bootcampHistory().length }})</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200" [ngClass]="isOpen('bootcamp') ? '' : 'rotate-180'">
           <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -160,7 +173,7 @@
     @if (isOpen('bootcamp')) {
       <adm-data-grid
         [columns]="bootcampColumns"
-        [data]="bootcampHistory"
+        [data]="bootcampHistory()"
         searchPlaceholder="검색어를 입력하세요">
         <!-- 힌트 텍스트 -->
         <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
@@ -294,7 +307,7 @@
       <div class="flex flex-col gap-2">
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">현재 권한</span>
         <div class="flex items-center px-4 h-10 bg-gray-100 border-2 border-gray-400 rounded-md">
-          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">{{ member.role }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400">{{ member().role }}</span>
         </div>
       </div>
 
@@ -468,17 +481,17 @@
         <!-- 이메일 -->
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이메일</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.email }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().email }}</span>
         </div>
         <!-- 이름 -->
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.name }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().name }}</span>
         </div>
         <!-- 닉네임 -->
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">닉네임</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.nickname }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().nickname }}</span>
         </div>
       </div>
 
@@ -528,15 +541,15 @@
       <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이메일</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.email }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().email }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">이름</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.name }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().name }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">닉네임</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member.nickname }}</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ member().nickname }}</span>
         </div>
       </div>
 
@@ -556,6 +569,136 @@
           차단 해제
         </button>
       </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 추가 정보 수정 사이드 드로어 ===== -->
+@if (showExtraDrawer()) {
+  <!-- 배경 오버레이 -->
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0"
+       (click)="closeExtraDrawer()"
+       (keyup.enter)="closeExtraDrawer()"></div>
+
+  <!-- 드로어 패널 -->
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 drawer-slide-in overflow-y-auto">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeExtraDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <div class="flex items-center gap-6">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">추가 정보 수정</h4>
+    </div>
+
+    <!-- 닉네임 -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">닉네임</span>
+      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="닉네임을 입력하세요"
+             [value]="editNickname()"
+             (input)="onExtraField('nickname', $event)"/>
+    </div>
+
+    <!-- 프로필 이미지 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">프로필 이미지</span>
+      <div class="flex items-center gap-4">
+        <div class="w-[80px] h-[80px] rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+          @if (editProfileImage()) {
+            <img [src]="editProfileImage()" class="w-full h-full object-cover" alt="프로필"/>
+          } @else {
+            <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="#9CA3AF">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+          }
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="font-suit text-sm text-gray-400">JPG, PNG (최대 5MB)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 소개 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">소개</span>
+      <textarea class="w-full h-[120px] px-4 py-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-none"
+                placeholder="소개를 입력하세요"
+                [value]="editIntro()"
+                (input)="onExtraField('intro', $event)"></textarea>
+    </div>
+
+    <!-- SNS -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">SNS</span>
+        <button class="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-sm tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors"
+                (click)="addSnsRow()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1v12M1 7h12" stroke="#3C8EEE" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          추가
+        </button>
+      </div>
+      @for (sns of editSns(); track $index) {
+        <div class="flex items-center gap-2">
+          <div class="flex items-center justify-center w-9 h-9 bg-gray-50 border border-gray-200 rounded-md flex-shrink-0">
+            @switch (sns.type) {
+              @case ('INSTAGRAM') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.333a3.333 3.333 0 1 1 0-6.666 3.333 3.333 0 0 1 0 6.666zM18.538 6.462a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
+              }
+              @case ('TWITTER') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              }
+              @case ('YOUTUBE') {
+                <svg width="16" height="14" viewBox="0 0 24 18" fill="#9CA3AF"><path d="M23.498 3.174a3.012 3.012 0 0 0-2.12-2.136C19.505.5 12 .5 12 .5s-7.505 0-9.378.538A3.012 3.012 0 0 0 .502 3.174C0 5.065 0 9 0 9s0 3.935.502 5.826a3.012 3.012 0 0 0 2.12 2.136C4.495 17.5 12 17.5 12 17.5s7.505 0 9.378-.538a3.012 3.012 0 0 0 2.12-2.136C24 12.935 24 9 24 9s0-3.935-.502-5.826zM9.545 12.727V5.273L15.818 9l-6.273 3.727z"/></svg>
+              }
+              @default {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+              }
+            }
+          </div>
+          <select class="w-[100px] h-9 px-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-sm text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border cursor-pointer"
+                  [value]="sns.type"
+                  (change)="onSnsType($index, $event)">
+            <option value="LINK">링크</option>
+            <option value="INSTAGRAM">인스타</option>
+            <option value="TWITTER">X</option>
+            <option value="YOUTUBE">유튜브</option>
+          </select>
+          <input type="text"
+                 class="flex-1 h-9 px-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                 placeholder="URL을 입력하세요"
+                 [value]="sns.url"
+                 (input)="onSnsField($index, 'url', $event)"/>
+          <button class="flex items-center justify-center w-9 h-9 rounded-md border border-red-300 bg-white hover:bg-red-50 transition-colors cursor-pointer flex-shrink-0"
+                  (click)="removeSnsRow($index)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M3 7h8" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col justify-end items-center flex-1">
+      <button class="flex items-center justify-center w-full h-10 rounded-md border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white bg-[#3C8EEE] hover:bg-blue-600 transition-colors"
+              (click)="submitExtraEdit()">
+        등록
+      </button>
     </div>
   </div>
 }

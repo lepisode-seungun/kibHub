@@ -29,6 +29,7 @@ export class HeaderComponent {
   readonly isLoggedIn = this.authService.isLoggedIn;
   readonly userName = computed(() => this.authService.currentUser()?.nickname ?? '');
   readonly userInitial = computed(() => this.authService.currentUser()?.initial ?? '');
+  readonly userProfileImage = computed(() => this.authService.currentUser()?.profileImage ?? null);
 
   isSidebarOpen = signal(false);
   isBootcampOpen = signal(false);

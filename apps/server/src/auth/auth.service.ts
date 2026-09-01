@@ -56,7 +56,12 @@ export class AuthService {
   async findById(id: number) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, nickname: true, phone: true, intro: true, role: true, status: true, adminRole: true },
+      select: {
+        id: true, email: true, nickname: true, name: true, phone: true,
+        countryCode: true, birthday: true, intro: true, profileImage: true,
+        role: true, status: true, adminRole: true,
+        sns: true,
+      },
     });
   }
 }

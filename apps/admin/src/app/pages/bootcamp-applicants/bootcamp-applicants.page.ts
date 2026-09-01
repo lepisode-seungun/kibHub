@@ -1,10 +1,11 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { Applicant } from '../../shared/types';
 
 interface ApplicantRow {
@@ -17,17 +18,18 @@ interface ApplicantRow {
 }
 
 const STATUS_MAP: Record<string, string> = {
-  PENDING: '대기', APPROVED: '합격', REJECTED: '불합격', CANCELLED: '취소',
+  PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격', CANCELLED: '취소',
 };
 
 function toApplicantRow(a: Applicant): ApplicantRow {
+  const iq = (a as any).interviewQuestions as Record<string, string> | null;
   return {
     id: a.id,
     status: STATUS_MAP[a.status] || a.status,
-    name: a.user?.name || '',
-    phone: a.user?.phone || '',
-    email: a.user?.email || '',
-    appliedAt: new Date(a.createdAt).toLocaleString('ko-KR'),
+    name: iq?.['applicantName'] || a.user?.name || '',
+    phone: iq?.['phone'] || a.user?.phone || '',
+    email: iq?.['email'] || a.user?.email || '',
+    appliedAt: new Date((a as any).appliedAt || a.createdAt).toLocaleString('ko-KR'),
   };
 }
 
@@ -40,9 +42,9 @@ function toApplicantRow(a: Applicant): ApplicantRow {
 })
 export class BootcampApplicantsPage implements OnInit {
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private bootcampCtx = inject(BootcampContextService);
 
   selectedApplicants = signal<ApplicantRow[]>([]);
   statusDropdownOpen = signal(false);
@@ -63,8 +65,9 @@ export class BootcampApplicantsPage implements OnInit {
   applicantData = signal<ApplicantRow[]>([]);
 
   ngOnInit(): void {
-    this.bootcampId = Number(this.route.snapshot.paramMap.get('bootcampId') || this.route.parent?.snapshot.paramMap.get('id') || 1);
-    this.loadApplicants();
+    this.bootcampId = this.bootcampCtx.currentBootcampId() || 0;
+    this.bootcampName = this.bootcampCtx.currentBootcampName() || '';
+    if (this.bootcampId) this.loadApplicants();
   }
 
   async loadApplicants(): Promise<void> {
@@ -105,7 +108,7 @@ export class BootcampApplicantsPage implements OnInit {
   async confirmPass(): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
     try {
-      await this.api.applicants.bulkUpdateStatus(ids, 'APPROVED');
+      await this.api.applicants.bulkUpdateStatus(ids, 'ACCEPTED');
       this.toast.success('합격 처리 되었습니다.');
       await this.loadApplicants();
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
@@ -136,12 +139,85 @@ export class BootcampApplicantsPage implements OnInit {
 
   async changeStatus(status: string): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
-    const statusMap: Record<string, string> = { '합격': 'APPROVED', '불합격': 'REJECTED', '대기': 'PENDING' };
+    const statusMap: Record<string, string> = { '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING' };
     try {
       await this.api.applicants.bulkUpdateStatus(ids, statusMap[status] || status);
       this.toast.success('상태 변경 완료');
       await this.loadApplicants();
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.statusDropdownOpen.set(false);
+  }
+
+  // ===== 사전인터뷰 설정 드로어 =====
+  interviewDrawerOpen = signal(false);
+  drawerQuestions = signal<{ text: string; editing: boolean }[]>([]);
+
+  async openInterviewDrawer(): Promise<void> {
+    // DB에서 기존 질문 로드
+    try {
+      const existing = await this.api.bootcamps.getInterviewSettings(this.bootcampId);
+      this.drawerQuestions.set(
+        existing.map((q: any) => ({ text: q.text || '', editing: false }))
+      );
+    } catch {
+      this.drawerQuestions.set([]);
+    }
+    this.interviewDrawerOpen.set(true);
+  }
+
+  closeInterviewDrawer(): void {
+    this.interviewDrawerOpen.set(false);
+  }
+
+  addDrawerQuestion(): void {
+    this.drawerQuestions.update(qs => [...qs, { text: '', editing: true }]);
+  }
+
+  async removeDrawerQuestion(index: number): Promise<void> {
+    this.drawerQuestions.update(qs => qs.filter((_, i) => i !== index));
+    // 삭제 즉시 DB 저장
+    const questions = this.drawerQuestions()
+      .filter(q => q.text.trim())
+      .map(q => ({ text: q.text.trim() }));
+    try {
+      await this.api.bootcamps.updateInterviewSettings(this.bootcampId, questions);
+      this.toast.success('질문이 삭제되었습니다.');
+    } catch {
+      this.toast.error('삭제 저장에 실패했습니다.');
+    }
+  }
+
+  updateDrawerQuestion(index: number, value: string): void {
+    this.drawerQuestions.update(qs =>
+      qs.map((q, i) => i === index ? { ...q, text: value } : q)
+    );
+  }
+
+  editDrawerQuestion(index: number): void {
+    this.drawerQuestions.update(qs =>
+      qs.map((q, i) => i === index ? { ...q, editing: true } : q)
+    );
+  }
+
+  saveDrawerQuestion(index: number): void {
+    this.drawerQuestions.update(qs =>
+      qs.map((q, i) => i === index ? { ...q, editing: false } : q)
+    );
+  }
+
+  async submitInterviewDrawer(): Promise<void> {
+    const questions = this.drawerQuestions()
+      .filter(q => q.text.trim())
+      .map(q => ({ text: q.text.trim() }));
+    console.log('[인터뷰설정] 저장 bootcampId:', this.bootcampId, '질문수:', questions.length, questions);
+    try {
+      const result = await this.api.bootcamps.updateInterviewSettings(this.bootcampId, questions);
+      console.log('[인터뷰설정] 저장 성공:', result);
+      this.toast.success('사전인터뷰 설정이 저장되었습니다.');
+    } catch (e: any) {
+      console.error('[인터뷰설정] 저장 실패:', e);
+      this.toast.error('저장 실패: ' + (e?.error?.message || e?.message || '알 수 없는 오류'));
+    }
+    this.interviewDrawerOpen.set(false);
   }
 }

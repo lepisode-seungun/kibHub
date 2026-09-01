@@ -13,6 +13,78 @@ export class ApplicantsService {
     });
   }
 
+  findByUser(userId: number) {
+    return this.prisma.applicant.findMany({
+      where: { userId },
+      include: { bootcamp: { select: { id: true, name: true, status: true, startDate: true, endDate: true } } },
+      orderBy: { appliedAt: 'desc' },
+    });
+  }
+
+  async apply(
+    bootcampId: number,
+    data: {
+      applicantName: string;
+      phone?: string;
+      email?: string;
+      address?: string;
+      portfolioUrl?: string;
+      portfolioFiles?: { url: string; originalName: string; size: number }[];
+      motivation?: string;
+    },
+    authenticatedUserId?: number,
+  ) {
+    let userId: number;
+
+    if (authenticatedUserId) {
+      // 로그인된 유저 → 직접 매핑
+      userId = authenticatedUserId;
+    } else {
+      // 비로그인 → 이메일로 기존 유저 검색, 없으면 임시 생성
+      let user = data.email
+        ? await this.prisma.user.findUnique({ where: { email: data.email } })
+        : null;
+
+      if (!user) {
+        user = await this.prisma.user.create({
+          data: {
+            name: data.applicantName,
+            email: data.email || `applicant_${Date.now()}@temp.com`,
+            phone: data.phone || '',
+            password: '',
+          },
+        });
+      }
+      userId = user.id;
+    }
+
+    const iqData = {
+      applicantName: data.applicantName,
+      phone: data.phone,
+      email: data.email,
+      address: data.address,
+      portfolioUrl: data.portfolioUrl,
+      portfolioFiles: data.portfolioFiles || [],
+      motivation: data.motivation,
+    };
+
+    return this.prisma.applicant.upsert({
+      where: {
+        userId_bootcampId: { userId, bootcampId },
+      },
+      update: {
+        interviewQuestions: iqData,
+        status: 'PENDING',
+      },
+      create: {
+        bootcampId,
+        userId,
+        interviewQuestions: iqData,
+      },
+      include: { user: true },
+    });
+  }
+
   findOne(id: number) {
     return this.prisma.applicant.findUnique({
       where: { id },

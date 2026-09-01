@@ -1,10 +1,12 @@
 import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { Bootcamp, BootcampRow } from '../../shared/types';
 
 const STATUS_MAP: Record<string, string> = {
@@ -31,6 +33,8 @@ function toBootcampRow(b: Bootcamp): BootcampRow {
 export class BootcampPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private router = inject(Router);
+  private bootcampCtx = inject(BootcampContextService);
 
   contextMenuItems = ['수정', '삭제'];
 
@@ -56,9 +60,15 @@ export class BootcampPage implements OnInit {
     }
   }
 
+  /** 부트캠프명 클릭 → 홈 관리 진입 */
+  onBootcampRowClick(row: BootcampRow): void {
+    this.bootcampCtx.setBootcamp(row.id, row.bootcampName);
+    this.router.navigate(['/bootcamp/home/dashboard']);
+  }
+
   async onContextMenuAction(event: { action: string; row: BootcampRow }): Promise<void> {
     if (event.action === '수정') {
-      this.toast.success('수정 페이지로 이동합니다.');
+      await this.openEditDrawer(event.row.id);
     } else if (event.action === '삭제') {
       try {
         await this.api.bootcamps.delete(event.row.id);
@@ -70,8 +80,11 @@ export class BootcampPage implements OnInit {
     }
   }
 
-  // ===== 부트캠프 등록 드로어 =====
+  // ===== 부트캠프 등록/수정 드로어 =====
   drawerOpen = signal(false);
+  drawerMode = signal<'add' | 'edit'>('add');
+  private editingBootcampId: number | null = null;
+
   drawerForm = signal({
     name: '',
     bootcampName: '',
@@ -82,8 +95,39 @@ export class BootcampPage implements OnInit {
 
   @ViewChild('thumbnailUpload') thumbnailUploadRef!: ImageUploadComponent;
   thumbnailData = signal<ImageUploadData | null>(null);
+  existingThumbnail = signal<string | null>(null);
 
-  openDrawer(): void { this.drawerOpen.set(true); }
+  openDrawer(): void {
+    this.drawerMode.set('add');
+    this.editingBootcampId = null;
+    this.drawerForm.set({ name: '', bootcampName: '', workIntro: '', startDate: '', endDate: '' });
+    this.thumbnailData.set(null);
+    this.existingThumbnail.set(null);
+    this.thumbnailUploadRef?.reset();
+    this.drawerOpen.set(true);
+  }
+
+  async openEditDrawer(id: number): Promise<void> {
+    try {
+      const bc = await this.api.bootcamps.findOne(id);
+      this.drawerMode.set('edit');
+      this.editingBootcampId = bc.id;
+      this.drawerForm.set({
+        name: bc.instructorName || '',
+        bootcampName: bc.name || '',
+        workIntro: bc.description || '',
+        startDate: bc.startDate ? bc.startDate.substring(0, 10) : '',
+        endDate: bc.endDate ? bc.endDate.substring(0, 10) : '',
+      });
+      this.thumbnailData.set(null);
+      this.existingThumbnail.set(bc.thumbnail || null);
+      this.thumbnailUploadRef?.reset();
+      this.drawerOpen.set(true);
+    } catch (e) {
+      this.toast.error('부트캠프 데이터 로드에 실패했습니다.');
+    }
+  }
+
   closeDrawer(): void { this.drawerOpen.set(false); }
 
   updateDrawerField(field: string, event: Event): void {
@@ -95,7 +139,7 @@ export class BootcampPage implements OnInit {
     this.thumbnailData.set(data);
   }
 
-  async registerBootcamp(): Promise<void> {
+  async submitDrawer(): Promise<void> {
     const form = this.drawerForm();
     try {
       // 썸네일 업로드
@@ -106,21 +150,32 @@ export class BootcampPage implements OnInit {
         thumbnailUrl = result.url;
       }
 
-      await this.api.bootcamps.create({
+      const payload: any = {
         name: form.bootcampName,
         instructorName: form.name,
         description: form.workIntro,
-        thumbnail: thumbnailUrl,
         startDate: form.startDate ? new Date(form.startDate) : undefined,
         endDate: form.endDate ? new Date(form.endDate) : undefined,
-      });
-      this.toast.success('등록 완료 되었습니다.');
+      };
+      if (thumbnailUrl) payload.thumbnail = thumbnailUrl;
+
+      if (this.drawerMode() === 'edit' && this.editingBootcampId) {
+        await this.api.bootcamps.update(this.editingBootcampId, payload);
+        this.toast.success('수정이 완료 되었습니다.');
+      } else {
+        payload.thumbnail = thumbnailUrl;
+        await this.api.bootcamps.create(payload);
+        this.toast.success('등록 완료 되었습니다.');
+      }
+
       this.drawerOpen.set(false);
+      this.drawerForm.set({ name: '', bootcampName: '', workIntro: '', startDate: '', endDate: '' });
       this.thumbnailData.set(null);
+      this.existingThumbnail.set(null);
       this.thumbnailUploadRef?.reset();
       await this.loadBootcamps();
     } catch (e: unknown) {
-      this.toast.error(e instanceof Error ? e.message : '등록 실패');
+      this.toast.error(e instanceof Error ? e.message : '저장 실패');
     }
   }
 }

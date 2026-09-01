@@ -60,14 +60,37 @@ export class PortfolioPage implements OnInit {
   }
 
   openForm(): void {
+    this.editingId.set(null);
+    this.portfolioForm.set({ name: '', bootcampName: '', workTitle: '', authorName: '', genre: '', workIntro: '' });
+    this.thumbnailFile.set(null);
+    this.planFile.set(null);
+    this.manuscriptFiles.set([]);
     history.pushState({ view: 'form' }, '');
     this.viewMode.set('form');
   }
 
-  openDetail(item: PortfolioRow): void {
+  async openDetail(item: PortfolioRow): Promise<void> {
     this.detailData.set(item);
     history.pushState({ view: 'detail' }, '');
     this.viewMode.set('detail');
+    // 파일 데이터 로드
+    try {
+      const p = await this.api.portfolios.findOne(item.id);
+      if (p.files?.length) {
+        const plan = p.files.find((f: any) => !f.episode);
+        const manuscripts = p.files
+          .filter((f: any) => f.episode)
+          .sort((a: any, b: any) => a.episode - b.episode);
+        this.detailPlanUrl.set(plan?.url || '');
+        this.detailManuscripts.set(manuscripts.map((f: any) => ({ episode: f.episode, url: f.url, name: f.name })));
+      } else {
+        this.detailPlanUrl.set('');
+        this.detailManuscripts.set([]);
+      }
+    } catch {
+      this.detailPlanUrl.set('');
+      this.detailManuscripts.set([]);
+    }
   }
 
   backToList(): void { this.viewMode.set('list'); }
@@ -83,11 +106,33 @@ export class PortfolioPage implements OnInit {
   detailBasicInfoExpanded = signal(true);
   detailManuscriptExpanded = signal(true);
   detailPlanExpanded = signal(true);
+  detailPlanUrl = signal('');
+  detailManuscripts = signal<{ episode: number; url: string; name: string }[]>([]);
 
-  hidePortfolio(): void {
+  async toggleVisibility(): Promise<void> {
     this.detailDropdownOpen.set(false);
-    this.toast.success('숨김 되었습니다.');
-    this.viewMode.set('list');
+    const detail = this.detailData();
+    if (detail) {
+      const isHidden = detail.status === '숨김';
+      const newStatus = isHidden ? 'VISIBLE' : 'HIDDEN';
+      try {
+        await this.api.portfolios.update(detail.id, { status: newStatus } as any);
+        this.detailData.set({ ...detail, status: isHidden ? '노출' : '숨김' });
+        this.toast.success(isHidden ? '노출 처리 되었습니다.' : '숨김 처리 되었습니다.');
+        await this.loadPortfolios();
+        await this.loadHallOfFame();
+      } catch (e: unknown) {
+        this.toast.error(e instanceof Error ? e.message : '처리 실패');
+      }
+    }
+  }
+
+  async editFromDetail(): Promise<void> {
+    this.detailDropdownOpen.set(false);
+    const detail = this.detailData();
+    if (detail) {
+      await this.openEditForm(detail);
+    }
   }
 
   async deletePortfolio(): Promise<void> {
@@ -107,6 +152,8 @@ export class PortfolioPage implements OnInit {
   }
 
   // ===== 컨텍스트 메뉴 핸들러 =====
+  editingId = signal<number | null>(null);
+
   async onContextMenuSelect(event: { action: string; row: PortfolioRow }): Promise<void> {
     if (event.action === '삭제') {
       try {
@@ -118,7 +165,33 @@ export class PortfolioPage implements OnInit {
         this.toast.error(e instanceof Error ? e.message : '삭제 실패');
       }
     } else if (event.action === '수정') {
-      this.openDetail(event.row);
+      await this.openEditForm(event.row);
+    }
+  }
+
+  async openEditForm(row: PortfolioRow): Promise<void> {
+    try {
+      const p = await this.api.portfolios.findOne(row.id);
+      this.editingId.set(p.id);
+      this.portfolioForm.set({
+        name: p.userName || '',
+        bootcampName: p.bootcampName || '',
+        workTitle: p.workTitle || '',
+        authorName: p.authorName || '',
+        genre: p.genre || '',
+        workIntro: p.workIntro || '',
+      });
+      if (p.thumbnail) {
+        this.thumbnailFile.set({ name: '기존 썸네일', size: '', preview: p.thumbnail });
+      } else {
+        this.thumbnailFile.set(null);
+      }
+      this.planFile.set(null);
+      this.manuscriptFiles.set([]);
+      history.pushState({ view: 'form' }, '');
+      this.viewMode.set('form');
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '데이터 로드 실패');
     }
   }
 
@@ -201,9 +274,29 @@ export class PortfolioPage implements OnInit {
       if (thumb?.rawFile) {
         const uploadRes = await this.api.upload.single(thumb.rawFile, 'portfolios');
         thumbnailUrl = uploadRes.url;
+      } else if (thumb?.preview && !thumb.rawFile) {
+        thumbnailUrl = thumb.preview; // 기존 썸네일 유지
       }
 
-      await this.api.portfolios.create({
+      // 기획서 업로드
+      const files: { name: string; url: string; size: number; mimeType: string; episode?: number }[] = [];
+      const plan = this.planFile();
+      if (plan?.rawFile) {
+        const uploadRes = await this.api.upload.single(plan.rawFile, 'portfolios');
+        files.push({ name: plan.name, url: uploadRes.url, size: plan.rawFile.size, mimeType: plan.rawFile.type });
+      }
+
+      // 원고 업로드
+      for (const ms of this.manuscriptFiles()) {
+        if ((ms as any).rawFile) {
+          const uploadRes = await this.api.upload.single((ms as any).rawFile, 'portfolios');
+          files.push({ name: ms.name, url: uploadRes.url, size: (ms as any).rawFile.size, mimeType: (ms as any).rawFile.type, episode: ms.episode });
+        } else if ((ms as any).url) {
+          files.push({ name: ms.name, url: (ms as any).url, size: 0, mimeType: '', episode: ms.episode });
+        }
+      }
+
+      const payload: any = {
         userName: form.name,
         bootcampName: form.bootcampName,
         workTitle: form.workTitle,
@@ -212,9 +305,23 @@ export class PortfolioPage implements OnInit {
         workIntro: form.workIntro,
         thumbnail: thumbnailUrl,
         isHallOfFame: this.activeTab() === 'hallOfFame',
-      });
+        files,
+      };
+
+      const eid = this.editingId();
+      if (eid) {
+        await this.api.portfolios.update(eid, payload);
+        this.toast.success('수정 완료 되었습니다.');
+      } else {
+        await this.api.portfolios.create(payload);
+        this.toast.success('등록 완료 되었습니다.');
+      }
+      this.editingId.set(null);
+      this.portfolioForm.set({ name: '', bootcampName: '', workTitle: '', authorName: '', genre: '', workIntro: '' });
+      this.thumbnailFile.set(null);
+      this.planFile.set(null);
+      this.manuscriptFiles.set([]);
       this.viewMode.set('list');
-      this.toast.success('등록 완료 되었습니다.');
       await this.loadPortfolios();
       await this.loadHallOfFame();
     } catch (e: unknown) {
@@ -261,7 +368,7 @@ export class PortfolioPage implements OnInit {
   fileUploadExpanded = signal(true);
   manuscriptExpanded = signal(true);
 
-  manuscriptFiles = signal<{ episode: number; name: string; size: string; preview: string }[]>([]);
+  manuscriptFiles = signal<{ episode: number; name: string; size: string; preview: string; rawFile?: File }[]>([]);
 
   onManuscriptUpload(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -273,6 +380,7 @@ export class PortfolioPage implements OnInit {
       this.manuscriptFiles.set([...current, {
         episode: current.length + 1, name: file.name,
         size: `${sizeKB}KB`, preview: reader.result as string,
+        rawFile: file,
       }]);
     };
     reader.readAsDataURL(file);

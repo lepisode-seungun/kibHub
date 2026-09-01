@@ -15,28 +15,32 @@
   </div>
 
   <!-- 모바일 히어로 이미지 (데스크톱에서 숨김) -->
-  <div class="block md:hidden w-full h-[270px] bg-cover bg-center" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+  <div class="block md:hidden w-full h-[270px] bg-cover bg-center" [style.background]="portfolioThumbnail() ? 'url(' + portfolioThumbnail() + ') center/cover no-repeat' : portfolioGradient"></div>
 
   <!-- 콘텐츠 영역 -->
   <div class="flex flex-col items-center gap-5 md:gap-10 w-full max-w-[1400px] p-5 md:p-0 bg-[#0C0B10] md:bg-transparent">
     <!-- 작품 정보 카드 -->
     <div class="w-full bg-transparent md:bg-zinc-900/80 rounded-none md:rounded-2xl p-0 md:p-6 flex flex-col gap-3 md:gap-6 box-border">
       <div class="flex flex-col md:flex-row gap-3 md:gap-6">
-        <div class="hidden md:block w-[136px] h-[102px] rounded-md shrink-0" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+        <div class="hidden md:block w-[136px] h-[102px] rounded-md shrink-0 overflow-hidden" [style.background]="portfolioThumbnail() ? 'none' : portfolioGradient">
+          @if (portfolioThumbnail()) {
+            <img [src]="portfolioThumbnail()" class="w-full h-full object-cover" />
+          }
+        </div>
         <div class="flex flex-col justify-center gap-3 flex-1">
-          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">식혜의 모험</h2>
+          <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">{{ portfolioTitle() }}</h2>
           <div class="flex flex-wrap gap-6">
             <div class="flex items-start gap-2">
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">수강생명</span>
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">고예림</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ portfolioAuthor() }}</span>
             </div>
             <div class="flex items-start gap-2">
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">기수</span>
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">케나즈 아카데미 초급반 13기</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ portfolioCohort() || '-' }}</span>
             </div>
             <div class="flex items-start gap-2">
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">장르</span>
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">판타지</span>
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ portfolioGenre() || '-' }}</span>
             </div>
           </div>
         </div>
@@ -44,7 +48,7 @@
       <div class="flex flex-col gap-2 p-4 md:p-5 bg-[#1F1F23] md:bg-zinc-800/50 rounded-xl">
         <span class="font-suit font-medium md:font-semibold text-base leading-[150%] tracking-tight text-zinc-400 md:text-white">작품 소개</span>
         <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-300 m-0">
-          케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다. 기획부터 원고까지 블라블라 블라블라케나즈 아카데미 초급반 13기를 통해 제작한 식혜의 모험 웹툰입니다.
+          {{ portfolioIntro() || '작품 소개가 등록되지 않았습니다.' }}
         </p>
       </div>
     </div>
@@ -59,7 +63,13 @@
       </div>
 
       <div class="w-full max-w-full md:max-w-[800px]">
-        <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 1411px; border-radius: 8px;"></div>
+        @if (planFileUrl()) {
+          <img [src]="planFileUrl()" alt="기획서" class="w-full rounded-lg" />
+        } @else {
+          <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 400px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <span class="font-suit text-zinc-500">기획서가 등록되지 않았습니다.</span>
+          </div>
+        }
       </div>
 
       <!-- 원고 섹션 -->
@@ -70,7 +80,13 @@
       </div>
 
       <div class="w-full max-w-full md:max-w-[800px] relative overflow-hidden">
-        <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px;"></div>
+        @if (manuscriptImages.length > 0 && manuscriptImages[0].url) {
+          <img [src]="manuscriptImages[0].url" alt="원고 미리보기" class="w-full rounded-lg" />
+        } @else {
+          <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <span class="font-suit text-zinc-500">원고가 등록되지 않았습니다.</span>
+          </div>
+        }
         <div class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-[#090909] to-transparent pointer-events-none"></div>
       </div>
 

@@ -50,7 +50,7 @@ export class CoursesService {
   findLecture(id: number) {
     return this.prisma.lecture.findUnique({
       where: { id },
-      include: { files: true, course: { select: { id: true, title: true, bootcampId: true } } },
+      include: { files: true, course: { select: { id: true, name: true, status: true, createdAt: true, bootcampId: true } } },
     });
   }
 
@@ -67,6 +67,14 @@ export class CoursesService {
     return this.prisma.lecture.delete({ where: { id } });
   }
 
+  addLectureFile(lectureId: number, data: { name: string; url: string; size?: number; mimeType?: string }) {
+    return this.prisma.lectureFile.create({ data: { ...data, lectureId } });
+  }
+
+  deleteLectureFile(fileId: number) {
+    return this.prisma.lectureFile.delete({ where: { id: fileId } });
+  }
+
   // ===== 과제 =====
   findAssignments(courseId: number) {
     return this.prisma.assignment.findMany({
@@ -79,7 +87,7 @@ export class CoursesService {
   findAssignment(id: number) {
     return this.prisma.assignment.findUnique({
       where: { id },
-      include: { files: true, course: { select: { id: true, title: true, bootcampId: true } } },
+      include: { files: true, course: { select: { id: true, name: true, status: true, createdAt: true, bootcampId: true } } },
     });
   }
 
@@ -94,5 +102,102 @@ export class CoursesService {
 
   deleteAssignment(id: number) {
     return this.prisma.assignment.delete({ where: { id } });
+  }
+
+  addAssignmentFile(assignmentId: number, data: { name: string; url: string; size?: number; mimeType?: string }) {
+    return this.prisma.assignmentFile.create({ data: { ...data, assignmentId } });
+  }
+
+  deleteAssignmentFile(fileId: number) {
+    return this.prisma.assignmentFile.delete({ where: { id: fileId } });
+  }
+
+  // ===== 과제 제출 =====
+  findSubmissions(assignmentId: number) {
+    return this.prisma.submission.findMany({
+      where: { assignmentId },
+      include: {
+        author: { select: { id: true, name: true, nickname: true, role: true } },
+        files: true,
+        _count: { select: { comments: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  findSubmission(id: number) {
+    return this.prisma.submission.findUnique({
+      where: { id },
+      include: {
+        author: { select: { id: true, name: true, nickname: true, role: true } },
+        files: true,
+        comments: {
+          include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+        assignment: { select: { id: true, title: true, course: { select: { id: true, name: true } } } },
+        _count: { select: { comments: true } },
+      },
+    });
+  }
+
+  createSubmission(assignmentId: number, authorId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }) {
+    return this.prisma.submission.create({
+      data: {
+        title: data.title,
+        content: data.content || '',
+        type: 'SUBMISSION',
+        assignmentId,
+        authorId,
+        files: data.files?.length ? { create: data.files } : undefined,
+      },
+      include: { author: { select: { id: true, name: true, nickname: true, role: true } }, files: true },
+    });
+  }
+
+  createFeedback(parentId: number, authorId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }) {
+    return this.prisma.$transaction(async (tx) => {
+      const parent = await tx.submission.findUniqueOrThrow({ where: { id: parentId } });
+      return tx.submission.create({
+        data: {
+          title: data.title,
+          content: data.content || '',
+          type: 'FEEDBACK',
+          assignmentId: parent.assignmentId,
+          authorId,
+          parentId,
+          files: data.files?.length ? { create: data.files } : undefined,
+        },
+        include: { author: { select: { id: true, name: true, nickname: true, role: true } }, files: true },
+      });
+    });
+  }
+
+  updateSubmission(id: number, data: { title?: string; content?: string }) {
+    return this.prisma.submission.update({ where: { id }, data });
+  }
+
+  deleteSubmission(id: number) {
+    return this.prisma.submission.delete({ where: { id } });
+  }
+
+  // ===== 제출 댓글 =====
+  findSubmissionComments(submissionId: number) {
+    return this.prisma.submissionComment.findMany({
+      where: { submissionId },
+      include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  createSubmissionComment(submissionId: number, authorId: number, body: string) {
+    return this.prisma.submissionComment.create({
+      data: { body, submissionId, authorId },
+      include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
+    });
+  }
+
+  deleteSubmissionComment(id: number) {
+    return this.prisma.submissionComment.delete({ where: { id } });
   }
 }

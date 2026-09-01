@@ -81,9 +81,7 @@ export class AssignmentRegisterPage {
     try {
       await this.api.assignments.create(this.courseId, {
         title: this.assignmentName(),
-        deadlineStart: this.deadlineStart(),
-        deadlineEnd: this.deadlineEnd(),
-        body: this.editorContent(),
+        content: this.editorContent(),
       } as any);
       this.toast.success('등록 완료 되었습니다.');
       this.location.back();

@@ -1,5 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -14,6 +14,9 @@ interface LectureAssignmentRow {
   createdAt: string;
 }
 
+const STATUS_MAP: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
+const STATUS_REVERSE: Record<string, string> = { '대기': 'PENDING', '진행중': 'IN_PROGRESS', '완료': 'COMPLETED' };
+
 @Component({
   selector: 'adm-course-detail',
   standalone: true,
@@ -24,8 +27,11 @@ interface LectureAssignmentRow {
 export class CourseDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
   private toast = inject(ToastService);
   private api = inject(ApiService);
+
+  courseId = 0;
 
   // 아코디언 상태
   basicInfoOpen = signal(true);
@@ -36,34 +42,38 @@ export class CourseDetailPage implements OnInit {
   toggleMoreMenu(): void { this.moreMenuOpen.update(v => !v); }
   closeMoreMenu(): void { this.moreMenuOpen.set(false); }
 
-  onMoreMenuAction(_action: string): void {
+  onMoreMenuAction(action: string): void {
     this.moreMenuOpen.set(false);
+    if (action === 'edit') {
+      this.openEditDrawer();
+    } else if (action === 'delete') {
+      this.showDeleteModal.set(true);
+    }
   }
 
   // 기본 정보 데이터
-  courseData = { id: 0, status: '', name: '', createdAt: '' };
+  courseData = signal({ id: 0, status: '', name: '', createdAt: '' });
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('courseId') || this.route.snapshot.paramMap.get('id') || 0);
-    if (id) this.loadCourse(id);
+    this.courseId = Number(this.route.snapshot.paramMap.get('courseId') || this.route.snapshot.paramMap.get('id') || 0);
+    if (this.courseId) this.loadCourse(this.courseId);
   }
 
   async loadCourse(id: number): Promise<void> {
     try {
       const c = await this.api.courses.findOne(id);
-      const STATUS_MAP: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
-      this.courseData = {
+      this.courseData.set({
         id: c.id,
         status: STATUS_MAP[c.status] || c.status,
         name: c.name,
         createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
-      };
+      });
 
       // 강의 + 과제 합산 목록
       const rows: LectureAssignmentRow[] = [];
       if (c.lectures) {
-        c.lectures.forEach((l: Lecture) => {
-          rows.push({ id: l.id, type: '강의', thumbnail: '', name: l.title, createdAt: new Date(l.createdAt).toLocaleString('ko-KR') });
+        c.lectures.forEach((l: any) => {
+          rows.push({ id: l.id, type: '강의', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''), name: l.title, createdAt: new Date(l.createdAt).toLocaleString('ko-KR') });
         });
       }
       if (c.assignments) {
@@ -71,10 +81,58 @@ export class CourseDetailPage implements OnInit {
           rows.push({ id: a.id, type: '과제', thumbnail: '', name: a.title, createdAt: new Date(a.createdAt).toLocaleString('ko-KR') });
         });
       }
-      this.lectureData = rows;
+      this.lectureData.set(rows);
     } catch (e) {
       console.error('과정 상세 로드 실패:', e);
     }
+  }
+
+  // ===== 수정 드로어 =====
+  editDrawerOpen = signal(false);
+  editStatus = signal('');
+  editName = signal('');
+
+  openEditDrawer(): void {
+    const d = this.courseData();
+    this.editStatus.set(d.status);
+    this.editName.set(d.name);
+    this.editDrawerOpen.set(true);
+  }
+
+  closeEditDrawer(): void {
+    this.editDrawerOpen.set(false);
+  }
+
+  async submitEdit(): Promise<void> {
+    const name = this.editName().trim();
+    if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
+    try {
+      const status = STATUS_REVERSE[this.editStatus()] || 'PENDING';
+      await this.api.courses.update(this.courseId, { name, status } as any);
+      this.toast.success('수정 완료 되었습니다.');
+      this.editDrawerOpen.set(false);
+      await this.loadCourse(this.courseId);
+    } catch (e) {
+      this.toast.error('수정에 실패했습니다.');
+    }
+  }
+
+  // ===== 삭제 다이얼로그 =====
+  showDeleteModal = signal(false);
+
+  async confirmDelete(): Promise<void> {
+    try {
+      await this.api.courses.delete(this.courseId);
+      this.toast.success('삭제 완료 되었습니다.');
+      this.showDeleteModal.set(false);
+      this.location.back();
+    } catch (e) {
+      this.toast.error('삭제에 실패했습니다.');
+    }
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal.set(false);
   }
 
   // ===== 강의/과제 아코디언 =====
@@ -102,7 +160,7 @@ export class CourseDetailPage implements OnInit {
     { key: 'menu', label: '', width: '50px', type: 'drag' },
   ];
 
-  lectureData: LectureAssignmentRow[] = [];
+  lectureData = signal<LectureAssignmentRow[]>([]);
 
   onLectureRowClick(row: LectureAssignmentRow): void {
     if (row.type === '강의') {
@@ -110,5 +168,11 @@ export class CourseDetailPage implements OnInit {
     } else if (row.type === '과제') {
       this.router.navigate(['assignment', row.id], { relativeTo: this.route });
     }
+  }
+
+  private getYoutubeThumbnail(url: string): string {
+    if (!url) return '';
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
   }
 }

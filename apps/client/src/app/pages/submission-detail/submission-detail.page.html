@@ -40,27 +40,27 @@
     <!-- 콘텐츠 카드 -->
     <div class="box-border flex flex-col items-start p-6 gap-4 w-[1400px] max-w-full bg-white border border-gray-100 rounded-2xl">
       <!-- 과정명 -->
-      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel }}</span>
+      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-400">{{ courseLabel() }}</span>
 
       <!-- 배지 + 메타 -->
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2 w-full">
-        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">{{ badge }}</span>
+        <span class="flex justify-center items-center px-2 py-0.5 bg-zinc-600 rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-200">{{ badge() }}</span>
         <span class="w-0 h-3 border-l border-zinc-200"></span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ author }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ author() }}</span>
         <span class="w-0 h-3 border-l border-zinc-200"></span>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ date }}</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ date() }}</span>
         <span class="w-0 h-3 border-l border-zinc-200"></span>
         <div class="flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
             <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
           </svg>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ fileName }}</span>
+          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ fileName() }}</span>
         </div>
       </div>
 
       <!-- 제목 + 더보기 -->
       <div class="flex justify-between items-start w-full gap-2.5">
-        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle }}</h2>
+        <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle() }}</h2>
         <div class="relative">
           <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0 opacity-70 transition-opacity duration-150 hover:opacity-100" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -72,11 +72,11 @@
           @if (isMoreOpen()) {
             <div class="fixed top-0 left-0 w-screen h-screen z-[99]" (click)="closeMore()" (keydown.escape)="closeMore()" tabindex="-1"></div>
             <div class="absolute top-8 left-0 flex flex-col min-w-[120px] bg-white border border-gray-100 rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.08)] overflow-hidden z-[100]">
-              @if (isAuthor) {
+              @if (isAuthor()) {
                 <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onEdit()">수정</button>
                 <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onDelete()">삭제</button>
               }
-              @if (isInstructor) {
+              @if (isInstructor()) {
                 <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onRegisterFeedback()">피드백 등록</button>
               }
             </div>
@@ -90,7 +90,7 @@
       <!-- 설명 콘텐츠 (스크롤) -->
       <div class="flex w-full flex-1 min-h-[200px] max-h-[456px]">
         <div class="sd-description-scroll w-full overflow-y-auto pr-2.5">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description }}</p>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description() }}</p>
         </div>
       </div>
 
@@ -105,7 +105,7 @@
         @if (isMaterialOpen()) {
           <div class="p-3 bg-gray-50">
             <div class="flex flex-wrap gap-3">
-              @for (file of learningFiles; track file.name) {
+              @for (file of learningFiles(); track file.name) {
                 <div class="box-border flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full">
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 flex-1 whitespace-nowrap overflow-hidden text-ellipsis">{{ file.name }}</span>
                   <button class="flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0" aria-label="다운로드">
@@ -148,12 +148,12 @@
             <div class="sd-del-row sd-del-row-top">
               <span class="sd-del-label">제목</span>
               <div class="sd-del-divider"></div>
-              <span class="sd-del-value">{{ assignmentTitle }}</span>
+              <span class="sd-del-value">{{ assignmentTitle() }}</span>
             </div>
             <div class="sd-del-row sd-del-row-bottom">
               <span class="sd-del-label">등록일</span>
               <div class="sd-del-divider"></div>
-              <span class="sd-del-value">{{ date }}</span>
+              <span class="sd-del-value">{{ date() }}</span>
             </div>
           </div>
 

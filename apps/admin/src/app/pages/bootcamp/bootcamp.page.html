@@ -2,7 +2,8 @@
   [columns]="gridColumns"
   [data]="bootcampData()"
   [contextMenuItems]="contextMenuItems"
-  (contextMenuSelect)="onContextMenuAction($event)">
+  (contextMenuSelect)="onContextMenuAction($event)"
+  (rowClick)="onBootcampRowClick($event)">
   <button gridActions
           class="flex items-center justify-center gap-2 px-3 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
           style="height: 36px;"
@@ -38,36 +39,38 @@
     </button>
 
     <!-- 타이틀 -->
-    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">부트캠프 등록</h4>
+    <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">{{ drawerMode() === 'add' ? '부트캠프 등록' : '부트캠프 수정' }}</h4>
+
+    <!-- 기존 썸네일 미리보기 (수정 모드) -->
+    @if (drawerMode() === 'edit' && existingThumbnail() && !thumbnailData()) {
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-0.5">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">현재 썸네일</span>
+        </div>
+        <img [src]="existingThumbnail()" alt="현재 썸네일" class="w-full max-h-[160px] object-cover rounded-md border border-gray-200" />
+      </div>
+    }
 
     <!-- 썸네일 * -->
     <adm-image-upload
       #thumbnailUpload
-      label="썸네일"
-      [required]="true"
+      [label]="drawerMode() === 'edit' ? '썸네일 변경' : '썸네일'"
+      [required]="drawerMode() === 'add'"
       hint="권장 사이즈 420px * 276px"
       (fileChange)="onThumbnailChange($event)"
     />
 
-    <!-- 이름 * (셀렉트) -->
+    <!-- 이름 * -->
     <div class="flex flex-col gap-2">
       <div class="flex items-center gap-0.5">
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">이름</span>
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
       </div>
-      <div class="relative">
-        <select class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors appearance-none cursor-pointer box-border"
-                [value]="drawerForm().name"
-                (change)="updateDrawerField('name', $event)">
-          <option value="" disabled selected>선택</option>
-          <option value="홍길동">홍길동</option>
-          <option value="김철수">김철수</option>
-          <option value="이영희">이영희</option>
-        </select>
-        <svg class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="8" viewBox="0 0 12 8" fill="none">
-          <path d="M1 1l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="이름을 입력하세요."
+             [value]="drawerForm().name"
+             (input)="updateDrawerField('name', $event)"/>
     </div>
 
     <!-- 부트캠프명 * -->
@@ -88,14 +91,11 @@
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">작품소개</span>
         <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
       </div>
-      <input type="text"
-             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
-             maxlength="10"
+      <textarea
+             class="w-full min-h-[120px] px-4 py-3 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-y"
+             placeholder="작품소개를 입력하세요."
              [value]="drawerForm().workIntro"
-             (input)="updateDrawerField('workIntro', $event)"/>
-      <div class="flex justify-end">
-        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ drawerForm().workIntro.length }} / 10</span>
-      </div>
+             (input)="updateDrawerField('workIntro', $event)"></textarea>
     </div>
 
     <!-- 시작일시 -->
@@ -136,11 +136,11 @@
       </div>
     </div>
 
-    <!-- 하단 등록 버튼 -->
+    <!-- 하단 등록/수정 버튼 -->
     <div class="flex flex-col items-center justify-end mt-auto">
       <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-              (click)="registerBootcamp()">
-        등록
+              (click)="submitDrawer()">
+        {{ drawerMode() === 'add' ? '등록' : '수정' }}
       </button>
     </div>
   </div>

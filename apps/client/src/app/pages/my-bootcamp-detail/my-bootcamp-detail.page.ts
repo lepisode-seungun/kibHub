@@ -38,14 +38,14 @@ export class MyBootcampDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
 
   bootcampId = '';
-  bootcampTitle = '';
-  bootcampStatus = '';
-  dateRange = '';
+  bootcampTitle = signal('');
+  bootcampStatus = signal('');
+  dateRange = signal('');
 
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('학습목록');
 
-  courseSections: CourseSection[] = [];
+  courseSections = signal<CourseSection[]>([]);
 
   /* ===== 강의 탭 ===== */
   lectureFilterChips = ['전체', '진행중', '완료', '미수강 강의', '수강 완료'];
@@ -65,11 +65,11 @@ export class MyBootcampDetailPage implements OnInit {
     this.isSortDropdownOpen.set(false);
   }
 
-  lectureCards: any[] = [];
+  lectureCards = signal<any[]>([]);
 
   get filteredLectures() {
     const filter = this.activeLectureFilter();
-    let items = this.lectureCards;
+    let items = this.lectureCards();
     if (filter === '진행중') {
       items = items.filter(i => i.status === 'progress');
     } else if (filter === '완료') {
@@ -99,11 +99,11 @@ export class MyBootcampDetailPage implements OnInit {
   activeAssignmentFilter = signal('전체');
   assignmentSearchText = '';
 
-  assignmentCards: any[] = [];
+  assignmentCards = signal<any[]>([]);
 
   get filteredAssignments() {
     const filter = this.activeAssignmentFilter();
-    let items = this.assignmentCards;
+    let items = this.assignmentCards();
     if (filter === '미제출 과제') {
       items = items.filter(i => !i.submitted);
     } else if (filter === '제출한 과제') {
@@ -145,31 +145,81 @@ export class MyBootcampDetailPage implements OnInit {
     }
   }
 
+  private readonly STATUS_LABEL: Record<string, string> = {
+    PENDING: '신청 완료',
+    ACCEPTED: '수강중',
+    REJECTED: '불합격',
+    RECRUITING: '모집중',
+    ENDED: '종료',
+  };
+
   private async loadBootcampData(bootcampId: number): Promise<void> {
     try {
       const bootcamp: any = await this.api.bootcamps.findOne(bootcampId);
-      this.bootcampTitle = bootcamp.title || '';
-      this.bootcampStatus = bootcamp.status || '';
-      this.dateRange = bootcamp.startDate && bootcamp.endDate
-        ? `${bootcamp.startDate} ~ ${bootcamp.endDate}` : '';
+      this.bootcampTitle.set(bootcamp.name || '');
+
+      // 날짜 포맷
+      const fmt = (d: string) => d ? d.substring(0, 10) : '';
+      this.dateRange.set(bootcamp.startDate && bootcamp.endDate
+        ? `${fmt(bootcamp.startDate)} ~ ${fmt(bootcamp.endDate)}` : '');
+
+      // 유저의 지원 상태 가져오기
+      const user = this.authService.currentUser();
+      if (user) {
+        try {
+          const applicants = await this.api.applicants.findByUser(user.id);
+          const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
+          this.bootcampStatus.set(myApp
+            ? (this.STATUS_LABEL[myApp.status] || myApp.status)
+            : (this.STATUS_LABEL[bootcamp.status] || bootcamp.status));
+        } catch {
+          this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
+        }
+      } else {
+        this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
+      }
 
       const courses: any[] = await this.api.courses.findByBootcamp(bootcampId);
-      this.courseSections = courses.map((c: any, idx: number) => ({
+      const sections: CourseSection[] = courses.map((c: any, idx: number) => ({
         id: c.id,
         number: `과정${idx + 1}.`,
-        title: c.title || '',
+        title: c.name || c.title || '',
         lectureCount: c._count?.lectures || 0,
         assignmentCount: c._count?.assignments || 0,
         isExpanded: idx === 0,
         cards: [],
       }));
+      this.courseSections.set(sections);
 
-      // Load first course cards
-      if (this.courseSections.length > 0) {
-        await this.loadCourseCards(this.courseSections[0]);
+      // 모든 과정의 강의/과제 카드 로드
+      const allLectures: any[] = [];
+      const allAssignments: any[] = [];
+      for (const section of sections) {
+        await this.loadCourseCards(section);
+        // 강의/과제 탭 데이터 수집
+        const [lectures, assignments]: [any[], any[]] = await Promise.all([
+          this.api.lectures.findByCourse(section.id),
+          this.api.assignments.findByCourse(section.id),
+        ]).catch(() => [[], []]);
+        allLectures.push(...lectures.map((l: any) => ({
+          id: l.id, title: l.title || '', category: l.category || '',
+          duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
+          thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+        })));
+        allAssignments.push(...assignments.map((a: any) => ({
+          id: a.id, title: a.title || '', course: section.title,
+          dateRange: a.dueDate
+            ? new Date(a.dueDate).toLocaleDateString('ko-KR')
+            : '',
+          submitted: false,
+          thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
+        })));
       }
+      this.lectureCards.set(allLectures);
+      this.assignmentCards.set(allAssignments);
+      this.courseSections.set([...sections]); // trigger re-render
     } catch (err) {
-      console.error('부트칠프 데이터 로드 실패:', err);
+      console.error('부트캠프 데이터 로드 실패:', err);
     }
   }
 
@@ -183,23 +233,26 @@ export class MyBootcampDetailPage implements OnInit {
       const cards: LectureCard[] = [
         ...lectures.map((l: any) => ({
           id: l.id, type: '강의' as const, category: l.category || '', title: l.title || '',
-          duration: l.duration || '', thumbnail: l.thumbnailUrl || '',
+          duration: l.duration || '', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
         })),
         ...assignments.map((a: any) => ({
           id: a.id, type: '과제' as const, category: '', title: a.title || '',
-          dateRange: a.deadlineStart && a.deadlineEnd ? `${a.deadlineStart} ~ ${a.deadlineEnd}` : '', thumbnail: '',
+          dateRange: a.dueDate ? new Date(a.dueDate).toLocaleDateString('ko-KR') : '',
+          thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
         })),
       ];
       section.cards = cards;
-      this.lectureCards = lectures.map((l: any) => ({
+      this.lectureCards.set(lectures.map((l: any) => ({
         id: l.id, title: l.title || '', category: l.category || '',
-        duration: l.duration || '', status: 'progress', hasImage: !!l.thumbnailUrl,
-      }));
-      this.assignmentCards = assignments.map((a: any) => ({
+        duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
+        thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+      })));
+      this.assignmentCards.set(assignments.map((a: any) => ({
         id: a.id, title: a.title || '', course: section.title,
-        dateRange: a.deadlineStart && a.deadlineEnd ? `${a.deadlineStart} ~ ${a.deadlineEnd}` : '',
-        submitted: false, hasImage: false,
-      }));
+        dateRange: a.dueDate ? new Date(a.dueDate).toLocaleDateString('ko-KR') : '',
+        submitted: false,
+        thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
+      })));
     } catch (err) {
       console.error('과정 데이터 로드 실패:', err);
     }
@@ -217,6 +270,13 @@ export class MyBootcampDetailPage implements OnInit {
 
   toggleSection(section: CourseSection): void {
     section.isExpanded = !section.isExpanded;
+    if (section.isExpanded && section.cards.length === 0) {
+      this.loadCourseCards(section).then(() => {
+        this.courseSections.set([...this.courseSections()]);
+      });
+    } else {
+      this.courseSections.set([...this.courseSections()]);
+    }
   }
 
   navigateToLecture(cardId: number): void {
@@ -254,6 +314,12 @@ export class MyBootcampDetailPage implements OnInit {
     this.router.navigate(['/my-bootcamp', this.bootcampId, 'notice', noticeId], {
       queryParams: { tab: this.activeDetailTab() },
     });
+  }
+
+  private getYoutubeThumbnail(url: string): string {
+    if (!url) return '';
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
   }
 }
 

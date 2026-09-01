@@ -18,8 +18,14 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   private api = inject(ApiService);
 
   portfolioId = '';
-  portfolioTitle = signal('');
-  portfolioAuthor = signal('');
+  portfolioTitle = signal('작품명');
+  portfolioAuthor = signal('수강생');
+  portfolioCohort = signal('');
+  portfolioGenre = signal('');
+  portfolioIntro = signal('');
+  portfolioThumbnail = signal('');
+  portfolioGradient = 'linear-gradient(135deg, #5a3a8c, #2a1a50)';
+  planFileUrl = signal('');
 
   ngOnInit(): void {
     document.body.classList.add('page-portfolio-detail');
@@ -28,9 +34,31 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
       if (this.portfolioId) {
         try {
           const p = await this.api.portfolios.findOne(Number(this.portfolioId));
-          this.portfolioTitle.set(p.title || '');
-          this.portfolioAuthor.set(p.description || '');
-        } catch { /* fallback to dummy */ }
+          this.portfolioTitle.set(p.workTitle || p.bootcampName || '작품명');
+          this.portfolioAuthor.set(p.userName || p.authorName || '수강생');
+          this.portfolioCohort.set(p.bootcampName || '');
+          this.portfolioGenre.set(p.genre || '');
+          this.portfolioIntro.set(p.workIntro || '');
+          this.portfolioThumbnail.set(p.thumbnail || '');
+
+          // 파일 분리: 기획서(episode없음) vs 원고(episode있음)
+          if (p.files?.length) {
+            const plan = p.files.find((f: any) => !f.episode);
+            if (plan) this.planFileUrl.set(plan.url);
+
+            const manuscripts = p.files
+              .filter((f: any) => f.episode)
+              .sort((a: any, b: any) => a.episode - b.episode);
+            if (manuscripts.length > 0) {
+              this.manuscriptImages = manuscripts.map((f: any) => ({
+                id: f.episode,
+                url: f.url,
+                gradient: '',
+              }));
+              this.totalPages = manuscripts.length;
+            }
+          }
+        } catch { /* fallback to defaults */ }
       }
     });
   }
@@ -48,7 +76,7 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   currentViewerPage = signal(1);
   totalPages = 17;
 
-  manuscriptImages = Array.from({ length: 17 }, (_, i) => ({
+  manuscriptImages: { id: number; url?: string; gradient: string }[] = Array.from({ length: 17 }, (_, i) => ({
     id: i + 1,
     gradient: `linear-gradient(${135 + i * 15}deg, #2a2535 ${i * 3}%, #1a1520 ${50 + i * 2}%, #2a2035 100%)`,
   }));

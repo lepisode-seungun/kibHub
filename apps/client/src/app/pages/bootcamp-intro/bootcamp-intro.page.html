@@ -201,144 +201,71 @@
 
       <!-- 타임라인 그룹들 -->
       <div class="timeline-scroll" #timelineScroll (scroll)="onTimelineScroll()">
-        <!-- 2024 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2024</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
-                  <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
-                  <span class="entry-date">2024. 01 ~ 2024. 06</span>
+        @if (historyGroups().length > 0) {
+          @for (group of historyGroups(); track group.year) {
+            <div class="timeline-group">
+              <hr class="timeline-divider" />
+              <div class="timeline-row">
+                <span class="timeline-year">{{ group.year }}</span>
+                <div class="timeline-entries">
+                  @for (item of group.items; track item.id) {
+                    <div class="timeline-entry">
+                      <div class="entry-bar"></div>
+                      <div class="entry-content">
+                        <span class="entry-title gradient-text">{{ item.title }}</span>
+                        @if (item.description) {
+                          <span class="entry-desc">{{ item.description }}</span>
+                        }
+                        <span class="entry-date">{{ item.period }}</span>
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
-                  <span class="entry-date">2024. 03 ~ 2024. 08</span>
+            </div>
+          }
+        } @else {
+          <!-- 폴백: 하드코딩 -->
+          <div class="timeline-group">
+            <hr class="timeline-divider" />
+            <div class="timeline-row">
+              <span class="timeline-year">2024</span>
+              <div class="timeline-entries">
+                <div class="timeline-entry">
+                  <div class="entry-bar"></div>
+                  <div class="entry-content">
+                    <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
+                    <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
+                    <span class="entry-date">2024. 01 ~ 2024. 06</span>
+                  </div>
+                </div>
+                <div class="timeline-entry">
+                  <div class="entry-bar"></div>
+                  <div class="entry-content">
+                    <span class="entry-title gradient-text">KENAZ ACADEMY</span>
+                    <span class="entry-date">2024. 03 ~ 2024. 08</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 2023 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2023</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
-                  <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
-                  <span class="entry-date">2023. 01 ~ 2023. 06</span>
-                </div>
-              </div>
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ WEBTOON</span>
-                  <span class="entry-desc">웹툰 실무</span>
-                  <span class="entry-date">2023. 03 ~ 2023. 08</span>
+          <div class="timeline-group">
+            <hr class="timeline-divider" />
+            <div class="timeline-row">
+              <span class="timeline-year">2023</span>
+              <div class="timeline-entries">
+                <div class="timeline-entry">
+                  <div class="entry-bar"></div>
+                  <div class="entry-content">
+                    <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
+                    <span class="entry-desc">글로벌 진출 웹툰 아카데미</span>
+                    <span class="entry-date">2023. 01 ~ 2023. 06</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 2022 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2022</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
-                  <span class="entry-date">2022. 08 ~ 2022. 12</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2021 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2021</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ X APPLE BOOKS</span>
-                  <span class="entry-date">2021. 08 ~ 2021. 12</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2020 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2020</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ WEBTOON</span>
-                  <span class="entry-desc">글로벌 웹툰 프로젝트</span>
-                  <span class="entry-date">2020. 03 ~ 2020. 12</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2019 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2019</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ ACADEMY</span>
-                  <span class="entry-desc">웹툰 아카데미 설립</span>
-                  <span class="entry-date">2019. 06 ~ 2019. 12</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2018 -->
-        <div class="timeline-group">
-          <hr class="timeline-divider" />
-          <div class="timeline-row">
-            <span class="timeline-year">2018</span>
-            <div class="timeline-entries">
-              <div class="timeline-entry">
-                <div class="entry-bar"></div>
-                <div class="entry-content">
-                  <span class="entry-title gradient-text">KENAZ STUDIO</span>
-                  <span class="entry-desc">스튜디오 창립</span>
-                  <span class="entry-date">2018. 01 ~ 2018. 06</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        }
       </div>
 
       <!-- 커스텀 스크롤바 -->
@@ -359,33 +286,63 @@
       <!-- 1행 — 왼쪽으로 흐름 -->
       <div class="partner-marquee">
         <div class="partner-marquee-track marquee-left">
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
-          <!-- 복제 (무한루프용) -->
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
+          <div class="marquee-set">
+            @if (partnerLogosRow1().length > 0) {
+              @for (logo of partnerLogosRow1(); track logo.id) {
+                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+              }
+            } @else {
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
+            }
+          </div>
+          <div class="marquee-set">
+            @if (partnerLogosRow1().length > 0) {
+              @for (logo of partnerLogosRow1(); track $index) {
+                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+              }
+            } @else {
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 2" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 3" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 4" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 5" /></div>
+            }
+          </div>
         </div>
       </div>
       <!-- 2행 — 오른쪽으로 흐름 -->
       <div class="partner-marquee">
         <div class="partner-marquee-track marquee-right">
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
-          <!-- 복제 -->
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
-          <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
+          <div class="marquee-set">
+            @if (partnerLogosRow2().length > 0) {
+              @for (logo of partnerLogosRow2(); track logo.id) {
+                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+              }
+            } @else {
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
+            }
+          </div>
+          <div class="marquee-set">
+            @if (partnerLogosRow2().length > 0) {
+              @for (logo of partnerLogosRow2(); track $index) {
+                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+              }
+            } @else {
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 7" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 8" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 9" /></div>
+              <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 10" /></div>
+            }
+          </div>
         </div>
       </div>
       <!-- 좌우 페이드 -->

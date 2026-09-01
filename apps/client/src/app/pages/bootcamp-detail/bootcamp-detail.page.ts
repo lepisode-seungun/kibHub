@@ -1,9 +1,10 @@
-import { Component, inject, signal, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, computed, NgZone, ChangeDetectorRef, ApplicationRef, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface Instructor {
   name: string;
@@ -16,6 +17,7 @@ export interface Instructor {
 export interface PortfolioFile {
   name: string;
   type: 'url' | 'file';
+  file?: File;
 }
 
 @Component({
@@ -29,6 +31,10 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private api = inject(ApiService);
+  private zone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
+  private appRef = inject(ApplicationRef);
+  private sanitizer = inject(DomSanitizer);
 
 
   ngOnDestroy(): void {
@@ -41,11 +47,11 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   }
 
   bootcampId = '';
-  title = '케나즈 아카데미 초급반 13기';
-  subtitle = '킵허브 아티스트가 알려주는, 실무를 위한 실전 노하우';
-  cohort = '케나즈 아카데미 초급반 13기';
-  recruitPeriod = '2025-01-16 ~ 2025-08-07';
-  eduPeriod = '2025-01-16 ~ 2025-08-07';
+  title = signal('부트캠프');
+  subtitle = signal('');
+  cohort = signal('');
+  recruitPeriod = signal('-');
+  eduPeriod = signal('-');
 
   activeTab = '소개';
   tabs = ['소개', '커리큘럼', '강사소개', '부트캠프 후기'];
@@ -57,16 +63,26 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     '부트캠프 후기': 'bd-intro-section',
   };
 
-  description = `" 상상하는 모든 이야기를 현실로 "\n\n글로벌 웹툰 작가에 도전하세요!\n\n상상으로만 펼쳐나가던 나의 세상.\n어디서 부터 어떻게 기획을 하고 만들어나갈지 막막했던 이야기 -\n\n진학을 고민하는 학생, 비전을 고민하는 직장인,\n마음 속에 꿈을 품었던 그 누구라도 도전할 수 있습니다.\n\n웹툰의 기초, 프로그램 사용법부터 기획, 제작, 완성까지 !\n모듈화로 진행되는 코스를 통해 반복 학습은 물론\n단계를 밟아 차근차근 배워나갑니다.\n\n국내 정식 연재부터 글로벌 연재의 기회를 잡아보세요.\n케나즈와 함께 성장해나갈 미래의 작가님을 모십니다.\n\n온라인 기초 CLASS ㆍ 개인 맞춤 교육 커리큘럼 ㆍ 웹툰 아티스트 데뷔 기회`;
+  description = signal('');
+  recruitIntro = signal('');
+  recruitCurriculum = signal('');
+  recruitReview = signal('');
 
-  instructors: Instructor[] = [
-    { name: '고식혜', summary: '요약설명', photo: '', badge: '대표작', work: '대표작 내용' },
-    { name: '김민수', summary: '요약설명 길게', photo: '', badge: '대표작', work: '대표작 내용' },
-    { name: '이지현', summary: '요약설명 길게', photo: '', badge: '대표작', work: '대표작 내용' },
-    { name: '박준호', summary: '요약설명 길게', photo: '', badge: '대표작', work: '대표작 내용' },
-    { name: '최서연', summary: '요약설명', photo: '', badge: '대표작', work: '대표작 내용' },
-    { name: '정하윤', summary: '요약설명 길게', photo: '', badge: '대표작', work: '대표작 내용' },
-  ];
+  /** sanitized HTML — 에디터 인라인 스타일(text-align 등) 유지 */
+  safeIntroHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.recruitIntro())
+  );
+  safeCurriculumHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.recruitCurriculum())
+  );
+  safeReviewHtml = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.recruitReview())
+  );
+
+  instructors = signal<Instructor[]>([]);
+
+  /* 사전인터뷰 질문 (관리자 설정) */
+  interviewQuestions = signal<{ text: string }[]>([]);
 
   /* ── 수강 신청 모달 ── */
   isModalOpen = signal(false);
@@ -81,8 +97,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     portfolioUrl: '',
     portfolioNote: '',
     portfolioFiles: [] as PortfolioFile[],
-    motivation: '',
-    agreement: '',
+    interviewAnswers: [] as string[],
     privacyAgreed: false,
   };
 
@@ -97,12 +112,36 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   private async loadBootcamp(id: number): Promise<void> {
     try {
       const bc = await this.api.bootcamps.findOne(id);
-      this.title = bc.name;
-      this.cohort = bc.name;
-      this.description = bc.description || this.description;
-      this.subtitle = bc.description || this.subtitle;
+      this.title.set(bc.name);
+      this.cohort.set(bc.name);
+      this.subtitle.set(bc.instructorName
+        ? `${bc.instructorName}가 알려주는, 실전 노하우!`
+        : bc.description?.substring(0, 60) || '');
+      this.description.set(bc.description || '');
+      this.recruitIntro.set(bc.recruitIntro || '');
+      this.recruitCurriculum.set(bc.recruitCurriculum || '');
+      this.recruitReview.set(bc.recruitReview || '');
+      if (bc.recruitInstructors && Array.isArray(bc.recruitInstructors)) {
+        this.instructors.set(bc.recruitInstructors as Instructor[]);
+      }
+      if (bc.startDate && bc.endDate) {
+        const fmt = (d: string) => d.substring(0, 10);
+        this.recruitPeriod.set(`${fmt(bc.startDate)} ~ ${fmt(bc.endDate)}`);
+        this.eduPeriod.set(`${fmt(bc.startDate)} ~ ${fmt(bc.endDate)}`);
+      }
+      // 사전인터뷰 질문 로드
+      try {
+        console.log('[클라이언트] 인터뷰 질문 로드 시작, bootcampId:', id);
+        const questions = await this.api.bootcamps.getInterviewSettings(id);
+        console.log('[클라이언트] 인터뷰 질문 로드 결과:', questions);
+        this.interviewQuestions.set(questions);
+        this.form.interviewAnswers = questions.map(() => '');
+      } catch (err) {
+        console.error('[클라이언트] 인터뷰 질문 로드 실패:', err);
+        this.interviewQuestions.set([]);
+      }
     } catch (e) {
-      console.error('부트칠프 로드 실패:', e);
+      console.error('부트캠프 로드 실패:', e);
     }
   }
 
@@ -141,8 +180,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
       portfolioUrl: '',
       portfolioNote: '',
       portfolioFiles: [],
-      motivation: '',
-      agreement: '',
+      interviewAnswers: this.interviewQuestions().map(() => ''),
       privacyAgreed: false,
     };
     this.isUrlFormOpen = false;
@@ -170,13 +208,8 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
 
   /** 강사 수에 따라 카드 너비 동적 계산 (최대 4장 기준) */
   get instructorCardWidth(): string {
-    const count = Math.min(this.instructors.length, 4);
+    const count = Math.min(this.instructors().length || 1, 4);
     return `calc((100% - 24px * ${count - 1}) / ${count})`;
-  }
-
-  onSearchAddress(): void {
-    // TODO: 주소 검색 API (카카오/다음 우편번호 등) 연동
-    alert('주소검색 기능은 API 연동 후 사용 가능합니다.');
   }
 
   /* URL 추가 서브 폼 */
@@ -228,7 +261,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     if (this.pendingFiles.length > 0) {
       const newFiles: PortfolioFile[] = this.pendingFiles
         .slice(0, 10 - this.form.portfolioFiles.length)
-        .map(file => ({ name: file.name, type: 'file' as const }));
+        .map(file => ({ name: file.name, type: 'file' as const, file }));
       this.form.portfolioFiles = [...this.form.portfolioFiles, ...newFiles];
       this.closeFileForm();
     }
@@ -239,7 +272,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     if (input.files) {
       const newFiles: PortfolioFile[] = Array.from(input.files)
         .slice(0, 10 - this.form.portfolioFiles.length)
-        .map(file => ({ name: file.name, type: 'file' as const }));
+        .map(file => ({ name: file.name, type: 'file' as const, file }));
       this.form.portfolioFiles = [...this.form.portfolioFiles, ...newFiles];
       input.value = '';
     }
@@ -249,14 +282,72 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     this.form.portfolioFiles = this.form.portfolioFiles.filter((_, i) => i !== index);
   }
 
-  onSubmit(): void {
+  /** 다음 우편번호 서비스 팝업 */
+  onSearchAddress(): void {
+    const daum = (window as any).daum;
+    if (!daum?.Postcode) {
+      alert('주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    new daum.Postcode({
+      oncomplete: (data: any) => {
+        const addr = data.roadAddress || data.jibunAddress || '';
+        this.form.address = addr;
+        this.form.addressDetail = '';
+        // DOM 직접 업데이트 (Angular zone 밖에서도 확실히 반영)
+        const el = document.querySelector('input[name="address"]') as HTMLInputElement;
+        if (el) el.value = addr;
+      },
+    }).open();
+  }
+
+  async onSubmit(): Promise<void> {
     if (!this.form.privacyAgreed) {
       alert('개인정보 수집 및 이용에 동의해주세요.');
       return;
     }
-    console.log('지원하기 제출:', this.form);
-    alert('지원이 완료되었습니다!');
-    this.closeModal();
+    try {
+      // 1) URL 타입 포트폴리오 추출
+      const portfolioUrls = this.form.portfolioFiles
+        .filter(pf => pf.type === 'url')
+        .map(pf => pf.name);
+
+      // 2) 파일 타입 업로드
+      let uploadedFiles: { url: string; originalName: string; size: number }[] = [];
+      const rawFiles = this.form.portfolioFiles
+        .filter(pf => pf.type === 'file' && pf.file)
+        .map(pf => pf.file as File);
+      if (rawFiles.length > 0) {
+        const results = await this.api.upload.multiple(rawFiles, 'applicants');
+        uploadedFiles = results.map(r => ({
+          url: r.url,
+          originalName: r.originalName,
+          size: r.size,
+        }));
+      }
+
+      // 3) 지원 데이터 전송
+      // 동적 질문 답변을 interviewAnswers로 통합
+      const interviewAnswers = this.interviewQuestions().map((q, i) => ({
+        question: q.text,
+        answer: this.form.interviewAnswers[i] || '',
+      }));
+
+      await this.api.applicants.apply(Number(this.bootcampId), {
+        applicantName: this.form.applicantName,
+        phone: this.form.phone,
+        email: this.form.email,
+        address: this.form.address + (this.form.addressDetail ? ' ' + this.form.addressDetail : ''),
+        portfolioUrl: portfolioUrls.join(', '),
+        portfolioFiles: uploadedFiles,
+        motivation: interviewAnswers.map(a => `Q. ${a.question}\nA. ${a.answer}`).join('\n\n'),
+      });
+      alert('지원이 완료되었습니다!');
+      this.closeModal();
+    } catch (e) {
+      alert('지원에 실패했습니다. 다시 시도해주세요.');
+      console.error('지원 실패:', e);
+    }
   }
 
   /* ── 개인정보 수집 동의 모달 ── */

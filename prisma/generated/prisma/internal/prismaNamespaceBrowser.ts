@@ -63,14 +63,20 @@ export const ModelName = {
   LectureFile: 'LectureFile',
   Assignment: 'Assignment',
   AssignmentFile: 'AssignmentFile',
+  Submission: 'Submission',
+  SubmissionFile: 'SubmissionFile',
+  SubmissionComment: 'SubmissionComment',
   Faq: 'Faq',
   FaqFile: 'FaqFile',
+  History: 'History',
   Inquiry: 'Inquiry',
   InquiryFile: 'InquiryFile',
   Notice: 'Notice',
   NoticeFile: 'NoticeFile',
+  Partner: 'Partner',
   Portfolio: 'Portfolio',
   PortfolioFile: 'PortfolioFile',
+  Poster: 'Poster',
   SiteSetting: 'SiteSetting',
   User: 'User',
   UserSns: 'UserSns'
@@ -130,6 +136,11 @@ export const BootcampScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   status: 'status',
+  recruitIntro: 'recruitIntro',
+  recruitCurriculum: 'recruitCurriculum',
+  recruitReview: 'recruitReview',
+  recruitInstructors: 'recruitInstructors',
+  interviewSettings: 'interviewSettings',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -205,6 +216,8 @@ export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof 
 export const LectureScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  category: 'category',
+  videoUrl: 'videoUrl',
   content: 'content',
   sortOrder: 'sortOrder',
   courseId: 'courseId',
@@ -232,6 +245,7 @@ export const AssignmentScalarFieldEnum = {
   id: 'id',
   title: 'title',
   content: 'content',
+  videoUrl: 'videoUrl',
   dueDate: 'dueDate',
   courseId: 'courseId',
   createdAt: 'createdAt',
@@ -252,6 +266,45 @@ export const AssignmentFileScalarFieldEnum = {
 } as const
 
 export type AssignmentFileScalarFieldEnum = (typeof AssignmentFileScalarFieldEnum)[keyof typeof AssignmentFileScalarFieldEnum]
+
+
+export const SubmissionScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  type: 'type',
+  assignmentId: 'assignmentId',
+  authorId: 'authorId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
+
+
+export const SubmissionFileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  size: 'size',
+  mimeType: 'mimeType',
+  submissionId: 'submissionId',
+  createdAt: 'createdAt'
+} as const
+
+export type SubmissionFileScalarFieldEnum = (typeof SubmissionFileScalarFieldEnum)[keyof typeof SubmissionFileScalarFieldEnum]
+
+
+export const SubmissionCommentScalarFieldEnum = {
+  id: 'id',
+  body: 'body',
+  authorId: 'authorId',
+  submissionId: 'submissionId',
+  createdAt: 'createdAt'
+} as const
+
+export type SubmissionCommentScalarFieldEnum = (typeof SubmissionCommentScalarFieldEnum)[keyof typeof SubmissionCommentScalarFieldEnum]
 
 
 export const FaqScalarFieldEnum = {
@@ -279,6 +332,19 @@ export const FaqFileScalarFieldEnum = {
 } as const
 
 export type FaqFileScalarFieldEnum = (typeof FaqFileScalarFieldEnum)[keyof typeof FaqFileScalarFieldEnum]
+
+
+export const HistoryScalarFieldEnum = {
+  id: 'id',
+  year: 'year',
+  title: 'title',
+  description: 'description',
+  period: 'period',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type HistoryScalarFieldEnum = (typeof HistoryScalarFieldEnum)[keyof typeof HistoryScalarFieldEnum]
 
 
 export const InquiryScalarFieldEnum = {
@@ -339,6 +405,18 @@ export const NoticeFileScalarFieldEnum = {
 export type NoticeFileScalarFieldEnum = (typeof NoticeFileScalarFieldEnum)[keyof typeof NoticeFileScalarFieldEnum]
 
 
+export const PartnerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  logoUrl: 'logoUrl',
+  link: 'link',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type PartnerScalarFieldEnum = (typeof PartnerScalarFieldEnum)[keyof typeof PartnerScalarFieldEnum]
+
+
 export const PortfolioScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -371,6 +449,16 @@ export const PortfolioFileScalarFieldEnum = {
 } as const
 
 export type PortfolioFileScalarFieldEnum = (typeof PortfolioFileScalarFieldEnum)[keyof typeof PortfolioFileScalarFieldEnum]
+
+
+export const PosterScalarFieldEnum = {
+  id: 'id',
+  imageUrl: 'imageUrl',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type PosterScalarFieldEnum = (typeof PosterScalarFieldEnum)[keyof typeof PosterScalarFieldEnum]
 
 
 export const SiteSettingScalarFieldEnum = {

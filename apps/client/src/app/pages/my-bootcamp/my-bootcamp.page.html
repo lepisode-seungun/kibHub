@@ -46,10 +46,10 @@
     <!-- 카드 그리드 -->
     <div class="flex flex-wrap items-start content-start gap-5 w-full">
       @for (item of filteredItems; track item.id) {
-        <div class="mb-card" [routerLink]="['/my-bootcamp', item.id]">
+        <div class="mb-card" [routerLink]="['/my-bootcamp', item.bootcampId]">
           <div class="flex flex-col items-start p-5 gap-3 w-full">
             <div class="flex justify-between items-center gap-3 w-full">
-              <span [ngClass]="item.status === '신청 완료' ? 'mb-badge mb-badge-applied' : (item.status === '수강 중' ? 'mb-badge mb-badge-active' : (item.status === '마감' ? 'mb-badge mb-badge-closed' : 'mb-badge'))">
+              <span [ngClass]="item.status === '수강중' ? 'mb-badge mb-badge-active' : (item.status === '신청 완료' ? 'mb-badge mb-badge-applied' : (item.status === '불합격' ? 'mb-badge mb-badge-closed' : 'mb-badge'))">
                 {{ item.status }}
               </span>
               <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="#27272A">

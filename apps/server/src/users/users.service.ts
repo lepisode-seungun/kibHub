@@ -49,8 +49,26 @@ export class UsersService {
     });
   }
 
-  update(id: number, data: UpdateUserDto) {
-    return this.prisma.user.update({ where: { id }, data: data as Prisma.UserUpdateInput });
+  async update(id: number, data: UpdateUserDto) {
+    const { sns, ...userData } = data;
+
+    // 사용자 기본 정보 업데이트
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: userData as Prisma.UserUpdateInput,
+    });
+
+    // SNS 업데이트 (전체 교체 방식)
+    if (sns !== undefined) {
+      await this.prisma.userSns.deleteMany({ where: { userId: id } });
+      if (sns.length > 0) {
+        await this.prisma.userSns.createMany({
+          data: sns.map(s => ({ ...s, userId: id })),
+        });
+      }
+    }
+
+    return user;
   }
 
   updateStatus(id: number, status: 'ACTIVE' | 'BLOCKED') {

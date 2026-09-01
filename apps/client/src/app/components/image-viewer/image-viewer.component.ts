@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 export interface ViewerImage {
   gradient: string;
+  url?: string;
 }
 
 @Component({
