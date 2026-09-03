@@ -51,13 +51,38 @@
         </div>
       </div>
 
+      <!-- 하위 데이터 건수 -->
+      @if (deleteChildCounts()) {
+        <div class="flex flex-col gap-2 w-full px-3">
+          <span class="font-suit font-semibold text-sm leading-[140%] tracking-[-0.8px] text-gray-700">삭제될 하위 데이터</span>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center px-2.5 py-1 bg-red-50 border border-red-200 rounded-full font-suit font-medium text-xs text-red-600">
+              과정 {{ deleteChildCounts()!.courses }}건
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 bg-red-50 border border-red-200 rounded-full font-suit font-medium text-xs text-red-600">
+              강의 {{ deleteChildCounts()!.lectures }}건
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 bg-red-50 border border-red-200 rounded-full font-suit font-medium text-xs text-red-600">
+              과제 {{ deleteChildCounts()!.assignments }}건
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 bg-red-50 border border-red-200 rounded-full font-suit font-medium text-xs text-red-600">
+              지원자 {{ deleteChildCounts()!.applicants }}건
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 bg-red-50 border border-red-200 rounded-full font-suit font-medium text-xs text-red-600">
+              공지 {{ deleteChildCounts()!.notices }}건
+            </span>
+          </div>
+        </div>
+      } @else {
+        <div class="flex items-center justify-center py-2">
+          <span class="font-suit font-medium text-sm text-gray-400">하위 데이터 확인 중...</span>
+        </div>
+      }
+
       <!-- 경고 메시지 -->
       <div class="flex flex-col gap-1.5 text-center">
         <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 m-0">
-          부트캠프를 삭제하면 하위의 커리큘럼, 강의, 과제,
-        </p>
-        <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 m-0">
-          제출물, 지원자 데이터가 모두 삭제됩니다.
+          부트캠프를 삭제하면 위의 모든 하위 데이터가 일괄 삭제됩니다.
         </p>
         <p class="font-suit font-semibold text-sm leading-[140%] tracking-[-0.8px] text-red-500 m-0">
           삭제된 데이터는 복구할 수 없습니다.

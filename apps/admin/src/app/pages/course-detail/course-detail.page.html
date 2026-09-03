@@ -36,7 +36,7 @@
             <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
                     style="height: 40px; width: 100%;"
                     (click)="onMoreMenuAction('hide')">
-              숨김
+              {{ courseData().status === '숨김' ? '노출' : '숨김' }}
             </button>
             <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
                     style="height: 40px; width: 100%;"
@@ -67,7 +67,8 @@
         <div class="flex flex-col py-1.5 gap-2 flex-1">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
           <div class="flex items-center">
-            <span class="inline-flex items-center px-2 py-1 bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]">
+            <span class="inline-flex items-center px-2 py-1 border rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]"
+                  [ngClass]="courseData().status === '노출' ? 'bg-green-50 text-[#10B981] border-green-200' : 'bg-gray-50 text-[#6B7280] border-gray-200'">
               {{ courseData().status }}
             </span>
           </div>
@@ -189,9 +190,8 @@
       <select class="w-full h-10 px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none appearance-none cursor-pointer focus:border-[#3C8EEE] transition-colors box-border"
               [value]="editStatus()"
               (change)="editStatus.set($any($event.target).value)">
-        <option value="대기">대기</option>
-        <option value="진행중">진행중</option>
-        <option value="완료">완료</option>
+        <option value="노출">노출</option>
+        <option value="숨김">숨김</option>
       </select>
     </div>
 

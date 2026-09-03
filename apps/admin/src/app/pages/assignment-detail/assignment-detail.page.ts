@@ -92,15 +92,18 @@ export class AssignmentDetailPage implements OnInit {
       this.assignmentData.set({
         id: assignment.id,
         name: assignment.title || '',
-        createdAt: assignment.createdAt,
-        deadlineStart: assignment.deadlineStart || assignment.dueDate || '',
-        deadlineEnd: assignment.deadlineEnd || '',
+        category: assignment.category || '',
+        createdAt: formatDate(assignment.createdAt),
+        deadlineStart: assignment.dueDate ? formatDate(assignment.dueDate) : '',
+        deadlineEnd: assignment.dueDateEnd ? formatDate(assignment.dueDateEnd) : '',
+        deadlineStartRaw: assignment.dueDate || '',
+        deadlineEndRaw: assignment.dueDateEnd || '',
         content: assignment.content || assignment.body || '',
         videoUrl: assignment.videoUrl || '',
         materials: assignment.files || [],
       });
       if (assignment.course) {
-        const SM: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
+        const SM: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', PENDING: '노출', IN_PROGRESS: '노출', COMPLETED: '노출' };
         this.courseData.set({
           id: assignment.course.id,
           name: assignment.course.name || assignment.course.title || '',
@@ -196,7 +199,6 @@ export class AssignmentDetailPage implements OnInit {
       this.submissionDrawerOpen.set(true);
     } catch (err) {
       console.error('제출 상세 로드 실패:', err);
-      // 실패 시 기본 데이터로 열기
       this.selectedSubmission.set({ ...row, content: '', files: [] });
       this.submissionDrawerOpen.set(true);
     }
@@ -210,11 +212,18 @@ export class AssignmentDetailPage implements OnInit {
   editDrawerOpen = signal(false);
   editTitle = signal('');
   editContent = signal('');
+  editCategory = signal('');
+  editDueDate = signal('');
+  editDueDateEnd = signal('');
 
   openEditDrawer(): void {
     const d = this.assignmentData();
     this.editTitle.set(d.name || '');
+    this.editCategory.set(d.category || '');
     this.editContent.set(d.content || '');
+    // Raw 날짜를 date input용 YYYY-MM-DD 포맷으로 변환
+    this.editDueDate.set(d.deadlineStartRaw ? new Date(d.deadlineStartRaw).toISOString().substring(0, 10) : '');
+    this.editDueDateEnd.set(d.deadlineEndRaw ? new Date(d.deadlineEndRaw).toISOString().substring(0, 10) : '');
     this.editDrawerOpen.set(true);
   }
 
@@ -227,7 +236,10 @@ export class AssignmentDetailPage implements OnInit {
     if (!title) { this.toast.error('과제명을 입력해주세요.'); return; }
     try {
       const assignmentId = this.assignmentData().id;
-      await this.api.assignments.update(assignmentId, { title, content: this.editContent() } as any);
+      const payload: any = { title, category: this.editCategory(), content: this.editContent() };
+      if (this.editDueDate()) payload.dueDate = this.editDueDate();
+      if (this.editDueDateEnd()) payload.dueDateEnd = this.editDueDateEnd();
+      await this.api.assignments.update(assignmentId, payload);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadAssignment(assignmentId);

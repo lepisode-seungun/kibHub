@@ -47,6 +47,7 @@ export class ApiService {
     block: (id: number, status: 'ACTIVE' | 'BLOCKED'): Promise<User> => this.patch<User>(`/users/${id}/block`, { status }),
     updateRole: (id: number, role: string): Promise<User> => this.patch<User>(`/users/${id}/role`, { role }),
     delete: (id: number): Promise<void> => this.del<void>(`/users/${id}`),
+    findBootcamps: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/bootcamps`),
   };
 
   // ===== Bootcamps =====
@@ -59,6 +60,7 @@ export class ApiService {
     create: (data: CreateBootcampDto): Promise<Bootcamp> => this.post<Bootcamp>('/bootcamps', data),
     update: (id: number, data: Partial<CreateBootcampDto>): Promise<Bootcamp> => this.patch<Bootcamp>(`/bootcamps/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/bootcamps/${id}`),
+    getChildCounts: (id: number): Promise<{ courses: number; lectures: number; assignments: number; applicants: number; notices: number }> => this.get(`/bootcamps/${id}/child-counts`),
     getInterviewSettings: (id: number): Promise<{ text: string }[]> => this.get(`/bootcamps/${id}/interview-settings`),
     updateInterviewSettings: (id: number, questions: { text: string }[]): Promise<any> => this.patch(`/bootcamps/${id}/interview-settings`, { questions }),
     // 강사 관리

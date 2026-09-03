@@ -1,25 +1,25 @@
 <div class="editor-wrapper">
   <!-- 툴바 -->
   <div class="editor-toolbar">
-    <!-- Heading 드롭다운 -->
+    <!-- 폰트 크기 드롭다운 -->
     <div class="toolbar-group" style="position: relative;">
-      <button class="toolbar-btn font-size-btn" title="글꼴 크기" (click)="toggleHeadingMenu()">
-        <span class="font-suit font-medium text-sm text-gray-600">{{ currentHeading() }}</span>
+      <button class="toolbar-btn font-size-btn" title="폰트 크기"
+              (mousedown)="$event.preventDefault(); toggleFontSizeMenu()">
+        <span class="font-suit font-medium text-sm text-gray-600">{{ currentFontSize() }}</span>
         <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
           <path d="M4.121 4.845L6.835 2.934C7.184 2.594 6.943 2 6.456 2H1.544C1.057 2 0.816 2.594 1.165 2.934L3.121 4.845C3.332 5.052 3.668 5.052 3.879 4.845Z" fill="#8A9099"/>
         </svg>
       </button>
-      @if (headingOpen()) {
-        <div class="heading-dropdown">
-          <button class="heading-option" (click)="setHeading('h2', '헤드라인')">
-            <span style="font-size: 20px; font-weight: 700;">헤드라인</span>
-          </button>
-          <button class="heading-option" (click)="setHeading('h3', '서브타이틀')">
-            <span style="font-size: 16px; font-weight: 600;">서브타이틀</span>
-          </button>
-          <button class="heading-option" (click)="setHeading('p', '본문')">
-            <span style="font-size: 14px; font-weight: 400;">본문</span>
-          </button>
+      @if (fontSizeOpen()) {
+        <div class="fontsize-dropdown">
+          @for (fs of fontSizes; track fs.value) {
+            <button class="fontsize-option"
+                    [class.active]="currentFontSize() === fs.value"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="setFontSize(fs.value)">
+              {{ fs.label }}
+            </button>
+          }
         </div>
       }
     </div>

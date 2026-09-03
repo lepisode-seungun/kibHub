@@ -46,6 +46,7 @@ export type BootcampMinAggregateOutputType = {
   recruitIntro: string | null
   recruitCurriculum: string | null
   recruitReview: string | null
+  recruitReviewVisibility: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type BootcampMaxAggregateOutputType = {
   recruitIntro: string | null
   recruitCurriculum: string | null
   recruitReview: string | null
+  recruitReviewVisibility: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,6 +80,7 @@ export type BootcampCountAggregateOutputType = {
   recruitIntro: number
   recruitCurriculum: number
   recruitReview: number
+  recruitReviewVisibility: number
   recruitInstructors: number
   interviewSettings: number
   createdAt: number
@@ -106,6 +109,7 @@ export type BootcampMinAggregateInputType = {
   recruitIntro?: true
   recruitCurriculum?: true
   recruitReview?: true
+  recruitReviewVisibility?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +126,7 @@ export type BootcampMaxAggregateInputType = {
   recruitIntro?: true
   recruitCurriculum?: true
   recruitReview?: true
+  recruitReviewVisibility?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -138,6 +143,7 @@ export type BootcampCountAggregateInputType = {
   recruitIntro?: true
   recruitCurriculum?: true
   recruitReview?: true
+  recruitReviewVisibility?: true
   recruitInstructors?: true
   interviewSettings?: true
   createdAt?: true
@@ -243,6 +249,7 @@ export type BootcampGroupByOutputType = {
   recruitIntro: string
   recruitCurriculum: string
   recruitReview: string
+  recruitReviewVisibility: string
   recruitInstructors: runtime.JsonValue | null
   interviewSettings: runtime.JsonValue | null
   createdAt: Date
@@ -284,6 +291,7 @@ export type BootcampWhereInput = {
   recruitIntro?: Prisma.StringFilter<"Bootcamp"> | string
   recruitCurriculum?: Prisma.StringFilter<"Bootcamp"> | string
   recruitReview?: Prisma.StringFilter<"Bootcamp"> | string
+  recruitReviewVisibility?: Prisma.StringFilter<"Bootcamp"> | string
   recruitInstructors?: Prisma.JsonNullableFilter<"Bootcamp">
   interviewSettings?: Prisma.JsonNullableFilter<"Bootcamp">
   createdAt?: Prisma.DateTimeFilter<"Bootcamp"> | Date | string
@@ -306,6 +314,7 @@ export type BootcampOrderByWithRelationInput = {
   recruitIntro?: Prisma.SortOrder
   recruitCurriculum?: Prisma.SortOrder
   recruitReview?: Prisma.SortOrder
+  recruitReviewVisibility?: Prisma.SortOrder
   recruitInstructors?: Prisma.SortOrderInput | Prisma.SortOrder
   interviewSettings?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -331,6 +340,7 @@ export type BootcampWhereUniqueInput = Prisma.AtLeast<{
   recruitIntro?: Prisma.StringFilter<"Bootcamp"> | string
   recruitCurriculum?: Prisma.StringFilter<"Bootcamp"> | string
   recruitReview?: Prisma.StringFilter<"Bootcamp"> | string
+  recruitReviewVisibility?: Prisma.StringFilter<"Bootcamp"> | string
   recruitInstructors?: Prisma.JsonNullableFilter<"Bootcamp">
   interviewSettings?: Prisma.JsonNullableFilter<"Bootcamp">
   createdAt?: Prisma.DateTimeFilter<"Bootcamp"> | Date | string
@@ -353,6 +363,7 @@ export type BootcampOrderByWithAggregationInput = {
   recruitIntro?: Prisma.SortOrder
   recruitCurriculum?: Prisma.SortOrder
   recruitReview?: Prisma.SortOrder
+  recruitReviewVisibility?: Prisma.SortOrder
   recruitInstructors?: Prisma.SortOrderInput | Prisma.SortOrder
   interviewSettings?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -379,6 +390,7 @@ export type BootcampScalarWhereWithAggregatesInput = {
   recruitIntro?: Prisma.StringWithAggregatesFilter<"Bootcamp"> | string
   recruitCurriculum?: Prisma.StringWithAggregatesFilter<"Bootcamp"> | string
   recruitReview?: Prisma.StringWithAggregatesFilter<"Bootcamp"> | string
+  recruitReviewVisibility?: Prisma.StringWithAggregatesFilter<"Bootcamp"> | string
   recruitInstructors?: Prisma.JsonNullableWithAggregatesFilter<"Bootcamp">
   interviewSettings?: Prisma.JsonNullableWithAggregatesFilter<"Bootcamp">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Bootcamp"> | Date | string
@@ -396,6 +408,7 @@ export type BootcampCreateInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -418,6 +431,7 @@ export type BootcampUncheckedCreateInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -439,6 +453,7 @@ export type BootcampUpdateInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,6 +476,7 @@ export type BootcampUncheckedUpdateInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -483,6 +499,7 @@ export type BootcampCreateManyInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -500,6 +517,7 @@ export type BootcampUpdateManyMutationInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,6 +536,7 @@ export type BootcampUncheckedUpdateManyInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -541,6 +560,7 @@ export type BootcampCountOrderByAggregateInput = {
   recruitIntro?: Prisma.SortOrder
   recruitCurriculum?: Prisma.SortOrder
   recruitReview?: Prisma.SortOrder
+  recruitReviewVisibility?: Prisma.SortOrder
   recruitInstructors?: Prisma.SortOrder
   interviewSettings?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -563,6 +583,7 @@ export type BootcampMaxOrderByAggregateInput = {
   recruitIntro?: Prisma.SortOrder
   recruitCurriculum?: Prisma.SortOrder
   recruitReview?: Prisma.SortOrder
+  recruitReviewVisibility?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -579,6 +600,7 @@ export type BootcampMinOrderByAggregateInput = {
   recruitIntro?: Prisma.SortOrder
   recruitCurriculum?: Prisma.SortOrder
   recruitReview?: Prisma.SortOrder
+  recruitReviewVisibility?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -669,6 +691,7 @@ export type BootcampCreateWithoutApplicantsInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -690,6 +713,7 @@ export type BootcampUncheckedCreateWithoutApplicantsInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -726,6 +750,7 @@ export type BootcampUpdateWithoutApplicantsInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,6 +772,7 @@ export type BootcampUncheckedUpdateWithoutApplicantsInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -767,6 +793,7 @@ export type BootcampCreateWithoutInstructorsInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -788,6 +815,7 @@ export type BootcampUncheckedCreateWithoutInstructorsInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -824,6 +852,7 @@ export type BootcampUpdateWithoutInstructorsInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,6 +874,7 @@ export type BootcampUncheckedUpdateWithoutInstructorsInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -865,6 +895,7 @@ export type BootcampCreateWithoutCoursesInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -886,6 +917,7 @@ export type BootcampUncheckedCreateWithoutCoursesInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -922,6 +954,7 @@ export type BootcampUpdateWithoutCoursesInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -943,6 +976,7 @@ export type BootcampUncheckedUpdateWithoutCoursesInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -963,6 +997,7 @@ export type BootcampCreateWithoutNoticesInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -984,6 +1019,7 @@ export type BootcampUncheckedCreateWithoutNoticesInput = {
   recruitIntro?: string
   recruitCurriculum?: string
   recruitReview?: string
+  recruitReviewVisibility?: string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -1020,6 +1056,7 @@ export type BootcampUpdateWithoutNoticesInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1041,6 +1078,7 @@ export type BootcampUncheckedUpdateWithoutNoticesInput = {
   recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
   recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
   recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1120,6 +1158,7 @@ export type BootcampSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   recruitIntro?: boolean
   recruitCurriculum?: boolean
   recruitReview?: boolean
+  recruitReviewVisibility?: boolean
   recruitInstructors?: boolean
   interviewSettings?: boolean
   createdAt?: boolean
@@ -1143,6 +1182,7 @@ export type BootcampSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   recruitIntro?: boolean
   recruitCurriculum?: boolean
   recruitReview?: boolean
+  recruitReviewVisibility?: boolean
   recruitInstructors?: boolean
   interviewSettings?: boolean
   createdAt?: boolean
@@ -1161,6 +1201,7 @@ export type BootcampSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   recruitIntro?: boolean
   recruitCurriculum?: boolean
   recruitReview?: boolean
+  recruitReviewVisibility?: boolean
   recruitInstructors?: boolean
   interviewSettings?: boolean
   createdAt?: boolean
@@ -1179,13 +1220,14 @@ export type BootcampSelectScalar = {
   recruitIntro?: boolean
   recruitCurriculum?: boolean
   recruitReview?: boolean
+  recruitReviewVisibility?: boolean
   recruitInstructors?: boolean
   interviewSettings?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BootcampOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "instructorName" | "description" | "thumbnail" | "startDate" | "endDate" | "status" | "recruitIntro" | "recruitCurriculum" | "recruitReview" | "recruitInstructors" | "interviewSettings" | "createdAt" | "updatedAt", ExtArgs["result"]["bootcamp"]>
+export type BootcampOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "instructorName" | "description" | "thumbnail" | "startDate" | "endDate" | "status" | "recruitIntro" | "recruitCurriculum" | "recruitReview" | "recruitReviewVisibility" | "recruitInstructors" | "interviewSettings" | "createdAt" | "updatedAt", ExtArgs["result"]["bootcamp"]>
 export type BootcampInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   courses?: boolean | Prisma.Bootcamp$coursesArgs<ExtArgs>
   applicants?: boolean | Prisma.Bootcamp$applicantsArgs<ExtArgs>
@@ -1216,6 +1258,7 @@ export type $BootcampPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     recruitIntro: string
     recruitCurriculum: string
     recruitReview: string
+    recruitReviewVisibility: string
     recruitInstructors: runtime.JsonValue | null
     interviewSettings: runtime.JsonValue | null
     createdAt: Date
@@ -1658,6 +1701,7 @@ export interface BootcampFieldRefs {
   readonly recruitIntro: Prisma.FieldRef<"Bootcamp", 'String'>
   readonly recruitCurriculum: Prisma.FieldRef<"Bootcamp", 'String'>
   readonly recruitReview: Prisma.FieldRef<"Bootcamp", 'String'>
+  readonly recruitReviewVisibility: Prisma.FieldRef<"Bootcamp", 'String'>
   readonly recruitInstructors: Prisma.FieldRef<"Bootcamp", 'Json'>
   readonly interviewSettings: Prisma.FieldRef<"Bootcamp", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Bootcamp", 'DateTime'>

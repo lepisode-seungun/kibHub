@@ -1,8 +1,8 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
-import { MEMBER_STATUS_BADGES, APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
+import { MEMBER_STATUS_BADGES, APPLICANT_STATUS_BADGES, BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
@@ -47,6 +47,11 @@ export class BootcampDashboardPage implements OnInit {
     educationPeriod: '',
   });
 
+  statusBadgeClass = computed(() => {
+    const status = this.info().status;
+    return BOOTCAMP_STATUS_BADGES[status] || 'bg-zinc-50 border-zinc-200 text-zinc-500';
+  });
+
   ngOnInit(): void {
     const id = this.bootcampCtx.currentBootcampId();
     if (id) {
@@ -83,14 +88,14 @@ export class BootcampDashboardPage implements OnInit {
       const STATUS_MAP: Record<string, string> = {
         ACTIVE: '정상', BLOCKED: '차단', WITHDRAWN: '탈퇴',
       };
-      this.instructorData = users.map((u: any) => ({
+      this.instructorData.set(users.map((u: any) => ({
         id: u.id,
         status: STATUS_MAP[u.status] || u.status,
         name: u.name || '',
         nickname: u.nickname || '',
         phone: u.phone || '',
         email: u.email || '',
-      }));
+      })));
     } catch (e) {
       console.error('강사 목록 로드 실패:', e);
     }
@@ -121,7 +126,97 @@ export class BootcampDashboardPage implements OnInit {
 
   toggleSection(): void { this.sectionOpen.update(v => !v); }
   toggleDropdown(): void { this.dropdownOpen.update(v => !v); }
-  onDropdownAction(_action: string): void { this.dropdownOpen.set(false); }
+
+  // 상태 변경 서브메뉴
+  statusSubMenuOpen = signal(false);
+  readonly STATUS_OPTIONS = [
+    { value: 'PREPARING', label: '준비' },
+    { value: 'RECRUITING', label: '모집' },
+    { value: 'OPERATING', label: '운영' },
+    { value: 'CLOSED', label: '마감' },
+    { value: 'ENDED', label: '종료' },
+  ];
+
+  onDropdownAction(action: string): void {
+    if (action === '상태 변경') {
+      this.statusSubMenuOpen.update(v => !v);
+      return;
+    }
+    this.dropdownOpen.set(false);
+    this.statusSubMenuOpen.set(false);
+    if (action === '수정') {
+      this.openBootcampEditDrawer();
+    } else if (action === '삭제') {
+      this.showBootcampDeleteModal.set(true);
+    }
+  }
+
+  async changeBootcampStatus(status: string): Promise<void> {
+    this.dropdownOpen.set(false);
+    this.statusSubMenuOpen.set(false);
+    try {
+      await this.api.bootcamps.update(this.bootcampId, { status } as any);
+      this.toast.success('상태가 변경되었습니다.');
+      await this.loadBootcamp(this.bootcampId);
+    } catch (e) {
+      this.toast.error('상태 변경에 실패했습니다.');
+    }
+  }
+
+  // ===== 부트캠프 수정 드로어 =====
+  bootcampEditOpen = signal(false);
+  editBootcampName = signal('');
+  editBootcampStartDate = signal('');
+  editBootcampEndDate = signal('');
+
+  openBootcampEditDrawer(): void {
+    const b = this.info();
+    this.editBootcampName.set(b.bootcampName || '');
+    // educationPeriod에서 날짜 추출 시도
+    this.editBootcampStartDate.set('');
+    this.editBootcampEndDate.set('');
+    this.bootcampEditOpen.set(true);
+    // 원본 데이터에서 날짜 로드
+    this.api.bootcamps.findOne(this.bootcampId).then((bk: any) => {
+      if (bk.startDate) this.editBootcampStartDate.set(new Date(bk.startDate).toISOString().substring(0, 10));
+      if (bk.endDate) this.editBootcampEndDate.set(new Date(bk.endDate).toISOString().substring(0, 10));
+    });
+  }
+
+  closeBootcampEditDrawer(): void { this.bootcampEditOpen.set(false); }
+
+  async submitBootcampEdit(): Promise<void> {
+    const name = this.editBootcampName().trim();
+    if (!name) { this.toast.error('부트캠프명을 입력해주세요.'); return; }
+    try {
+      const payload: any = { name };
+      if (this.editBootcampStartDate()) payload.startDate = this.editBootcampStartDate();
+      if (this.editBootcampEndDate()) payload.endDate = this.editBootcampEndDate();
+      await this.api.bootcamps.update(this.bootcampId, payload);
+      this.toast.success('수정 완료 되었습니다.');
+      this.bootcampEditOpen.set(false);
+      await this.loadBootcamp(this.bootcampId);
+    } catch (e) {
+      this.toast.error('수정에 실패했습니다.');
+    }
+  }
+
+  // ===== 부트캠프 삭제 모달 =====
+  showBootcampDeleteModal = signal(false);
+
+  cancelBootcampDelete(): void { this.showBootcampDeleteModal.set(false); }
+
+  async confirmBootcampDelete(): Promise<void> {
+    try {
+      await this.api.bootcamps.delete(this.bootcampId);
+      this.toast.success('삭제 완료 되었습니다.');
+      this.showBootcampDeleteModal.set(false);
+      // 메인 목록으로 이동
+      window.history.back();
+    } catch (e) {
+      this.toast.error('삭제에 실패했습니다.');
+    }
+  }
 
   // ===== 강사 목록 섹션 =====
   instructorSectionOpen = signal(true);
@@ -136,7 +231,7 @@ export class BootcampDashboardPage implements OnInit {
     { key: 'delete', label: '', width: '40px', type: 'action' },
   ];
 
-  instructorData: PersonRow[] = [];
+  instructorData = signal<PersonRow[]>([]);
 
   toggleInstructorSection(): void { this.instructorSectionOpen.update(v => !v); }
 

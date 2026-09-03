@@ -1,6 +1,7 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
 import { isImageFile as _isImageFile, downloadFile as _downloadFile } from '../../utils/file.utils';
 
@@ -23,6 +24,7 @@ export class NoticeDetailPage implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
 
   noticeId = '';
   bootcampId = '';
@@ -33,7 +35,7 @@ export class NoticeDetailPage implements OnInit {
   isPinned = signal(false);
   noticeTitle = signal('');
   noticeDate = signal('');
-  noticeContent = signal('');
+  noticeContent = signal<SafeHtml>('');
   noticeAuthor = signal('');
   attachFiles = signal<AttachFile[]>([]);
 
@@ -52,7 +54,7 @@ export class NoticeDetailPage implements OnInit {
     try {
       const notice = await this.api.notices.findOne(id);
       this.noticeTitle.set(notice.title);
-      this.noticeContent.set(notice.body || '');
+      this.noticeContent.set(this.sanitizer.bypassSecurityTrustHtml(notice.body || ''));
       this.noticeDate.set(new Date(notice.createdAt).toLocaleDateString('ko-KR'));
       this.isPinned.set(notice.pinned);
       this.noticeAuthor.set(

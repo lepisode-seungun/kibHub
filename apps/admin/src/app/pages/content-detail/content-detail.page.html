@@ -210,6 +210,7 @@
       [columns]="reportColumns"
       [data]="reportData()"
       searchPlaceholder="신고자, 내용으로 검색"
+      (rowClick)="openReportDrawer($event)"
       (actionClick)="onReportDelete($event)">
     </adm-data-grid>
   }
@@ -324,6 +325,68 @@
       searchPlaceholder="신고자, 내용으로 검색"
       (actionClick)="onDrawerReportDelete($event)">
     </adm-data-grid>
+
+  </div>
+}
+
+<!-- ===== 신고 상세 사이드 드로어 ===== -->
+@if (showReportDrawer()) {
+  <div class="fixed inset-0 bg-black/40 z-[998] transition-opacity"
+       tabindex="0" role="button"
+       (click)="closeReportDrawer()"
+       (keyup.escape)="closeReportDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] h-full w-[522px] bg-white rounded-l-md shadow-2xl flex flex-col p-6 gap-6 overflow-y-auto drawer-slide-in">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center justify-center p-1.5 rounded-md hover:bg-zinc-100 transition-colors cursor-pointer border-none bg-transparent self-start"
+            (click)="closeReportDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M4.41 1.41L5.82 0l6 6-6 6-1.41-1.41L8.99 6z" fill="#374151"/>
+        <path d="M10.41 1.41L11.82 0l6 6-6 6-1.41-1.41L14.99 6z" fill="#374151"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <div class="flex items-center justify-between">
+      <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">신고 상세</h4>
+    </div>
+
+    <!-- 폼 영역 -->
+    <div class="flex flex-col gap-3">
+
+      <!-- 1행: 콘텐츠 제목 / 신고자 -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠 제목</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedReport()?.title || '-' }}</span>
+        </div>
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">신고자</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedReport()?.reporter }}</span>
+        </div>
+      </div>
+
+      <!-- 2행: 신고일시 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">신고일시</span>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedReport()?.reportedAt }}</span>
+      </div>
+
+      <!-- 신고 내용 -->
+      <div class="flex flex-col gap-2 py-1.5">
+        <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">신고 내용</span>
+        <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0">{{ selectedReport()?.content || '-' }}</p>
+      </div>
+
+      <!-- 댓글 내용 (댓글 신고인 경우) -->
+      @if (selectedReport()?.commentContent) {
+        <div class="flex flex-col gap-2 py-1.5">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">댓글 내용</span>
+          <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0">{{ selectedReport()?.commentContent }}</p>
+        </div>
+      }
+    </div>
 
   </div>
 }

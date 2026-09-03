@@ -154,6 +154,8 @@ export class HomePage implements AfterViewInit, OnInit {
         rank: null,
         featured: false,
         feedbackCount: (c as any).feedbackCount || 0,
+        comment: (c as any).topComment?.body || '',
+        commenter: (c as any).topComment?.author?.nickname || (c as any).topComment?.author?.name || '',
       });
       // 첫 12개는 갤러리
       this.contentCards.set(contents.slice(0, 12).map((c, i) => ({

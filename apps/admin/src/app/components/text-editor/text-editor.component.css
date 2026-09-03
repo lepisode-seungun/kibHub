@@ -1,7 +1,8 @@
 .editor-wrapper {
+  position: relative;
   border: 1px solid #D1D5DB;
   border-radius: 9px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* 툴바 */
@@ -12,6 +13,7 @@
   padding: 8px 16px;
   background: #F9FAFB;
   border-bottom: 1px solid #E5E7EB;
+  border-radius: 9px 9px 0 0;
 }
 
 .toolbar-group {
@@ -56,6 +58,8 @@
   width: auto;
   gap: 4px;
   padding: 0 8px;
+  font-family: 'SUIT', sans-serif;
+  font-size: 13px;
 }
 
 /* 에디터 콘텐츠 영역 */
@@ -70,6 +74,7 @@
   color: #1F2937;
   outline: none;
   overflow-y: auto;
+  border-radius: 0 0 9px 9px;
 }
 
 .editor-content:empty::before {
@@ -79,39 +84,50 @@
 }
 
 .editor-content:focus {
-  box-shadow: inset 0 0 0 1px #3C8EEE;
+  box-shadow: none;
 }
 
-/* Heading 드롭다운 */
-.heading-dropdown {
+/* 폰트 크기 드롭다운 */
+.fontsize-dropdown {
   position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 4px;
-  min-width: 140px;
-  background: white;
+  top: calc(100% + 4px);
+  left: -16px;
+  min-width: 80px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   z-index: 10;
-  overflow: hidden;
+  padding: 4px 0;
 }
 
-.heading-option {
+.fontsize-option {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 8px 12px;
+  padding: 5px 12px;
   border: none;
   background: transparent;
   cursor: pointer;
   font-family: 'SUIT', sans-serif;
-  color: #374151;
-  transition: background 0.15s;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  transition: all 0.12s ease;
 }
 
-.heading-option:hover {
+.fontsize-option:hover {
   background: #F3F4F6;
+  color: #374151;
+}
+
+.fontsize-option.active {
+  background: #EFF6FF;
+  color: #3C8EEE;
+  font-weight: 600;
 }
 
 /* 에디터 내 heading 스타일 */

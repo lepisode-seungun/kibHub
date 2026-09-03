@@ -364,9 +364,8 @@
         @if (recruitIntro()) {
           <div class="bd-block-desc w-full" [innerHTML]="safeIntroHtml()"></div>
         } @else {
-          <p class="bd-block-desc">{{ description() }}</p>
           <div class="bd-editor-placeholder">
-            <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-[#C4C4C4]">에디터</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">등록된 부트캠프 소개가 없습니다.</span>
           </div>
         }
       </div>
@@ -431,23 +430,25 @@
   </section>
 
   <!-- 부트캠프 후기 섹션 -->
-  <section class="bd-intro-section" id="bd-intro-section">
-    <div class="flex flex-col items-center gap-[60px] w-full max-w-[1400px]">
-      <!-- 스텝 아이콘 -->
-      <div class="flex items-center gap-2.5">
-        <img src="/images/bd-steps.svg" alt="" height="63">
-      </div>
-
-      <!-- 에디터 작성 영역 -->
-      @if (recruitReview()) {
-        <div class="bd-block-desc w-full" [innerHTML]="safeReviewHtml()"></div>
-      } @else {
-        <div class="flex flex-col items-center gap-10">
-          <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 text-center">에디터 작성</span>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">부트캠프 후기 작성</span>
+  @if (recruitReviewVisible()) {
+    <section class="bd-intro-section" id="bd-intro-section">
+      <div class="flex flex-col items-center gap-[60px] w-full max-w-[1400px]">
+        <!-- 스텝 아이콘 -->
+        <div class="flex items-center gap-2.5">
+          <img src="/images/bd-steps.svg" alt="" height="63">
         </div>
-      }
-    </div>
-  </section>
+
+        <!-- 에디터 작성 영역 -->
+        @if (recruitReview()) {
+          <div class="bd-block-desc w-full" [innerHTML]="safeReviewHtml()"></div>
+        } @else {
+          <div class="flex flex-col items-center gap-10">
+            <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-100 text-center">에디터 작성</span>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">부트캠프 후기 작성</span>
+          </div>
+        }
+      </div>
+    </section>
+  }
 
 </main>

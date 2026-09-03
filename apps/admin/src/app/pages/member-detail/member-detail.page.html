@@ -174,7 +174,8 @@
       <adm-data-grid
         [columns]="bootcampColumns"
         [data]="bootcampHistory()"
-        searchPlaceholder="검색어를 입력하세요">
+        searchPlaceholder="검색어를 입력하세요"
+        (rowClick)="onApplicationClick($event)">
         <!-- 힌트 텍스트 -->
         <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
           <!-- info 아이콘 -->
@@ -194,7 +195,7 @@
             (click)="toggleSection('content')">
       <div class="flex items-center gap-3">
         <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">참여 부트캠프</span>
-        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ bootcampHistory.length }})</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ contentHistory().length }})</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200" [ngClass]="isOpen('content') ? '' : 'rotate-180'">
           <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -204,7 +205,8 @@
     @if (isOpen('content')) {
       <adm-data-grid
         [columns]="contentColumns"
-        [data]="contentHistory">
+        [data]="contentHistory()"
+        (rowClick)="onJoinedBootcampClick($event)">
         <!-- 힌트 텍스트 -->
         <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
@@ -223,7 +225,7 @@
             (click)="toggleSection('portfolio')">
       <div class="flex items-center gap-3">
         <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠</span>
-        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ contentHistory.length }})</span>
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ portfolioHistory.length }})</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200" [ngClass]="isOpen('portfolio') ? '' : 'rotate-180'">
           <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

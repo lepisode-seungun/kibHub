@@ -89,4 +89,23 @@ export class UsersService {
       data: { status: 'WITHDRAWN' },
     });
   }
+
+  /** 유저가 참여(합격)한 부트캠프 목록 */
+  async findUserBootcamps(userId: number) {
+    const applicants = await this.prisma.applicant.findMany({
+      where: { userId, status: 'ACCEPTED' },
+      include: {
+        bootcamp: { select: { id: true, name: true, status: true, startDate: true, endDate: true, createdAt: true } },
+      },
+      orderBy: { appliedAt: 'desc' },
+    });
+    return applicants.map(a => ({
+      id: a.bootcamp.id,
+      status: a.bootcamp.status,
+      name: a.bootcamp.name,
+      startDate: a.bootcamp.startDate,
+      endDate: a.bootcamp.endDate,
+      createdAt: a.bootcamp.createdAt,
+    }));
+  }
 }

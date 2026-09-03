@@ -18,7 +18,12 @@ interface CourseRow {
 }
 
 const COURSE_STATUS_MAP: Record<string, string> = {
-  PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료',
+  VISIBLE: '노출', HIDDEN: '숨김',
+  PENDING: '노출', IN_PROGRESS: '노출', COMPLETED: '노출',
+};
+
+const REVERSE_STATUS_MAP: Record<string, string> = {
+  '노출': 'VISIBLE', '숨김': 'HIDDEN',
 };
 
 function toCourseRow(c: Course): CourseRow {
@@ -52,9 +57,8 @@ export class CoursePage implements OnInit {
       key: 'status', label: '상태', width: '100px',
       badge: 'status',
       badgeStyles: {
-        '진행중': 'bg-blue-50 text-[#3C8EEE] border-blue-200',
-        '완료': 'bg-green-50 text-[#10B981] border-green-200',
-        '대기': 'bg-gray-50 text-[#6B7280] border-gray-200',
+        '노출': 'bg-green-50 text-[#10B981] border-green-200',
+        '숨김': 'bg-gray-50 text-[#6B7280] border-gray-200',
       },
     },
     { key: 'name', label: '과정명' },
@@ -67,7 +71,10 @@ export class CoursePage implements OnInit {
   data = signal<CourseRow[]>([]);
   bootcampId = 0;
 
-  contextMenuItems = ['숨김', '수정', '삭제'];
+  contextMenuItemsFn = (row: CourseRow) => {
+    const toggleLabel = row.status === '숨김' ? '노출' : '숨김';
+    return [toggleLabel, '수정', '삭제'];
+  };
 
   ngOnInit(): void {
     this.bootcampId = Number(this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id') || this.bootcampCtx.currentBootcampId() || 0);
@@ -95,7 +102,8 @@ export class CoursePage implements OnInit {
     const name = this.courseName().trim();
     if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
     try {
-      await this.api.courses.create(this.bootcampId, { name } as Partial<Course>);
+      const status = this.courseCategory() || 'VISIBLE';
+      await this.api.courses.create(this.bootcampId, { name, status } as any);
       this.toast.success('등록 완료 되었습니다.');
       this.drawerOpen.set(false);
       await this.loadCourses();
@@ -106,5 +114,66 @@ export class CoursePage implements OnInit {
 
   onRowClick(row: CourseRow): void {
     this.router.navigate(['/bootcamp/home/curriculum', row.id]);
+  }
+
+  // ===== 컨텍스트 메뉴 액션 =====
+  showDeleteDialog = signal(false);
+  deleteTargetRow = signal<CourseRow | null>(null);
+
+  editDrawerOpen = signal(false);
+  editCourseName = signal('');
+  editCourseStatus = signal('');
+  private editingCourseId: number | null = null;
+
+  async onContextMenuAction(event: { action: string; row: CourseRow }): Promise<void> {
+    if (event.action === '숨김' || event.action === '노출') {
+      const newStatus = event.action === '숨김' ? 'HIDDEN' : 'VISIBLE';
+      try {
+        await this.api.courses.update(event.row.id, { status: newStatus } as any);
+        this.toast.success(`${event.action} 처리 되었습니다.`);
+        await this.loadCourses();
+      } catch (e) { this.toast.error(`${event.action} 처리 실패`); }
+    } else if (event.action === '수정') {
+      this.editingCourseId = event.row.id;
+      this.editCourseName.set(event.row.name);
+      this.editCourseStatus.set(event.row.status);
+      this.editDrawerOpen.set(true);
+    } else if (event.action === '삭제') {
+      this.deleteTargetRow.set(event.row);
+      this.showDeleteDialog.set(true);
+    }
+  }
+
+  closeDeleteDialog(): void {
+    this.showDeleteDialog.set(false);
+    this.deleteTargetRow.set(null);
+  }
+
+  async confirmDelete(): Promise<void> {
+    const row = this.deleteTargetRow();
+    if (!row) return;
+    try {
+      await this.api.courses.delete(row.id);
+      this.toast.success('삭제가 완료 되었습니다.');
+      this.closeDeleteDialog();
+      await this.loadCourses();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '삭제 실패');
+    }
+  }
+
+  closeEditDrawer(): void { this.editDrawerOpen.set(false); }
+
+  async submitEdit(): Promise<void> {
+    if (!this.editingCourseId) return;
+    const name = this.editCourseName().trim();
+    if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
+    try {
+      const status = REVERSE_STATUS_MAP[this.editCourseStatus()] || 'VISIBLE';
+      await this.api.courses.update(this.editingCourseId, { name, status } as any);
+      this.toast.success('수정 완료 되었습니다.');
+      this.editDrawerOpen.set(false);
+      await this.loadCourses();
+    } catch (e: unknown) { this.toast.error('수정에 실패했습니다.'); }
   }
 }

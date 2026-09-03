@@ -83,7 +83,7 @@
               </div>
             } @else {
               <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700" style="white-space: pre-line;">
-                {{ row[col.key] }}
+                {{ row[col.key]?.length > 50 ? (row[col.key].slice(0, 50) + '...') : row[col.key] }}
               </span>
             }
           </div>

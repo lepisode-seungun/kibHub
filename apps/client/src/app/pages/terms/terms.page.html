@@ -12,7 +12,7 @@
           </svg>
         </div>
       } @else if (termsContent()) {
-        <p class="font-suit font-medium text-base leading-[180%] tracking-tight text-zinc-400 m-0 whitespace-pre-wrap">{{ termsContent() }}</p>
+        <div class="font-suit font-medium text-base leading-[180%] tracking-tight text-zinc-400 m-0" [innerHTML]="termsContent()"></div>
       } @else {
         <p class="font-suit font-medium text-base leading-[180%] tracking-tight text-zinc-400 m-0">서비스 약관 내용이 등록되지 않았습니다.</p>
       }

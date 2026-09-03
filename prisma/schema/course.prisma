@@ -18,6 +18,7 @@ enum CourseStatus {
   IN_PROGRESS
   COMPLETED
   HIDDEN
+  VISIBLE
 }
 
 // ===== 강의 =====
@@ -51,6 +52,7 @@ model LectureFile {
 model Assignment {
   id        Int       @id @default(autoincrement())
   title     String
+  category  String    @default("")
   content   String    @default("")
   videoUrl  String    @default("")
   dueDate    DateTime?

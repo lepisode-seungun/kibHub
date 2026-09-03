@@ -2971,6 +2971,7 @@ export const BootcampScalarFieldEnum = {
   recruitIntro: 'recruitIntro',
   recruitCurriculum: 'recruitCurriculum',
   recruitReview: 'recruitReview',
+  recruitReviewVisibility: 'recruitReviewVisibility',
   recruitInstructors: 'recruitInstructors',
   interviewSettings: 'interviewSettings',
   createdAt: 'createdAt',
@@ -3126,6 +3127,7 @@ export type LectureFileScalarFieldEnum = (typeof LectureFileScalarFieldEnum)[key
 export const AssignmentScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  category: 'category',
   content: 'content',
   videoUrl: 'videoUrl',
   dueDate: 'dueDate',

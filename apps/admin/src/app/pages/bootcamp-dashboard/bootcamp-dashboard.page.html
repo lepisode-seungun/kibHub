@@ -26,10 +26,25 @@
           </svg>
         </button>
         @if (dropdownOpen()) {
-          <div class="dropdown-menu">
-            <button class="dropdown-item" (click)="onDropdownAction('상태 변경')">상태 변경</button>
-            <button class="dropdown-item active" (click)="onDropdownAction('수정')">수정</button>
-            <button class="dropdown-item" (click)="onDropdownAction('삭제')">삭제</button>
+          <div class="dropdown-menu" style="width: 88px; padding: 4px 0;" (click)="$event.stopPropagation()">
+            <div style="position: relative;">
+              <button class="dropdown-item" style="padding: 4px 2px; gap: 2px;" (click)="onDropdownAction('상태 변경')">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
+                상태 변경
+              </button>
+              @if (statusSubMenuOpen()) {
+                <div style="position: absolute; right: 100%; top: 0; display: flex; flex-direction: column; padding: 4px 0; width: 72px; background: #fff; border: 1px solid #f3f4f6; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1); border-radius: 8px; z-index: 11;">
+                  @for (opt of STATUS_OPTIONS; track opt.value) {
+                    <button class="dropdown-item" style="padding: 4px 2px;"
+                            [style.color]="info().status === opt.label ? '#3C8EEE' : '#4b5563'"
+                            [style.font-weight]="info().status === opt.label ? '700' : '500'"
+                            (click)="changeBootcampStatus(opt.value)">{{ opt.label }}</button>
+                  }
+                </div>
+              }
+            </div>
+            <button class="dropdown-item" style="padding: 4px 2px;" (click)="onDropdownAction('수정')">수정</button>
+            <button class="dropdown-item" style="padding: 4px 2px;" (click)="onDropdownAction('삭제')">삭제</button>
           </div>
         }
       </div>
@@ -46,8 +61,9 @@
           </div>
           <div class="info-field">
             <span class="field-label">상태</span>
-            <div class="status-badge">
-              <span>{{ info().status }}</span>
+            <div class="inline-flex items-center px-2 py-1 rounded-full border box-border"
+                 [ngClass]="statusBadgeClass()">
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]">{{ info().status }}</span>
             </div>
           </div>
           <div class="info-field">
@@ -81,7 +97,7 @@
       <div class="info-header-left">
         <button class="section-toggle" (click)="toggleInstructorSection()">
           <span class="info-title">강사 목록</span>
-          <span class="data-count">({{ instructorData.length }})</span>
+          <span class="data-count">({{ instructorData().length }})</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                class="toggle-arrow"
                [class.collapsed]="!instructorSectionOpen()">
@@ -103,7 +119,7 @@
     @if (instructorSectionOpen()) {
       <adm-data-grid
         [columns]="instructorColumns"
-        [data]="instructorData"
+        [data]="instructorData()"
         [showSearch]="false"
         (actionClick)="removeInstructor($event)">
       </adm-data-grid>
@@ -433,6 +449,97 @@
       <div class="dialog-actions">
         <button class="dialog-btn-cancel" (click)="cancelRemoveStudent()">취소</button>
         <button class="dialog-btn-confirm" (click)="confirmRemoveStudent()">내보내기</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 부트캠프 수정 드로어 ===== -->
+@if (bootcampEditOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeBootcampEditDrawer()"
+       (keydown.enter)="closeBootcampEditDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto drawer-slide-in"
+       style="width: 522px; border-radius: 6px 0 0 6px;">
+
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeBootcampEditDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프 수정</span>
+
+    <!-- 부트캠프명 -->
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center gap-0.5">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">부트캠프명</span>
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">*</span>
+      </div>
+      <input type="text"
+             class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             style="height: 40px;"
+             [value]="editBootcampName()"
+             (input)="editBootcampName.set($any($event.target).value)"
+             placeholder="부트캠프명을 입력하세요" />
+    </div>
+
+    <!-- 교육기간 시작 -->
+    <div class="flex flex-col gap-2 w-full">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">교육기간 시작</span>
+      <input type="date"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="editBootcampStartDate()"
+             (input)="editBootcampStartDate.set($any($event.target).value)" />
+    </div>
+
+    <!-- 교육기간 종료 -->
+    <div class="flex flex-col gap-2 w-full">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">교육기간 종료</span>
+      <input type="date"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="editBootcampEndDate()"
+             (input)="editBootcampEndDate.set($any($event.target).value)" />
+    </div>
+
+    <div class="flex flex-col flex-1 justify-end">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitBootcampEdit()">
+        수정
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 부트캠프 삭제 모달 ===== -->
+@if (showBootcampDeleteModal()) {
+  <div class="dialog-overlay" (click)="cancelBootcampDelete()">
+    <div class="dialog-card" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.5" fill="white"/>
+        </svg>
+        <span class="dialog-title">부트캠프 삭제</span>
+      </div>
+      <div class="dialog-info">
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">부트캠프명</span>
+          <span class="dialog-info-value">{{ info().bootcampName }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">등록일시</span>
+          <span class="dialog-info-value">{{ info().createdAt }}</span>
+        </div>
+      </div>
+      <p class="dialog-warning">부트캠프를 삭제하시겠습니까?<br>하위 과정, 강의, 과제 등 모든 데이터가 삭제됩니다.</p>
+      <div class="dialog-actions">
+        <button class="dialog-btn-cancel" (click)="cancelBootcampDelete()">취소</button>
+        <button class="dialog-btn-confirm" (click)="confirmBootcampDelete()">삭제</button>
       </div>
     </div>
   </div>

@@ -1,11 +1,12 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
 @Component({
   selector: 'adm-schedule',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TextEditorComponent],
   templateUrl: './schedule.page.html',
   styleUrl: './schedule.page.css',
 })
@@ -46,21 +47,23 @@ export class SchedulePage implements OnInit {
     }
   }
 
-  updateTermsContent(event: Event): void {
-    const value = (event.target as HTMLTextAreaElement).value;
-    this.termsContent.set(value);
+  // 에디터에서 변경된 HTML을 draft에 저장
+  private termsDraft = '';
+  private privacyDraft = '';
+
+  onTermsChange(html: string): void {
+    this.termsDraft = html;
   }
 
-  updatePrivacyContent(event: Event): void {
-    const value = (event.target as HTMLTextAreaElement).value;
-    this.privacyContent.set(value);
+  onPrivacyChange(html: string): void {
+    this.privacyDraft = html;
   }
 
   async saveTerms(): Promise<void> {
     if (this.isSaving()) return;
     this.isSaving.set(true);
     try {
-      await this.api.siteSettings.set('terms_of_service', this.termsContent());
+      await this.api.siteSettings.set('terms_of_service', this.termsDraft || this.termsContent());
       alert('이용약관이 저장되었습니다.');
     } catch {
       alert('저장에 실패했습니다.');
@@ -73,7 +76,7 @@ export class SchedulePage implements OnInit {
     if (this.isSaving()) return;
     this.isSaving.set(true);
     try {
-      await this.api.siteSettings.set('privacy_policy', this.privacyContent());
+      await this.api.siteSettings.set('privacy_policy', this.privacyDraft || this.privacyContent());
       alert('개인정보처리방침이 저장되었습니다.');
     } catch {
       alert('저장에 실패했습니다.');

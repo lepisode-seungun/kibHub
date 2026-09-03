@@ -67,6 +67,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   recruitIntro = signal('');
   recruitCurriculum = signal('');
   recruitReview = signal('');
+  recruitReviewVisible = signal(false);
 
   /** sanitized HTML — 에디터 인라인 스타일(text-align 등) 유지 */
   safeIntroHtml = computed<SafeHtml>(() =>
@@ -121,6 +122,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
       this.recruitIntro.set(bc.recruitIntro || '');
       this.recruitCurriculum.set(bc.recruitCurriculum || '');
       this.recruitReview.set(bc.recruitReview || '');
+      this.recruitReviewVisible.set((bc as any).recruitReviewVisibility === 'show');
       if (bc.recruitInstructors && Array.isArray(bc.recruitInstructors)) {
         this.instructors.set(bc.recruitInstructors as Instructor[]);
       }

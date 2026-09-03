@@ -189,6 +189,19 @@ export class ContentDetailPage implements OnInit {
 
   reportData = signal<ReportRow[]>([]);
 
+  // ===== 신고 상세 사이드 드로어 =====
+  showReportDrawer = signal(false);
+  selectedReport = signal<ReportRow | null>(null);
+
+  openReportDrawer(report: ReportRow): void {
+    this.selectedReport.set(report);
+    this.showReportDrawer.set(true);
+  }
+
+  closeReportDrawer(): void {
+    this.showReportDrawer.set(false);
+  }
+
   // ===== 댓글 상세 사이드 드로어 =====
   showCommentDrawer = signal(false);
   drawerKebabOpen = signal(false);

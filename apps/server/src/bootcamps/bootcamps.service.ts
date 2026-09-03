@@ -89,6 +89,18 @@ export class BootcampsService {
     });
   }
 
+  async getChildCounts(id: number) {
+    const courseIds = (await this.prisma.course.findMany({ where: { bootcampId: id }, select: { id: true } })).map(c => c.id);
+    let lectures = 0, assignments = 0;
+    if (courseIds.length > 0) {
+      lectures = await this.prisma.lecture.count({ where: { courseId: { in: courseIds } } });
+      assignments = await this.prisma.assignment.count({ where: { courseId: { in: courseIds } } });
+    }
+    const applicants = await this.prisma.applicant.count({ where: { bootcampId: id } });
+    const notices = await this.prisma.notice.count({ where: { bootcampId: id } });
+    return { courses: courseIds.length, lectures, assignments, applicants, notices };
+  }
+
   async getInterviewSettings(id: number) {
     const bootcamp = await this.prisma.bootcamp.findUnique({
       where: { id },

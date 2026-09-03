@@ -21,6 +21,11 @@ export class BootcampsController {
   }
 
   // interview-settings 라우트를 :id 보다 먼저 정의 (라우트 우선순위)
+  @Get(':id/child-counts')
+  getChildCounts(@Param('id', ParseIntPipe) id: number) {
+    return this.bootcampsService.getChildCounts(id);
+  }
+
   @Get(':id/interview-settings')
   getInterviewSettings(@Param('id', ParseIntPipe) id: number) {
     return this.bootcampsService.getInterviewSettings(id);

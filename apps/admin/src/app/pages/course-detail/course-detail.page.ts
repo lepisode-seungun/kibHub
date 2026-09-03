@@ -15,8 +15,8 @@ interface LectureAssignmentRow {
   createdAt: string;
 }
 
-const STATUS_MAP: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
-const STATUS_REVERSE: Record<string, string> = { '대기': 'PENDING', '진행중': 'IN_PROGRESS', '완료': 'COMPLETED' };
+const STATUS_MAP: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', PENDING: '노출', IN_PROGRESS: '노출', COMPLETED: '노출' };
+const STATUS_REVERSE: Record<string, string> = { '노출': 'VISIBLE', '숨김': 'HIDDEN' };
 
 @Component({
   selector: 'adm-course-detail',
@@ -43,9 +43,17 @@ export class CourseDetailPage implements OnInit {
   toggleMoreMenu(): void { this.moreMenuOpen.update(v => !v); }
   closeMoreMenu(): void { this.moreMenuOpen.set(false); }
 
-  onMoreMenuAction(action: string): void {
+  async onMoreMenuAction(action: string): Promise<void> {
     this.moreMenuOpen.set(false);
-    if (action === 'edit') {
+    if (action === 'hide') {
+      const current = this.courseData().status;
+      const newStatus = current === '숨김' ? 'VISIBLE' : 'HIDDEN';
+      try {
+        await this.api.courses.update(this.courseId, { status: newStatus } as any);
+        this.toast.success(current === '숨김' ? '노출 처리 되었습니다.' : '숨김 처리 되었습니다.');
+        await this.loadCourse(this.courseId);
+      } catch (e) { this.toast.error('상태 변경 실패'); }
+    } else if (action === 'edit') {
       this.openEditDrawer();
     } else if (action === 'delete') {
       this.showDeleteModal.set(true);
@@ -108,7 +116,7 @@ export class CourseDetailPage implements OnInit {
     const name = this.editName().trim();
     if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
     try {
-      const status = STATUS_REVERSE[this.editStatus()] || 'PENDING';
+      const status = STATUS_REVERSE[this.editStatus()] || 'VISIBLE';
       await this.api.courses.update(this.courseId, { name, status } as any);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);

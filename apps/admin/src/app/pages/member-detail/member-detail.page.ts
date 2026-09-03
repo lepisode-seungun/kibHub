@@ -1,7 +1,7 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import {
   APPLICANT_STATUS_BADGES,
@@ -12,6 +12,7 @@ import {
 } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
+import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { User, UserSns, UpdateUserDto, ContentRow, CommentRow } from '../../shared/types';
 
 /** 회원 상세 페이지용 표시 데이터 */
@@ -66,14 +67,16 @@ interface BootcampHistoryRow {
 })
 export class MemberDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private bootcampCtx = inject(BootcampContextService);
 
   loading = signal(true);
 
   sections = signal<Record<string, boolean>>({
     basic: true, extra: true, bootcamp: true,
-    content: false, portfolio: false, comment: false,
+    content: true, portfolio: true, comment: true,
   });
 
   member = signal<MemberDetail>({
@@ -113,9 +116,26 @@ export class MemberDetailPage implements OnInit {
     } finally {
       this.loading.set(false);
     }
+
+    // 참여 부트캠프 로드
+    try {
+      const bootcamps = await this.api.users.findBootcamps(id);
+      const statusMap: Record<string, string> = {
+        PREPARING: '준비', RECRUITING: '모집', OPERATING: '운영', CLOSED: '마감', ENDED: '종료',
+      };
+      this.contentHistory.set(bootcamps.map((b: any, i: number) => ({
+        id: i + 1,
+        bootcampId: b.id,
+        status: statusMap[b.status] || b.status,
+        title: b.name,
+        createdAt: b.createdAt ? new Date(b.createdAt).toLocaleDateString('ko-KR') : '-',
+      })));
+    } catch (e) {
+      console.error('참여 부트캠프 로드 실패:', e);
+    }
   }
 
-  // ===== 부트캠프 그리드 =====
+  // ===== 부트캠프 지원 내역 그리드 =====
   bootcampColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
     { key: 'status', label: '지원 상태', width: '100px', badge: 'status', badgeStyles: APPLICANT_STATUS_BADGES },
@@ -133,7 +153,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  contentHistory: ContentRow[] = [];
+  contentHistory = signal<any[]>([]);
 
   // ===== 콘텐츠 그리드 =====
   portfolioColumns: GridColumn[] = [
@@ -171,6 +191,16 @@ export class MemberDetailPage implements OnInit {
 
   isOpen(key: string): boolean {
     return this.sections()[key] ?? false;
+  }
+
+  // ===== 행 클릭 핸들러 =====
+  onApplicationClick(row: any): void {
+    this.router.navigate(['/bootcamp/home/applicants', row.id]);
+  }
+
+  onJoinedBootcampClick(row: any): void {
+    this.bootcampCtx.setBootcamp(row.bootcampId, row.title);
+    this.router.navigate(['/bootcamp/home/dashboard']);
   }
 
   // ===== 케밥 메뉴 =====

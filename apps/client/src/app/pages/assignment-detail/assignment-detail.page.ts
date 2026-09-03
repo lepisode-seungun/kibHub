@@ -102,7 +102,14 @@ export class AssignmentDetailPage implements OnInit {
       this.description.set(assignment.content || assignment.body || '');
       this.videoUrl.set(assignment.videoUrl || '');
       if (assignment.dueDate) {
-        this.dateRange.set(new Date(assignment.dueDate).toLocaleDateString('ko-KR'));
+        const fmt = (d: string) => {
+          const dt = new Date(d);
+          return `${dt.getFullYear()}.${String(dt.getMonth() + 1).padStart(2, '0')}.${String(dt.getDate()).padStart(2, '0')}`;
+        };
+        const range = assignment.dueDateEnd
+          ? `${fmt(assignment.dueDate)} ~ ${fmt(assignment.dueDateEnd)}`
+          : fmt(assignment.dueDate);
+        this.dateRange.set(range);
       }
       if (assignment.course) {
         this.courseLabel.set(assignment.course.name || assignment.course.title || '');

@@ -70,19 +70,27 @@ export class BootcampPage implements OnInit {
   // ===== 삭제 다이얼로그 =====
   showDeleteDialog = signal(false);
   deleteTargetRow = signal<BootcampRow | null>(null);
+  deleteChildCounts = signal<{ courses: number; lectures: number; assignments: number; applicants: number; notices: number } | null>(null);
 
   async onContextMenuAction(event: { action: string; row: BootcampRow }): Promise<void> {
     if (event.action === '수정') {
       await this.openEditDrawer(event.row.id);
     } else if (event.action === '삭제') {
       this.deleteTargetRow.set(event.row);
+      this.deleteChildCounts.set(null);
       this.showDeleteDialog.set(true);
+      // 하위 데이터 건수 비동기 로드
+      try {
+        const counts = await this.api.bootcamps.getChildCounts(event.row.id);
+        this.deleteChildCounts.set(counts);
+      } catch (e) { console.error('하위 데이터 카운트 실패:', e); }
     }
   }
 
   closeDeleteDialog(): void {
     this.showDeleteDialog.set(false);
     this.deleteTargetRow.set(null);
+    this.deleteChildCounts.set(null);
   }
 
   async confirmDelete(): Promise<void> {

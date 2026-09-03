@@ -7,9 +7,25 @@
 
     @if (isLoading()) {
       <div class="flex flex-col justify-center items-center py-20 w-full">
-        <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#7A48FF" stroke-width="4"></circle>
-          <path class="opacity-75" fill="#7A48FF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+          <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+            <animate id="hof1" fill="freeze" attributeName="x" begin="0;hof12.end" dur="0.2s" values="1;13"/>
+            <animate id="hof2" fill="freeze" attributeName="y" begin="hof4.end" dur="0.2s" values="1;13"/>
+            <animate id="hof3" fill="freeze" attributeName="x" begin="hof7.end" dur="0.2s" values="13;1"/>
+            <animate id="hof4b" fill="freeze" attributeName="y" begin="hof10.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+            <animate id="hof5" fill="freeze" attributeName="y" begin="hof1.end" dur="0.2s" values="13;1"/>
+            <animate id="hof6" fill="freeze" attributeName="x" begin="hof2.end" dur="0.2s" values="1;13"/>
+            <animate id="hof7b" fill="freeze" attributeName="y" begin="hof3.end" dur="0.2s" values="1;13"/>
+            <animate id="hof8" fill="freeze" attributeName="x" begin="hof4b.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+            <animate id="hof4" fill="freeze" attributeName="x" begin="hof5.end" dur="0.2s" values="13;1"/>
+            <animate id="hof7" fill="freeze" attributeName="y" begin="hof6.end" dur="0.2s" values="13;1"/>
+            <animate id="hof10" fill="freeze" attributeName="x" begin="hof7b.end" dur="0.2s" values="1;13"/>
+            <animate id="hof12" fill="freeze" attributeName="y" begin="hof8.end" dur="0.2s" values="1;13"/>
+          </rect>
         </svg>
         <span class="font-suit font-medium text-sm text-zinc-400 mt-3">명예의 전당 포트폴리오를 불러오는 중입니다...</span>
       </div>

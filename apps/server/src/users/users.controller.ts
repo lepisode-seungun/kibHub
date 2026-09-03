@@ -37,6 +37,11 @@ export class UsersController {
     return this.usersService.updateRole(id, body.role);
   }
 
+  @Get(':id/bootcamps')
+  findUserBootcamps(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findUserBootcamps(id);
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard)
   delete(@Param('id', ParseIntPipe) id: number) {

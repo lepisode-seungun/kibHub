@@ -67,7 +67,8 @@ export const CourseStatus = {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
-  HIDDEN: 'HIDDEN'
+  HIDDEN: 'HIDDEN',
+  VISIBLE: 'VISIBLE'
 } as const
 
 export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus]

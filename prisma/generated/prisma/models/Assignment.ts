@@ -39,6 +39,7 @@ export type AssignmentSumAggregateOutputType = {
 export type AssignmentMinAggregateOutputType = {
   id: number | null
   title: string | null
+  category: string | null
   content: string | null
   videoUrl: string | null
   dueDate: Date | null
@@ -51,6 +52,7 @@ export type AssignmentMinAggregateOutputType = {
 export type AssignmentMaxAggregateOutputType = {
   id: number | null
   title: string | null
+  category: string | null
   content: string | null
   videoUrl: string | null
   dueDate: Date | null
@@ -63,6 +65,7 @@ export type AssignmentMaxAggregateOutputType = {
 export type AssignmentCountAggregateOutputType = {
   id: number
   title: number
+  category: number
   content: number
   videoUrl: number
   dueDate: number
@@ -87,6 +90,7 @@ export type AssignmentSumAggregateInputType = {
 export type AssignmentMinAggregateInputType = {
   id?: true
   title?: true
+  category?: true
   content?: true
   videoUrl?: true
   dueDate?: true
@@ -99,6 +103,7 @@ export type AssignmentMinAggregateInputType = {
 export type AssignmentMaxAggregateInputType = {
   id?: true
   title?: true
+  category?: true
   content?: true
   videoUrl?: true
   dueDate?: true
@@ -111,6 +116,7 @@ export type AssignmentMaxAggregateInputType = {
 export type AssignmentCountAggregateInputType = {
   id?: true
   title?: true
+  category?: true
   content?: true
   videoUrl?: true
   dueDate?: true
@@ -210,6 +216,7 @@ export type AssignmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type AssignmentGroupByOutputType = {
   id: number
   title: string
+  category: string
   content: string
   videoUrl: string
   dueDate: Date | null
@@ -245,6 +252,7 @@ export type AssignmentWhereInput = {
   NOT?: Prisma.AssignmentWhereInput | Prisma.AssignmentWhereInput[]
   id?: Prisma.IntFilter<"Assignment"> | number
   title?: Prisma.StringFilter<"Assignment"> | string
+  category?: Prisma.StringFilter<"Assignment"> | string
   content?: Prisma.StringFilter<"Assignment"> | string
   videoUrl?: Prisma.StringFilter<"Assignment"> | string
   dueDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
@@ -260,6 +268,7 @@ export type AssignmentWhereInput = {
 export type AssignmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   content?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -278,6 +287,7 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AssignmentWhereInput[]
   NOT?: Prisma.AssignmentWhereInput | Prisma.AssignmentWhereInput[]
   title?: Prisma.StringFilter<"Assignment"> | string
+  category?: Prisma.StringFilter<"Assignment"> | string
   content?: Prisma.StringFilter<"Assignment"> | string
   videoUrl?: Prisma.StringFilter<"Assignment"> | string
   dueDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
@@ -293,6 +303,7 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
 export type AssignmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   content?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -313,6 +324,7 @@ export type AssignmentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AssignmentScalarWhereWithAggregatesInput | Prisma.AssignmentScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Assignment"> | number
   title?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
+  category?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
   content?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
   videoUrl?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
   dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Assignment"> | Date | string | null
@@ -324,6 +336,7 @@ export type AssignmentScalarWhereWithAggregatesInput = {
 
 export type AssignmentCreateInput = {
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -338,6 +351,7 @@ export type AssignmentCreateInput = {
 export type AssignmentUncheckedCreateInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -351,6 +365,7 @@ export type AssignmentUncheckedCreateInput = {
 
 export type AssignmentUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -365,6 +380,7 @@ export type AssignmentUpdateInput = {
 export type AssignmentUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -379,6 +395,7 @@ export type AssignmentUncheckedUpdateInput = {
 export type AssignmentCreateManyInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -390,6 +407,7 @@ export type AssignmentCreateManyInput = {
 
 export type AssignmentUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -401,6 +419,7 @@ export type AssignmentUpdateManyMutationInput = {
 export type AssignmentUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -423,6 +442,7 @@ export type AssignmentOrderByRelationAggregateInput = {
 export type AssignmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   content?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
@@ -440,6 +460,7 @@ export type AssignmentAvgOrderByAggregateInput = {
 export type AssignmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   content?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
@@ -452,6 +473,7 @@ export type AssignmentMaxOrderByAggregateInput = {
 export type AssignmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   content?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
@@ -543,6 +565,7 @@ export type AssignmentUpdateOneRequiredWithoutSubmissionsNestedInput = {
 
 export type AssignmentCreateWithoutCourseInput = {
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -556,6 +579,7 @@ export type AssignmentCreateWithoutCourseInput = {
 export type AssignmentUncheckedCreateWithoutCourseInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -598,6 +622,7 @@ export type AssignmentScalarWhereInput = {
   NOT?: Prisma.AssignmentScalarWhereInput | Prisma.AssignmentScalarWhereInput[]
   id?: Prisma.IntFilter<"Assignment"> | number
   title?: Prisma.StringFilter<"Assignment"> | string
+  category?: Prisma.StringFilter<"Assignment"> | string
   content?: Prisma.StringFilter<"Assignment"> | string
   videoUrl?: Prisma.StringFilter<"Assignment"> | string
   dueDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
@@ -609,6 +634,7 @@ export type AssignmentScalarWhereInput = {
 
 export type AssignmentCreateWithoutFilesInput = {
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -622,6 +648,7 @@ export type AssignmentCreateWithoutFilesInput = {
 export type AssignmentUncheckedCreateWithoutFilesInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -650,6 +677,7 @@ export type AssignmentUpdateToOneWithWhereWithoutFilesInput = {
 
 export type AssignmentUpdateWithoutFilesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -663,6 +691,7 @@ export type AssignmentUpdateWithoutFilesInput = {
 export type AssignmentUncheckedUpdateWithoutFilesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -675,6 +704,7 @@ export type AssignmentUncheckedUpdateWithoutFilesInput = {
 
 export type AssignmentCreateWithoutSubmissionsInput = {
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -688,6 +718,7 @@ export type AssignmentCreateWithoutSubmissionsInput = {
 export type AssignmentUncheckedCreateWithoutSubmissionsInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -716,6 +747,7 @@ export type AssignmentUpdateToOneWithWhereWithoutSubmissionsInput = {
 
 export type AssignmentUpdateWithoutSubmissionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -729,6 +761,7 @@ export type AssignmentUpdateWithoutSubmissionsInput = {
 export type AssignmentUncheckedUpdateWithoutSubmissionsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -742,6 +775,7 @@ export type AssignmentUncheckedUpdateWithoutSubmissionsInput = {
 export type AssignmentCreateManyCourseInput = {
   id?: number
   title: string
+  category?: string
   content?: string
   videoUrl?: string
   dueDate?: Date | string | null
@@ -752,6 +786,7 @@ export type AssignmentCreateManyCourseInput = {
 
 export type AssignmentUpdateWithoutCourseInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -765,6 +800,7 @@ export type AssignmentUpdateWithoutCourseInput = {
 export type AssignmentUncheckedUpdateWithoutCourseInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -778,6 +814,7 @@ export type AssignmentUncheckedUpdateWithoutCourseInput = {
 export type AssignmentUncheckedUpdateManyWithoutCourseInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -829,6 +866,7 @@ export type AssignmentCountOutputTypeCountSubmissionsArgs<ExtArgs extends runtim
 export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
   content?: boolean
   videoUrl?: boolean
   dueDate?: boolean
@@ -845,6 +883,7 @@ export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type AssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
   content?: boolean
   videoUrl?: boolean
   dueDate?: boolean
@@ -858,6 +897,7 @@ export type AssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  category?: boolean
   content?: boolean
   videoUrl?: boolean
   dueDate?: boolean
@@ -871,6 +911,7 @@ export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type AssignmentSelectScalar = {
   id?: boolean
   title?: boolean
+  category?: boolean
   content?: boolean
   videoUrl?: boolean
   dueDate?: boolean
@@ -880,7 +921,7 @@ export type AssignmentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content" | "videoUrl" | "dueDate" | "dueDateEnd" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["assignment"]>
+export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "content" | "videoUrl" | "dueDate" | "dueDateEnd" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["assignment"]>
 export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   files?: boolean | Prisma.Assignment$filesArgs<ExtArgs>
@@ -904,6 +945,7 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     title: string
+    category: string
     content: string
     videoUrl: string
     dueDate: Date | null
@@ -1339,6 +1381,7 @@ export interface Prisma__AssignmentClient<T, Null = never, ExtArgs extends runti
 export interface AssignmentFieldRefs {
   readonly id: Prisma.FieldRef<"Assignment", 'Int'>
   readonly title: Prisma.FieldRef<"Assignment", 'String'>
+  readonly category: Prisma.FieldRef<"Assignment", 'String'>
   readonly content: Prisma.FieldRef<"Assignment", 'String'>
   readonly videoUrl: Prisma.FieldRef<"Assignment", 'String'>
   readonly dueDate: Prisma.FieldRef<"Assignment", 'DateTime'>

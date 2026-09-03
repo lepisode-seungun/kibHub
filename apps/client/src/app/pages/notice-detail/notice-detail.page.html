@@ -51,7 +51,7 @@
 
       <!-- 본문 -->
       <div class="flex flex-col gap-6 w-full">
-        <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-500 m-0 whitespace-pre-wrap">{{ noticeContent() }}</p>
+        <p class="font-suit font-medium text-base leading-[160%] tracking-tight text-zinc-500 m-0 whitespace-pre-wrap" [innerHTML]="noticeContent()"></p>
         <!-- 이미지 첨부파일 미리보기 -->
         @for (file of attachFiles(); track file.id) {
           @if (isImageFile(file) && file.url) {

@@ -41,7 +41,25 @@ export class ContentsService {
         _count: true,
       });
       const countMap = new Map(counts.map(c => [c.contentId, c._count]));
-      return contents.map(c => ({ ...c, feedbackCount: countMap.get(c.id) || 0 }));
+
+      // 각 콘텐츠의 첫 번째 댓글 (좋아요 내림차순)
+      const topComments = await this.prisma.comment.findMany({
+        where: { contentId: { in: ids }, status: 'VISIBLE', markerNum: { not: null } },
+        orderBy: [{ likeCount: 'desc' }, { createdAt: 'desc' }],
+        distinct: ['contentId'],
+        select: {
+          contentId: true,
+          body: true,
+          author: { select: { nickname: true, name: true } },
+        },
+      });
+      const commentMap = new Map(topComments.map(c => [c.contentId, c]));
+
+      return contents.map(c => ({
+        ...c,
+        feedbackCount: countMap.get(c.id) || 0,
+        topComment: commentMap.get(c.id) || null,
+      }));
     };
 
     // 페이지네이션 파라미터 있으면 페이지네이션 응답

@@ -133,7 +133,7 @@
       <!-- Content Grid -->
       <div class="content-grid">
         @for (card of filteredContentCards(); track card.id) {
-          <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), url(' + card.thumbnailUrl + ')' : 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
+          <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ')' : card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
             <div class="gallery-card-inner">
               <!-- Top: User + Rank -->
               <div class="flex justify-between items-start w-full">
@@ -152,24 +152,15 @@
               </div>
               <!-- Bottom: Title + Feedback -->
               <div class="flex flex-col items-start gap-3 w-full">
-                <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0 overflow-hidden text-ellipsis whitespace-nowrap w-full">{{ card.title }}</h3>
+                <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0 overflow-hidden text-ellipsis whitespace-nowrap w-full">{{ card.title }}</h3>
 
-                @if (card.featured && card.comment) {
-                  <!-- Featured: actual comment -->
+                @if (card.comment) {
                   <div class="gallery-comment-box">
                     <div class="flex gap-1">
                       <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                       <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white line-clamp-3">{{ card.comment }}</span>
                       <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                     </div>
-                  </div>
-                } @else {
-                  <!-- Default: empty feedback prompt -->
-                  <div class="gallery-feedback-box">
-                    <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"/>
-                    </svg>
-                    <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">첫 피드백을 남겨보세요.</span>
                   </div>
                 }
               </div>
@@ -272,7 +263,7 @@
   <section class="more-content" id="more-content">
     <div class="content-grid">
       @for (card of filteredMoreContentCards(); track card.id) {
-        <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), url(' + card.thumbnailUrl + ')' : 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
+        <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ')' : card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
           <div class="gallery-card-inner">
             <div class="flex justify-between items-start w-full">
               <div class="flex items-center gap-1.5">
@@ -289,21 +280,14 @@
               </div>
             </div>
             <div class="flex flex-col items-start gap-3 w-full">
-              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0 overflow-hidden text-ellipsis whitespace-nowrap w-full">{{ card.title }}</h3>
-              @if (card.featured && card.comment) {
+              <h3 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0 overflow-hidden text-ellipsis whitespace-nowrap w-full">{{ card.title }}</h3>
+              @if (card.comment) {
                 <div class="gallery-comment-box">
                   <div class="flex gap-1">
                     <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                     <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white line-clamp-3">{{ card.comment }}</span>
                     <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                   </div>
-                </div>
-              } @else {
-                <div class="gallery-feedback-box">
-                  <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"/>
-                  </svg>
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">첫 피드백을 남겨보세요.</span>
                 </div>
               }
             </div>

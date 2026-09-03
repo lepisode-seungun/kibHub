@@ -62,7 +62,7 @@ export class LectureDetailPage implements OnInit {
       const lecture: any = await this.api.lectures.findOne(id);
       this.lectureData.set({
         id: lecture.id, category: lecture.category || '',
-        name: lecture.title || '', createdAt: lecture.createdAt,
+        name: lecture.title || '', createdAt: lecture.createdAt ? formatDate(lecture.createdAt) : '',
         videoUrl: lecture.videoUrl || '', videoDuration: lecture.duration || '',
         content: lecture.content || lecture.body || '', materials: lecture.files || [],
       });
@@ -179,6 +179,31 @@ export class LectureDetailPage implements OnInit {
       await this.loadLecture(this.lectureData().id);
     } catch (e) {
       this.toast.error('파일 삭제에 실패했습니다.');
+    }
+  }
+
+  async downloadMaterial(mat: any): Promise<void> {
+    if (!mat.url) { this.toast.error('다운로드 URL이 없습니다.'); return; }
+    try {
+      const res = await fetch(mat.url);
+      const blob = await res.blob();
+      if ('showSaveFilePicker' in window) {
+        const ext = mat.name?.split('.').pop() || '';
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: mat.name || 'file',
+          types: ext ? [{ description: ext.toUpperCase(), accept: { 'application/octet-stream': [`.${ext}`] } }] : [],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = mat.name || 'file'; a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e: any) {
+      if (e?.name !== 'AbortError') this.toast.error('다운로드에 실패했습니다.');
     }
   }
 

@@ -79,9 +79,25 @@
 
     @if (isLoading()) {
       <div class="flex justify-center items-center py-20">
-        <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#7A48FF" stroke-width="4"></circle>
-          <path class="opacity-75" fill="#7A48FF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+          <rect width="10" height="10" x="1" y="1" fill="#7A48FF" rx="1">
+            <animate id="sp1" fill="freeze" attributeName="x" begin="0;sp12.end" dur="0.2s" values="1;13"/>
+            <animate id="sp2" fill="freeze" attributeName="y" begin="sp4.end" dur="0.2s" values="1;13"/>
+            <animate id="sp3" fill="freeze" attributeName="x" begin="sp7.end" dur="0.2s" values="13;1"/>
+            <animate id="sp4b" fill="freeze" attributeName="y" begin="sp10.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="1" y="13" fill="#7A48FF" rx="1">
+            <animate id="sp5" fill="freeze" attributeName="y" begin="sp1.end" dur="0.2s" values="13;1"/>
+            <animate id="sp6" fill="freeze" attributeName="x" begin="sp2.end" dur="0.2s" values="1;13"/>
+            <animate id="sp7b" fill="freeze" attributeName="y" begin="sp3.end" dur="0.2s" values="1;13"/>
+            <animate id="sp8" fill="freeze" attributeName="x" begin="sp4b.end" dur="0.2s" values="13;1"/>
+          </rect>
+          <rect width="10" height="10" x="13" y="13" fill="#7A48FF" rx="1">
+            <animate id="sp4" fill="freeze" attributeName="x" begin="sp5.end" dur="0.2s" values="13;1"/>
+            <animate id="sp7" fill="freeze" attributeName="y" begin="sp6.end" dur="0.2s" values="13;1"/>
+            <animate id="sp10" fill="freeze" attributeName="x" begin="sp7b.end" dur="0.2s" values="1;13"/>
+            <animate id="sp12" fill="freeze" attributeName="y" begin="sp8.end" dur="0.2s" values="1;13"/>
+          </rect>
         </svg>
       </div>
     } @else {

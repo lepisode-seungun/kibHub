@@ -38,8 +38,32 @@ export class CoursesService {
     return this.prisma.course.update({ where: { id }, data: data as Prisma.CourseUpdateInput });
   }
 
-  deleteCourse(id: number) {
-    return this.prisma.course.delete({ where: { id } });
+  async deleteCourse(id: number) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. 강의 파일 → 강의
+      const lectureIds = (await tx.lecture.findMany({ where: { courseId: id }, select: { id: true } })).map(l => l.id);
+      if (lectureIds.length > 0) {
+        await tx.lectureFile.deleteMany({ where: { lectureId: { in: lectureIds } } });
+        await tx.lecture.deleteMany({ where: { id: { in: lectureIds } } });
+      }
+
+      // 2. 과제 → 제출물 → 제출 파일/댓글
+      const assignmentIds = (await tx.assignment.findMany({ where: { courseId: id }, select: { id: true } })).map(a => a.id);
+      if (assignmentIds.length > 0) {
+        const submissionIds = (await tx.submission.findMany({ where: { assignmentId: { in: assignmentIds } }, select: { id: true } })).map(s => s.id);
+        if (submissionIds.length > 0) {
+          await tx.submissionComment.deleteMany({ where: { submissionId: { in: submissionIds } } });
+          await tx.submissionFile.deleteMany({ where: { submissionId: { in: submissionIds } } });
+          await tx.submission.updateMany({ where: { id: { in: submissionIds }, parentId: { not: null } }, data: { parentId: null } });
+          await tx.submission.deleteMany({ where: { id: { in: submissionIds } } });
+        }
+        await tx.assignmentFile.deleteMany({ where: { assignmentId: { in: assignmentIds } } });
+        await tx.assignment.deleteMany({ where: { id: { in: assignmentIds } } });
+      }
+
+      // 3. 과정 삭제
+      return tx.course.delete({ where: { id } });
+    });
   }
 
   // ===== 부트캠프별 강의 카테고리 =====

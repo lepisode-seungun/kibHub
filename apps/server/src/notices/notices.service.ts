@@ -68,8 +68,35 @@ export class NoticesService {
     return this.prisma.notice.create({ data: createData, include: { files: true } });
   }
 
-  update(id: number, data: Partial<CreateNoticeDto>) {
-    return this.prisma.notice.update({ where: { id }, data: data as Prisma.NoticeUpdateInput });
+  async update(id: number, data: Partial<CreateNoticeDto> & { files?: any[] }) {
+    const { files, type, title, body, pinned, status } = data as any;
+    const updateData: any = {};
+
+    // 허용 필드만 명시적으로 설정
+    if (title !== undefined) updateData.title = title;
+    if (body !== undefined) updateData.body = body;
+    if (pinned !== undefined) updateData.pinned = pinned;
+    if (status !== undefined) updateData.status = status;
+    if (type !== undefined) updateData.type = type;
+
+    // files가 전달되면 기존 파일 삭제 후 새로 생성
+    if (files && files.length > 0) {
+      await this.prisma.noticeFile.deleteMany({ where: { noticeId: id } });
+      updateData.files = {
+        create: files.map((f: any) => ({
+          name: f.name,
+          url: f.url,
+          size: f.size || 0,
+          mimeType: f.mimeType || '',
+        })),
+      };
+    }
+
+    return this.prisma.notice.update({
+      where: { id },
+      data: updateData,
+      include: { files: true },
+    });
   }
 
   delete(id: number) {

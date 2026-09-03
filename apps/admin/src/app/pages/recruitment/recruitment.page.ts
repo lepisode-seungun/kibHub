@@ -1,7 +1,8 @@
-import { Component, signal, inject, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { RecruitInstructor } from '../../shared/types';
@@ -10,38 +11,27 @@ import { ToastService } from '../../shared/toast/toast.service';
 @Component({
   selector: 'adm-recruitment',
   standalone: true,
-  imports: [CommonModule, DataGridComponent, ImageUploadComponent],
+  imports: [CommonModule, DataGridComponent, ImageUploadComponent, TextEditorComponent],
   templateUrl: './recruitment.page.html',
   styleUrl: './recruitment.page.css',
 })
-export class RecruitmentPage implements OnInit, AfterViewChecked {
+export class RecruitmentPage implements OnInit {
   private api = inject(ApiService);
   private bootcampCtx = inject(BootcampContextService);
   private toast = inject(ToastService);
 
-  @ViewChild('editorBody') editorBody!: ElementRef<HTMLDivElement>;
-
   activeTab = signal<'intro' | 'curriculum' | 'instructor' | 'review'>('intro');
   isSaving = signal(false);
-  private pendingEditorSync = false;
-  private lastSyncedTab = '';
 
   setTab(tab: 'intro' | 'curriculum' | 'instructor' | 'review'): void {
-    // 에디터 탭에서 나갈 때만 내용 저장 (instructor 탭은 에디터 없음)
-    const currentTab = this.activeTab();
-    if (currentTab !== 'instructor') {
-      this.syncEditorToSignal();
-    }
-    this.colorPaletteOpen.set(false);
     this.activeTab.set(tab);
-    this.pendingEditorSync = true;
-    this.lastSyncedTab = ''; // 강제 리로드
   }
 
   // 각 탭별 에디터 내용 (HTML)
   introContent = signal('');
   curriculumContent = signal('');
   reviewContent = signal('');
+  reviewVisibility = signal<'' | 'show' | 'hide'>('');
 
   async ngOnInit(): Promise<void> {
     const id = this.bootcampCtx.currentBootcampId();
@@ -51,6 +41,7 @@ export class RecruitmentPage implements OnInit, AfterViewChecked {
         this.introContent.set(bc.recruitIntro || '');
         this.curriculumContent.set(bc.recruitCurriculum || '');
         this.reviewContent.set(bc.recruitReview || '');
+        this.reviewVisibility.set((bc as any).recruitReviewVisibility || '');
         if (bc.recruitInstructors && Array.isArray(bc.recruitInstructors)) {
           this.loadInstructors(bc.recruitInstructors as any[]);
         }
@@ -58,46 +49,6 @@ export class RecruitmentPage implements OnInit, AfterViewChecked {
         console.error('모집페이지 데이터 로드 실패:', e);
       }
     }
-    // DOM이 준비된 후 에디터에 내용 로드
-    this.loadEditorContent();
-  }
-
-  ngAfterViewChecked(): void {
-    if (!this.pendingEditorSync) return;
-    const tab = this.activeTab();
-    if (tab === 'instructor') {
-      this.pendingEditorSync = false;
-      return;
-    }
-    if (this.editorBody?.nativeElement) {
-      this.editorBody.nativeElement.innerHTML = this.getCurrentContent();
-      this.pendingEditorSync = false;
-    }
-  }
-
-  /** DOM 준비 후 에디터에 내용 로드 */
-  private loadEditorContent(): void {
-    setTimeout(() => {
-      if (this.editorBody?.nativeElement && this.activeTab() !== 'instructor') {
-        this.editorBody.nativeElement.innerHTML = this.getCurrentContent();
-      }
-    }, 0);
-  }
-
-  /** contenteditable div → signal 동기화 */
-  syncEditorToSignal(): void {
-    if (!this.editorBody?.nativeElement) return;
-    const html = this.editorBody.nativeElement.innerHTML;
-    // 빈 에디터거나 placeholder만 있으면 저장하지 않음
-    if (!html || html === '<br>' || html === '<p><br></p>') return;
-    const tab = this.activeTab();
-    if (tab === 'intro') this.introContent.set(html);
-    else if (tab === 'curriculum') this.curriculumContent.set(html);
-    else if (tab === 'review') this.reviewContent.set(html);
-  }
-
-  onEditorInput(): void {
-    this.syncEditorToSignal();
   }
 
   getCurrentContent(): string {
@@ -107,143 +58,14 @@ export class RecruitmentPage implements OnInit, AfterViewChecked {
     return this.reviewContent();
   }
 
-  // ===== 에디터 서식 명령 =====
-  execCommand(command: string, value?: string): void {
-    document.execCommand(command, false, value || '');
-    this.editorBody?.nativeElement.focus();
-    this.syncEditorToSignal();
-  }
-
-  onBold(): void { this.execCommand('bold'); }
-  onItalic(): void { this.execCommand('italic'); }
-  onUnderline(): void { this.execCommand('underline'); }
-  onUnorderedList(): void { this.execCommand('insertUnorderedList'); }
-  onOrderedList(): void { this.execCommand('insertOrderedList'); }
-  onAlignLeft(): void { this.alignContent('left'); }
-  onAlignCenter(): void { this.alignContent('center'); }
-  onAlignRight(): void { this.alignContent('right'); }
-
-  /** 마지막으로 클릭된 이미지 */
-  private selectedImage: HTMLImageElement | null = null;
-
-  /** 에디터 클릭 시 이미지 선택 추적 */
-  onEditorClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (target instanceof HTMLImageElement) {
-      this.selectedImage = target;
-    } else {
-      this.selectedImage = null;
-    }
-  }
-
-  private alignContent(align: string): void {
-    // 선택된 이미지가 있으면 이미지에 직접 인라인 스타일 적용
-    if (this.selectedImage) {
-      const img = this.selectedImage;
-      img.style.display = 'block';
-      if (align === 'center') {
-        img.style.marginLeft = 'auto';
-        img.style.marginRight = 'auto';
-      } else if (align === 'right') {
-        img.style.marginLeft = 'auto';
-        img.style.marginRight = '0';
-      } else {
-        img.style.marginLeft = '0';
-        img.style.marginRight = 'auto';
-      }
-      this.syncEditorToSignal();
-      return;
-    }
-    // 일반 텍스트는 기존 execCommand 사용
-    const cmd = align === 'left' ? 'justifyLeft' : align === 'center' ? 'justifyCenter' : 'justifyRight';
-    this.execCommand(cmd);
-  }
-
-  onLink(): void {
-    const url = prompt('링크 URL을 입력하세요:', 'https://');
-    if (url) this.execCommand('createLink', url);
-  }
-
-  onImage(): void {
-    // 업로드 전 현재 정렬 상태를 queryCommandState로 확인
-    let currentAlign = 'left';
-    if (document.queryCommandState('justifyCenter')) currentAlign = 'center';
-    else if (document.queryCommandState('justifyRight')) currentAlign = 'right';
-    else if (document.queryCommandState('justifyFull')) currentAlign = 'justify';
-
-    // Selection 저장
-    const sel = window.getSelection();
-    let savedRange: Range | null = null;
-    if (sel && sel.rangeCount > 0) {
-      savedRange = sel.getRangeAt(0).cloneRange();
-    }
-
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (!file) return;
-      try {
-        const result = await this.api.upload.single(file, 'editor');
-
-        // 정렬에 따른 인라인 스타일
-        let imgStyle = 'display:block;';
-        if (currentAlign === 'center') {
-          imgStyle += 'margin-left:auto;margin-right:auto;';
-        } else if (currentAlign === 'right') {
-          imgStyle += 'margin-left:auto;margin-right:0;';
-        } else {
-          imgStyle += 'margin-left:0;margin-right:auto;';
-        }
-
-        // Selection 복원 후 삽입
-        const el = this.editorBody?.nativeElement;
-        if (el) {
-          el.focus();
-          if (savedRange) {
-            const s = window.getSelection();
-            s?.removeAllRanges();
-            s?.addRange(savedRange);
-          }
-          document.execCommand('insertHTML', false,
-            `<img src="${result.url}" style="${imgStyle}" /><br>`
-          );
-        }
-        this.syncEditorToSignal();
-      } catch (e) {
-        this.toast.error('이미지 업로드에 실패했습니다.');
-        console.error(e);
-      }
-    };
-    input.click();
-  }
-
-  onFontSize(): void {
-    const size = prompt('폰트 크기 (1~7):', '3');
-    if (size) this.execCommand('fontSize', size);
-  }
-
-  // ===== 글씨색 팔레트 =====
-  colorPaletteOpen = signal(false);
-  colorPresets = [
-    '#FFFFFF', '#000000', '#434343', '#666666',
-    '#999999', '#EF4444', '#F97316', '#EAB308',
-    '#22C55E', '#3B82F6', '#6366F1', '#A855F7',
-    '#EC4899', '#7C2D12', '#14532D', '#1E3A5F',
-  ];
-
-  onFontColor(): void {
-    this.colorPaletteOpen.update(v => !v);
-  }
-
-  applyColor(color: string): void {
-    this.colorPaletteOpen.set(false);
-    this.execCommand('foreColor', color);
+  onEditorChange(html: string): void {
+    const tab = this.activeTab();
+    if (tab === 'intro') this.introContent.set(html);
+    else if (tab === 'curriculum') this.curriculumContent.set(html);
+    else if (tab === 'review') this.reviewContent.set(html);
   }
 
   async saveCurrentTab(): Promise<void> {
-    this.syncEditorToSignal();
     const id = this.bootcampCtx.currentBootcampId();
     if (!id) {
       this.toast.error('부트캠프가 선택되지 않았습니다.');
@@ -256,7 +78,7 @@ export class RecruitmentPage implements OnInit, AfterViewChecked {
       let data: any = {};
       if (tab === 'intro') data = { recruitIntro: this.introContent() };
       else if (tab === 'curriculum') data = { recruitCurriculum: this.curriculumContent() };
-      else if (tab === 'review') data = { recruitReview: this.reviewContent() };
+      else if (tab === 'review') data = { recruitReview: this.reviewContent(), recruitReviewVisibility: this.reviewVisibility() };
       await this.api.bootcamps.update(id, data);
       this.toast.success('저장 완료 되었습니다.');
     } catch (e: any) {

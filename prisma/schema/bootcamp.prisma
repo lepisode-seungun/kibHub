@@ -11,6 +11,7 @@ model Bootcamp {
   recruitIntro      String         @default("")
   recruitCurriculum String         @default("")
   recruitReview     String         @default("")
+  recruitReviewVisibility String   @default("hide")
   recruitInstructors  Json?
   interviewSettings   Json?
   createdAt         DateTime       @default(now())

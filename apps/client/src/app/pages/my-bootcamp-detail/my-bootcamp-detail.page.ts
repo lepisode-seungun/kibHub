@@ -203,9 +203,7 @@ export class MyBootcampDetailPage implements OnInit {
         })));
         allAssignments.push(...assignments.map((a: any) => ({
           id: a.id, title: a.title || '', course: section.title,
-          dateRange: a.dueDate
-            ? new Date(a.dueDate).toLocaleDateString('ko-KR')
-            : '',
+          dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
           submitted: false,
           thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
         })));
@@ -260,7 +258,7 @@ export class MyBootcampDetailPage implements OnInit {
         })),
         ...assignments.map((a: any) => ({
           id: a.id, type: '과제' as const, category: '', title: a.title || '',
-          dateRange: a.dueDate ? new Date(a.dueDate).toLocaleDateString('ko-KR') : '',
+          dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
           thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
         })),
       ];
@@ -272,7 +270,7 @@ export class MyBootcampDetailPage implements OnInit {
       })));
       this.assignmentCards.set(assignments.map((a: any) => ({
         id: a.id, title: a.title || '', course: section.title,
-        dateRange: a.dueDate ? new Date(a.dueDate).toLocaleDateString('ko-KR') : '',
+        dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
         submitted: false,
         thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
       })));
@@ -343,6 +341,16 @@ export class MyBootcampDetailPage implements OnInit {
     if (!url) return '';
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
+  }
+
+  private formatDueRange(dueDate?: string, dueDateEnd?: string): string {
+    if (!dueDate) return '';
+    const fmt = (d: string) => {
+      const dt = new Date(d);
+      return `${dt.getFullYear()}.${String(dt.getMonth() + 1).padStart(2, '0')}.${String(dt.getDate()).padStart(2, '0')}`;
+    };
+    if (dueDateEnd) return `${fmt(dueDate)} ~ ${fmt(dueDateEnd)}`;
+    return fmt(dueDate);
   }
 }
 

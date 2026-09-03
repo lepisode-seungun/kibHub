@@ -62,7 +62,7 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
           id: n.id,
           category: '공지사항',
           title: n.title,
-          content: n.body || '',
+          content: (n.body || '').replace(/<[^>]*>/g, ''),
           date: new Date(n.createdAt).toLocaleDateString('ko-KR'),
           author: n.author?.nickname || '관리자',
           pinned: n.pinned || false,
