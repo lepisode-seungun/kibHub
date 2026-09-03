@@ -21,12 +21,13 @@ export class CcNoticeDetailPage implements OnInit {
 
   noticeId = '';
 
-  isPinned = false;
+  isPinned = signal(false);
   noticeTitle = signal('');
   noticeDate = signal('');
   noticeContent = signal('');
+  noticeImages = signal<string[]>([]);
 
-  attachFiles: AttachFile[] = [];
+  attachFiles = signal<AttachFile[]>([]);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
@@ -37,7 +38,13 @@ export class CcNoticeDetailPage implements OnInit {
           this.noticeTitle.set(notice.title || '');
           this.noticeDate.set(notice.createdAt ? new Date(notice.createdAt).toLocaleDateString('ko-KR') : '');
           this.noticeContent.set(notice.body || '');
-          this.isPinned = notice.pinned || false;
+          this.isPinned.set(notice.pinned || false);
+          // 이미지 로드
+          const images = (notice as any).images || [];
+          this.noticeImages.set(images.filter((img: string) => !!img));
+          // 첨부파일 로드
+          const files = (notice as any).files || [];
+          this.attachFiles.set(files.map((f: any) => ({ name: f.name || f })));
         } catch {
           // 없으면 목록으로
           this.router.navigate(['/customer-center']);

@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -23,7 +24,7 @@ function toMemberRow(u: User): MemberRow {
     countryCode: u.countryCode,
     status: STATUS_DISPLAY[u.status] || u.status,
     role: ROLE_DISPLAY[u.role] || u.role,
-    createdAt: new Date(u.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(u.createdAt),
   };
 }
 

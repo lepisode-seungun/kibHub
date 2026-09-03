@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -14,7 +15,7 @@ function toFaqRow(f: Faq): FaqRow {
     question: f.question,
     answer: f.answer,
     author: f.author?.nickname || f.author?.name || '관리자',
-    createdAt: new Date(f.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(f.createdAt),
   };
 }
 

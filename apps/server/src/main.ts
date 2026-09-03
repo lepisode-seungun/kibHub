@@ -68,7 +68,7 @@ async function bootstrap() {
 
   const port = process.env['PORT'] || 3000;
   await app.listen(port);
-  console.log(`🚀 NestJS server running on http://localhost:${port}`);
+  console.log(`🚀 NestJS server running on http://localhost:${port}`); // report delete added
   console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
 }
 

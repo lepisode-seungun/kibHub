@@ -85,6 +85,8 @@ export interface LectureFile {
 export interface Lecture {
   id: number;
   title: string;
+  category: string;
+  videoUrl: string;
   content: string;
   sortOrder: number;
   courseId: number;
@@ -138,4 +140,5 @@ export interface CreateAssignmentDto {
   title: string;
   content?: string;
   dueDate?: string;
+  dueDateEnd?: string;
 }

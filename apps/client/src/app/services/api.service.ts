@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   User, Bootcamp, Course, Lecture, Assignment, Applicant,
-  Content, Comment, Report, Portfolio, Banner, Notice, Faq, Inquiry,
+  Content, ContentCategory, Comment, Report, Portfolio, Banner, Notice, Faq, Inquiry,
   CreateContentDto, CreateReportDto, UpdateUserDto,
 } from '@kibhub/shared';
 
@@ -36,11 +36,12 @@ export class ApiService {
       this.get(`/bootcamps?page=${page}&limit=${limit}`),
     findOne: (id: number): Promise<Bootcamp> => this.get<Bootcamp>(`/bootcamps/${id}`),
     getInterviewSettings: (id: number): Promise<{ text: string }[]> => this.get(`/bootcamps/${id}/interview-settings`),
+    findByInstructor: (userId: number): Promise<Bootcamp[]> => this.get<Bootcamp[]>(`/bootcamps/instructor/${userId}`),
   };
 
   // ===== Courses =====
   readonly courses = {
-    findByBootcamp: (bootcampId: number): Promise<Course[]> => this.get<Course[]>(`/bootcamps/${bootcampId}/courses`),
+    findByBootcamp: (bootcampId: number): Promise<Course[]> => this.get<Course[]>(`/bootcamps/${bootcampId}/courses?excludeHidden=true`),
     findOne: (id: number): Promise<Course> => this.get<Course>(`/courses/${id}`),
   };
 
@@ -48,6 +49,7 @@ export class ApiService {
   readonly lectures = {
     findByCourse: (courseId: number): Promise<Lecture[]> => this.get<Lecture[]>(`/courses/${courseId}/lectures`),
     findOne: (id: number): Promise<Lecture> => this.get<Lecture>(`/lectures/${id}`),
+    findCategories: (bootcampId: number): Promise<string[]> => this.get<string[]>(`/bootcamps/${bootcampId}/lecture-categories`),
   };
 
   // ===== Assignments =====
@@ -99,6 +101,11 @@ export class ApiService {
     create: (data: CreateContentDto): Promise<Content> => this.post<Content>('/contents', data),
   };
 
+  // ===== Content Categories =====
+  readonly contentCategories = {
+    findAll: (): Promise<ContentCategory[]> => this.get<ContentCategory[]>('/content-categories'),
+  };
+
   // ===== Portfolios =====
   readonly portfolios = {
     findAll: (query?: Record<string, string>): Promise<Portfolio[]> => {
@@ -117,9 +124,11 @@ export class ApiService {
   // ===== Notices =====
   readonly notices = {
     findAll: (query?: Record<string, string>): Promise<Notice[]> => {
-      const qs = query ? '?' + new URLSearchParams(query).toString() : '';
+      const params = { ...query, excludeHidden: 'true' };
+      const qs = '?' + new URLSearchParams(params).toString();
       return this.get<Notice[]>(`/notices${qs}`);
     },
+    findByBootcamp: (bootcampId: number): Promise<any[]> => this.get<any[]>(`/bootcamps/${bootcampId}/notices?excludeHidden=true`),
     findOne: (id: number): Promise<Notice> => this.get<Notice>(`/notices/${id}`),
   };
 
@@ -148,7 +157,11 @@ export class ApiService {
   // ===== Comments =====
   readonly comments = {
     findByContent: (contentId: number): Promise<Comment[]> => this.get<Comment[]>(`/contents/${contentId}/comments`),
-    create: (contentId: number, data: { body: string }): Promise<Comment> => this.post<Comment>(`/contents/${contentId}/comments`, data),
+    findRecent: (take = 10): Promise<any[]> => this.get<any[]>(`/comments/recent?take=${take}`),
+    create: (contentId: number, data: { body: string; images?: string[]; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }): Promise<Comment> => this.post<Comment>(`/contents/${contentId}/comments`, data),
+    update: (id: number, data: { body?: string }): Promise<Comment> => this.patch<Comment>(`/comments/${id}`, data),
+    delete: (id: number): Promise<any> => this.del(`/comments/${id}`),
+    toggleLike: (id: number): Promise<{ liked: boolean; likeCount: number }> => this.post(`/comments/${id}/like`, {}),
   };
 
   // ===== Reports =====
@@ -225,5 +238,16 @@ export class ApiService {
   // ===== Partners =====
   readonly partners = {
     findAll: (): Promise<any[]> => this.get('/partners'),
+  };
+
+  // ===== Albums =====
+  readonly albums = {
+    findAll: (type?: 'ALBUM' | 'BOOKMARK'): Promise<any[]> => this.get(`/albums${type ? `?type=${type}` : ''}`),
+    findOne: (id: number): Promise<any> => this.get(`/albums/${id}`),
+    create: (data: { name: string; type?: 'ALBUM' | 'BOOKMARK' }): Promise<any> => this.post('/albums', data),
+    update: (id: number, data: { name: string }): Promise<any> => this.patch(`/albums/${id}`, data),
+    delete: (id: number): Promise<any> => this.del(`/albums/${id}`),
+    addContent: (albumId: number, contentId: number): Promise<any> => this.post(`/albums/${albumId}/contents/${contentId}`, {}),
+    removeContent: (albumId: number, contentId: number): Promise<any> => this.del(`/albums/${albumId}/contents/${contentId}`),
   };
 }

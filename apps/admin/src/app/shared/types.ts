@@ -90,11 +90,13 @@ export interface CommentRow {
   likes: number;
   createdAt: string;
   contentTitle?: string;
+  images?: string[];
 }
 
 /** 신고 목록 행 */
 export interface ReportRow {
   id: number;
+  title?: string;
   commentContent: string;
   content: string;
   reporter: string;
@@ -141,4 +143,5 @@ export interface InquiryRow {
   author: string;
   createdAt: string;
   reply: string;
+  files: { id: number; name: string; url: string; size: number; mimeType: string }[];
 }

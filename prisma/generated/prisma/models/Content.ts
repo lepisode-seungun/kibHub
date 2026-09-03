@@ -75,6 +75,7 @@ export type ContentCountAggregateOutputType = {
   title: number
   body: number
   thumbnail: number
+  images: number
   viewCount: number
   categoryId: number
   authorId: number
@@ -133,6 +134,7 @@ export type ContentCountAggregateInputType = {
   title?: true
   body?: true
   thumbnail?: true
+  images?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -234,6 +236,7 @@ export type ContentGroupByOutputType = {
   title: string
   body: string
   thumbnail: string | null
+  images: string[]
   viewCount: number
   categoryId: number | null
   authorId: number
@@ -271,6 +274,7 @@ export type ContentWhereInput = {
   title?: Prisma.StringFilter<"Content"> | string
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
+  images?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -279,6 +283,7 @@ export type ContentWhereInput = {
   category?: Prisma.XOR<Prisma.ContentCategoryNullableScalarRelationFilter, Prisma.ContentCategoryWhereInput> | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
+  albumContents?: Prisma.AlbumContentListRelationFilter
 }
 
 export type ContentOrderByWithRelationInput = {
@@ -288,6 +293,7 @@ export type ContentOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -296,6 +302,7 @@ export type ContentOrderByWithRelationInput = {
   category?: Prisma.ContentCategoryOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  albumContents?: Prisma.AlbumContentOrderByRelationAggregateInput
 }
 
 export type ContentWhereUniqueInput = Prisma.AtLeast<{
@@ -308,6 +315,7 @@ export type ContentWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Content"> | string
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
+  images?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -316,6 +324,7 @@ export type ContentWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.XOR<Prisma.ContentCategoryNullableScalarRelationFilter, Prisma.ContentCategoryWhereInput> | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
+  albumContents?: Prisma.AlbumContentListRelationFilter
 }, "id">
 
 export type ContentOrderByWithAggregationInput = {
@@ -325,6 +334,7 @@ export type ContentOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -347,6 +357,7 @@ export type ContentScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Content"> | string
   body?: Prisma.StringWithAggregatesFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  images?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntWithAggregatesFilter<"Content"> | number
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Content"> | number | null
   authorId?: Prisma.IntWithAggregatesFilter<"Content"> | number
@@ -360,12 +371,14 @@ export type ContentCreateInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.ContentCategoryCreateNestedOneWithoutContentsInput
   author: Prisma.UserCreateNestedOneWithoutContentsInput
   comments?: Prisma.CommentCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateInput = {
@@ -375,12 +388,14 @@ export type ContentUncheckedCreateInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentUpdateInput = {
@@ -389,12 +404,14 @@ export type ContentUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.ContentCategoryUpdateOneWithoutContentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutContentsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateInput = {
@@ -404,12 +421,14 @@ export type ContentUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentCreateManyInput = {
@@ -419,6 +438,7 @@ export type ContentCreateManyInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -432,6 +452,7 @@ export type ContentUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -444,11 +465,20 @@ export type ContentUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type ContentCountOrderByAggregateInput = {
@@ -458,6 +488,7 @@ export type ContentCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -522,8 +553,17 @@ export type ContentScalarRelationFilter = {
   isNot?: Prisma.ContentWhereInput
 }
 
+export type ContentCreateimagesInput = {
+  set: string[]
+}
+
 export type EnumContentTypeFieldUpdateOperationsInput = {
   set?: $Enums.ContentType
+}
+
+export type ContentUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -574,6 +614,20 @@ export type ContentUncheckedUpdateManyWithoutCategoryNestedInput = {
   update?: Prisma.ContentUpdateWithWhereUniqueWithoutCategoryInput | Prisma.ContentUpdateWithWhereUniqueWithoutCategoryInput[]
   updateMany?: Prisma.ContentUpdateManyWithWhereWithoutCategoryInput | Prisma.ContentUpdateManyWithWhereWithoutCategoryInput[]
   deleteMany?: Prisma.ContentScalarWhereInput | Prisma.ContentScalarWhereInput[]
+}
+
+export type ContentCreateNestedOneWithoutAlbumContentsInput = {
+  create?: Prisma.XOR<Prisma.ContentCreateWithoutAlbumContentsInput, Prisma.ContentUncheckedCreateWithoutAlbumContentsInput>
+  connectOrCreate?: Prisma.ContentCreateOrConnectWithoutAlbumContentsInput
+  connect?: Prisma.ContentWhereUniqueInput
+}
+
+export type ContentUpdateOneRequiredWithoutAlbumContentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ContentCreateWithoutAlbumContentsInput, Prisma.ContentUncheckedCreateWithoutAlbumContentsInput>
+  connectOrCreate?: Prisma.ContentCreateOrConnectWithoutAlbumContentsInput
+  upsert?: Prisma.ContentUpsertWithoutAlbumContentsInput
+  connect?: Prisma.ContentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContentUpdateToOneWithWhereWithoutAlbumContentsInput, Prisma.ContentUpdateWithoutAlbumContentsInput>, Prisma.ContentUncheckedUpdateWithoutAlbumContentsInput>
 }
 
 export type ContentCreateNestedOneWithoutCommentsInput = {
@@ -638,11 +692,13 @@ export type ContentCreateWithoutCategoryInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutContentsInput
   comments?: Prisma.CommentCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateWithoutCategoryInput = {
@@ -652,11 +708,13 @@ export type ContentUncheckedCreateWithoutCategoryInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   authorId: number
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentCreateOrConnectWithoutCategoryInput = {
@@ -695,11 +753,90 @@ export type ContentScalarWhereInput = {
   title?: Prisma.StringFilter<"Content"> | string
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
+  images?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
   createdAt?: Prisma.DateTimeFilter<"Content"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Content"> | Date | string
+}
+
+export type ContentCreateWithoutAlbumContentsInput = {
+  status?: $Enums.ContentStatus
+  type: $Enums.ContentType
+  title: string
+  body?: string
+  thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
+  viewCount?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category?: Prisma.ContentCategoryCreateNestedOneWithoutContentsInput
+  author: Prisma.UserCreateNestedOneWithoutContentsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutContentInput
+}
+
+export type ContentUncheckedCreateWithoutAlbumContentsInput = {
+  id?: number
+  status?: $Enums.ContentStatus
+  type: $Enums.ContentType
+  title: string
+  body?: string
+  thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
+  viewCount?: number
+  categoryId?: number | null
+  authorId: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutContentInput
+}
+
+export type ContentCreateOrConnectWithoutAlbumContentsInput = {
+  where: Prisma.ContentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContentCreateWithoutAlbumContentsInput, Prisma.ContentUncheckedCreateWithoutAlbumContentsInput>
+}
+
+export type ContentUpsertWithoutAlbumContentsInput = {
+  update: Prisma.XOR<Prisma.ContentUpdateWithoutAlbumContentsInput, Prisma.ContentUncheckedUpdateWithoutAlbumContentsInput>
+  create: Prisma.XOR<Prisma.ContentCreateWithoutAlbumContentsInput, Prisma.ContentUncheckedCreateWithoutAlbumContentsInput>
+  where?: Prisma.ContentWhereInput
+}
+
+export type ContentUpdateToOneWithWhereWithoutAlbumContentsInput = {
+  where?: Prisma.ContentWhereInput
+  data: Prisma.XOR<Prisma.ContentUpdateWithoutAlbumContentsInput, Prisma.ContentUncheckedUpdateWithoutAlbumContentsInput>
+}
+
+export type ContentUpdateWithoutAlbumContentsInput = {
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.ContentCategoryUpdateOneWithoutContentsNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutContentsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutContentNestedInput
+}
+
+export type ContentUncheckedUpdateWithoutAlbumContentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentCreateWithoutCommentsInput = {
@@ -708,11 +845,13 @@ export type ContentCreateWithoutCommentsInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.ContentCategoryCreateNestedOneWithoutContentsInput
   author: Prisma.UserCreateNestedOneWithoutContentsInput
+  albumContents?: Prisma.AlbumContentCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateWithoutCommentsInput = {
@@ -722,11 +861,13 @@ export type ContentUncheckedCreateWithoutCommentsInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  albumContents?: Prisma.AlbumContentUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentCreateOrConnectWithoutCommentsInput = {
@@ -751,11 +892,13 @@ export type ContentUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.ContentCategoryUpdateOneWithoutContentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutContentsNestedInput
+  albumContents?: Prisma.AlbumContentUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateWithoutCommentsInput = {
@@ -765,11 +908,13 @@ export type ContentUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  albumContents?: Prisma.AlbumContentUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentCreateWithoutAuthorInput = {
@@ -778,11 +923,13 @@ export type ContentCreateWithoutAuthorInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   category?: Prisma.ContentCategoryCreateNestedOneWithoutContentsInput
   comments?: Prisma.CommentCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateWithoutAuthorInput = {
@@ -792,11 +939,13 @@ export type ContentUncheckedCreateWithoutAuthorInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutContentInput
+  albumContents?: Prisma.AlbumContentUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentCreateOrConnectWithoutAuthorInput = {
@@ -832,6 +981,7 @@ export type ContentCreateManyCategoryInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   authorId: number
   createdAt?: Date | string
@@ -844,11 +994,13 @@ export type ContentUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutContentsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateWithoutCategoryInput = {
@@ -858,11 +1010,13 @@ export type ContentUncheckedUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateManyWithoutCategoryInput = {
@@ -872,6 +1026,7 @@ export type ContentUncheckedUpdateManyWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -885,6 +1040,7 @@ export type ContentCreateManyAuthorInput = {
   title: string
   body?: string
   thumbnail?: string | null
+  images?: Prisma.ContentCreateimagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
@@ -897,11 +1053,13 @@ export type ContentUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.ContentCategoryUpdateOneWithoutContentsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateWithoutAuthorInput = {
@@ -911,11 +1069,13 @@ export type ContentUncheckedUpdateWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutContentNestedInput
+  albumContents?: Prisma.AlbumContentUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateManyWithoutAuthorInput = {
@@ -925,6 +1085,7 @@ export type ContentUncheckedUpdateManyWithoutAuthorInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.ContentUpdateimagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -938,10 +1099,12 @@ export type ContentUncheckedUpdateManyWithoutAuthorInput = {
 
 export type ContentCountOutputType = {
   comments: number
+  albumContents: number
 }
 
 export type ContentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | ContentCountOutputTypeCountCommentsArgs
+  albumContents?: boolean | ContentCountOutputTypeCountAlbumContentsArgs
 }
 
 /**
@@ -961,6 +1124,13 @@ export type ContentCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Type
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * ContentCountOutputType without action
+ */
+export type ContentCountOutputTypeCountAlbumContentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AlbumContentWhereInput
+}
+
 
 export type ContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -969,6 +1139,7 @@ export type ContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   title?: boolean
   body?: boolean
   thumbnail?: boolean
+  images?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -977,6 +1148,7 @@ export type ContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   category?: boolean | Prisma.Content$categoryArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Content$commentsArgs<ExtArgs>
+  albumContents?: boolean | Prisma.Content$albumContentsArgs<ExtArgs>
   _count?: boolean | Prisma.ContentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["content"]>
 
@@ -987,6 +1159,7 @@ export type ContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   body?: boolean
   thumbnail?: boolean
+  images?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1003,6 +1176,7 @@ export type ContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   body?: boolean
   thumbnail?: boolean
+  images?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1019,6 +1193,7 @@ export type ContentSelectScalar = {
   title?: boolean
   body?: boolean
   thumbnail?: boolean
+  images?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1026,11 +1201,12 @@ export type ContentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
+export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "images" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
 export type ContentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Content$categoryArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Content$commentsArgs<ExtArgs>
+  albumContents?: boolean | Prisma.Content$albumContentsArgs<ExtArgs>
   _count?: boolean | Prisma.ContentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1048,6 +1224,7 @@ export type $ContentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     category: Prisma.$ContentCategoryPayload<ExtArgs> | null
     author: Prisma.$UserPayload<ExtArgs>
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    albumContents: Prisma.$AlbumContentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1056,6 +1233,7 @@ export type $ContentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     title: string
     body: string
     thumbnail: string | null
+    images: string[]
     viewCount: number
     categoryId: number | null
     authorId: number
@@ -1458,6 +1636,7 @@ export interface Prisma__ContentClient<T, Null = never, ExtArgs extends runtime.
   category<T extends Prisma.Content$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Content$categoryArgs<ExtArgs>>): Prisma.Prisma__ContentCategoryClient<runtime.Types.Result.GetResult<Prisma.$ContentCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.Content$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Content$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  albumContents<T extends Prisma.Content$albumContentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Content$albumContentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlbumContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1493,6 +1672,7 @@ export interface ContentFieldRefs {
   readonly title: Prisma.FieldRef<"Content", 'String'>
   readonly body: Prisma.FieldRef<"Content", 'String'>
   readonly thumbnail: Prisma.FieldRef<"Content", 'String'>
+  readonly images: Prisma.FieldRef<"Content", 'String[]'>
   readonly viewCount: Prisma.FieldRef<"Content", 'Int'>
   readonly categoryId: Prisma.FieldRef<"Content", 'Int'>
   readonly authorId: Prisma.FieldRef<"Content", 'Int'>
@@ -1939,6 +2119,30 @@ export type Content$commentsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Content.albumContents
+ */
+export type Content$albumContentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AlbumContent
+   */
+  select?: Prisma.AlbumContentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AlbumContent
+   */
+  omit?: Prisma.AlbumContentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AlbumContentInclude<ExtArgs> | null
+  where?: Prisma.AlbumContentWhereInput
+  orderBy?: Prisma.AlbumContentOrderByWithRelationInput | Prisma.AlbumContentOrderByWithRelationInput[]
+  cursor?: Prisma.AlbumContentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AlbumContentScalarFieldEnum | Prisma.AlbumContentScalarFieldEnum[]
 }
 
 /**

@@ -256,6 +256,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  overflow: visible;
 }
 
 .detail-image {
@@ -263,6 +264,8 @@
   max-width: 1000px;
   aspect-ratio: 1;
   border-radius: 8px;
+  position: relative;
+  overflow: visible;
 }
 
 /* Image Container */
@@ -273,19 +276,41 @@
   position: relative;
 }
 
-/* Floating Buttons */
+/* Floating Buttons - sticky anchor inside .detail-images */
+.detail-floating-anchor {
+  position: sticky;
+  top: 75px; /* 72px 고정헤더 + 3px 여백 */
+  width: 100%;
+  align-self: stretch;
+  height: 0;
+  z-index: 10;
+  order: -1; /* flex에서 맨 위로 */
+}
+
 .detail-floating {
   position: absolute;
-  right: 0;
-  bottom: 20px;
+  right: 16px;
+  top: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
   gap: 14px;
-  width: 134px;
+  width: 150px;
   pointer-events: none;
   z-index: 10;
+}
+
+/* 사이드바 닫혔을 때 플로팅 위치 조정 */
+.detail-floating.floating-sidebar-closed {
+  right: 0;
+}
+
+/* 모바일에서 플로팅 버튼 숨기기 */
+@media (max-width: 768px) {
+  .detail-floating {
+    display: none;
+  }
 }
 
 .floating-group {
@@ -325,6 +350,15 @@
 
 .floating-btn:hover {
   background: #52525B;
+}
+
+.floating-btn.floating-btn-active {
+  background: rgba(161, 72, 255, 0.2);
+  color: #A148FF;
+}
+
+.floating-btn.floating-btn-active:hover {
+  background: rgba(161, 72, 255, 0.3);
 }
 
 .floating-circle {
@@ -434,6 +468,21 @@
   gap: 12px;
   background: #0F0E11;
   min-height: 320px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.comment-compose.compose-feedback-mode {
+  border-color: #A148FF;
+  background: rgba(161, 72, 255, 0.04);
+}
+
+.compose-textarea-feedback {
+  border: 1px solid rgba(161, 72, 255, 0.4) !important;
+}
+
+.compose-textarea-feedback::placeholder {
+  color: rgba(161, 72, 255, 0.5) !important;
 }
 
 /* compose-user-row -> TW inline */
@@ -528,6 +577,37 @@
 }
 
 .pending-marker .marker-num {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 13px;
+  color: #FFFFFF;
+  width: 32px;
+  text-align: center;
+}
+
+/* Saved Marker (영구 마커) */
+.saved-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 9;
+  cursor: pointer;
+  width: 38px;
+  height: 54px;
+  transition: transform 0.15s ease;
+}
+.saved-marker:hover {
+  transform: translate(-50%, -100%) scale(1.15);
+  z-index: 11;
+}
+.saved-marker .marker-icon {
+  width: 38px;
+  height: 54px;
+}
+.saved-marker .marker-num {
   position: absolute;
   top: 3px;
   left: 50%;
@@ -849,11 +929,40 @@
   color: #E4E4E7;
 }
 
+.reply-marker {
+  width: 28px;
+  height: 40px;
+}
+
+.reply-marker .marker-icon {
+  width: 28px;
+  height: 40px;
+}
+
+.reply-marker .marker-num {
+  font-size: 12px;
+}
+
 /* Comment Active State (피드백-액티브) */
 .comment-item.comment-active {
   background: #2E2331;
   border-top: 1px solid #622F73;
   border-bottom: 1px solid #622F73;
+}
+
+.comment-item.comment-hovered,
+.reply-item.comment-hovered {
+  background: rgba(161, 72, 255, 0.08);
+  transition: background 0.15s ease;
+}
+
+.saved-marker.marker-hovered {
+  filter: drop-shadow(0 0 10px rgba(161, 72, 255, 0.8)) drop-shadow(0 0 20px rgba(161, 72, 255, 0.4));
+  transition: filter 0.15s ease;
+}
+
+.saved-marker {
+  transition: filter 0.15s ease;
 }
 
 /* Comment Chat Icon (일반 댓글) */
@@ -1072,6 +1181,24 @@
   height: 72px;
   background: linear-gradient(135deg, #3F3F46 0%, #52525B 100%);
   border-radius: 4px;
+}
+
+.reply-compose {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  background: rgba(63, 63, 70, 0.3);
+  border-radius: 12px;
+  border: 1px solid #3F3F46;
+}
+
+.reply-feedback-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Guest Prompt (비회원) */

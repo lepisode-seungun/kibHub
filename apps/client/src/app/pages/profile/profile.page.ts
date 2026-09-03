@@ -1,4 +1,4 @@
-import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -9,6 +9,7 @@ interface Album {
   name: string;
   contentCount: number;
   thumbnails: string[];
+  contentIds: number[];
   isActive: boolean;
 }
 
@@ -18,6 +19,8 @@ interface ContentCard {
   imageUrl: string;
   authorName: string;
   commentCount: number;
+  feedbackCount: number;
+  firstComment?: { body: string; authorName: string };
 }
 
 @Component({
@@ -27,7 +30,7 @@ interface ContentCard {
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.css'],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
   @ViewChild('albumSlider') albumSlider!: ElementRef<HTMLDivElement>;
   private router = inject(Router);
   private api = inject(ApiService);
@@ -36,10 +39,20 @@ export class ProfilePage implements OnInit {
   userName = signal('사용자');
   userNickname = signal('닉네임');
   userEmail = signal('');
+  userBio = signal('');
+  userProfileImage = signal<string | null>(null);
+  userInitial = signal('');
+  userSns = signal<{ type: string; url: string }[]>([]);
+  userRole = signal('');
+  isInstructor = computed(() => this.userRole() === 'INSTRUCTOR' || this.userRole() === 'ADMIN');
 
   ngOnInit(): void {
+    document.body.style.backgroundColor = '#151419';
     this.loadProfile();
-    this.loadContents();
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.backgroundColor = '';
   }
 
   private async loadProfile(): Promise<void> {
@@ -48,26 +61,115 @@ export class ProfilePage implements OnInit {
       this.userName.set(user.name);
       this.userNickname.set(user.nickname || user.name);
       this.userEmail.set(user.email);
+      this.userBio.set(user.intro || '');
+      this.userProfileImage.set(user.profileImage || null);
+      this.userInitial.set((user.nickname || user.name || 'U').charAt(0).toUpperCase());
+      if (user.sns && user.sns.length > 0) {
+        this.userSns.set(user.sns.map((s: any) => ({ type: s.type, url: s.url })));
+      }
+      this.userRole.set(user.role || '');
+
+      // 프로필 로드 후 콘텐츠/카테고리/앨범 로드
+      this.loadContents();
+      this.loadCategories();
+      this.loadAlbums();
     } catch (e) {
       console.error('프로필 로드 실패:', e);
     }
   }
 
+  private async loadCategories(): Promise<void> {
+    try {
+      // 책갈피 탭: BOOKMARK 타입 앨범만 로드
+      const albums = await this.api.albums.findAll('BOOKMARK');
+      this.categories.set(albums.map((a: any) => {
+        const acs = a.albumContents || [];
+        return {
+          id: a.id,
+          name: a.name,
+          contentCount: a._count?.albumContents || acs.length,
+          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          isActive: false,
+        };
+      }));
+
+      // 북마크된 콘텐츠 수집 (모든 앨범의 콘텐츠 합산, 중복 제거)
+      const contentMap = new Map<number, any>();
+      for (const a of albums) {
+        for (const ac of (a.albumContents || [])) {
+          const c = ac.content;
+          if (c && !contentMap.has(c.id)) {
+            contentMap.set(c.id, {
+              id: c.id,
+              title: c.title,
+              imageUrl: c.thumbnail || '',
+              authorName: c.author?.nickname || c.author?.name || '',
+              commentCount: c._count?.comments || 0,
+              feedbackCount: c._count?.comments || 0,
+              firstComment: c.comments?.[0] ? {
+                body: c.comments[0].body,
+                authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
+              } : undefined,
+            });
+          }
+        }
+      }
+      this.bookmarkContents.set(Array.from(contentMap.values()));
+      this.bookmarkCount.set(contentMap.size);
+    } catch (e) {
+      console.error('책갈피 로드 실패:', e);
+    }
+  }
+
   private async loadContents(): Promise<void> {
     try {
-      const data = await this.api.contents.findAll();
-      if (data.length > 0) {
-        this.contents.set(data.map(c => ({
-          id: c.id,
-          title: c.title,
-          imageUrl: '',
-          authorName: c.author?.nickname || c.author?.name || '',
-          commentCount: 0,
-        })));
-        this.allCount.set(data.length);
+      // ALBUM 타입 앨범에 속한 콘텐츠만 수집 (중복 제거)
+      const serverAlbums = await this.api.albums.findAll('ALBUM');
+      const contentMap = new Map<number, any>();
+      for (const a of serverAlbums) {
+        for (const ac of (a.albumContents || [])) {
+          const c = ac.content;
+          if (c && !contentMap.has(c.id)) {
+            contentMap.set(c.id, {
+              id: c.id,
+              title: c.title,
+              imageUrl: c.thumbnail || '',
+              authorName: c.author?.nickname || c.author?.name || '',
+              commentCount: c._count?.comments || 0,
+              feedbackCount: c._count?.comments || 0,
+              firstComment: c.comments?.[0] ? {
+                body: c.comments[0].body,
+                authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
+              } : undefined,
+            });
+          }
+        }
       }
+      this.contents.set(Array.from(contentMap.values()));
+      this.allCount.set(contentMap.size);
     } catch (e) {
       console.error('콘텐츠 로드 실패:', e);
+    }
+  }
+
+  private async loadAlbums(): Promise<void> {
+    try {
+      const serverAlbums = await this.api.albums.findAll('ALBUM');
+      const mapped: Album[] = serverAlbums.map((a: any) => {
+        const acs = a.albumContents || [];
+        return {
+          id: a.id,
+          name: a.name,
+          contentCount: a._count?.albumContents || 0,
+          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          isActive: false,
+        };
+      });
+      this.albums.set(mapped);
+    } catch (e) {
+      console.error('앨범 로드 실패:', e);
     }
   }
 
@@ -133,13 +235,7 @@ export class ProfilePage implements OnInit {
   deleteCategoryTargetId = signal<number | null>(null);
 
   // 카테고리 데이터 (앨범과 동일 구조)
-  categories = signal<Album[]>([
-    { id: 101, name: '디자인 레퍼런스', contentCount: 24, thumbnails: [], isActive: true },
-    { id: 102, name: 'UI 인사이트', contentCount: 18, thumbnails: [], isActive: false },
-    { id: 103, name: '일러스트 참고자료 모음 카테고리명 최대 30자', contentCount: 42, thumbnails: [], isActive: false },
-    { id: 104, name: '타이포그래피 영감', contentCount: 9, thumbnails: [], isActive: false },
-    { id: 105, name: '모션그래픽 레퍼런스 모음', contentCount: 31, thumbnails: [], isActive: false },
-  ]);
+  categories = signal<Album[]>([]);
 
   deleteTargetCategory = computed(() => {
     const id = this.deleteCategoryTargetId();
@@ -161,76 +257,70 @@ export class ProfilePage implements OnInit {
   });
 
   // 앨범 데이터
-  albums = signal<Album[]>([
-    {
-      id: 1,
-      name: '전체콘텐츠',
-      contentCount: 132,
-      thumbnails: [],
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: '앨범명은 최대 30자로 제한합니다. 앨범명은 최대 30',
-      contentCount: 132,
-      thumbnails: [],
-      isActive: false,
-    },
-    {
-      id: 3,
-      name: '앨범명은 최대 30자로 제한합니다. 앨범명은 최대 30',
-      contentCount: 132,
-      thumbnails: [],
-      isActive: false,
-    },
-    {
-      id: 4,
-      name: '앨범명은 최대 30자로 제한합니다. 앨범명은 최대 30',
-      contentCount: 132,
-      thumbnails: [],
-      isActive: false,
-    },
-    {
-      id: 5,
-      name: '앨범명은 최대 30자로 제한합니다. 앨범명은 최대 30',
-      contentCount: 132,
-      thumbnails: [],
-      isActive: false,
-    },
-  ]);
+  albums = signal<Album[]>([]);
 
   // 콘텐츠 데이터
-  contents = signal<ContentCard[]>([
-    { id: 1, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 2, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 3, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 4, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 5, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 6, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 7, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 8, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 9, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-    { id: 10, title: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐츠 제목 콘텐', imageUrl: '', authorName: '', commentCount: 2 },
-  ]);
+  contents = signal<ContentCard[]>([]);
 
   allCount = signal(0);
   albumCount = signal(0);
+
+  /** 앨범 선택에 따른 필터링된 콘텐츠 */
+  filteredContents = computed(() => {
+    const albumId = this.selectedAlbumId();
+    const all = this.contents();
+    if (!albumId) return all;
+    const album = this.albums().find(a => a.id === albumId);
+    if (!album) return all;
+    return all.filter(c => album.contentIds.includes(c.id));
+  });
+
+  // 북마크 콘텐츠
+  bookmarkContents = signal<ContentCard[]>([]);
+  bookmarkCount = signal(0);
+  selectedCategoryId = signal<number | null>(null);
+
+  /** 카테고리(앨범) 선택에 따른 필터링된 북마크 콘텐츠 */
+  filteredBookmarkContents = computed(() => {
+    const catId = this.selectedCategoryId();
+    const all = this.bookmarkContents();
+    if (!catId) return all;
+    const cat = this.categories().find(c => c.id === catId);
+    if (!cat) return all;
+    return all.filter(c => cat.contentIds.includes(c.id));
+  });
 
   setTab(tab: 'all' | 'album'): void {
     this.activeTab.set(tab);
   }
 
+  goToContentDetail(contentId: number): void {
+    this.router.navigate(['/content', contentId]);
+  }
+
   selectAlbum(id: number): void {
-    this.albums.update(list =>
-      list.map(a => ({ ...a, isActive: a.id === id }))
-    );
-    this.selectedAlbumId.set(id);
+    const current = this.selectedAlbumId();
+    if (current === id) {
+      // 재클릭 시 해제 (전체 콘텐츠 보기)
+      this.albums.update(list => list.map(a => ({ ...a, isActive: false })));
+      this.selectedAlbumId.set(null);
+    } else {
+      this.albums.update(list => list.map(a => ({ ...a, isActive: a.id === id })));
+      this.selectedAlbumId.set(id);
+    }
   }
 
   selectCategory(id: number): void {
-    this.categories.update(list =>
-      list.map(c => ({ ...c, isActive: c.id === id }))
-    );
+    const current = this.selectedCategoryId();
+    if (current === id) {
+      this.categories.update(list => list.map(c => ({ ...c, isActive: false })));
+      this.selectedCategoryId.set(null);
+    } else {
+      this.categories.update(list =>
+        list.map(c => ({ ...c, isActive: c.id === id }))
+      );
+      this.selectedCategoryId.set(id);
+    }
   }
 
   toggleSort(): void {
@@ -281,21 +371,15 @@ export class ProfilePage implements OnInit {
     this.newAlbumName.set(input.value);
   }
 
-  createAlbum(): void {
+  async createAlbum(): Promise<void> {
     const name = this.newAlbumName().trim();
     if (!name) return;
-    const currentAlbums = this.albums();
-    const newId = Math.max(...currentAlbums.map(a => a.id), 0) + 1;
-    this.albums.update(list => [
-      ...list,
-      {
-        id: newId,
-        name,
-        contentCount: 0,
-        thumbnails: [],
-        isActive: false,
-      },
-    ]);
+    try {
+      await this.api.albums.create({ name });
+      await this.loadAlbums();
+    } catch (e) {
+      console.error('앨범 생성 실패:', e);
+    }
     this.closeNewAlbumModal();
   }
 
@@ -329,10 +413,15 @@ export class ProfilePage implements OnInit {
     this.newCategoryName.set(input.value);
   }
 
-  createCategory(): void {
+  async createCategory(): Promise<void> {
     const name = this.newCategoryName().trim();
     if (!name) return;
-    // TODO: 실제 API 연동 시 서비스 호출로 교체
+    try {
+      await this.api.albums.create({ name, type: 'BOOKMARK' });
+      await this.loadCategories();
+    } catch (e) {
+      console.error('카테고리 생성 실패:', e);
+    }
     this.closeNewCategoryModal();
   }
 
@@ -371,13 +460,16 @@ export class ProfilePage implements OnInit {
     this.editAlbumName.set(input.value);
   }
 
-  confirmEditAlbum(): void {
+  async confirmEditAlbum(): Promise<void> {
     const id = this.editAlbumId();
     const name = this.editAlbumName().trim();
     if (!id || !name) return;
-    this.albums.update(list =>
-      list.map(a => a.id === id ? { ...a, name } : a)
-    );
+    try {
+      await this.api.albums.update(id, { name });
+      await this.loadAlbums();
+    } catch (e) {
+      console.error('앨범 수정 실패:', e);
+    }
     this.closeEditAlbumModal();
   }
 
@@ -387,10 +479,15 @@ export class ProfilePage implements OnInit {
     this.isDeleteAlbumModalOpen.set(true);
   }
 
-  confirmDeleteAlbum(): void {
+  async confirmDeleteAlbum(): Promise<void> {
     const id = this.deleteTargetAlbumId();
-    if (id !== null) {
-      this.albums.update(list => list.filter(a => a.id !== id));
+    if (id !== null && id !== -1) {
+      try {
+        await this.api.albums.delete(id);
+        await this.loadAlbums();
+      } catch (e) {
+        console.error('앨범 삭제 실패:', e);
+      }
     }
     this.closeDeleteAlbumModal();
   }
@@ -432,13 +529,16 @@ export class ProfilePage implements OnInit {
     this.editCategoryPrivate.update(v => !v);
   }
 
-  confirmEditCategory(): void {
+  async confirmEditCategory(): Promise<void> {
     const id = this.editCategoryId();
     const name = this.editCategoryName().trim();
     if (!id || !name) return;
-    this.categories.update(list =>
-      list.map(c => c.id === id ? { ...c, name } : c)
-    );
+    try {
+      await this.api.albums.update(id, { name });
+      await this.loadCategories();
+    } catch (e) {
+      console.error('카테고리 수정 실패:', e);
+    }
     this.closeEditCategoryModal();
   }
 
@@ -451,10 +551,15 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  confirmDeleteCategory(): void {
+  async confirmDeleteCategory(): Promise<void> {
     const id = this.deleteCategoryTargetId();
     if (id !== null) {
-      this.categories.update(list => list.filter(c => c.id !== id));
+      try {
+        await this.api.albums.delete(id);
+        await this.loadCategories();
+      } catch (e) {
+        console.error('카테고리 삭제 실패:', e);
+      }
     }
     this.closeDeleteCategoryModal();
   }

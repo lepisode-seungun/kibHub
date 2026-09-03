@@ -18,6 +18,7 @@ import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { PostersModule } from './posters/posters.module';
 import { HistoriesModule } from './histories/histories.module';
 import { PartnersModule } from './partners/partners.module';
+import { AlbumsModule } from './albums/albums.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { PartnersModule } from './partners/partners.module';
     PostersModule,
     HistoriesModule,
     PartnersModule,
+    AlbumsModule,
   ],
 })
 export class AppModule {}

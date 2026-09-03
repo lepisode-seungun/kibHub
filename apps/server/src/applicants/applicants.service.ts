@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -100,6 +100,36 @@ export class ApplicantsService {
     return this.prisma.applicant.updateMany({
       where: { id: { in: ids } },
       data: { status },
+    });
+  }
+
+  /**
+   * 관리자 초대: 이메일로 유저를 찾아 해당 부트캠프에 ACCEPTED 상태로 등록
+   */
+  async invite(bootcampId: number, email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('해당 이메일로 등록된 유저가 없습니다.');
+    }
+
+    return this.prisma.applicant.upsert({
+      where: {
+        userId_bootcampId: { userId: user.id, bootcampId },
+      },
+      update: {
+        status: 'ACCEPTED',
+      },
+      create: {
+        bootcampId,
+        userId: user.id,
+        status: 'ACCEPTED',
+        interviewQuestions: {
+          applicantName: user.name || '',
+          phone: user.phone || '',
+          email: user.email,
+        } as any,
+      },
+      include: { user: { select: { id: true, name: true, email: true, phone: true, role: true } } },
     });
   }
 }

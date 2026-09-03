@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -10,7 +11,7 @@ function toReportRow(r: Report): ReportRow {
     commentContent: r.reason,
     content: r.reason,
     reporter: r.reporter?.nickname || r.reporter?.name || '',
-    reportedAt: new Date(r.createdAt).toLocaleString('ko-KR'),
+    reportedAt: formatDate(r.createdAt),
   };
 }
 

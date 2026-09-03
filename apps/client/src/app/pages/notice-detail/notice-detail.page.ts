@@ -2,9 +2,14 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { isImageFile as _isImageFile, downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface AttachFile {
+  id: number;
   name: string;
+  url: string;
+  size: number;
+  mimeType: string;
 }
 
 @Component({
@@ -25,15 +30,12 @@ export class NoticeDetailPage implements OnInit {
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('공지사항');
 
-  isPinned = true;
-  noticeTitle = '공지사항 제목입니다.';
-  noticeDate = '2023. 01. 01';
-  noticeContent = '공지사항 내용 입력하는 비교군의 MFCC정보와 입력한 음성 데이터의 MFCC 정보를 DTW알고리즘에 적용하여 시계열 스펙트럼을 만들고 각 경로에 해당하는 값을 더하여 0에 가까울수록 유사하다고 판 공지사항 내용 입력하는 비교군의 MFCC정보와 입력한 음성 데이터의 MFCC 정보를 DTW알고리즘에 적용하여 시계열 스펙트럼을 만들고 각 경로에 해당하는 값을 더하여 0에 가까울수록 유사하다고 판';
-
-  attachFiles: AttachFile[] = [
-    { name: '학습자료.pdf' },
-    { name: '학습자료.pdf' },
-  ];
+  isPinned = signal(false);
+  noticeTitle = signal('');
+  noticeDate = signal('');
+  noticeContent = signal('');
+  noticeAuthor = signal('');
+  attachFiles = signal<AttachFile[]>([]);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -49,10 +51,24 @@ export class NoticeDetailPage implements OnInit {
   private async loadNotice(id: number): Promise<void> {
     try {
       const notice = await this.api.notices.findOne(id);
-      this.noticeTitle = notice.title;
-      this.noticeContent = notice.body || this.noticeContent;
-      this.noticeDate = new Date(notice.createdAt).toLocaleDateString('ko-KR');
-      this.isPinned = notice.pinned;
+      this.noticeTitle.set(notice.title);
+      this.noticeContent.set(notice.body || '');
+      this.noticeDate.set(new Date(notice.createdAt).toLocaleDateString('ko-KR'));
+      this.isPinned.set(notice.pinned);
+      this.noticeAuthor.set(
+        (notice as any).author?.nickname || (notice as any).author?.name || ''
+      );
+      // 첨부파일
+      const files = (notice as any).files || [];
+      this.attachFiles.set(
+        files.map((f: any) => ({
+          id: f.id,
+          name: f.name,
+          url: f.url,
+          size: f.size || 0,
+          mimeType: f.mimeType || '',
+        }))
+      );
     } catch (e) {
       console.error('공지사항 로드 실패:', e);
     }
@@ -82,8 +98,18 @@ export class NoticeDetailPage implements OnInit {
     this.activeDetailTab.set(tab);
     if (this.bootcampId) {
       if (tab !== '공지사항') {
-        this.router.navigate(['/my-bootcamp', this.bootcampId]);
+        this.router.navigate(['/my-bootcamp', this.bootcampId], {
+          queryParams: { tab },
+        });
       }
     }
+  }
+
+  onDownloadFile(file: AttachFile): void {
+    _downloadFile(file.url, file.name);
+  }
+
+  isImageFile(file: AttachFile): boolean {
+    return _isImageFile(file);
   }
 }

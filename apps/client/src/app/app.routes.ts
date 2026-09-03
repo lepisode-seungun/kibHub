@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { bootcampAccessGuard } from './guards/bootcamp-access.guard';
 
 export const appRoutes: Route[] = [
   {
@@ -62,6 +63,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:id',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/my-bootcamp-detail/my-bootcamp-detail.page').then(
         (m) => m.MyBootcampDetailPage
@@ -69,6 +71,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/lecture/:lectureId',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/lecture-detail/lecture-detail.page').then(
         (m) => m.LectureDetailPage
@@ -76,6 +79,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/assignment/:assignmentId',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/assignment-detail/assignment-detail.page').then(
         (m) => m.AssignmentDetailPage
@@ -83,6 +87,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/assignment/:assignmentId/submit',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/assignment-submit/assignment-submit.page').then(
         (m) => m.AssignmentSubmitPage
@@ -90,6 +95,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/submission/:submissionId',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/submission-detail/submission-detail.page').then(
         (m) => m.SubmissionDetailPage
@@ -97,6 +103,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/submission/:submissionId/feedback-register',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/feedback-register/feedback-register.page').then(
         (m) => m.FeedbackRegisterPage
@@ -104,6 +111,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/feedback/:feedbackId',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/feedback-detail/feedback-detail.page').then(
         (m) => m.FeedbackDetailPage
@@ -111,6 +119,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/feedback/:feedbackId/register',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/feedback-register/feedback-register.page').then(
         (m) => m.FeedbackRegisterPage
@@ -118,6 +127,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'my-bootcamp/:bootcampId/notice/:noticeId',
+    canActivate: [bootcampAccessGuard],
     loadComponent: () =>
       import('./pages/notice-detail/notice-detail.page').then(
         (m) => m.NoticeDetailPage
@@ -228,6 +238,13 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./pages/cc-notice-detail/cc-notice-detail.page').then(
         (m) => m.CcNoticeDetailPage
+      ),
+  },
+  {
+    path: 'inquiry/new',
+    loadComponent: () =>
+      import('./pages/inquiry-form/inquiry-form.page').then(
+        (m) => m.InquiryFormPage
       ),
   },
   {

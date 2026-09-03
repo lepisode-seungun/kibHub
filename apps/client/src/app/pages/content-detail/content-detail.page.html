@@ -20,13 +20,15 @@
               <h1 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ title }}</h1>
               <div class="flex flex-wrap items-center gap-2">
                 <div class="flex items-center gap-2">
-                  <span class="detail-role-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#CAB6FF">
-                      <path d="M13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2h10V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2" opacity=".5"/>
-                      <path fill-rule="evenodd" d="M10 6h4c2.828 0 4.243 0 5.121.879C20 7.757 20 9.172 20 12v1.056c0 2.405 0 3.608-.597 4.575c-.598.966-1.674 1.504-3.825 2.58c-1.756.878-2.634 1.317-3.578 1.317s-1.822-.439-3.578-1.317c-2.151-1.076-3.227-1.614-3.825-2.58C4 16.664 4 15.46 4 13.056V12c0-2.828 0-4.243.879-5.121C5.757 6 7.172 6 10 6m2 4c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354c-.085.064-.19.088-.4.135l-.19.044c-.738.167-1.107.25-1.195.532s.164.577.667 1.165l.13.152c.143.167.215.25.247.354s.021.215 0 .438l-.02.203c-.076.785-.114 1.178.115 1.352c.23.174.576.015 1.267-.303l.178-.082c.197-.09.295-.135.399-.135s.202.045.399.135l.178.082c.691.319 1.037.477 1.267.303s.191-.567.115-1.352l-.02-.203c-.021-.223-.032-.334 0-.438s.104-.187.247-.354l.13-.152c.503-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.195-.532l-.19-.044c-.21-.047-.315-.07-.4-.135c-.084-.064-.138-.16-.246-.354l-.098-.176C12.474 10.34 12.284 10 12 10" clip-rule="evenodd"/>
-                    </svg>
-                    <span>강사</span>
-                  </span>
+                  @if (authorRole === 'INSTRUCTOR') {
+                    <span class="detail-role-badge">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#CAB6FF">
+                        <path d="M13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2h10V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2" opacity=".5"/>
+                        <path fill-rule="evenodd" d="M10 6h4c2.828 0 4.243 0 5.121.879C20 7.757 20 9.172 20 12v1.056c0 2.405 0 3.608-.597 4.575c-.598.966-1.674 1.504-3.825 2.58c-1.756.878-2.634 1.317-3.578 1.317s-1.822-.439-3.578-1.317c-2.151-1.076-3.227-1.614-3.825-2.58C4 16.664 4 15.46 4 13.056V12c0-2.828 0-4.243.879-5.121C5.757 6 7.172 6 10 6m2 4c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354c-.085.064-.19.088-.4.135l-.19.044c-.738.167-1.107.25-1.195.532s.164.577.667 1.165l.13.152c.143.167.215.25.247.354s.021.215 0 .438l-.02.203c-.076.785-.114 1.178.115 1.352c.23.174.576.015 1.267-.303l.178-.082c.197-.09.295-.135.399-.135s.202.045.399.135l.178.082c.691.319 1.037.477 1.267.303s.191-.567.115-1.352l-.02-.203c-.021-.223-.032-.334 0-.438s.104-.187.247-.354l.13-.152c.503-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.195-.532l-.19-.044c-.21-.047-.315-.07-.4-.135c-.084-.064-.138-.16-.246-.354l-.098-.176C12.474 10.34 12.284 10 12 10" clip-rule="evenodd"/>
+                      </svg>
+                      <span>강사</span>
+                    </span>
+                  }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300">{{ authorName }}</span>
                 </div>
                 <button class="detail-follow-btn">
@@ -52,7 +54,6 @@
     @if (isDescOpen()) {
       <div class="detail-description accordion-content">
         <div class="flex flex-col gap-2 w-full">
-          <h2 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-300 m-0">크리스마스 트리가 있는 녹차밭</h2>
           <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
@@ -111,107 +112,72 @@
     </div>
 
     <!-- Image Viewer -->
-    <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'">
-      @for (img of images; track $index) {
-        <div class="detail-image-frame" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" (click)="onImageClick($event); openManuscriptViewer($index)" (keydown.enter)="onImageClick($event); openManuscriptViewer($index)">
-          <div class="detail-image" [style.background]="img.gradient"></div>
-          <!-- 임시 마커 표시 -->
-          @if (commentMode() === 'feedback' && pendingMarker() && $index === 0) {
-            <div class="pending-marker" [style.top.px]="pendingMarker()!.top" [style.left.px]="pendingMarker()!.left">
-              <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
-              <span class="marker-num">{{ nextMarkerNum }}</span>
-            </div>
-          }
-        </div>
-      }
-      <!-- Floating Buttons -->
-      <div class="detail-floating">
-        <!-- 텍스트 버튼 그룹 -->
-        <div class="floating-group">
-          <div class="floating-translate-wrap" (mouseenter)="toggleTranslateDropdown()" (mouseleave)="isTranslateOpen.set(false)">
-            @if (selectedLang() === 'en') {
-              <button class="floating-translate-badge" (click)="selectLang('ko')">
-                <span>English</span>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <g clip-path="url(#clip0_translate)">
-                    <path d="M12.7312 5.86437C12.6438 5.60187 12.3813 5.47062 12.1188 5.53625C11.8563 5.62375 11.725 5.88625 11.7906 6.14875C11.9438 6.63 12.0312 7.13312 12.0312 7.63625C12.0312 8.40187 11.8562 9.12375 11.5281 9.80187C10.675 11.5519 8.94688 12.6456 7 12.6456C4.22187 12.6456 1.96875 10.3925 1.96875 7.65812C1.96875 4.92375 4.22187 2.67062 7 2.67062C7.50313 2.67062 8.00625 2.73625 8.46563 2.88937L7.72187 3.23937C7.48125 3.34875 7.37188 3.655 7.48125 3.89562C7.56875 4.07062 7.74375 4.18 7.91875 4.18C7.98438 4.18 8.05 4.15812 8.11562 4.13625L10.0406 3.23937C10.15 3.17375 10.2594 3.08625 10.3031 2.955C10.3469 2.82375 10.3469 2.6925 10.2812 2.58312L9.40625 0.658122C9.29688 0.417497 8.99063 0.308122 8.75 0.417497C8.50938 0.526872 8.4 0.833122 8.50938 1.07375L8.925 1.9925C8.3125 1.77375 7.65625 1.66437 6.97813 1.66437C3.69687 1.68625 0.984375 4.355 0.984375 7.65812C0.984375 10.9612 3.69687 13.63 7 13.63C9.31875 13.63 11.3969 12.3394 12.4031 10.2612C12.7969 9.45187 13.0156 8.57687 13.0156 7.65812C13.0156 7.04562 12.9062 6.43312 12.7312 5.86437Z" fill="white"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_translate">
-                      <rect width="14" height="14" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-              </button>
-            } @else {
-              <button class="floating-btn floating-translate" (click)="openTranslateSheet()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                </svg>
-                <span>콘텐츠 번역</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8" [style.transform]="isTranslateOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
-                  <path d="M7 10l5 5 5-5z"/>
-                </svg>
-              </button>
-              @if (isTranslateOpen()) {
-                <div class="translate-dropdown">
-                  <div class="translate-dropdown-inner">
+    <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'" (mouseleave)="hoveredCommentId.set(null)">
+      <!-- Floating Buttons (sticky) -->
+      <div class="detail-floating-anchor">
+        <div [ngClass]="isSidebarOpen() ? 'detail-floating' : 'detail-floating floating-sidebar-closed'">
+          <div class="floating-group">
+            <div class="floating-translate-wrap" (mouseenter)="toggleTranslateDropdown()" (mouseleave)="isTranslateOpen.set(false)">
+              @if (selectedLang() === 'en') {
+                <button class="floating-translate-badge" (click)="selectLang('ko')">
+                  <span>English</span>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><g clip-path="url(#clip0_translate)"><path d="M12.7312 5.86437C12.6438 5.60187 12.3813 5.47062 12.1188 5.53625C11.8563 5.62375 11.725 5.88625 11.7906 6.14875C11.9438 6.63 12.0312 7.13312 12.0312 7.63625C12.0312 8.40187 11.8562 9.12375 11.5281 9.80187C10.675 11.5519 8.94688 12.6456 7 12.6456C4.22187 12.6456 1.96875 10.3925 1.96875 7.65812C1.96875 4.92375 4.22187 2.67062 7 2.67062C7.50313 2.67062 8.00625 2.73625 8.46563 2.88937L7.72187 3.23937C7.48125 3.34875 7.37188 3.655 7.48125 3.89562C7.56875 4.07062 7.74375 4.18 7.91875 4.18C7.98438 4.18 8.05 4.15812 8.11562 4.13625L10.0406 3.23937C10.15 3.17375 10.2594 3.08625 10.3031 2.955C10.3469 2.82375 10.3469 2.6925 10.2812 2.58312L9.40625 0.658122C9.29688 0.417497 8.99063 0.308122 8.75 0.417497C8.50938 0.526872 8.4 0.833122 8.50938 1.07375L8.925 1.9925C8.3125 1.77375 7.65625 1.66437 6.97813 1.66437C3.69687 1.68625 0.984375 4.355 0.984375 7.65812C0.984375 10.9612 3.69687 13.63 7 13.63C9.31875 13.63 11.3969 12.3394 12.4031 10.2612C12.7969 9.45187 13.0156 8.57687 13.0156 7.65812C13.0156 7.04562 12.9062 6.43312 12.7312 5.86437Z" fill="white"/></g><defs><clipPath id="clip0_translate"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>
+                </button>
+              } @else {
+                <button class="floating-btn floating-translate" (click)="openTranslateSheet()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                  <span>콘텐츠 번역</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8" [style.transform]="isTranslateOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                @if (isTranslateOpen()) {
+                  <div class="translate-dropdown"><div class="translate-dropdown-inner">
                     <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedLang() === 'ko'" (click)="selectLang('ko')">한국어</button>
                     <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedLang() === 'en'" (click)="selectLang('en')">English</button>
-                  </div>
+                  </div></div>
+                }
+              }
+            </div>
+            <button class="floating-btn" [class.floating-btn-active]="!markersVisible()" (click)="markersVisible.set(!markersVisible())">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4755 14.0792L10.929 9.62349L11.9222 8.60777C12.3369 8.18373 12.3369 7.49623 11.9222 7.07219C11.8227 6.97039 11.7083 6.89304 11.5862 6.84012L6.66016 11.766C6.71057 11.9213 6.7962 12.0672 6.91704 12.1908C7.33168 12.6148 8.00395 12.6148 8.4186 12.1908L9.52757 11.0567L14.074 15.5124L15.0377 15.7551L16.0013 15.9978L15.7384 15.0385L15.4755 14.0792ZM4.95009 11.5363C3.74667 11.3811 2.58267 10.831 1.65858 9.88594C-0.55286 7.62439 -0.55286 3.9577 1.65858 1.69616C3.87002 -0.565386 7.45547 -0.565386 9.66691 1.69616C10.6233 2.67422 11.1661 3.91509 11.2952 5.19145L4.95009 11.5363Z" fill="currentColor"/><path d="M13.8138 2.17969L2.17604 13.817" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span>마커 숨기기</span>
+            </button>
+            <button class="floating-btn" (click)="toggleBookmark()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
+              <span>책갈피 추가</span>
+            </button>
+            <button class="floating-btn" (click)="openShareModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              <span>공유하기</span>
+            </button>
+          </div>
+          <button class="floating-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="enterFeedbackMode()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+          <button class="floating-circle" (click)="scrollToTop()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 14l5-5 5 5z"/></svg></button>
+          <button class="floating-circle" (click)="scrollToBottom()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 10l5 5 5-5z"/></svg></button>
+        </div>
+      </div>
+      @for (img of images; track $index) {
+        <div class="detail-image-frame" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" (click)="onImageFrameClick($event, $index)" (keydown.enter)="onImageFrameClick($event, $index)">
+          <div class="detail-image" [style.background]="img.gradient">
+            <!-- 영구 마커들 -->
+            @if (markersVisible()) {
+              @for (m of img.markers; track m.rank) {
+                <div class="saved-marker" [class.marker-hovered]="hoveredCommentId() === m.commentId" [style.top.%]="m.top" [style.left.%]="m.left" (click)="activateMarkerComment(m.rank, $event)" (mouseenter)="hoveredCommentId.set(m.commentId ?? null)">
+                  <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
+                  <span class="marker-num">{{ m.rank }}</span>
                 </div>
               }
             }
+            <!-- 임시 마커 (피드백 작성 중) -->
+            @if (commentMode() === 'feedback' && pendingMarker() && pendingMarker()!.imageIndex === $index) {
+              <div class="pending-marker" [style.top.%]="pendingMarker()!.top" [style.left.%]="pendingMarker()!.left">
+                <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
+                <span class="marker-num">{{ nextMarkerNum }}</span>
+              </div>
+            }
           </div>
-          <button class="floating-btn">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M15.4755 14.0792L10.929 9.62349L11.9222 8.60777C12.3369 8.18373 12.3369 7.49623 11.9222 7.07219C11.8227 6.97039 11.7083 6.89304 11.5862 6.84012L6.66016 11.766C6.71057 11.9213 6.7962 12.0672 6.91704 12.1908C7.33168 12.6148 8.00395 12.6148 8.4186 12.1908L9.52757 11.0567L14.074 15.5124L15.0377 15.7551L16.0013 15.9978L15.7384 15.0385L15.4755 14.0792ZM4.95009 11.5363C3.74667 11.3811 2.58267 10.831 1.65858 9.88594C-0.55286 7.62439 -0.55286 3.9577 1.65858 1.69616C3.87002 -0.565386 7.45547 -0.565386 9.66691 1.69616C10.6233 2.67422 11.1661 3.91509 11.2952 5.19145L4.95009 11.5363Z" fill="#D4D4D8"/>
-              <path d="M13.8138 2.17969L2.17604 13.817" stroke="#D4D4D8" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <span>마커 숨기기</span>
-          </button>
-          <button class="floating-btn" (click)="toggleBookmark()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8">
-              <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
-            </svg>
-            <span>책갈피 추가</span>
-          </button>
-          <button class="floating-btn" (click)="openShareModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8">
-              <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
-            </svg>
-            <span>공유하기</span>
-          </button>
         </div>
-
-        <!-- 메뉴 버튼 -->
-        <button class="floating-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M4 7h16M4 12h16M4 17h16" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-
-        <!-- 마커 추가 버튼 -->
-        <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="enterFeedbackMode()">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF">
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-          </svg>
-        </button>
-
-        <!-- 위로 스크롤 -->
-        <button class="floating-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8">
-            <path d="M7 14l5-5 5 5z"/>
-          </svg>
-        </button>
-
-        <!-- 아래로 스크롤 -->
-        <button class="floating-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8">
-            <path d="M7 10l5 5 5-5z"/>
-          </svg>
-        </button>
-      </div>
+      }
     </div>
   </div><!-- /detail-left -->
 
@@ -250,22 +216,28 @@
 
     <!-- 댓글 입력 영역 -->
     @if (isLoggedIn()) {
-    <div class="comment-compose">
+    <div class="comment-compose" [class.compose-feedback-mode]="commentMode() === 'feedback'">
       <!-- 유저 정보 + 모드 표시 -->
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-2.5">
-          <div class="comment-avatar">N</div>
-          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">고식혜</span>
+          @if (currentUserProfileImage()) {
+            <img class="comment-avatar" [src]="currentUserProfileImage()" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+          } @else {
+            <div class="comment-avatar">{{ currentUserAvatar() }}</div>
+          }
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ currentUserName() }}</span>
           <span class="compose-me-badge">나</span>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-400">{{ commentMode() === 'feedback' ? '피드백 댓글' : '일반 댓글' }}</span>
-          @if (commentMode() === 'general') {
-            <button class="mode-close-btn" (click)="exitCommentMode()" aria-label="닫기">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#A1A1AA">
+          @if (commentMode() === 'feedback') {
+            <span class="font-suit font-medium text-xs leading-[150%] tracking-tight" style="color: #A148FF;">피드백 댓글</span>
+            <button class="mode-close-btn" (click)="exitCommentMode()" aria-label="피드백 모드 종료">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#A148FF">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
             </button>
+          } @else {
+            <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-400">일반 댓글</span>
           }
         </div>
       </div>
@@ -283,15 +255,33 @@
           </svg>
         </div>
         <div class="flex flex-col flex-1 gap-2">
-          <textarea class="compose-textarea" [placeholder]="commentMode() === 'feedback' ? '피드백을 입력하세요.' : '일반댓글'" (input)="onCommentInput($event)"></textarea>
-          <span class="compose-hint">이미지 첨부는 5장까지 가능하며, 이미지당 최대용량은 10mb 입니다.</span>
+          <textarea class="compose-textarea" [class.compose-textarea-feedback]="commentMode() === 'feedback'" [value]="commentText" [placeholder]="commentMode() === 'feedback' ? '피드백을 입력하세요.' : '일반댓글'" (input)="onCommentInput($event)"></textarea>
+
+          <!-- 첨부 이미지 프리뷰 -->
+          @if (attachedImages().length > 0) {
+            <div class="flex flex-wrap gap-2">
+              @for (img of attachedImages(); track img.preview; let i = $index) {
+                <div class="relative" style="width: 64px; height: 64px;">
+                  <img [src]="img.preview" alt="첨부 이미지" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;" />
+                  <button (click)="removeAttachedImage(i)" aria-label="이미지 삭제"
+                    style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #EF4444; border: 2px solid #27272A; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#FFFFFF">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          <span class="compose-hint">이미지 첨부는 5장까지 가능하며, 이미지당 최대용량은 10mb 입니다. ({{ attachedImages().length }}/5)</span>
         </div>
       </div>
 
       <!-- 버튼 -->
       <div class="flex justify-end gap-3">
-        <button class="compose-btn-outline">이미지 첨부</button>
-        <button class="compose-btn-primary">등록</button>
+        <button class="compose-btn-outline" (click)="triggerImageInput()">이미지 첨부</button>
+        <button class="compose-btn-primary" (click)="submitComment()">등록</button>
       </div>
     </div>
     } @else {
@@ -367,14 +357,14 @@
     </div>
 
     <!-- 댓글 리스트 -->
-    <div class="comments-list">
+    <div class="comments-list" (mouseleave)="hoveredCommentId.set(null)">
       @for (comment of filteredComments; track comment.id) {
-        <div class="comment-item-wrap">
-          <div [ngClass]="{'comment-item': true, 'comment-active': comment.isActive}">
+        <div class="comment-item-wrap" [id]="'comment-' + comment.id">
+          <div [ngClass]="{'comment-item': true, 'comment-active': comment.isActive, 'comment-hovered': hoveredCommentId() === comment.id && comment.markerNum}" (mouseenter)="comment.markerNum ? hoveredCommentId.set(comment.id) : null">
             <!-- 아이콘: 피드백=마커, 일반=채팅버블 -->
             @if (comment.type === 'feedback') {
               <div [ngClass]="{'comment-marker': true, 'marker-active': comment.isActive}">
-                <img [src]="comment.isActive ? '/icons/marker-active.svg' : '/icons/marker-bg.svg'" alt="마커" class="marker-icon" />
+                <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
                 <span class="marker-num">{{ comment.markerNum }}</span>
               </div>
             } @else {
@@ -390,7 +380,11 @@
             <div class="comment-item-body">
               <div class="comment-item-header">
                 <div class="flex items-center gap-2">
-                  <div class="comment-item-avatar">{{ comment.avatar }}</div>
+                  @if (comment.profileImage) {
+                    <img class="comment-item-avatar" [src]="comment.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                  } @else {
+                    <div class="comment-item-avatar">{{ comment.avatar }}</div>
+                  }
                   <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ comment.userName }}</span>
                   @if (comment.isMe) {
                     <span class="comment-me-badge">나</span>
@@ -408,7 +402,7 @@
                     <div class="comment-dropdown">
                       <button class="dropdown-item dropdown-item-active" (click)="startEdit(comment)">수정</button>
                       <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
-                      <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal()">신고</button>
+                      <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal(comment.id)">신고</button>
                     </div>
                   }
                 </div>
@@ -427,11 +421,19 @@
               } @else {
                 <!-- 일반 모드 -->
                 <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
+                <!-- 댓글 이미지 -->
+                @if (comment.imageUrls?.length) {
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                    @for (imgUrl of comment.imageUrls; track $index) {
+                      <img [src]="imgUrl" alt="댓글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" />
+                    }
+                  </div>
+                }
                 <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ comment.time }}</span>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
-                    <button class="action-pill">답글 쓰기</button>
-                    <button class="action-pill" [class.liked]="comment.liked">
+                    <button class="action-pill" (click)="startReply(comment)">답글 쓰기</button>
+                    <button class="action-pill" [class.liked]="comment.liked" (click)="toggleLike(comment)">
                       <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="comment.liked ? '#EF4444' : 'none'">
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="comment.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
                       </svg>
@@ -455,44 +457,143 @@
 
           <!-- 대댓글 -->
           @for (reply of comment.replies; track reply.id) {
-            <div class="reply-item">
-              <div class="flex items-center gap-2">
+            <div class="reply-item" [id]="'comment-' + reply.id" [class.comment-hovered]="hoveredCommentId() === reply.id && reply.markerNum" (mouseenter)="reply.markerNum ? hoveredCommentId.set(reply.id) : null">
+              <div class="flex items-start gap-2" style="padding-top: 4px;">
                 <div class="reply-line"></div>
+                @if (reply.type === 'feedback') {
+                  <div class="comment-marker marker-active reply-marker">
+                    <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
+                    <span class="marker-num">{{ reply.markerNum }}</span>
+                  </div>
+                } @else {
+                  <div class="reply-feedback-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3C7.03 3 3 6.13 3 10c0 2.38 1.41 4.47 3.56 5.78-.23.86-.78 2.17-2.06 3.72 0 0 3.24-.32 5.37-1.88.71.12 1.45.18 2.13.18 4.97 0 9-3.13 9-7s-4.03-7-9-7z" fill="#D4D4D8" opacity="0.5"/>
+                      <circle cx="8" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="12" cy="10.5" r="1" fill="#D4D4D8"/><circle cx="16" cy="10.5" r="1" fill="#D4D4D8"/>
+                    </svg>
+                  </div>
+                }
               </div>
               <div class="reply-body">
                 <div class="comment-item-header">
                   <div class="flex items-center gap-2">
-                    <div class="comment-item-avatar">{{ reply.avatar }}</div>
+                    @if (reply.profileImage) {
+                      <img class="comment-item-avatar" [src]="reply.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                    } @else {
+                      <div class="comment-item-avatar">{{ reply.avatar }}</div>
+                    }
                     <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ reply.userName }}</span>
                     @if (reply.isMe) {
                       <span class="comment-me-badge">나</span>
                     }
                   </div>
-                </div>
-                <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ reply.content }}</p>
-                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ reply.time }}</span>
-                @if (reply.images && reply.images > 0) {
-                  <div class="reply-images">
-                    @for (i of [1,2,3,4,5]; track i) {
-                      @if (i <= reply.images) {
-                        <div class="reply-image-thumb" role="button" tabindex="0" (click)="openCommentImageViewer(reply.images, i - 1)" (keydown.enter)="openCommentImageViewer(reply.images, i - 1)"></div>
-                      }
+                  <div class="comment-more-wrap">
+                    <button class="comment-more-btn" aria-label="더보기" (click)="toggleDropdown(reply.id, $event)">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
+                        <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
+                      </svg>
+                    </button>
+                    @if (openDropdownId() === reply.id) {
+                      <div class="comment-dropdown-overlay" tabindex="-1" (click)="closeDropdown()" (keydown.escape)="closeDropdown()"></div>
+                      <div class="comment-dropdown">
+                        @if (reply.isMe) {
+                          <button class="dropdown-item dropdown-item-active" (click)="startEdit(reply)">수정</button>
+                          <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(reply)">삭제</button>
+                        }
+                        <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal(reply.id)">신고</button>
+                      </div>
                     }
                   </div>
-                }
-                <div class="flex justify-between items-center">
-                  <button class="action-pill" [class.liked]="reply.liked">
-                    <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="reply.liked ? '#EF4444' : 'none'">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="reply.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
-                    </svg>
-                    <span>좋아요</span>
-                    <span>{{ reply.likes }}</span>
-                  </button>
                 </div>
+                @if (editingCommentId() === reply.id) {
+                  <!-- 수정 모드 -->
+                  <div class="flex flex-col gap-2 w-full">
+                    <textarea class="compose-textarea" [value]="editingCommentText()" (input)="onEditInput($event)"></textarea>
+                    <div class="flex justify-end gap-2">
+                      <button class="compose-btn-outline" (click)="cancelEdit()">취소</button>
+                      <button class="compose-btn-primary" (click)="saveEdit(reply.id)">저장</button>
+                    </div>
+                  </div>
+                } @else {
+                  <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ reply.content }}</p>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ reply.time }}</span>
+                  @if (reply.imageUrls?.length) {
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                      @for (imgUrl of reply.imageUrls; track $index) {
+                        <img [src]="imgUrl" alt="답글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" />
+                      }
+                    </div>
+                  }
+                  <div class="flex justify-between items-center">
+                    <button class="action-pill" [class.liked]="reply.liked" (click)="toggleLike(reply)">
+                      <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="reply.liked ? '#EF4444' : 'none'">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" [attr.stroke]="reply.liked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
+                      </svg>
+                      <span>좋아요</span>
+                      <span>{{ reply.likes }}</span>
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           }
         </div>
+
+          <!-- 인라인 답글 입력 -->
+          @if (replyingTo()?.id === comment.id && isLoggedIn()) {
+            <div class="reply-item">
+              <div class="flex items-center gap-2">
+                <div class="reply-line"></div>
+              </div>
+              <div class="reply-compose">
+                <!-- 마커 + 유저 정보 -->
+                <div class="flex items-center gap-2.5">
+                  <button [ngClass]="commentMode() === 'feedback' ? 'compose-marker-btn marker-btn-active' : 'compose-marker-btn'" aria-label="마커 피드백" (click)="toggleCommentMode()">
+                    <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M28.0244 26.2316L34.2772 32.3603L34.6386 33.6793L35 34.9982L33.6753 34.6645L32.3506 34.3308L26.0978 28.2022L24.5175 29.8185C23.9769 30.3714 23.1006 30.3714 22.56 29.8185L22.4533 29.7093C22.2105 29.461 22.0767 29.1433 22.0521 28.8187C19.662 29.2196 17.1243 28.4774 15.281 26.5921C12.2409 23.4827 12.2409 18.4414 15.281 15.332C18.3211 12.2227 23.2501 12.2227 26.2902 15.332C28.1346 17.2184 28.86 19.8159 28.4665 22.2617C28.7828 22.2876 29.092 22.4243 29.334 22.6718L29.4407 22.781C29.9813 23.3338 29.9813 24.2302 29.4407 24.7831L28.0244 26.2316Z" [attr.fill]="commentMode() === 'feedback' ? '#A148FF' : '#FAFAFA'"/>
+                    </svg>
+                  </button>
+                  @if (currentUserProfileImage()) {
+                    <img class="comment-avatar" [src]="currentUserProfileImage()" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                  } @else {
+                    <div class="comment-avatar">{{ currentUserAvatar() }}</div>
+                  }
+                  <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ currentUserName() }}</span>
+                  <span class="compose-me-badge">나</span>
+                </div>
+
+                <!-- 입력 영역 -->
+                <div class="flex flex-col flex-1 gap-2" style="margin-top: 12px;">
+                  <textarea class="compose-textarea" [value]="commentText" [placeholder]="commentMode() === 'feedback' ? '피드백 답글을 입력하세요.' : '답글을 입력하세요.'" (input)="onCommentInput($event)"></textarea>
+
+                  <!-- 첨부 이미지 프리뷰 -->
+                  @if (attachedImages().length > 0) {
+                    <div class="flex flex-wrap gap-2">
+                      @for (img of attachedImages(); track img.preview; let i = $index) {
+                        <div class="relative" style="width: 64px; height: 64px;">
+                          <img [src]="img.preview" alt="첨부 이미지" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;" />
+                          <button (click)="removeAttachedImage(i)" aria-label="이미지 삭제"
+                            style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #EF4444; border: 2px solid #27272A; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="#FFFFFF">
+                              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <span class="compose-hint">이미지 첨부는 5장까지 가능하며, 이미지당 최대용량은 10mb 입니다. ({{ attachedImages().length }}/5)</span>
+                </div>
+
+                <!-- 버튼 -->
+                <div class="flex justify-end gap-3" style="margin-top: 12px;">
+                  <button class="compose-btn-outline" (click)="triggerImageInput()">이미지 첨부</button>
+                  <button class="compose-btn-primary" (click)="submitComment()">등록</button>
+                </div>
+              </div>
+            </div>
+          }
       }
     </div>
 
@@ -561,7 +662,8 @@
   <app-image-viewer
     [images]="manuscriptImages"
     [isOpen]="isViewerOpen()"
-    [pageLabel]="'회'"
+    [startPage]="currentViewerPage()"
+    [pageLabel]="'장'"
     (closed)="closeViewer()"
   />
 
@@ -605,6 +707,44 @@
           <div class="del-footer-actions">
             <button class="del-btn-cancel" (click)="closeDeleteModal()">취소</button>
             <button class="del-btn-delete" (click)="confirmDelete()">삭제</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ===== 신고 모달 ===== -->
+  @if (isReportModalOpen()) {
+    <div class="del-overlay" tabindex="-1" (click)="closeReportModal()" (keydown.escape)="closeReportModal()">
+      <div class="del-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeReportModal()" style="max-width: 440px;">
+        <!-- 헤더 -->
+        <div class="del-header">
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-100">{{ reportType() === 'comment' ? '댓글 신고' : '콘텐츠 신고' }}</span>
+          <button class="del-close-btn" (click)="closeReportModal()" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 본문 -->
+        <div class="del-body" style="gap: 16px;">
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center m-0">
+            신고 사유를 입력해주세요.
+          </p>
+          <textarea
+            class="w-full min-h-[120px] p-3 rounded-lg border border-zinc-700 bg-zinc-800 text-zinc-200 font-suit font-medium text-sm leading-[150%] tracking-tight resize-none outline-none"
+            style="box-sizing: border-box;"
+            placeholder="신고 사유를 작성해주세요..."
+            [value]="reportText"
+            (input)="onReportInput($event)"></textarea>
+        </div>
+
+        <!-- 푸터 -->
+        <div class="del-footer">
+          <div class="del-footer-actions">
+            <button class="del-btn-cancel" (click)="closeReportModal()">취소</button>
+            <button class="del-btn-delete" (click)="submitReport()" style="background: #EF4444;">신고</button>
           </div>
         </div>
       </div>
@@ -771,7 +911,7 @@
       </div>
 
       <!-- 콘텐츠 영역 -->
-      <div class="flex flex-col items-start p-8 gap-6 w-full h-[550px] min-h-[300px] bg-bg-card shrink-0 box-border overflow-y-auto">
+      <div class="flex flex-col items-start p-8 gap-4 w-full h-[550px] min-h-[300px] bg-bg-card shrink-0 box-border overflow-y-auto">
         @for (cat of bookmarkCategories(); track cat.id) {
           <!-- 카테고리 카드 -->
           <div
@@ -784,23 +924,43 @@
             <div class="flex justify-center items-center w-[60px] h-[60px] rounded shrink-0" [style.background]="cat.thumbnail"></div>
 
             <!-- 카테고리 정보 -->
-            <div class="flex flex-col justify-center items-start gap-2.5 flex-1 min-w-0">
-              <span class="w-full h-6 font-suit font-medium text-base leading-[150%] flex items-center tracking-tight text-zinc-50 overflow-hidden text-ellipsis whitespace-nowrap">{{ cat.name }}</span>
+            <div class="flex flex-col justify-center items-start gap-2 flex-1 min-w-0">
+              @if (editingCategoryId() === cat.id) {
+                <!-- 이름 편집 모드 -->
+                <div class="flex flex-row items-center gap-2 w-full" (click)="$event.stopPropagation()">
+                  <input
+                    type="text"
+                    class="flex-1 h-9 px-3 bg-zinc-900 border border-accent rounded-lg font-suit text-sm text-white outline-none"
+                    [value]="editingCategoryName()"
+                    (input)="onEditCategoryNameInput($event)"
+                    (keydown.enter)="confirmRenameCategory()"
+                    (keydown.escape)="cancelRenameCategory()"
+                    autofocus
+                  />
+                  <button class="flex items-center justify-center w-8 h-8 rounded-md bg-accent hover:bg-accent-hover border-none cursor-pointer transition-colors" (click)="confirmRenameCategory()" aria-label="확인">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                  </button>
+                  <button class="flex items-center justify-center w-8 h-8 rounded-md bg-zinc-700 hover:bg-zinc-600 border-none cursor-pointer transition-colors" (click)="cancelRenameCategory()" aria-label="취소">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M18 6L6 18M6 6l12 12" stroke="#A1A1AA" stroke-width="2.5" stroke-linecap="round"/></svg>
+                  </button>
+                </div>
+              } @else {
+                <!-- 이름 표시 모드 -->
+                <div class="flex flex-row items-center gap-2 w-full min-w-0">
+                  <span class="flex-1 h-6 font-suit font-medium text-base leading-[150%] flex items-center tracking-tight text-zinc-50 overflow-hidden text-ellipsis whitespace-nowrap">{{ cat.name }}</span>
+                  @if (selectedEditIds().has(cat.id)) {
+                    <button class="flex items-center justify-center w-7 h-7 rounded-md bg-transparent hover:bg-zinc-700 border-none cursor-pointer transition-colors shrink-0" (click)="startRenameCategory(cat.id, $event)" aria-label="이름 변경">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#A1A1AA"/></svg>
+                    </button>
+                  }
+                </div>
+              }
               <div class="flex flex-row items-center gap-2.5 w-full h-[22px]">
                 <span class="h-[21px] font-suit font-medium text-sm leading-[150%] flex items-center tracking-tight text-zinc-500 shrink-0">총 {{ cat.count }}개의 콘텐츠</span>
-                @if (cat.visibility === 'private') {
-                  <div class="flex flex-row items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 17a2 2 0 100-4 2 2 0 000 4z" fill="#71717A"/>
-                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z" fill="#71717A"/>
-                    </svg>
-                    <span class="h-[18px] font-suit font-medium text-xs leading-[150%] tracking-tight text-zinc-500">비공개</span>
-                  </div>
-                }
               </div>
             </div>
 
-            <!-- 마이너스 삭제 버튼 -->
+            <!-- 삭제 버튼 -->
             @if (selectedEditIds().has(cat.id)) {
               <button class="flex items-center justify-center w-8 h-8 bg-transparent border-none cursor-pointer p-0 shrink-0 rounded-md transition-transform duration-150 hover:scale-110 active:scale-95" (click)="removeBookmarkCategory(cat.id, $event)" aria-label="삭제">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
@@ -811,11 +971,38 @@
             }
           </div>
         }
+
+        <!-- 인라인 새 카테고리 입력 -->
+        @if (isAddingNewCategory()) {
+          <div class="box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] rounded-xl shrink-0 border border-dashed border-accent bg-[rgba(122,72,255,0.04)]">
+            <div class="flex justify-center items-center w-[60px] h-[60px] rounded shrink-0 bg-zinc-700">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#956DFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </div>
+            <div class="flex flex-row items-center gap-2 flex-1 min-w-0">
+              <input
+                type="text"
+                class="flex-1 h-9 px-3 bg-zinc-900 border border-accent rounded-lg font-suit text-sm text-white outline-none"
+                placeholder="카테고리 이름을 입력하세요"
+                [value]="newCategoryName"
+                (input)="onNewCategoryInput($event)"
+                (keydown.enter)="confirmAddCategory()"
+                (keydown.escape)="cancelAddCategory()"
+                autofocus
+              />
+              <button class="flex items-center justify-center w-8 h-8 rounded-md bg-accent hover:bg-accent-hover border-none cursor-pointer transition-colors" (click)="confirmAddCategory()" aria-label="확인">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </button>
+              <button class="flex items-center justify-center w-8 h-8 rounded-md bg-zinc-700 hover:bg-zinc-600 border-none cursor-pointer transition-colors" (click)="cancelAddCategory()" aria-label="취소">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M18 6L6 18M6 6l12 12" stroke="#A1A1AA" stroke-width="2.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+        }
       </div>
 
       <!-- 푸터 -->
       <div class="box-border flex flex-row justify-between items-center px-8 pt-5 pb-8 gap-2.5 w-full h-[100px] bg-bg-card border-t border-zinc-800 rounded-b-2xl shrink-0">
-        <button class="box-border flex justify-center items-center px-3 py-[9px] gap-2.5 h-12 border border-[#956DFF] rounded-xl bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-[#956DFF] transition-colors duration-150 hover:bg-[rgba(149,109,255,0.08)]" (click)="addNewCategory()">+ 카테고리 추가</button>
+        <button class="box-border flex justify-center items-center px-3 py-[9px] gap-2.5 h-12 border border-[#956DFF] rounded-xl bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-[#956DFF] transition-colors duration-150 hover:bg-[rgba(149,109,255,0.08)]" (click)="startAddCategory()">+ 카테고리 추가</button>
         <button
           [class]="hasSelectedCategories()
             ? 'flex justify-center items-center px-3 gap-1 w-[100px] h-12 rounded-xl border-none font-suit font-medium text-base leading-[150%] tracking-tight bg-accent text-white cursor-pointer transition-colors duration-150 hover:bg-accent-hover'

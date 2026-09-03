@@ -25,7 +25,7 @@ export class MyBootcampPage implements OnInit {
   private api = inject(ApiService);
   private platformId = inject(PLATFORM_ID);
 
-  tabs = ['전체', '수강중', '신청 완료', '불합격'];
+  tabs = ['전체', '수강중', '신청 완료'];
   activeTab = signal('전체');
 
   allItems = signal<BootcampItem[]>([]);
@@ -62,12 +62,15 @@ export class MyBootcampPage implements OnInit {
     if (!user) return;
 
     try {
+      const items: BootcampItem[] = [];
+
+      // 1. 지원자(수강생)로 등록된 부트캠프
       const applicants = await this.api.applicants.findByUser(user.id);
-      console.log('[내부트캠프] 지원내역:', applicants);
-      this.allItems.set(applicants.map(a => {
+      const filtered = applicants.filter(a => a.status !== 'REJECTED');
+      for (const a of filtered) {
         const bc = a.bootcamp || {};
         const fmt = (d: string) => d ? d.substring(0, 10) : '';
-        return {
+        items.push({
           id: a.id,
           bootcampId: bc.id || a.bootcampId,
           name: bc.name || `부트캠프 #${a.bootcampId}`,
@@ -75,8 +78,29 @@ export class MyBootcampPage implements OnInit {
           dateRange: bc.startDate && bc.endDate
             ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
             : '',
-        };
-      }));
+        });
+      }
+
+      // 2. 강사로 초대된 부트캠프
+      if (user.role === 'INSTRUCTOR') {
+        const bootcamps = await this.api.bootcamps.findByInstructor(user.id);
+        for (const bc of bootcamps) {
+          // 이미 지원자로 등록된 부트캠프 중복 방지
+          if (items.some(i => i.bootcampId === bc.id)) continue;
+          const fmt = (d: string) => d ? d.substring(0, 10) : '';
+          items.push({
+            id: bc.id,
+            bootcampId: bc.id,
+            name: bc.name || `부트캠프 #${bc.id}`,
+            status: '수강중',
+            dateRange: bc.startDate && bc.endDate
+              ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
+              : '',
+          });
+        }
+      }
+
+      this.allItems.set(items);
     } catch (e) {
       console.error('내 부트캠프 로드 실패:', e);
     }

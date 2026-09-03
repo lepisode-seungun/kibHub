@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -19,7 +20,7 @@ function toBootcampRow(b: Bootcamp): BootcampRow {
     id: b.id,
     status: STATUS_MAP[b.status] || b.status,
     bootcampName: b.name,
-    createdAt: new Date(b.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(b.createdAt),
   };
 }
 

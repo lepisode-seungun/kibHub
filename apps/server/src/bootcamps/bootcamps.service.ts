@@ -60,4 +60,53 @@ export class BootcampsService {
       select: { id: true, interviewSettings: true },
     });
   }
+
+  // ===== 강사 관리 =====
+
+  async findInstructors(bootcampId: number) {
+    const records = await this.prisma.bootcampInstructor.findMany({
+      where: { bootcampId },
+      include: {
+        user: {
+          select: {
+            id: true, email: true, name: true, nickname: true,
+            phone: true, role: true, status: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+    return records.map(r => r.user);
+  }
+
+  async addInstructor(bootcampId: number, userId: number) {
+    return this.prisma.bootcampInstructor.create({
+      data: { bootcampId, userId },
+      include: {
+        user: {
+          select: {
+            id: true, email: true, name: true, nickname: true,
+            phone: true, role: true, status: true,
+          },
+        },
+      },
+    });
+  }
+
+  async removeInstructor(bootcampId: number, userId: number) {
+    return this.prisma.bootcampInstructor.delete({
+      where: { bootcampId_userId: { bootcampId, userId } },
+    });
+  }
+
+  async findBootcampsByInstructor(userId: number) {
+    const records = await this.prisma.bootcampInstructor.findMany({
+      where: { userId },
+      include: {
+        bootcamp: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return records.map(r => r.bootcamp);
+  }
 }

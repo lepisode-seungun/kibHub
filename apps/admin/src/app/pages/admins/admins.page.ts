@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +21,7 @@ function toAdminRow(u: User): AdminRow {
     role: u.adminRole === 'SUPER' ? '최고 관리자' : '일반 관리자',
     loginId: u.loginId || u.email,
     adminRole: u.adminRole,
-    createdAt: new Date(u.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(u.createdAt),
   };
 }
 

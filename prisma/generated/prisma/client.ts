@@ -57,6 +57,11 @@ export type Banner = Prisma.BannerModel
  */
 export type Bootcamp = Prisma.BootcampModel
 /**
+ * Model BootcampInstructor
+ * 
+ */
+export type BootcampInstructor = Prisma.BootcampInstructorModel
+/**
  * Model Content
  * 
  */
@@ -67,10 +72,25 @@ export type Content = Prisma.ContentModel
  */
 export type ContentCategory = Prisma.ContentCategoryModel
 /**
+ * Model Album
+ * 
+ */
+export type Album = Prisma.AlbumModel
+/**
+ * Model AlbumContent
+ * 
+ */
+export type AlbumContent = Prisma.AlbumContentModel
+/**
  * Model Comment
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model CommentLike
+ * 
+ */
+export type CommentLike = Prisma.CommentLikeModel
 /**
  * Model Report
  * 

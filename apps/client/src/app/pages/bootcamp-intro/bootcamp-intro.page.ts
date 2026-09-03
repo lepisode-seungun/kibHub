@@ -133,29 +133,47 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   }
   bootcampCards = signal<BootcampCard[]>([]);
 
-  // ===== 카드 드래그 스크롤 =====
+  // ===== 카드 드래그 스크롤 (모멘텀 관성 적용) =====
   @ViewChild('cardsRow') cardsRowRef!: ElementRef<HTMLDivElement>;
   private isCardsDragging = false;
   private hasDragged = false;
   private cardsDragStartX = 0;
+  private cardsDragStartPageX = 0;
   private cardsScrollLeft = 0;
+  private cardsDragVelocity = 0;
+  private cardsDragLastX = 0;
+  private cardsDragLastTime = 0;
+  private cardsMomentumId = 0;
+  private static readonly DRAG_THRESHOLD = 4; // px — 이 이상 이동해야 드래그로 인식
 
   onCardsMouseDown(event: MouseEvent): void {
     const el = this.cardsRowRef?.nativeElement;
     if (!el) return;
     event.preventDefault();
+    cancelAnimationFrame(this.cardsMomentumId);
     this.isCardsDragging = true;
     this.hasDragged = false;
     this.cardsDragStartX = event.pageX - el.offsetLeft;
+    this.cardsDragStartPageX = event.pageX;
     this.cardsScrollLeft = el.scrollLeft;
+    this.cardsDragVelocity = 0;
+    this.cardsDragLastX = event.pageX;
+    this.cardsDragLastTime = Date.now();
     el.classList.add('dragging');
+    el.style.scrollSnapType = 'none';
     document.addEventListener('mousemove', this.boundCardsMouseMove);
     document.addEventListener('mouseup', this.boundCardsMouseUp);
   }
 
   onCardsMouseUp(): void {
+    if (!this.isCardsDragging) return;
     this.isCardsDragging = false;
-    this.cardsRowRef?.nativeElement?.classList.remove('dragging');
+    const el = this.cardsRowRef?.nativeElement;
+    if (el) {
+      el.classList.remove('dragging');
+      // 모멘텀 관성 스크롤
+      this.applyMomentum();
+    }
     document.removeEventListener('mousemove', this.boundCardsMouseMove);
     document.removeEventListener('mouseup', this.boundCardsMouseUp);
   }
@@ -171,16 +189,51 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   private boundCardsMouseMove = (e: MouseEvent): void => {
     if (!this.isCardsDragging) return;
     e.preventDefault();
-    this.hasDragged = true;
+
+    // 최소 이동 거리 체크 — 임계값 이상 이동해야 드래그로 인식
+    const totalMoved = Math.abs(e.pageX - this.cardsDragStartPageX);
+    if (totalMoved > BootcampIntroPage.DRAG_THRESHOLD) {
+      this.hasDragged = true;
+    }
+
     const el = this.cardsRowRef.nativeElement;
     const x = e.pageX - el.offsetLeft;
-    const walk = (x - this.cardsDragStartX) * 1.5;
+    const walk = (x - this.cardsDragStartX) * 1.2;
     el.scrollLeft = this.cardsScrollLeft - walk;
+
+    // 속도 계산 (모멘텀용)
+    const now = Date.now();
+    const dt = now - this.cardsDragLastTime;
+    if (dt > 0) {
+      this.cardsDragVelocity = (this.cardsDragLastX - e.pageX) / dt;
+    }
+    this.cardsDragLastX = e.pageX;
+    this.cardsDragLastTime = now;
   };
 
   private boundCardsMouseUp = (): void => {
     this.onCardsMouseUp();
   };
+
+  /** 드래그 종료 후 관성으로 부드럽게 슬라이딩 */
+  private applyMomentum(): void {
+    const el = this.cardsRowRef?.nativeElement;
+    if (!el) return;
+
+    let velocity = this.cardsDragVelocity * 800; // 초기 모멘텀 (px)
+    const friction = 0.95; // 감속 비율
+
+    const step = () => {
+      if (Math.abs(velocity) < 0.5) {
+        el.style.scrollSnapType = 'x mandatory';
+        return;
+      }
+      el.scrollLeft += velocity;
+      velocity *= friction;
+      this.cardsMomentumId = requestAnimationFrame(step);
+    };
+    this.cardsMomentumId = requestAnimationFrame(step);
+  }
 
   // History 쇼케이스 캐러셀
   showcaseImages: string[] = [

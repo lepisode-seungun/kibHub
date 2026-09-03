@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 export interface User {
   id: number;
   email: string;
+  name?: string;
   nickname: string;
   initial: string;
   profileImage?: string | null;

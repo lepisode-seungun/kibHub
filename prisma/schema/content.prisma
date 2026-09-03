@@ -6,6 +6,7 @@ model Content {
   title      String
   body       String           @default("")
   thumbnail  String?
+  images     String[]         @default([])
   viewCount  Int              @default(0)
   categoryId Int?
   category   ContentCategory? @relation(fields: [categoryId], references: [id])
@@ -15,6 +16,7 @@ model Content {
   updatedAt  DateTime         @updatedAt
 
   comments   Comment[]
+  albumContents AlbumContent[]
 }
 
 enum ContentStatus {
@@ -34,18 +36,69 @@ model ContentCategory {
   contents  Content[]
 }
 
+// ===== 앨범 =====
+enum AlbumType {
+  ALBUM
+  BOOKMARK
+}
+
+model Album {
+  id        Int       @id @default(autoincrement())
+  name      String
+  type      AlbumType @default(ALBUM)
+  ownerId   Int
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  albumContents AlbumContent[]
+}
+
+model AlbumContent {
+  id        Int     @id @default(autoincrement())
+  albumId   Int
+  album     Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  contentId Int
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([albumId, contentId])
+}
+
 // ===== 댓글 =====
 model Comment {
   id          Int           @id @default(autoincrement())
   status      ContentStatus @default(VISIBLE)
+  type        String        @default("general")  // "general" | "feedback"
   body        String
+  images      String[]      @default([])
+  markerNum        Int?
+  markerTop        Float?
+  markerLeft       Float?
+  markerImageIndex Int?
   contentId   Int
   content     Content       @relation(fields: [contentId], references: [id], onDelete: Cascade)
   authorId    Int
   author      User          @relation(fields: [authorId], references: [id])
+  parentId    Int?
+  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[]     @relation("CommentReplies")
   likeCount   Int           @default(0)
+  likes       CommentLike[]
   reportCount Int           @default(0)
   createdAt   DateTime      @default(now())
+}
+
+// ===== 댓글 좋아요 =====
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  commentId Int
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
 }
 
 // ===== 신고 =====

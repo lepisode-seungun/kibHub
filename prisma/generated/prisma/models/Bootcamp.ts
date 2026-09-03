@@ -291,6 +291,7 @@ export type BootcampWhereInput = {
   courses?: Prisma.CourseListRelationFilter
   applicants?: Prisma.ApplicantListRelationFilter
   notices?: Prisma.NoticeListRelationFilter
+  instructors?: Prisma.BootcampInstructorListRelationFilter
 }
 
 export type BootcampOrderByWithRelationInput = {
@@ -312,6 +313,7 @@ export type BootcampOrderByWithRelationInput = {
   courses?: Prisma.CourseOrderByRelationAggregateInput
   applicants?: Prisma.ApplicantOrderByRelationAggregateInput
   notices?: Prisma.NoticeOrderByRelationAggregateInput
+  instructors?: Prisma.BootcampInstructorOrderByRelationAggregateInput
 }
 
 export type BootcampWhereUniqueInput = Prisma.AtLeast<{
@@ -336,6 +338,7 @@ export type BootcampWhereUniqueInput = Prisma.AtLeast<{
   courses?: Prisma.CourseListRelationFilter
   applicants?: Prisma.ApplicantListRelationFilter
   notices?: Prisma.NoticeListRelationFilter
+  instructors?: Prisma.BootcampInstructorListRelationFilter
 }, "id">
 
 export type BootcampOrderByWithAggregationInput = {
@@ -400,6 +403,7 @@ export type BootcampCreateInput = {
   courses?: Prisma.CourseCreateNestedManyWithoutBootcampInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateInput = {
@@ -421,6 +425,7 @@ export type BootcampUncheckedCreateInput = {
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBootcampInput
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUpdateInput = {
@@ -441,6 +446,7 @@ export type BootcampUpdateInput = {
   courses?: Prisma.CourseUpdateManyWithoutBootcampNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateInput = {
@@ -462,6 +468,7 @@ export type BootcampUncheckedUpdateInput = {
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateManyInput = {
@@ -607,6 +614,20 @@ export type EnumBootcampStatusFieldUpdateOperationsInput = {
   set?: $Enums.BootcampStatus
 }
 
+export type BootcampCreateNestedOneWithoutInstructorsInput = {
+  create?: Prisma.XOR<Prisma.BootcampCreateWithoutInstructorsInput, Prisma.BootcampUncheckedCreateWithoutInstructorsInput>
+  connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutInstructorsInput
+  connect?: Prisma.BootcampWhereUniqueInput
+}
+
+export type BootcampUpdateOneRequiredWithoutInstructorsNestedInput = {
+  create?: Prisma.XOR<Prisma.BootcampCreateWithoutInstructorsInput, Prisma.BootcampUncheckedCreateWithoutInstructorsInput>
+  connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutInstructorsInput
+  upsert?: Prisma.BootcampUpsertWithoutInstructorsInput
+  connect?: Prisma.BootcampWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BootcampUpdateToOneWithWhereWithoutInstructorsInput, Prisma.BootcampUpdateWithoutInstructorsInput>, Prisma.BootcampUncheckedUpdateWithoutInstructorsInput>
+}
+
 export type BootcampCreateNestedOneWithoutCoursesInput = {
   create?: Prisma.XOR<Prisma.BootcampCreateWithoutCoursesInput, Prisma.BootcampUncheckedCreateWithoutCoursesInput>
   connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutCoursesInput
@@ -654,6 +675,7 @@ export type BootcampCreateWithoutApplicantsInput = {
   updatedAt?: Date | string
   courses?: Prisma.CourseCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutApplicantsInput = {
@@ -674,6 +696,7 @@ export type BootcampUncheckedCreateWithoutApplicantsInput = {
   updatedAt?: Date | string
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutApplicantsInput = {
@@ -709,6 +732,7 @@ export type BootcampUpdateWithoutApplicantsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutApplicantsInput = {
@@ -729,6 +753,105 @@ export type BootcampUncheckedUpdateWithoutApplicantsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
+}
+
+export type BootcampCreateWithoutInstructorsInput = {
+  name: string
+  instructorName?: string
+  description?: string
+  thumbnail?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  status?: $Enums.BootcampStatus
+  recruitIntro?: string
+  recruitCurriculum?: string
+  recruitReview?: string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  courses?: Prisma.CourseCreateNestedManyWithoutBootcampInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutBootcampInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
+}
+
+export type BootcampUncheckedCreateWithoutInstructorsInput = {
+  id?: number
+  name: string
+  instructorName?: string
+  description?: string
+  thumbnail?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  status?: $Enums.BootcampStatus
+  recruitIntro?: string
+  recruitCurriculum?: string
+  recruitReview?: string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBootcampInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutBootcampInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
+}
+
+export type BootcampCreateOrConnectWithoutInstructorsInput = {
+  where: Prisma.BootcampWhereUniqueInput
+  create: Prisma.XOR<Prisma.BootcampCreateWithoutInstructorsInput, Prisma.BootcampUncheckedCreateWithoutInstructorsInput>
+}
+
+export type BootcampUpsertWithoutInstructorsInput = {
+  update: Prisma.XOR<Prisma.BootcampUpdateWithoutInstructorsInput, Prisma.BootcampUncheckedUpdateWithoutInstructorsInput>
+  create: Prisma.XOR<Prisma.BootcampCreateWithoutInstructorsInput, Prisma.BootcampUncheckedCreateWithoutInstructorsInput>
+  where?: Prisma.BootcampWhereInput
+}
+
+export type BootcampUpdateToOneWithWhereWithoutInstructorsInput = {
+  where?: Prisma.BootcampWhereInput
+  data: Prisma.XOR<Prisma.BootcampUpdateWithoutInstructorsInput, Prisma.BootcampUncheckedUpdateWithoutInstructorsInput>
+}
+
+export type BootcampUpdateWithoutInstructorsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBootcampStatusFieldUpdateOperationsInput | $Enums.BootcampStatus
+  recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUpdateManyWithoutBootcampNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutBootcampNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
+}
+
+export type BootcampUncheckedUpdateWithoutInstructorsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBootcampStatusFieldUpdateOperationsInput | $Enums.BootcampStatus
+  recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutCoursesInput = {
@@ -748,6 +871,7 @@ export type BootcampCreateWithoutCoursesInput = {
   updatedAt?: Date | string
   applicants?: Prisma.ApplicantCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutCoursesInput = {
@@ -768,6 +892,7 @@ export type BootcampUncheckedCreateWithoutCoursesInput = {
   updatedAt?: Date | string
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutBootcampInput
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutCoursesInput = {
@@ -803,6 +928,7 @@ export type BootcampUpdateWithoutCoursesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applicants?: Prisma.ApplicantUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutCoursesInput = {
@@ -823,6 +949,7 @@ export type BootcampUncheckedUpdateWithoutCoursesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutNoticesInput = {
@@ -842,6 +969,7 @@ export type BootcampCreateWithoutNoticesInput = {
   updatedAt?: Date | string
   courses?: Prisma.CourseCreateNestedManyWithoutBootcampInput
   applicants?: Prisma.ApplicantCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutNoticesInput = {
@@ -862,6 +990,7 @@ export type BootcampUncheckedCreateWithoutNoticesInput = {
   updatedAt?: Date | string
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBootcampInput
   applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutNoticesInput = {
@@ -897,6 +1026,7 @@ export type BootcampUpdateWithoutNoticesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUpdateManyWithoutBootcampNestedInput
   applicants?: Prisma.ApplicantUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutNoticesInput = {
@@ -917,6 +1047,7 @@ export type BootcampUncheckedUpdateWithoutNoticesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 
@@ -928,12 +1059,14 @@ export type BootcampCountOutputType = {
   courses: number
   applicants: number
   notices: number
+  instructors: number
 }
 
 export type BootcampCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   courses?: boolean | BootcampCountOutputTypeCountCoursesArgs
   applicants?: boolean | BootcampCountOutputTypeCountApplicantsArgs
   notices?: boolean | BootcampCountOutputTypeCountNoticesArgs
+  instructors?: boolean | BootcampCountOutputTypeCountInstructorsArgs
 }
 
 /**
@@ -967,6 +1100,13 @@ export type BootcampCountOutputTypeCountNoticesArgs<ExtArgs extends runtime.Type
   where?: Prisma.NoticeWhereInput
 }
 
+/**
+ * BootcampCountOutputType without action
+ */
+export type BootcampCountOutputTypeCountInstructorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BootcampInstructorWhereInput
+}
+
 
 export type BootcampSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -987,6 +1127,7 @@ export type BootcampSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   courses?: boolean | Prisma.Bootcamp$coursesArgs<ExtArgs>
   applicants?: boolean | Prisma.Bootcamp$applicantsArgs<ExtArgs>
   notices?: boolean | Prisma.Bootcamp$noticesArgs<ExtArgs>
+  instructors?: boolean | Prisma.Bootcamp$instructorsArgs<ExtArgs>
   _count?: boolean | Prisma.BootcampCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bootcamp"]>
 
@@ -1049,6 +1190,7 @@ export type BootcampInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   courses?: boolean | Prisma.Bootcamp$coursesArgs<ExtArgs>
   applicants?: boolean | Prisma.Bootcamp$applicantsArgs<ExtArgs>
   notices?: boolean | Prisma.Bootcamp$noticesArgs<ExtArgs>
+  instructors?: boolean | Prisma.Bootcamp$instructorsArgs<ExtArgs>
   _count?: boolean | Prisma.BootcampCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BootcampIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1060,6 +1202,7 @@ export type $BootcampPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     courses: Prisma.$CoursePayload<ExtArgs>[]
     applicants: Prisma.$ApplicantPayload<ExtArgs>[]
     notices: Prisma.$NoticePayload<ExtArgs>[]
+    instructors: Prisma.$BootcampInstructorPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1474,6 +1617,7 @@ export interface Prisma__BootcampClient<T, Null = never, ExtArgs extends runtime
   courses<T extends Prisma.Bootcamp$coursesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   applicants<T extends Prisma.Bootcamp$applicantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notices<T extends Prisma.Bootcamp$noticesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$noticesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NoticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  instructors<T extends Prisma.Bootcamp$instructorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$instructorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BootcampInstructorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1980,6 +2124,30 @@ export type Bootcamp$noticesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.NoticeScalarFieldEnum | Prisma.NoticeScalarFieldEnum[]
+}
+
+/**
+ * Bootcamp.instructors
+ */
+export type Bootcamp$instructorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BootcampInstructor
+   */
+  select?: Prisma.BootcampInstructorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BootcampInstructor
+   */
+  omit?: Prisma.BootcampInstructorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BootcampInstructorInclude<ExtArgs> | null
+  where?: Prisma.BootcampInstructorWhereInput
+  orderBy?: Prisma.BootcampInstructorOrderByWithRelationInput | Prisma.BootcampInstructorOrderByWithRelationInput[]
+  cursor?: Prisma.BootcampInstructorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BootcampInstructorScalarFieldEnum | Prisma.BootcampInstructorScalarFieldEnum[]
 }
 
 /**

@@ -82,7 +82,7 @@
                 </svg>
               </div>
             } @else {
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700" style="white-space: pre-line;">
                 {{ row[col.key] }}
               </span>
             }
@@ -175,16 +175,16 @@
 
 <!-- 컨텍스트 메뉴 드롭다운 -->
 @if (ctxMenuVisible()) {
-  <div class="fixed flex flex-col py-2 bg-white rounded-lg z-[1000]"
+  <div class="fixed flex flex-col py-1 bg-white rounded-lg z-[1000]"
        role="menu"
        tabindex="-1"
-       style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); width: 114px; border: 1px solid #F9FAFB;"
+       style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); width: 72px; border: 1px solid #F9FAFB;"
        [ngStyle]="{ left: ctxMenuX() + 'px', top: ctxMenuY() + 'px' }"
        (click)="$event.stopPropagation()"
        (keydown)="$event.stopPropagation()">
     @for (item of ctxMenuDynamicItems(); track item; let i = $index) {
-      <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] transition-colors"
-              style="height: 40px; width: 100%;"
+      <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] transition-colors"
+              style="height: 32px; width: 100%;"
               [ngClass]="ctxMenuHover() === i
                 ? 'bg-[#F9FAFB] text-[#4B5563]'
                 : 'bg-white text-[#4B5563] hover:bg-[#F9FAFB]'"

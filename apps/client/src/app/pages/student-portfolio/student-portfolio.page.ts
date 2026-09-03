@@ -1,5 +1,5 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, computed, OnInit, NgZone, ApplicationRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
@@ -21,6 +21,9 @@ interface PortfolioCardData {
 })
 export class StudentPortfolioPage implements OnInit {
   private api = inject(ApiService);
+  private ngZone = inject(NgZone);
+  private appRef = inject(ApplicationRef);
+  private platformId = inject(PLATFORM_ID);
 
   portfolios = signal<PortfolioCardData[]>([]);
   isLoading = signal(true);
@@ -51,21 +54,40 @@ export class StudentPortfolioPage implements OnInit {
     return rows;
   });
 
-  async ngOnInit(): Promise<void> {
-    try {
-      const data = await this.api.portfolios.findAll({ isHallOfFame: 'false', status: 'VISIBLE' });
-      this.portfolios.set((Array.isArray(data) ? data : []).map((p: any, i: number) => ({
-        id: p.id,
-        thumbnail: p.thumbnail || '',
-        gradient: this.gradients[i % this.gradients.length],
-        workTitle: p.workTitle || '',
-        userName: p.userName || '',
-        bootcampName: p.bootcampName || '',
-      })));
-    } catch {
-      this.portfolios.set([]);
-    } finally {
-      this.isLoading.set(false);
+  /** 배너 히어로 카드: 원래 2열 스태거 구조 유지 */
+  /** 좌측 1열 (3장) */
+  bannerLeftCol1 = computed(() => this.portfolios().slice(0, 3));
+  /** 좌측 2열 (2장) */
+  bannerLeftCol2 = computed(() => this.portfolios().slice(3, 5));
+  /** 우측 1열 (3장) */
+  bannerRightCol1 = computed(() => this.portfolios().slice(5, 8));
+  /** 우측 2열 (2장) */
+  bannerRightCol2 = computed(() => this.portfolios().slice(8, 10));
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadPortfolios();
     }
+  }
+
+  private loadPortfolios(): void {
+    this.ngZone.run(async () => {
+      try {
+        const data = await this.api.portfolios.findAll({ isHallOfFame: 'false', status: 'VISIBLE' });
+        this.portfolios.set((Array.isArray(data) ? data : []).map((p: any, i: number) => ({
+          id: p.id,
+          thumbnail: p.thumbnail || '',
+          gradient: this.gradients[i % this.gradients.length],
+          workTitle: p.workTitle || '',
+          userName: p.userName || '',
+          bootcampName: p.bootcampName || '',
+        })));
+      } catch {
+        this.portfolios.set([]);
+      } finally {
+        this.isLoading.set(false);
+        this.appRef.tick();
+      }
+    });
   }
 }

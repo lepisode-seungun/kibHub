@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -50,8 +51,8 @@ export class ApplicantDetailPage implements OnInit {
             portfolioFiles: files,
             motivation: iq?.['motivation'] || '',
             member: raw.user?.name || '',
-            appliedAt: new Date((raw as any).appliedAt || raw.createdAt).toLocaleString('ko-KR'),
-            lastUpdate: new Date((raw as any).appliedAt || raw.createdAt).toLocaleString('ko-KR'),
+            appliedAt: formatDate((raw as any).appliedAt || raw.createdAt),
+            lastUpdate: formatDate((raw as any).appliedAt || raw.createdAt),
           });
 
           // 사전 인터뷰 Q&A 파싱

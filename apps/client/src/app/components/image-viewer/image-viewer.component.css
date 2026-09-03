@@ -328,3 +328,40 @@
     padding: 40px;
   }
 }
+
+/* Image Wrapper (for markers) */
+.iv-image-wrapper {
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Markers */
+.iv-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 10;
+  pointer-events: none;
+  width: 32px;
+  height: 44px;
+}
+
+.iv-marker-icon {
+  width: 32px;
+  height: 44px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.iv-marker-num {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+  line-height: 1;
+  pointer-events: none;
+}

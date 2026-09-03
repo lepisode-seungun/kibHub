@@ -3,6 +3,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ContentsController } from './contents.controller';
 import { ContentsService } from './contents.service';
 
+// Report 관리 포함
 @Module({
   imports: [AuthModule],
   controllers: [ContentsController],

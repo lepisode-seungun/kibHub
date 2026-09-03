@@ -7,7 +7,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 140px;
+  padding-top: 105px;
   width: 100%;
   aspect-ratio: 1920 / 440;
   min-height: 260px;
@@ -46,6 +46,9 @@
   cursor: pointer;
   text-decoration: none;
   color: inherit;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: kd-card-enter 0.6s ease forwards;
 }
 
 .kd-thumb {
@@ -57,6 +60,24 @@
 }
 
 .kd-card:hover .kd-thumb { transform: scale(1.02); }
+
+/* 카드 올라오는 애니메이션 */
+@keyframes kd-card-enter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kd-grid .kd-card:nth-child(1)  { animation-delay: 0s; }
+.kd-grid .kd-card:nth-child(2)  { animation-delay: 0.05s; }
+.kd-grid .kd-card:nth-child(3)  { animation-delay: 0.1s; }
+.kd-grid .kd-card:nth-child(4)  { animation-delay: 0.15s; }
+.kd-grid .kd-card:nth-child(5)  { animation-delay: 0.2s; }
+.kd-grid .kd-card:nth-child(6)  { animation-delay: 0.25s; }
+.kd-grid .kd-card:nth-child(7)  { animation-delay: 0.3s; }
+.kd-grid .kd-card:nth-child(8)  { animation-delay: 0.35s; }
+.kd-grid .kd-card:nth-child(9)  { animation-delay: 0.4s; }
+.kd-grid .kd-card:nth-child(10) { animation-delay: 0.45s; }
+.kd-grid .kd-card:nth-child(11) { animation-delay: 0.5s; }
+.kd-grid .kd-card:nth-child(12) { animation-delay: 0.55s; }
 
 /* 동적 바인딩 뱃지 */
 .kd-status-badge {

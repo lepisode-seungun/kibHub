@@ -89,9 +89,9 @@
             <div class="ad-ls-materials-body">
               <div class="ad-ls-files-grid">
                 @for (file of learningFiles(); track file.name) {
-                  <div class="ad-ls-file-chip">
+                  <div class="ad-ls-file-chip" (click)="downloadFile(file)" style="cursor: pointer;">
                     <span class="ad-ls-file-name">{{ file.name }}</span>
-                    <button class="ad-ls-file-download" aria-label="다운로드">
+                    <button class="ad-ls-file-download" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
@@ -155,7 +155,7 @@
             <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">제출된 과제가 없습니다</span>
           </div>
         }
-        @for (item of submissions(); track item.id) {
+        @for (item of visibleSubmissions(); track item.id) {
           <div [ngClass]="item.isReply ? 'as-item as-item-reply' : 'as-item'">
             @if (item.isReply) {
               <div class="as-reply-line">
@@ -170,7 +170,7 @@
                 <span class="as-item-title">{{ item.title }}</span>
               </div>
               <!-- 정보 행 -->
-              <div class="as-item-info-row">
+              <div class="as-item-info-row" style="justify-content: space-between;">
                 <div class="as-item-info-left">
                   <div class="as-item-meta-group">
                     <span [ngClass]="item.badge === '피드백' ? 'as-item-badge as-badge-feedback' : (item.badge === '과제제출' ? 'as-item-badge as-badge-submit' : 'as-item-badge')">{{ item.badge }}</span>
@@ -194,13 +194,13 @@
                       <span>{{ item.fileName }}</span>
                     </div>
                   </div>
-                  <div class="as-item-comment">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA" opacity="0.5">
-                      <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
-                    </svg>
-                    <span>댓글</span>
-                    <span>{{ item.commentCount }}</span>
-                  </div>
+                </div>
+                <div class="as-item-comment">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA" opacity="0.5">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                  <span>댓글</span>
+                  <span>{{ item.commentCount }}</span>
                 </div>
               </div>
             </div>
@@ -208,9 +208,9 @@
         }
 
         <!-- 더보기 버튼 -->
-        @if (submissions().length > 0) {
+        @if (hasMoreSubmissions()) {
           <div class="as-loadmore-wrap">
-            <button class="as-loadmore-btn">더보기</button>
+            <button class="as-loadmore-btn" (click)="toggleShowAll()">더보기</button>
           </div>
         }
       </div>

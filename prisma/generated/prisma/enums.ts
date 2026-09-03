@@ -45,6 +45,14 @@ export const ContentType = {
 export type ContentType = (typeof ContentType)[keyof typeof ContentType]
 
 
+export const AlbumType = {
+  ALBUM: 'ALBUM',
+  BOOKMARK: 'BOOKMARK'
+} as const
+
+export type AlbumType = (typeof AlbumType)[keyof typeof AlbumType]
+
+
 export const ReportType = {
   CONTENT: 'CONTENT',
   COMMENT: 'COMMENT'
@@ -56,7 +64,8 @@ export type ReportType = (typeof ReportType)[keyof typeof ReportType]
 export const CourseStatus = {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED'
+  COMPLETED: 'COMPLETED',
+  HIDDEN: 'HIDDEN'
 } as const
 
 export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus]

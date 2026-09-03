@@ -29,23 +29,23 @@
 
         <!-- 카운트 + 검색 -->
         <div class="flex items-center gap-[60px] w-full">
-          <span class="cc-total-count font-suit font-medium text-base leading-[150%] tracking-tight text-white flex-1">전체 {{ totalCount }}</span>
+          <span class="cc-total-count font-suit font-medium text-base leading-[150%] tracking-tight text-white flex-1">전체 {{ totalCount() }}</span>
           <div class="flex items-center gap-3">
             <div class="cc-search-box">
-              <input class="cc-search-input" type="text" placeholder="검색어를 입력해주세요." [(ngModel)]="searchQuery" name="searchQuery" (keydown.enter)="onSearch()">
+              <input class="cc-search-input" type="text" placeholder="검색어를 입력해주세요." [value]="searchQuery()" (input)="onSearchInput($any($event.target).value)" (keydown.enter)="onSearch()">
               <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
               </svg>
             </div>
-            <button class="cc-btn-write" (click)="onSearch()">등록</button>
+            <button class="cc-btn-write" (click)="activeTab() === '1:1문의' ? onWrite() : onSearch()">{{ activeTab() === '1:1문의' ? '문의하기' : '검색' }}</button>
           </div>
         </div>
       </div>
 
       <!-- 공지사항 리스트 -->
-      @if (items.length > 0 && activeTab() === '공지사항') {
+      @if (items().length > 0 && activeTab() === '공지사항') {
         <div class="flex flex-col w-full">
-          @for (item of items; track item.id) {
+          @for (item of items(); track item.id) {
             <div class="cc-notice-item" role="button" tabindex="0" (click)="openItem(item)" (keydown.enter)="openItem(item)">
               <div class="flex items-center gap-2 w-full">
                 @if (item.pinned) {
@@ -63,17 +63,17 @@
           }
         </div>
 
-        @if (totalPages > 1) {
+        @if (totalPages() > 1) {
           <div class="flex justify-center items-center p-3 gap-2 w-full">
-            <button class="cc-page-arrow" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M15 6L9 12L15 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            @for (p of pageNumbers; track p) {
-              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
+            @for (p of pageNumbers(); track p) {
+              <button [ngClass]="currentPage() === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
-            <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M9 6L15 12L9 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -83,9 +83,9 @@
       }
 
       <!-- 1:1문의 리스트 -->
-      @if (items.length > 0 && activeTab() === '1:1문의') {
+      @if (items().length > 0 && activeTab() === '1:1문의') {
         <div class="flex flex-col w-full">
-          @for (item of items; track item.id) {
+          @for (item of items(); track item.id) {
             <div class="cc-list-item" (click)="openItem(item)" role="button" tabindex="0" (keydown.enter)="openItem(item)">
               @if (item.status) {
                 <span [ngClass]="item.status === '대기' ? 'cc-badge cc-badge-waiting' : (item.status === '완료' ? 'cc-badge cc-badge-done' : 'cc-badge')">
@@ -101,17 +101,17 @@
           }
         </div>
 
-        @if (totalPages > 1) {
+        @if (totalPages() > 1) {
           <div class="flex justify-center items-center p-3 gap-2 w-full">
-            <button class="cc-page-arrow" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M15 6L9 12L15 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            @for (p of pageNumbers; track p) {
-              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
+            @for (p of pageNumbers(); track p) {
+              <button [ngClass]="currentPage() === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
-            <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M9 6L15 12L9 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -121,17 +121,17 @@
       }
 
       <!-- FAQ 리스트 -->
-      @if (items.length > 0 && activeTab() === 'FAQ') {
+      @if (items().length > 0 && activeTab() === 'FAQ') {
         <div class="flex flex-col w-full">
-          @for (item of items; track item.id) {
-            <div [ngClass]="expandedFaqId === item.id ? 'cc-faq-item cc-faq-expanded' : 'cc-faq-item'" (click)="toggleFaq(item.id)" role="button" tabindex="0" (keydown.enter)="toggleFaq(item.id)">
+          @for (item of items(); track item.id) {
+            <div [ngClass]="expandedFaqId() === item.id ? 'cc-faq-item cc-faq-expanded' : 'cc-faq-item'" (click)="toggleFaq(item.id)" role="button" tabindex="0" (keydown.enter)="toggleFaq(item.id)">
               <div class="flex items-center gap-3 w-full">
                 <div class="cc-faq-q-badge">
                   <span class="cc-faq-q">Q</span>
                 </div>
                 <span class="cc-faq-title">{{ item.title }}</span>
               </div>
-              @if (expandedFaqId === item.id && item.answer) {
+              @if (expandedFaqId() === item.id && item.answer) {
                 <div class="pl-11 w-full box-border">
                   <div class="flex flex-col gap-6 p-6 bg-zinc-900 rounded-2xl w-full box-border">
                     <div class="flex items-start gap-3">
@@ -166,17 +166,17 @@
           }
         </div>
 
-        @if (totalPages > 1) {
+        @if (totalPages() > 1) {
           <div class="flex justify-center items-center p-3 gap-2 w-full">
-            <button class="cc-page-arrow" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M15 6L9 12L15 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            @for (p of pageNumbers; track p) {
-              <button [ngClass]="currentPage === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
+            @for (p of pageNumbers(); track p) {
+              <button [ngClass]="currentPage() === p ? 'cc-page-btn cc-page-active' : 'cc-page-btn'" (click)="goToPage(p)">{{ p }}</button>
             }
-            <button class="cc-page-arrow" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <button class="cc-page-arrow" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M9 6L15 12L9 18" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -186,7 +186,7 @@
       }
 
       <!-- 빈 목록 상태 -->
-      @if (items.length === 0 && !hasSearched) {
+      @if (items().length === 0 && !hasSearched()) {
         <div class="flex flex-col justify-center items-center gap-3 w-full h-[576px]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M14 2H6C5.47 2 4.96 2.21 4.59 2.59C4.21 2.96 4 3.47 4 4V20C4 20.53 4.21 21.04 4.59 21.41C4.96 21.79 5.47 22 6 22H18C18.53 22 19.04 21.79 19.41 21.41C19.79 21.04 20 20.53 20 20V8L14 2Z" fill="#A1A1AA" opacity="0.5"/>
@@ -197,7 +197,7 @@
       }
 
       <!-- 검색 결과 없음 -->
-      @if (items.length === 0 && hasSearched) {
+      @if (items().length === 0 && hasSearched()) {
         <div class="flex flex-col justify-center items-center gap-3 w-full h-[492px]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3.5-6.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm7 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-3.5 4c-2.33 0-4.32-1.45-5.12-3.5h1.67c.7 1.19 1.97 2 3.45 2s2.75-.81 3.45-2h1.67c-.8 2.05-2.79 3.5-5.12 3.5z" fill="#A1A1AA"/>

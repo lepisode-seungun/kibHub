@@ -17,6 +17,7 @@ export interface Content {
   title: string;
   body: string;
   thumbnail: string | null;
+  images: string[];
   viewCount: number;
   categoryId: number | null;
   category?: ContentCategory;
@@ -33,6 +34,8 @@ export interface CreateContentDto {
   type?: ContentType;
   categoryId?: number;
   status?: ContentStatus;
+  thumbnail?: string;
+  images?: string[];
 }
 
 // ===== Comment =====
@@ -41,6 +44,7 @@ export interface Comment {
   id: number;
   status: ContentStatus;
   body: string;
+  images: string[];
   contentId: number;
   content?: Content;
   authorId: number;

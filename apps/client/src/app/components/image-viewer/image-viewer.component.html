@@ -44,11 +44,22 @@
 
           <!-- 이미지 스크롤 영역 -->
           <div class="iv-image-scroll">
-            @if (images[currentPage() - 1].url) {
-              <img [src]="images[currentPage() - 1].url" alt="" class="iv-image" style="object-fit: contain; background: #000;" />
-            } @else {
-              <div class="iv-image" [style.background]="images[currentPage() - 1].gradient"></div>
-            }
+            <div class="iv-image-wrapper">
+              @if (images[currentPage() - 1].url) {
+                <img [src]="images[currentPage() - 1].url" alt="" class="iv-image" style="object-fit: contain; background: #000;" />
+              } @else {
+                <div class="iv-image" [style.background]="images[currentPage() - 1].gradient"></div>
+              }
+              <!-- 마커 오버레이 -->
+              @if (images[currentPage() - 1].markers) {
+                @for (m of images[currentPage() - 1].markers!; track m.rank) {
+                  <div class="iv-marker" [style.top.%]="m.top" [style.left.%]="m.left">
+                    <img src="/icons/marker-active.svg" alt="마커" class="iv-marker-icon" />
+                    <span class="iv-marker-num">{{ m.rank }}</span>
+                  </div>
+                }
+              }
+            </div>
             <!-- 모바일: 다음 이미지 미리보기 -->
             @if (images[currentPage() < totalPages ? currentPage() : 0].url) {
               <img [src]="images[currentPage() < totalPages ? currentPage() : 0].url" alt="" class="iv-image iv-image-mobile-next" style="object-fit: contain; background: #000;" />

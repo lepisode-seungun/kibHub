@@ -117,9 +117,9 @@
           <div class="ls-materials-body">
             <div class="flex flex-wrap gap-3">
               @for (file of learningFiles(); track file.name) {
-                <div class="ls-file-chip">
+                <div class="ls-file-chip" (click)="downloadFile(file)" style="cursor: pointer;">
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>
-                  <button class="ls-file-download" aria-label="다운로드">
+                  <button class="ls-file-download" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>

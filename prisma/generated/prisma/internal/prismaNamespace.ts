@@ -400,9 +400,13 @@ export const ModelName = {
   Applicant: 'Applicant',
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
+  BootcampInstructor: 'BootcampInstructor',
   Content: 'Content',
   ContentCategory: 'ContentCategory',
+  Album: 'Album',
+  AlbumContent: 'AlbumContent',
   Comment: 'Comment',
+  CommentLike: 'CommentLike',
   Report: 'Report',
   Course: 'Course',
   Lecture: 'Lecture',
@@ -441,7 +445,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicant" | "banner" | "bootcamp" | "content" | "contentCategory" | "comment" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "partner" | "portfolio" | "portfolioFile" | "poster" | "siteSetting" | "user" | "userSns"
+    modelProps: "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "partner" | "portfolio" | "portfolioFile" | "poster" | "siteSetting" | "user" | "userSns"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -667,6 +671,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BootcampInstructor: {
+      payload: Prisma.$BootcampInstructorPayload<ExtArgs>
+      fields: Prisma.BootcampInstructorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BootcampInstructorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BootcampInstructorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        findFirst: {
+          args: Prisma.BootcampInstructorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BootcampInstructorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        findMany: {
+          args: Prisma.BootcampInstructorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>[]
+        }
+        create: {
+          args: Prisma.BootcampInstructorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        createMany: {
+          args: Prisma.BootcampInstructorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BootcampInstructorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>[]
+        }
+        delete: {
+          args: Prisma.BootcampInstructorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        update: {
+          args: Prisma.BootcampInstructorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        deleteMany: {
+          args: Prisma.BootcampInstructorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BootcampInstructorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BootcampInstructorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>[]
+        }
+        upsert: {
+          args: Prisma.BootcampInstructorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BootcampInstructorPayload>
+        }
+        aggregate: {
+          args: Prisma.BootcampInstructorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBootcampInstructor>
+        }
+        groupBy: {
+          args: Prisma.BootcampInstructorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BootcampInstructorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BootcampInstructorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BootcampInstructorCountAggregateOutputType> | number
+        }
+      }
+    }
     Content: {
       payload: Prisma.$ContentPayload<ExtArgs>
       fields: Prisma.ContentFieldRefs
@@ -815,6 +893,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Album: {
+      payload: Prisma.$AlbumPayload<ExtArgs>
+      fields: Prisma.AlbumFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AlbumFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AlbumFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        findFirst: {
+          args: Prisma.AlbumFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AlbumFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        findMany: {
+          args: Prisma.AlbumFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        create: {
+          args: Prisma.AlbumCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        createMany: {
+          args: Prisma.AlbumCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AlbumCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        delete: {
+          args: Prisma.AlbumDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        update: {
+          args: Prisma.AlbumUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        deleteMany: {
+          args: Prisma.AlbumDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AlbumUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AlbumUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
+        }
+        upsert: {
+          args: Prisma.AlbumUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
+        }
+        aggregate: {
+          args: Prisma.AlbumAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAlbum>
+        }
+        groupBy: {
+          args: Prisma.AlbumGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AlbumCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumCountAggregateOutputType> | number
+        }
+      }
+    }
+    AlbumContent: {
+      payload: Prisma.$AlbumContentPayload<ExtArgs>
+      fields: Prisma.AlbumContentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AlbumContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AlbumContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        findFirst: {
+          args: Prisma.AlbumContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AlbumContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        findMany: {
+          args: Prisma.AlbumContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>[]
+        }
+        create: {
+          args: Prisma.AlbumContentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        createMany: {
+          args: Prisma.AlbumContentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AlbumContentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>[]
+        }
+        delete: {
+          args: Prisma.AlbumContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        update: {
+          args: Prisma.AlbumContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AlbumContentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AlbumContentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AlbumContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AlbumContentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumContentPayload>
+        }
+        aggregate: {
+          args: Prisma.AlbumContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAlbumContent>
+        }
+        groupBy: {
+          args: Prisma.AlbumContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumContentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AlbumContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlbumContentCountAggregateOutputType> | number
+        }
+      }
+    }
     Comment: {
       payload: Prisma.$CommentPayload<ExtArgs>
       fields: Prisma.CommentFieldRefs
@@ -886,6 +1112,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CommentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CommentCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommentLike: {
+      payload: Prisma.$CommentLikePayload<ExtArgs>
+      fields: Prisma.CommentLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommentLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommentLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        findFirst: {
+          args: Prisma.CommentLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommentLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        findMany: {
+          args: Prisma.CommentLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>[]
+        }
+        create: {
+          args: Prisma.CommentLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        createMany: {
+          args: Prisma.CommentLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommentLikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>[]
+        }
+        delete: {
+          args: Prisma.CommentLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        update: {
+          args: Prisma.CommentLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.CommentLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommentLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommentLikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>[]
+        }
+        upsert: {
+          args: Prisma.CommentLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommentLikePayload>
+        }
+        aggregate: {
+          args: Prisma.CommentLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommentLike>
+        }
+        groupBy: {
+          args: Prisma.CommentLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommentLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommentLikeCountAggregateOutputType> | number
         }
       }
     }
@@ -2680,6 +2980,16 @@ export const BootcampScalarFieldEnum = {
 export type BootcampScalarFieldEnum = (typeof BootcampScalarFieldEnum)[keyof typeof BootcampScalarFieldEnum]
 
 
+export const BootcampInstructorScalarFieldEnum = {
+  id: 'id',
+  bootcampId: 'bootcampId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type BootcampInstructorScalarFieldEnum = (typeof BootcampInstructorScalarFieldEnum)[keyof typeof BootcampInstructorScalarFieldEnum]
+
+
 export const ContentScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -2687,6 +2997,7 @@ export const ContentScalarFieldEnum = {
   title: 'title',
   body: 'body',
   thumbnail: 'thumbnail',
+  images: 'images',
   viewCount: 'viewCount',
   categoryId: 'categoryId',
   authorId: 'authorId',
@@ -2706,18 +3017,57 @@ export const ContentCategoryScalarFieldEnum = {
 export type ContentCategoryScalarFieldEnum = (typeof ContentCategoryScalarFieldEnum)[keyof typeof ContentCategoryScalarFieldEnum]
 
 
+export const AlbumScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
+
+
+export const AlbumContentScalarFieldEnum = {
+  id: 'id',
+  albumId: 'albumId',
+  contentId: 'contentId',
+  createdAt: 'createdAt'
+} as const
+
+export type AlbumContentScalarFieldEnum = (typeof AlbumContentScalarFieldEnum)[keyof typeof AlbumContentScalarFieldEnum]
+
+
 export const CommentScalarFieldEnum = {
   id: 'id',
   status: 'status',
+  type: 'type',
   body: 'body',
+  images: 'images',
+  markerNum: 'markerNum',
+  markerTop: 'markerTop',
+  markerLeft: 'markerLeft',
+  markerImageIndex: 'markerImageIndex',
   contentId: 'contentId',
   authorId: 'authorId',
+  parentId: 'parentId',
   likeCount: 'likeCount',
   reportCount: 'reportCount',
   createdAt: 'createdAt'
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
 
 
 export const ReportScalarFieldEnum = {
@@ -2779,6 +3129,7 @@ export const AssignmentScalarFieldEnum = {
   content: 'content',
   videoUrl: 'videoUrl',
   dueDate: 'dueDate',
+  dueDateEnd: 'dueDateEnd',
   courseId: 'courseId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -3196,6 +3547,34 @@ export type ListEnumContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'AlbumType'
+ */
+export type EnumAlbumTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlbumType'>
+    
+
+
+/**
+ * Reference to a field of type 'AlbumType[]'
+ */
+export type ListEnumAlbumTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlbumType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
  * Reference to a field of type 'ReportType'
  */
 export type EnumReportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportType'>
@@ -3311,20 +3690,6 @@ export type EnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'AdminRole[]'
  */
 export type ListEnumAdminRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminRole[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -3481,9 +3846,13 @@ export type GlobalOmitConfig = {
   applicant?: Prisma.ApplicantOmit
   banner?: Prisma.BannerOmit
   bootcamp?: Prisma.BootcampOmit
+  bootcampInstructor?: Prisma.BootcampInstructorOmit
   content?: Prisma.ContentOmit
   contentCategory?: Prisma.ContentCategoryOmit
+  album?: Prisma.AlbumOmit
+  albumContent?: Prisma.AlbumContentOmit
   comment?: Prisma.CommentOmit
+  commentLike?: Prisma.CommentLikeOmit
   report?: Prisma.ReportOmit
   course?: Prisma.CourseOmit
   lecture?: Prisma.LectureOmit

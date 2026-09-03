@@ -315,6 +315,9 @@ export type UserWhereInput = {
   inquiryReplies?: Prisma.InquiryListRelationFilter
   submissions?: Prisma.SubmissionListRelationFilter
   submissionComments?: Prisma.SubmissionCommentListRelationFilter
+  bootcampInstructors?: Prisma.BootcampInstructorListRelationFilter
+  albums?: Prisma.AlbumListRelationFilter
+  commentLikes?: Prisma.CommentLikeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -345,6 +348,9 @@ export type UserOrderByWithRelationInput = {
   inquiryReplies?: Prisma.InquiryOrderByRelationAggregateInput
   submissions?: Prisma.SubmissionOrderByRelationAggregateInput
   submissionComments?: Prisma.SubmissionCommentOrderByRelationAggregateInput
+  bootcampInstructors?: Prisma.BootcampInstructorOrderByRelationAggregateInput
+  albums?: Prisma.AlbumOrderByRelationAggregateInput
+  commentLikes?: Prisma.CommentLikeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -378,6 +384,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   inquiryReplies?: Prisma.InquiryListRelationFilter
   submissions?: Prisma.SubmissionListRelationFilter
   submissionComments?: Prisma.SubmissionCommentListRelationFilter
+  bootcampInstructors?: Prisma.BootcampInstructorListRelationFilter
+  albums?: Prisma.AlbumListRelationFilter
+  commentLikes?: Prisma.CommentLikeListRelationFilter
 }, "id" | "email" | "loginId">
 
 export type UserOrderByWithAggregationInput = {
@@ -453,6 +462,9 @@ export type UserCreateInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -483,6 +495,9 @@ export type UserUncheckedCreateInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -512,6 +527,9 @@ export type UserUpdateInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -542,6 +560,9 @@ export type UserUncheckedUpdateInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -689,6 +710,20 @@ export type UserUpdateOneRequiredWithoutApplicantsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApplicantsInput, Prisma.UserUpdateWithoutApplicantsInput>, Prisma.UserUncheckedUpdateWithoutApplicantsInput>
 }
 
+export type UserCreateNestedOneWithoutBootcampInstructorsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBootcampInstructorsInput, Prisma.UserUncheckedCreateWithoutBootcampInstructorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBootcampInstructorsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBootcampInstructorsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBootcampInstructorsInput, Prisma.UserUncheckedCreateWithoutBootcampInstructorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBootcampInstructorsInput
+  upsert?: Prisma.UserUpsertWithoutBootcampInstructorsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBootcampInstructorsInput, Prisma.UserUpdateWithoutBootcampInstructorsInput>, Prisma.UserUncheckedUpdateWithoutBootcampInstructorsInput>
+}
+
 export type UserCreateNestedOneWithoutContentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutContentsInput, Prisma.UserUncheckedCreateWithoutContentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutContentsInput
@@ -703,6 +738,20 @@ export type UserUpdateOneRequiredWithoutContentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutContentsInput, Prisma.UserUpdateWithoutContentsInput>, Prisma.UserUncheckedUpdateWithoutContentsInput>
 }
 
+export type UserCreateNestedOneWithoutAlbumsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAlbumsInput, Prisma.UserUncheckedCreateWithoutAlbumsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAlbumsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAlbumsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAlbumsInput, Prisma.UserUncheckedCreateWithoutAlbumsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAlbumsInput
+  upsert?: Prisma.UserUpsertWithoutAlbumsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAlbumsInput, Prisma.UserUpdateWithoutAlbumsInput>, Prisma.UserUncheckedUpdateWithoutAlbumsInput>
+}
+
 export type UserCreateNestedOneWithoutCommentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsInput
@@ -715,6 +764,20 @@ export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutCommentsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsInput, Prisma.UserUpdateWithoutCommentsInput>, Prisma.UserUncheckedUpdateWithoutCommentsInput>
+}
+
+export type UserCreateNestedOneWithoutCommentLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentLikesInput, Prisma.UserUncheckedCreateWithoutCommentLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentLikesInput, Prisma.UserUncheckedCreateWithoutCommentLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentLikesInput
+  upsert?: Prisma.UserUpsertWithoutCommentLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentLikesInput, Prisma.UserUpdateWithoutCommentLikesInput>, Prisma.UserUncheckedUpdateWithoutCommentLikesInput>
 }
 
 export type UserCreateNestedOneWithoutReportsInput = {
@@ -869,6 +932,9 @@ export type UserCreateWithoutApplicantsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApplicantsInput = {
@@ -898,6 +964,9 @@ export type UserUncheckedCreateWithoutApplicantsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApplicantsInput = {
@@ -942,6 +1011,9 @@ export type UserUpdateWithoutApplicantsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicantsInput = {
@@ -971,6 +1043,151 @@ export type UserUncheckedUpdateWithoutApplicantsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBootcampInstructorsInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBootcampInstructorsInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBootcampInstructorsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBootcampInstructorsInput, Prisma.UserUncheckedCreateWithoutBootcampInstructorsInput>
+}
+
+export type UserUpsertWithoutBootcampInstructorsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBootcampInstructorsInput, Prisma.UserUncheckedUpdateWithoutBootcampInstructorsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBootcampInstructorsInput, Prisma.UserUncheckedCreateWithoutBootcampInstructorsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBootcampInstructorsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBootcampInstructorsInput, Prisma.UserUncheckedUpdateWithoutBootcampInstructorsInput>
+}
+
+export type UserUpdateWithoutBootcampInstructorsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBootcampInstructorsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutContentsInput = {
@@ -999,6 +1216,9 @@ export type UserCreateWithoutContentsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutContentsInput = {
@@ -1028,6 +1248,9 @@ export type UserUncheckedCreateWithoutContentsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutContentsInput = {
@@ -1072,6 +1295,9 @@ export type UserUpdateWithoutContentsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContentsInput = {
@@ -1101,6 +1327,151 @@ export type UserUncheckedUpdateWithoutContentsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAlbumsInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAlbumsInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAlbumsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAlbumsInput, Prisma.UserUncheckedCreateWithoutAlbumsInput>
+}
+
+export type UserUpsertWithoutAlbumsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAlbumsInput, Prisma.UserUncheckedUpdateWithoutAlbumsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAlbumsInput, Prisma.UserUncheckedCreateWithoutAlbumsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAlbumsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAlbumsInput, Prisma.UserUncheckedUpdateWithoutAlbumsInput>
+}
+
+export type UserUpdateWithoutAlbumsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAlbumsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1129,6 +1500,9 @@ export type UserCreateWithoutCommentsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1158,6 +1532,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1202,6 +1579,9 @@ export type UserUpdateWithoutCommentsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1231,6 +1611,151 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommentLikesInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutCommentLikesInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutCommentLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentLikesInput, Prisma.UserUncheckedCreateWithoutCommentLikesInput>
+}
+
+export type UserUpsertWithoutCommentLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentLikesInput, Prisma.UserUncheckedUpdateWithoutCommentLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentLikesInput, Prisma.UserUncheckedCreateWithoutCommentLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentLikesInput, Prisma.UserUncheckedUpdateWithoutCommentLikesInput>
+}
+
+export type UserUpdateWithoutCommentLikesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentLikesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -1259,6 +1784,9 @@ export type UserCreateWithoutReportsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1288,6 +1816,9 @@ export type UserUncheckedCreateWithoutReportsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1332,6 +1863,9 @@ export type UserUpdateWithoutReportsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1361,6 +1895,9 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -1389,6 +1926,9 @@ export type UserCreateWithoutSubmissionsInput = {
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -1418,6 +1958,9 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -1462,6 +2005,9 @@ export type UserUpdateWithoutSubmissionsInput = {
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -1491,6 +2037,9 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionCommentsInput = {
@@ -1519,6 +2068,9 @@ export type UserCreateWithoutSubmissionCommentsInput = {
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
@@ -1548,6 +2100,9 @@ export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionCommentsInput = {
@@ -1592,6 +2147,9 @@ export type UserUpdateWithoutSubmissionCommentsInput = {
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
@@ -1621,6 +2179,9 @@ export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFaqsInput = {
@@ -1649,6 +2210,9 @@ export type UserCreateWithoutFaqsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFaqsInput = {
@@ -1678,6 +2242,9 @@ export type UserUncheckedCreateWithoutFaqsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFaqsInput = {
@@ -1722,6 +2289,9 @@ export type UserUpdateWithoutFaqsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFaqsInput = {
@@ -1751,6 +2321,9 @@ export type UserUncheckedUpdateWithoutFaqsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInquiriesInput = {
@@ -1779,6 +2352,9 @@ export type UserCreateWithoutInquiriesInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInquiriesInput = {
@@ -1808,6 +2384,9 @@ export type UserUncheckedCreateWithoutInquiriesInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInquiriesInput = {
@@ -1841,6 +2420,9 @@ export type UserCreateWithoutInquiryRepliesInput = {
   faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInquiryRepliesInput = {
@@ -1870,6 +2452,9 @@ export type UserUncheckedCreateWithoutInquiryRepliesInput = {
   faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInquiryRepliesInput = {
@@ -1914,6 +2499,9 @@ export type UserUpdateWithoutInquiriesInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiriesInput = {
@@ -1943,6 +2531,9 @@ export type UserUncheckedUpdateWithoutInquiriesInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutInquiryRepliesInput = {
@@ -1982,6 +2573,9 @@ export type UserUpdateWithoutInquiryRepliesInput = {
   faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
@@ -2011,6 +2605,9 @@ export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
   faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNoticesInput = {
@@ -2039,6 +2636,9 @@ export type UserCreateWithoutNoticesInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNoticesInput = {
@@ -2068,6 +2668,9 @@ export type UserUncheckedCreateWithoutNoticesInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNoticesInput = {
@@ -2112,6 +2715,9 @@ export type UserUpdateWithoutNoticesInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNoticesInput = {
@@ -2141,6 +2747,9 @@ export type UserUncheckedUpdateWithoutNoticesInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSnsInput = {
@@ -2169,6 +2778,9 @@ export type UserCreateWithoutSnsInput = {
   inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSnsInput = {
@@ -2198,6 +2810,9 @@ export type UserUncheckedCreateWithoutSnsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSnsInput = {
@@ -2242,6 +2857,9 @@ export type UserUpdateWithoutSnsInput = {
   inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSnsInput = {
@@ -2271,6 +2889,9 @@ export type UserUncheckedUpdateWithoutSnsInput = {
   inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -2290,6 +2911,9 @@ export type UserCountOutputType = {
   inquiryReplies: number
   submissions: number
   submissionComments: number
+  bootcampInstructors: number
+  albums: number
+  commentLikes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2304,6 +2928,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   inquiryReplies?: boolean | UserCountOutputTypeCountInquiryRepliesArgs
   submissions?: boolean | UserCountOutputTypeCountSubmissionsArgs
   submissionComments?: boolean | UserCountOutputTypeCountSubmissionCommentsArgs
+  bootcampInstructors?: boolean | UserCountOutputTypeCountBootcampInstructorsArgs
+  albums?: boolean | UserCountOutputTypeCountAlbumsArgs
+  commentLikes?: boolean | UserCountOutputTypeCountCommentLikesArgs
 }
 
 /**
@@ -2393,6 +3020,27 @@ export type UserCountOutputTypeCountSubmissionCommentsArgs<ExtArgs extends runti
   where?: Prisma.SubmissionCommentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBootcampInstructorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BootcampInstructorWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAlbumsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AlbumWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentLikeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2422,6 +3070,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   inquiryReplies?: boolean | Prisma.User$inquiryRepliesArgs<ExtArgs>
   submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
   submissionComments?: boolean | Prisma.User$submissionCommentsArgs<ExtArgs>
+  bootcampInstructors?: boolean | Prisma.User$bootcampInstructorsArgs<ExtArgs>
+  albums?: boolean | Prisma.User$albumsArgs<ExtArgs>
+  commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2495,6 +3146,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   inquiryReplies?: boolean | Prisma.User$inquiryRepliesArgs<ExtArgs>
   submissions?: boolean | Prisma.User$submissionsArgs<ExtArgs>
   submissionComments?: boolean | Prisma.User$submissionCommentsArgs<ExtArgs>
+  bootcampInstructors?: boolean | Prisma.User$bootcampInstructorsArgs<ExtArgs>
+  albums?: boolean | Prisma.User$albumsArgs<ExtArgs>
+  commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2514,6 +3168,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     inquiryReplies: Prisma.$InquiryPayload<ExtArgs>[]
     submissions: Prisma.$SubmissionPayload<ExtArgs>[]
     submissionComments: Prisma.$SubmissionCommentPayload<ExtArgs>[]
+    bootcampInstructors: Prisma.$BootcampInstructorPayload<ExtArgs>[]
+    albums: Prisma.$AlbumPayload<ExtArgs>[]
+    commentLikes: Prisma.$CommentLikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2937,6 +3594,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   inquiryReplies<T extends Prisma.User$inquiryRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$inquiryRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   submissions<T extends Prisma.User$submissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   submissionComments<T extends Prisma.User$submissionCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bootcampInstructors<T extends Prisma.User$bootcampInstructorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bootcampInstructorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BootcampInstructorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  albums<T extends Prisma.User$albumsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$albumsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commentLikes<T extends Prisma.User$commentLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3636,6 +4296,78 @@ export type User$submissionCommentsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.SubmissionCommentScalarFieldEnum | Prisma.SubmissionCommentScalarFieldEnum[]
+}
+
+/**
+ * User.bootcampInstructors
+ */
+export type User$bootcampInstructorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BootcampInstructor
+   */
+  select?: Prisma.BootcampInstructorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BootcampInstructor
+   */
+  omit?: Prisma.BootcampInstructorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BootcampInstructorInclude<ExtArgs> | null
+  where?: Prisma.BootcampInstructorWhereInput
+  orderBy?: Prisma.BootcampInstructorOrderByWithRelationInput | Prisma.BootcampInstructorOrderByWithRelationInput[]
+  cursor?: Prisma.BootcampInstructorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BootcampInstructorScalarFieldEnum | Prisma.BootcampInstructorScalarFieldEnum[]
+}
+
+/**
+ * User.albums
+ */
+export type User$albumsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Album
+   */
+  select?: Prisma.AlbumSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Album
+   */
+  omit?: Prisma.AlbumOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AlbumInclude<ExtArgs> | null
+  where?: Prisma.AlbumWhereInput
+  orderBy?: Prisma.AlbumOrderByWithRelationInput | Prisma.AlbumOrderByWithRelationInput[]
+  cursor?: Prisma.AlbumWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AlbumScalarFieldEnum | Prisma.AlbumScalarFieldEnum[]
+}
+
+/**
+ * User.commentLikes
+ */
+export type User$commentLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentLike
+   */
+  select?: Prisma.CommentLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentLike
+   */
+  omit?: Prisma.CommentLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentLikeInclude<ExtArgs> | null
+  where?: Prisma.CommentLikeWhereInput
+  orderBy?: Prisma.CommentLikeOrderByWithRelationInput | Prisma.CommentLikeOrderByWithRelationInput[]
+  cursor?: Prisma.CommentLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentLikeScalarFieldEnum | Prisma.CommentLikeScalarFieldEnum[]
 }
 
 /**

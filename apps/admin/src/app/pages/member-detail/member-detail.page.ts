@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -41,7 +42,7 @@ function toMemberDetail(u: User): MemberDetail {
     countryCode: u.countryCode,
     phone: u.phone,
     birthday: u.birthday || '',
-    createdAt: new Date(u.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(u.createdAt),
     intro: u.intro || '',
     profileImage: u.profileImage || '',
     sns: u.sns || [],

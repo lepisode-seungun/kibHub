@@ -29,6 +29,9 @@ model User {
   inquiryReplies Inquiry[]   @relation("repliedBy")
   submissions    Submission[]
   submissionComments SubmissionComment[]
+  bootcampInstructors BootcampInstructor[]
+  albums             Album[]
+  commentLikes       CommentLike[]
 }
 
 enum UserRole {

@@ -175,6 +175,13 @@ export const appRoutes: Route[] = [
           ),
       },
       {
+        path: 'bootcamp/home/notices/:id',
+        loadComponent: () =>
+          import('./pages/notice-detail/notice-detail.page').then(
+            (m) => m.NoticeDetailPage
+          ),
+      },
+      {
         path: 'bootcamp/home/notices/:id/edit',
         loadComponent: () =>
           import('./pages/notice-register/notice-register.page').then(

@@ -1,0 +1,218 @@
+<div class="flex flex-col p-6 gap-6 flex-1">
+
+  <!-- 페이지 타이틀 -->
+  <div class="flex items-center gap-2">
+    <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800">공지사항 상세</span>
+  </div>
+
+  <!-- ===== 1. 기본 정보 아코디언 ===== -->
+  <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleBasicInfo()">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본 정보</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200"
+             [ngClass]="basicInfoOpen() ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- ⋮ 메뉴 -->
+      <div class="relative">
+        <button class="flex flex-col items-center justify-center gap-[3px] bg-transparent border-none cursor-pointer p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+                (click)="toggleMoreMenu($event)">
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+          <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
+        </button>
+        @if (moreMenuOpen()) {
+          <div class="absolute top-full right-0 mt-1 flex flex-col py-1 bg-white rounded-lg z-50"
+               style="width: 72px; border: 1px solid #F9FAFB; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);"
+               (click)="$event.stopPropagation()">
+            <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 32px; width: 100%;"
+                    (click)="onToggleStatus()">{{ statusLabel() === '노출' ? '숨김' : '노출' }}</button>
+            <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 32px; width: 100%;"
+                    (click)="onTogglePinned()">{{ pinnedLabel() === '고정' ? '고정해제' : '고정' }}</button>
+            <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 32px; width: 100%;"
+                    (click)="onEdit()">수정</button>
+            <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#EF4444] bg-white hover:bg-red-50 transition-colors"
+                    style="height: 32px; width: 100%;"
+                    (click)="onDelete()">삭제</button>
+          </div>
+        }
+      </div>
+    </div>
+    @if (basicInfoOpen()) {
+      <div class="flex flex-wrap items-start gap-3 w-full">
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">순번</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ notice()?.id }}</span>
+        </div>
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">고정</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ pinnedLabel() }}</span>
+        </div>
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
+          <span class="inline-flex items-center px-2 py-1 rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]"
+                [ngClass]="statusLabel() === '노출'
+                  ? 'bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669]'
+                  : 'bg-gray-100 border border-gray-200 text-gray-500'"
+                style="width: fit-content;">
+            {{ statusLabel() }}
+          </span>
+        </div>
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ notice()?.title }}</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-start gap-3 w-full">
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성자</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ authorName() }}</span>
+        </div>
+        <div class="flex flex-col py-1.5 gap-2 flex-1 min-w-[150px]">
+          <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">등록일시</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ createdAtFormatted() }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ===== 2. 내용 아코디언 ===== -->
+  <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
+    <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
+         (click)="toggleContent()">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           class="transition-transform duration-200"
+           [ngClass]="contentOpen() ? '' : 'rotate-180'">
+        <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    @if (contentOpen()) {
+      <div class="flex flex-col gap-4 w-full">
+        <p class="font-suit font-medium text-sm leading-[160%] tracking-[-0.04em] text-gray-600 m-0 whitespace-pre-wrap" style="word-break: break-all;">{{ notice()?.body }}</p>
+
+        <!-- 이미지 첨부파일 미리보기 -->
+        @for (file of files(); track file.id) {
+          @if (isImageFile(file) && file.url) {
+            <img [src]="file.url" [alt]="file.name"
+                 class="rounded-xl object-cover" style="max-width: 500px; max-height: 400px;" />
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <!-- ===== 3. 첨부파일 아코디언 ===== -->
+  @if (files().length > 0) {
+    <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
+      <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
+           (click)="toggleAttachment()">
+        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">첨부파일 ({{ files().length }})</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+             class="transition-transform duration-200"
+             [ngClass]="attachmentOpen() ? '' : 'rotate-180'">
+          <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      @if (attachmentOpen()) {
+        <div class="flex flex-col gap-3 w-full">
+          @for (file of files(); track file.id) {
+            <div class="flex items-center p-2.5 bg-white border border-[#E2E8F0] rounded-md gap-2.5 cursor-pointer hover:border-blue-300 transition-colors"
+               style="box-sizing: border-box;"
+               (click)="onDownloadFile(file)">
+              <!-- 파일 아이콘 -->
+              <div class="w-[35px] h-[46px] flex items-center justify-center bg-gray-100 rounded shrink-0">
+                <svg width="20" height="24" viewBox="0 0 24 24" fill="#9CA3AF">
+                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+                </svg>
+              </div>
+              <!-- 파일 정보 -->
+              <div class="flex items-center justify-between flex-1">
+                <div class="flex flex-col gap-1">
+                  <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ file.name }}</span>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ formatSize(file.size) }}</span>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#3C8EEE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 20h14" stroke="#3C8EEE" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- 하단: 뒤로가기 -->
+  <div class="flex items-center gap-3">
+    <button class="flex items-center justify-center px-6 h-10 bg-white border border-gray-300 rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-600 hover:bg-gray-50 transition-colors"
+            (click)="goBack()">
+      뒤로가기
+    </button>
+  </div>
+
+</div>
+
+<!-- ===== 삭제 확인 모달 ===== -->
+@if (showDeleteModal()) {
+  <div class="fixed inset-0 bg-black/30 z-[998] flex items-center justify-center"
+       tabindex="0"
+       (click)="cancelDelete()"
+       (keyup.enter)="cancelDelete()">
+    <div class="flex flex-col justify-center items-center p-4 gap-6 bg-white rounded-2xl"
+         tabindex="0"
+         style="width: 400px; box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -2px rgba(0,0,0,0.05);"
+         (click)="$event.stopPropagation()"
+         (keyup.enter)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#EF4444"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.5" fill="white"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">공지사항 삭제</span>
+      </div>
+
+      <!-- 정보 -->
+      <div class="flex flex-col gap-3 py-3 w-full border-y border-gray-200 px-3" style="box-sizing: border-box;">
+        <div class="flex items-center justify-between">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">제목</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ notice()?.title }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">작성자</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ authorName() }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">등록일시</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800 text-right">{{ createdAtFormatted() }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 -->
+      <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-[#4B5563] text-center">공지사항을 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다.</span>
+
+      <!-- 버튼 -->
+      <div class="flex items-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 bg-white border border-gray-200 rounded-xl cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="cancelDelete()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 bg-[#EF4444] border-none rounded-xl cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmDelete()">
+          삭제
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

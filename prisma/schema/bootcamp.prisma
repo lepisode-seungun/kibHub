@@ -16,9 +16,10 @@ model Bootcamp {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
-  courses    Course[]
-  applicants Applicant[]
-  notices    Notice[]
+  courses      Course[]
+  applicants   Applicant[]
+  notices      Notice[]
+  instructors  BootcampInstructor[]
 }
 
 enum BootcampStatus {
@@ -27,4 +28,17 @@ enum BootcampStatus {
   OPERATING
   CLOSED
   ENDED
+}
+
+// ===== 부트캠프-강사 관계 =====
+model BootcampInstructor {
+  id          Int      @id @default(autoincrement())
+  bootcampId  Int
+  userId      Int
+  createdAt   DateTime @default(now())
+
+  bootcamp    Bootcamp @relation(fields: [bootcampId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([bootcampId, userId])
 }

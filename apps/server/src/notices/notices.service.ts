@@ -8,12 +8,15 @@ import { paginate, parsePagination } from '../common/pagination';
 export class NoticesService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
-  async findAll(query?: { search?: string; type?: string; bootcampId?: number; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
+  async findAll(query?: { search?: string; type?: string; bootcampId?: number; page?: string | number; limit?: string | number; excludeHidden?: boolean }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.NoticeWhereInput = {};
     if (query?.type) where.type = query.type as Prisma.NoticeWhereInput['type'];
     if (query?.bootcampId) where.bootcampId = query.bootcampId;
     if (query?.search) {
       where.title = { contains: query.search, mode: 'insensitive' };
+    }
+    if (query?.excludeHidden) {
+      where.status = { not: 'HIDDEN' };
     }
     const include = { author: { select: { id: true, name: true, nickname: true } }, files: true };
     const orderBy: Prisma.NoticeOrderByWithRelationInput[] = [{ pinned: 'desc' }, { createdAt: 'desc' }];
@@ -39,8 +42,30 @@ export class NoticesService {
     });
   }
 
-  create(data: CreateNoticeDto & { type?: string; bootcampId?: number }) {
-    return this.prisma.notice.create({ data: data as Prisma.NoticeUncheckedCreateInput });
+  create(data: CreateNoticeDto & { type?: string; bootcampId?: number; authorId?: number; files?: { name: string; url: string; size: number; mimeType: string }[] }) {
+    const { files, ...rest } = data as any;
+    const createData: any = {
+      title: rest.title,
+      body: rest.body || '',
+      pinned: rest.pinned ?? false,
+      status: rest.status || 'VISIBLE',
+      type: rest.type || 'BOOTCAMP',
+      authorId: rest.authorId,
+    };
+    if (rest.bootcampId) {
+      createData.bootcampId = rest.bootcampId;
+    }
+    if (files && files.length > 0) {
+      createData.files = {
+        create: files.map((f: any) => ({
+          name: f.name,
+          url: f.url,
+          size: f.size || 0,
+          mimeType: f.mimeType || '',
+        })),
+      };
+    }
+    return this.prisma.notice.create({ data: createData, include: { files: true } });
   }
 
   update(id: number, data: Partial<CreateNoticeDto>) {

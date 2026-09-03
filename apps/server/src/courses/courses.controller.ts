@@ -1,4 +1,4 @@
-import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CoursesService } from './courses.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -12,8 +12,11 @@ export class CoursesController {
 
   // ===== 과정 =====
   @Get('bootcamps/:bootcampId/courses')
-  findAllByBootcamp(@Param('bootcampId', ParseIntPipe) bootcampId: number) {
-    return this.coursesService.findAllByBootcamp(bootcampId);
+  findAllByBootcamp(
+    @Param('bootcampId', ParseIntPipe) bootcampId: number,
+    @Query('excludeHidden') excludeHidden?: string,
+  ) {
+    return this.coursesService.findAllByBootcamp(bootcampId, excludeHidden === 'true');
   }
 
   @Get('courses/:id')
@@ -40,6 +43,11 @@ export class CoursesController {
   }
 
   // ===== 강의 =====
+  @Get('bootcamps/:bootcampId/lecture-categories')
+  findLectureCategories(@Param('bootcampId', ParseIntPipe) bootcampId: number) {
+    return this.coursesService.findLectureCategories(bootcampId);
+  }
+
   @Get('courses/:courseId/lectures')
   findLectures(@Param('courseId', ParseIntPipe) courseId: number) {
     return this.coursesService.findLectures(courseId);

@@ -61,6 +61,10 @@ export class ApiService {
     delete: (id: number): Promise<void> => this.del<void>(`/bootcamps/${id}`),
     getInterviewSettings: (id: number): Promise<{ text: string }[]> => this.get(`/bootcamps/${id}/interview-settings`),
     updateInterviewSettings: (id: number, questions: { text: string }[]): Promise<any> => this.patch(`/bootcamps/${id}/interview-settings`, { questions }),
+    // 강사 관리
+    findInstructors: (id: number): Promise<any[]> => this.get<any[]>(`/bootcamps/${id}/instructors`),
+    addInstructor: (id: number, userId: number): Promise<any> => this.post(`/bootcamps/${id}/instructors`, { userId }),
+    removeInstructor: (id: number, userId: number): Promise<void> => this.del<void>(`/bootcamps/${id}/instructors/${userId}`),
   };
 
   // ===== Courses =====
@@ -116,6 +120,7 @@ export class ApiService {
     findOne: (id: number): Promise<Applicant> => this.get<Applicant>(`/applicants/${id}`),
     updateStatus: (id: number, status: string): Promise<Applicant> => this.patch<Applicant>(`/applicants/${id}/status`, { status }),
     bulkUpdateStatus: (ids: number[], status: string): Promise<void> => this.patch<void>('/applicants/bulk-status', { ids, status }),
+    invite: (bootcampId: number, email: string): Promise<any> => this.post(`/bootcamps/${bootcampId}/invite`, { email }),
   };
 
   // ===== Contents =====
@@ -153,6 +158,7 @@ export class ApiService {
       return this.get<Report[]>(`/reports${qs}`);
     },
     create: (data: CreateReportDto): Promise<Report> => this.post<Report>('/reports', data),
+    delete: (id: number): Promise<void> => this.post<void>(`/reports/${id}/delete`, {}),
   };
 
   // ===== Portfolios =====

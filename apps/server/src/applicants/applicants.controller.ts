@@ -62,4 +62,12 @@ export class ApplicantsController {
   bulkUpdateStatus(@Body() body: { ids: number[]; status: 'ACCEPTED' | 'REJECTED' }) {
     return this.applicantsService.bulkUpdateStatus(body.ids, body.status);
   }
+
+  @Post('bootcamps/:bootcampId/invite')
+  invite(
+    @Param('bootcampId', ParseIntPipe) bootcampId: number,
+    @Body() body: { email: string },
+  ) {
+    return this.applicantsService.invite(bootcampId, body.email);
+  }
 }

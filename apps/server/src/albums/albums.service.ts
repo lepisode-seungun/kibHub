@@ -1,0 +1,79 @@
+import { Injectable, Inject } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class AlbumsService {
+  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
+
+  async findAll(ownerId: number, type?: 'ALBUM' | 'BOOKMARK') {
+    return this.prisma.album.findMany({
+      where: { ownerId, ...(type ? { type } : {}) },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: { select: { albumContents: true } },
+        albumContents: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            content: {
+              select: {
+                id: true, thumbnail: true, title: true,
+                author: { select: { id: true, nickname: true, name: true } },
+                _count: { select: { comments: true } },
+                comments: {
+                  take: 1,
+                  orderBy: { createdAt: 'asc' },
+                  where: { parentId: null },
+                  select: { body: true, author: { select: { nickname: true, name: true } } },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async findOne(id: number) {
+    return this.prisma.album.findUnique({
+      where: { id },
+      include: {
+        _count: { select: { albumContents: true } },
+        albumContents: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            content: {
+              include: {
+                author: { select: { id: true, nickname: true, name: true } },
+                _count: { select: { comments: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async create(data: { name: string; ownerId: number; type?: 'ALBUM' | 'BOOKMARK' }) {
+    return this.prisma.album.create({ data: { name: data.name, ownerId: data.ownerId, type: data.type || 'ALBUM' } });
+  }
+
+  async update(id: number, data: { name?: string }) {
+    return this.prisma.album.update({ where: { id }, data });
+  }
+
+  async delete(id: number) {
+    return this.prisma.album.delete({ where: { id } });
+  }
+
+  async addContent(albumId: number, contentId: number) {
+    return this.prisma.albumContent.create({
+      data: { albumId, contentId },
+    });
+  }
+
+  async removeContent(albumId: number, contentId: number) {
+    return this.prisma.albumContent.deleteMany({
+      where: { albumId, contentId },
+    });
+  }
+}

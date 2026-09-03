@@ -26,6 +26,7 @@ export interface CreateNoticeDto {
   status?: ContentStatus | string;
   type: NoticeType | string;
   bootcampId?: number;
+  authorId?: number;
 }
 
 // ===== FAQ =====

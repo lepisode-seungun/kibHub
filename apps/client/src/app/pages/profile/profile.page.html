@@ -16,7 +16,8 @@
 
   <!-- ===== 프로필 사이드바 카드 ===== -->
   <div class="pf-sidebar">
-    <!-- 강사 뱃지 (오른쪽 상단) -->
+    <!-- 강사 뱃지 (오른쪽 상단) — 강사만 표시 -->
+    @if (isInstructor()) {
     <div class="pf-badge">
       <svg width="36" height="61" viewBox="0 0 36 61" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 31H36V61L18 48.7067L0 61V31Z" fill="#7A48FF"/>
@@ -26,18 +27,23 @@
         <path d="M15.8564 31.7041V34.5732H17.5068V35.5508H15.8564V38.458H14.6504V31.7041H15.8564ZM6.90625 37.5693C9.57227 36.8203 11.2036 35.335 11.4258 33.4941H7.41406V32.5166H12.7334C12.7334 35.4556 10.7339 37.582 7.40137 38.5469L6.90625 37.5693ZM8.45508 40.8193C8.44238 39.4355 9.94043 38.5786 12.2256 38.585C14.5171 38.5786 15.9834 39.4355 15.9834 40.8193C15.9834 42.2158 14.5171 43.0601 12.2256 43.0664C9.94043 43.0601 8.44238 42.2158 8.45508 40.8193ZM9.64844 40.8193C9.64209 41.6191 10.6323 42.1079 12.2256 42.1143C13.8062 42.1079 14.8027 41.6191 14.8027 40.8193C14.8027 40.0195 13.8062 39.5308 12.2256 39.5371C10.6323 39.5308 9.64209 40.0195 9.64844 40.8193ZM22.1025 34.5986C22.0898 36.6108 23.2642 38.6738 24.959 39.499L24.21 40.4639C22.9722 39.8164 22.0137 38.5469 21.5122 37.0298C21.0044 38.6421 20.0078 40.0068 18.7129 40.6797L17.9639 39.7021C19.7095 38.8643 20.8901 36.6807 20.8965 34.5986V32.6562H22.1025V34.5986ZM25.8096 43.0791V31.7041H27.0156V36.2363H28.8438V37.2646H27.0156V43.0791H25.8096Z" fill="#E0E0E0"/>
       </svg>
     </div>
+    }
 
     <!-- 아바타 -->
     <div class="pf-avatar-wrap">
       <div class="pf-avatar">
-        <span class="pf-avatar-initial">N</span>
+        @if (userProfileImage()) {
+          <img [src]="userProfileImage()" alt="프로필" class="w-full h-full rounded-full object-cover" />
+        } @else {
+          <span class="pf-avatar-initial">{{ userInitial() }}</span>
+        }
       </div>
     </div>
 
     <!-- 유저 정보 -->
     <div class="pf-user-info">
-      <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white text-center">Newon</span>
-      <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white text-center">Photographer and artist</span>
+      <span class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white text-center">{{ userNickname() }}</span>
+      <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white text-center">{{ userBio() }}</span>
     </div>
 
     <!-- 팔로잉/팔로워 -->
@@ -159,38 +165,36 @@
     <div class="pf-sns">
       <span class="font-suit font-semibold text-sm leading-[150%] tracking-tight text-white">SNS</span>
       <div class="pf-sns-list">
-        <div class="pf-sns-item">
-          <div class="pf-sns-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
-              <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-            </svg>
+        @for (sns of userSns(); track sns.type) {
+          <div class="pf-sns-item">
+            <div class="pf-sns-icon">
+              @if (sns.type === 'LINK') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                </svg>
+              } @else if (sns.type === 'INSTAGRAM') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
+                </svg>
+              } @else if (sns.type === 'TWITTER') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              } @else if (sns.type === 'YOUTUBE') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
+                  <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                </svg>
+              }
+            </div>
+            <span class="font-suit text-sm leading-[17px] text-zinc-400">{{ sns.url }}</span>
           </div>
-          <span class="font-suit text-sm leading-[17px] text-zinc-400">Newon_12</span>
-        </div>
-        <div class="pf-sns-item">
-          <div class="pf-sns-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
-              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
-            </svg>
-          </div>
-          <span class="font-suit text-sm leading-[17px] text-zinc-400">Newon_newon.com</span>
-        </div>
-        <div class="pf-sns-item">
-          <div class="pf-sns-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-          </div>
-          <span class="font-suit text-sm leading-[17px] text-zinc-400">Newon&#64;newon.com</span>
-        </div>
-        <div class="pf-sns-item">
-          <div class="pf-sns-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
-              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-            </svg>
-          </div>
-          <span class="font-suit text-sm leading-[17px] text-zinc-400">Newon&#64;newon.com</span>
-        </div>
+        } @empty {
+          <span class="font-suit text-sm text-zinc-500">등록된 SNS가 없습니다.</span>
+        }
       </div>
     </div>
 
@@ -255,12 +259,12 @@
             (keydown.enter)="selectAlbum(album.id)">
             <div class="pf-album-grid">
               <div class="pf-album-grid-row">
-                <div class="pf-album-thumb"></div>
-                <div class="pf-album-thumb"></div>
+                <div class="pf-album-thumb" [style.background]="album.thumbnails[0] ? 'url(' + album.thumbnails[0] + ') center/cover no-repeat' : ''"></div>
+                <div class="pf-album-thumb" [style.background]="album.thumbnails[1] ? 'url(' + album.thumbnails[1] + ') center/cover no-repeat' : ''"></div>
               </div>
               <div class="pf-album-grid-row">
-                <div class="pf-album-thumb"></div>
-                <div class="pf-album-thumb"></div>
+                <div class="pf-album-thumb" [style.background]="album.thumbnails[2] ? 'url(' + album.thumbnails[2] + ') center/cover no-repeat' : ''"></div>
+                <div class="pf-album-thumb" [style.background]="album.thumbnails[3] ? 'url(' + album.thumbnails[3] + ') center/cover no-repeat' : ''"></div>
               </div>
               <div class="pf-album-grid-gradient"></div>
             </div>
@@ -341,12 +345,12 @@
             (keydown.enter)="selectCategory(cat.id)">
             <div class="pf-album-grid">
               <div class="pf-album-grid-row">
-                <div class="pf-album-thumb"></div>
-                <div class="pf-album-thumb"></div>
+                <div class="pf-album-thumb" [style.background]="cat.thumbnails[0] ? 'url(' + cat.thumbnails[0] + ') center/cover no-repeat' : ''"></div>
+                <div class="pf-album-thumb" [style.background]="cat.thumbnails[1] ? 'url(' + cat.thumbnails[1] + ') center/cover no-repeat' : ''"></div>
               </div>
               <div class="pf-album-grid-row">
-                <div class="pf-album-thumb"></div>
-                <div class="pf-album-thumb"></div>
+                <div class="pf-album-thumb" [style.background]="cat.thumbnails[2] ? 'url(' + cat.thumbnails[2] + ') center/cover no-repeat' : ''"></div>
+                <div class="pf-album-thumb" [style.background]="cat.thumbnails[3] ? 'url(' + cat.thumbnails[3] + ') center/cover no-repeat' : ''"></div>
               </div>
               <div class="pf-album-grid-gradient"></div>
             </div>
@@ -461,18 +465,25 @@
       </div>
 
       <div class="pf-content-grid">
-        @for (item of contents(); track item.id) {
-          <div class="pf-card">
-            <div class="pf-card-image">
+        @for (item of (activeTab() === 'album' ? filteredBookmarkContents() : filteredContents()); track item.id) {
+          <a class="pf-card" [routerLink]="['/content', item.id]" style="text-decoration:none;color:inherit">
+            <div class="pf-card-image" [style.background]="item.imageUrl ? 'url(' + item.imageUrl + ') center/cover no-repeat' : ''">
               <div class="pf-card-top">
                 <div class="pf-card-user"></div>
-                <div class="pf-card-comment">
-                  <span class="pf-card-comment-count">{{ item.commentCount }}</span>
-                </div>
+                <div class="relative flex items-start justify-center w-[30px] h-[42px]">
+                    <img class="w-[30px] h-[42px]" src="/icons/marker-active.svg" alt="" />
+                    <span class="absolute top-0 left-0 w-[25px] h-[25px] flex items-center justify-center font-suit font-semibold text-sm leading-6 tracking-tight text-white pointer-events-none">{{ item.feedbackCount }}</span>
+                  </div>
               </div>
+              @if (item.firstComment) {
+                <div class="pf-card-comment">
+                  <span class="pf-card-comment-author">"{{ item.firstComment.authorName }}"</span>
+                  <span class="pf-card-comment-body">{{ item.firstComment.body }}</span>
+                </div>
+              }
             </div>
             <span class="pf-card-title">{{ item.title }}</span>
-          </div>
+          </a>
         }
       </div>
     </div>

@@ -53,20 +53,24 @@
       <div class="grid grid-cols-4 gap-3">
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">상태</span>
-          <span class="inline-flex items-center gap-1 px-2 py-1 w-fit bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]">노출</span>
+          @if (content()?.status === 'VISIBLE') {
+            <span class="inline-flex items-center gap-1 px-2 py-1 w-fit bg-[#ECFDF5] border border-[#A7F3D0] rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#059669]">노출</span>
+          } @else {
+            <span class="inline-flex items-center gap-1 px-2 py-1 w-fit bg-gray-100 border border-gray-300 rounded-full font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">숨김</span>
+          }
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">타입</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">웹툰</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.type === 'PORTFOLIO' ? '포트폴리오' : content()?.type === 'REVIEW' ? '후기' : (content()?.type || '-') }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">카테고리</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">웹툰</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.category?.name || '-' }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성자</span>
           <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">고예림</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.author?.nickname || content()?.author?.name || '-' }}</span>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/>
             </svg>
@@ -78,11 +82,11 @@
       <div class="grid grid-cols-4 gap-3">
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성일시</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">2025-01-20 13:11</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.createdAt ? (content()!.createdAt | date:'yyyy-MM-dd HH:mm') : '-' }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">조회수</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">0</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.viewCount || 0 }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">북마크</span>
@@ -90,7 +94,7 @@
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">댓글</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">0</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?._count?.comments || 0 }}</span>
         </div>
       </div>
 
@@ -142,25 +146,37 @@
       <!-- 썸네일 -->
       <div class="flex flex-col gap-2 py-1.5">
         <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">썸네일</span>
-        <div class="w-[223px] h-[223px] bg-[#D9D9D9] rounded"></div>
+        @if (content()?.thumbnail) {
+          <img [src]="content()!.thumbnail" alt="썸네일" class="w-[223px] h-[223px] object-cover rounded" />
+        } @else {
+          <div class="w-[223px] h-[223px] bg-[#D9D9D9] rounded"></div>
+        }
       </div>
 
       <!-- 제목 -->
       <div class="flex flex-col gap-2 py-1.5">
         <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
-        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">콘텐츠 제목 30자 이내 콘텐츠 제목 30자 이내</span>
+        <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.title || '-' }}</span>
       </div>
 
       <!-- 내용 -->
       <div class="flex flex-col gap-2 py-1.5">
         <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
-        <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[704px]">내용 내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용 내용내용내용내용내용내용내용내용내용 내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용</p>
+        <div class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500 m-0 max-w-[704px]" [innerHTML]="content()?.body || '-'"></div>
       </div>
 
       <!-- 이미지 -->
       <div class="flex flex-col gap-2 py-1.5">
         <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이미지</span>
-        <div class="w-full max-w-[838px] h-[400px] bg-[#D9D9D9] rounded"></div>
+        @if (content()?.images && content()!.images!.length > 0) {
+          <div class="flex flex-wrap gap-3">
+            @for (img of content()!.images!; track img) {
+              <img [src]="img" alt="콘텐츠 이미지" class="max-w-[838px] rounded" style="max-height: 400px; object-fit: contain;" />
+            }
+          </div>
+        } @else {
+          <div class="w-full max-w-[838px] h-[400px] bg-[#D9D9D9] rounded"></div>
+        }
       </div>
 
     </div>
@@ -174,7 +190,7 @@
           (click)="toggleSection3()">
     <div class="flex items-center gap-3">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">댓글</span>
-      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ commentData.length }})</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ commentData().length }})</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"
            [class.rotate-180]="!section3Expanded()">
@@ -185,7 +201,7 @@
   @if (section3Expanded()) {
     <adm-data-grid
       [columns]="commentColumns"
-      [data]="commentData"
+      [data]="commentData()"
       searchPlaceholder="검색어를 입력하세요"
       (rowClick)="openCommentDrawer($event)">
       <div gridActions class="flex items-center gap-2 px-2 py-1 rounded-md" style="background: #D9E9FE;">
@@ -205,7 +221,7 @@
           (click)="toggleSection4()">
     <div class="flex items-center gap-3">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠 신고내역</span>
-      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ reportData.length }})</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ reportData().length }})</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"
            [class.rotate-180]="!section4Expanded()">
@@ -216,8 +232,9 @@
   @if (section4Expanded()) {
     <adm-data-grid
       [columns]="reportColumns"
-      [data]="reportData"
-      searchPlaceholder="검색어를 입력하세요">
+      [data]="reportData()"
+      searchPlaceholder="신고자, 내용으로 검색"
+      (actionClick)="onReportDelete($event)">
     </adm-data-grid>
   }
 </div>
@@ -272,17 +289,11 @@
       <div class="grid grid-cols-2 gap-3">
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">콘텐츠</span>
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">콘텐츠 제목</span>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/></svg>
-          </div>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ content()?.title || '-' }}</span>
         </div>
         <div class="flex flex-col gap-2 py-1.5">
           <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">작성자</span>
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.author }}</span>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#67A6F3" stroke-width="1.5"/></svg>
-          </div>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">{{ selectedComment()?.author }}</span>
         </div>
       </div>
 
@@ -313,25 +324,29 @@
       <!-- 이미지 -->
       <div class="flex flex-col gap-2 py-1.5">
         <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">이미지</span>
-        <div class="flex flex-wrap gap-2.5">
-          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
-          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
-          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
-          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
-          <div class="w-[134px] h-[134px] bg-[#D9D9D9] rounded"></div>
-        </div>
+        @if (selectedComment()?.images && selectedComment()!.images!.length > 0) {
+          <div class="flex flex-wrap gap-2.5">
+            @for (img of selectedComment()!.images!; track img) {
+              <img [src]="img" alt="댓글 이미지" class="w-[134px] h-[134px] object-cover rounded border border-gray-200" />
+            }
+          </div>
+        } @else {
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">등록된 이미지가 없습니다.</span>
+        }
       </div>
     </div>
 
     <!-- 신고 내역 -->
     <div class="flex items-center gap-1">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">신고 내역</span>
-      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ drawerReportData.length }})</span>
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-[#3C8EEE]">({{ drawerReportData().length }})</span>
     </div>
 
     <adm-data-grid
       [columns]="drawerReportColumns"
-      [data]="drawerReportData">
+      [data]="drawerReportData()"
+      searchPlaceholder="신고자, 내용으로 검색"
+      (actionClick)="onDrawerReportDelete($event)">
     </adm-data-grid>
 
   </div>
@@ -361,23 +376,23 @@
       <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">분류</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">웹툰</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ content()?.type === 'PORTFOLIO' ? '포트폴리오' : content()?.type === 'REVIEW' ? '후기' : (content()?.type || '-') }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">카테고리</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">작화</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ content()?.category?.name || '-' }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">제목</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">1차 계약서 사본</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ content()?.title || '-' }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">작성자</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">고예림</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ content()?.author?.nickname || content()?.author?.name || '-' }}</span>
         </div>
         <div class="flex items-center justify-between w-full">
           <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">등록일시</span>
-          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">2025-01-21 14:12</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ content()?.createdAt ? (content()!.createdAt | date:'yyyy-MM-dd HH:mm') : '-' }}</span>
         </div>
       </div>
 

@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -24,7 +25,7 @@ function toContentRow(c: Content): ContentRow {
     author: c.author?.nickname || c.author?.name || '',
     comments: c._count?.comments || 0,
     views: c.viewCount || 0,
-    createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(c.createdAt),
   };
 }
 

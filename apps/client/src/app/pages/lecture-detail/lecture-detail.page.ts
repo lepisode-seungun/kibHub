@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface LearningFile {
   name: string;
@@ -110,5 +111,9 @@ export class LectureDetailPage implements OnInit {
 
   toggleMaterial(): void {
     this.isMaterialOpen.update(v => !v);
+  }
+
+  downloadFile(file: LearningFile): void {
+    _downloadFile(file.url, file.name);
   }
 }

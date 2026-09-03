@@ -181,7 +181,8 @@
                placeholder="이메일을 입력하세요"
                [value]="instructorInviteForm().email"
                (input)="updateInstructorField('email', $event)"/>
-        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity">
+        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity"
+                (click)="searchInstructor()">
           <svg width="52" height="40" viewBox="0 0 52 40" fill="none">
             <rect width="52" height="40" rx="6" fill="#3C8EEE"/>
             <path d="M20.1436 14.016C20.1436 15.776 19.573 17.28 18.4316 18.528C17.2903 19.7653 15.6903 20.6773 13.6316 21.264L13.0716 20.176C14.725 19.7173 16.037 19.0507 17.0076 18.176C17.9783 17.3013 18.5276 16.288 18.6556 15.136H13.7916V14.016H20.1436ZM15.4396 21.728H24.5436V27.008H15.4396V21.728ZM23.1836 25.888V22.832H16.7836V25.888H23.1836ZM20.1756 16.704H23.1516V13.12H24.5436V21.136H23.1516V17.856H20.1756V16.704ZM30.496 13.968V15.824C30.496 16.6453 30.7413 17.4133 31.232 18.128C31.7333 18.8427 32.4267 19.3813 33.312 19.744L32.576 20.816C31.9467 20.5493 31.3973 20.176 30.928 19.696C30.4693 19.216 30.1067 18.6667 29.84 18.048C29.584 18.7413 29.2107 19.36 28.72 19.904C28.24 20.448 27.6693 20.8693 27.008 21.168L26.256 20.08C26.8533 19.8133 27.3707 19.4507 27.808 18.992C28.256 18.5227 28.592 18.0107 28.816 17.456C29.0507 16.9013 29.168 16.3573 29.168 15.824V13.968H30.496ZM28.672 22.416H38.16V27.216H36.768V23.536H28.672V22.416ZM33.824 13.376H35.12V16.768H36.832V13.136H38.16V21.648H36.832V17.904H35.12V21.568H33.824V13.376Z" fill="white"/>
@@ -189,6 +190,13 @@
         </button>
       </div>
     </div>
+
+    @if (searchMessage().text) {
+      <p class="m-0 font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]"
+         [style.color]="searchMessage().type === 'error' ? '#EF4444' : searchMessage().type === 'success' ? '#10B981' : '#6B7280'">
+        {{ searchMessage().text }}
+      </p>
+    }
 
     <!-- 권한 * -->
     <div class="flex flex-col gap-2">
@@ -280,7 +288,8 @@
                placeholder="이메일을 입력하세요"
                [value]="studentInviteForm().email"
                (input)="updateStudentField('email', $event)"/>
-        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity">
+        <button class="flex items-center justify-center bg-transparent border-none cursor-pointer p-0 shrink-0 hover:opacity-85 transition-opacity"
+                (click)="searchStudent()">
           <svg width="52" height="40" viewBox="0 0 52 40" fill="none">
             <rect width="52" height="40" rx="6" fill="#3C8EEE"/>
             <path d="M20.1436 14.016C20.1436 15.776 19.573 17.28 18.4316 18.528C17.2903 19.7653 15.6903 20.6773 13.6316 21.264L13.0716 20.176C14.725 19.7173 16.037 19.0507 17.0076 18.176C17.9783 17.3013 18.5276 16.288 18.6556 15.136H13.7916V14.016H20.1436ZM15.4396 21.728H24.5436V27.008H15.4396V21.728ZM23.1836 25.888V22.832H16.7836V25.888H23.1836ZM20.1756 16.704H23.1516V13.12H24.5436V21.136H23.1516V17.856H20.1756V16.704ZM30.496 13.968V15.824C30.496 16.6453 30.7413 17.4133 31.232 18.128C31.7333 18.8427 32.4267 19.3813 33.312 19.744L32.576 20.816C31.9467 20.5493 31.3973 20.176 30.928 19.696C30.4693 19.216 30.1067 18.6667 29.84 18.048C29.584 18.7413 29.2107 19.36 28.72 19.904C28.24 20.448 27.6693 20.8693 27.008 21.168L26.256 20.08C26.8533 19.8133 27.3707 19.4507 27.808 18.992C28.256 18.5227 28.592 18.0107 28.816 17.456C29.0507 16.9013 29.168 16.3573 29.168 15.824V13.968H30.496ZM28.672 22.416H38.16V27.216H36.768V23.536H28.672V22.416ZM33.824 13.376H35.12V16.768H36.832V13.136H38.16V21.648H36.832V17.904H35.12V21.568H33.824V13.376Z" fill="white"/>
@@ -288,6 +297,13 @@
         </button>
       </div>
     </div>
+
+    @if (studentSearchMessage().text) {
+      <p class="m-0 font-suit font-medium text-sm leading-[150%] tracking-[-0.04em]"
+         [style.color]="studentSearchMessage().type === 'error' ? '#EF4444' : studentSearchMessage().type === 'success' ? '#10B981' : '#6B7280'">
+        {{ studentSearchMessage().text }}
+      </p>
+    }
 
     <!-- 권한 * -->
     <div class="flex flex-col gap-2">

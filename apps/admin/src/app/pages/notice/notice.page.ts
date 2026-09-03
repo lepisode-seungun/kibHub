@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -15,7 +16,7 @@ function toNoticeRow(n: Notice): NoticeRow {
     status: n.status === 'HIDDEN' ? '숨김' : '노출',
     title: n.title,
     author: n.author?.nickname || n.author?.name || '관리자',
-    createdAt: new Date(n.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(n.createdAt),
   };
 }
 

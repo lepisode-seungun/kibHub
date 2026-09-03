@@ -17,6 +17,7 @@ enum CourseStatus {
   PENDING
   IN_PROGRESS
   COMPLETED
+  HIDDEN
 }
 
 // ===== 강의 =====
@@ -52,7 +53,8 @@ model Assignment {
   title     String
   content   String    @default("")
   videoUrl  String    @default("")
-  dueDate   DateTime?
+  dueDate    DateTime?
+  dueDateEnd DateTime?
   courseId   Int
   course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())

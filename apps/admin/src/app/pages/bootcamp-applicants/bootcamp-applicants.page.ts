@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -29,7 +30,7 @@ function toApplicantRow(a: Applicant): ApplicantRow {
     name: iq?.['applicantName'] || a.user?.name || '',
     phone: iq?.['phone'] || a.user?.phone || '',
     email: iq?.['email'] || a.user?.email || '',
-    appliedAt: new Date((a as any).appliedAt || a.createdAt).toLocaleString('ko-KR'),
+    appliedAt: formatDate((a as any).appliedAt || a.createdAt),
   };
 }
 

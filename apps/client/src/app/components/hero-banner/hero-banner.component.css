@@ -11,7 +11,7 @@
   aspect-ratio: 1920 / 440;
   min-height: 260px;
   overflow: hidden;
-  background: #100B09;
+  background: linear-gradient(0deg, #3F3160 0%, #1B1426 12%, #100B09 32%);
 }
 
 /* ===== Figma Full Banner SVG Background ===== */
@@ -23,23 +23,24 @@
   width: 100%;
   min-width: 100%;
   height: 100%;
-  max-width: none; /* override Tailwind preflight img { max-width: 100% } */
+  max-width: none;
   object-fit: cover;
   object-position: center;
   pointer-events: none;
   z-index: 1;
 }
 
-/* ===== 임시 하드코딩 타이틀 ===== */
+/* ===== 타이틀 ===== */
 .banner-title {
   position: absolute;
   top: 31.8%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
-  font-family: 'SUIT', sans-serif;
+  font-family: 'Gmarket Sans TTF', 'SUIT', sans-serif;
   font-weight: 700;
-  font-size: 36px;
+  font-size: 40px;
+  line-height: 150%;
   letter-spacing: -0.04em;
   color: #EEE6ED;
   margin: 0;
@@ -47,13 +48,13 @@
   pointer-events: none;
 }
 
-/* ===== Floating Cards (image-only, matching Figma rects) ===== */
+/* ===== Floating Cards (Figma 스펙: 194.4×127.8 고정, 위치는 % 반응형) ===== */
 .floating-card {
   position: absolute;
   z-index: 10;
-  width: 10.125%;    /* 194.4 / 1920 */
-  aspect-ratio: 194.4 / 127.8;
-  border-radius: 5px;
+  width: 194.4px;
+  height: 127.8px;
+  border-radius: 5.4px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -66,22 +67,51 @@
   transform: scale(1.06) translateY(-6px) !important;
 }
 
-/* Exact positions from Figma SVG rect coordinates (x/1920, y/440) */
+/*
+  위치 계산 (1920×440 기준 → % 변환):
+  카드0: left=485/1920=25.26%, top=80/440=18.18%
+  카드1: left=262/1920=13.65%, top=156/440=35.45%
+  카드2: left=418.4/1920=21.79%, top=321/440=73%
+  카드3: left=1239.84/1920=64.58%, top=80/440=18.18%
+  카드4: left=1462.62/1920=76.18%, top=156/440=35.45%
+  카드5: left=1307.66/1920=68.11%, top=321/440=73%
+*/
+
+/* 카드 0: 좌상단 */
 .floating-card[data-pos="0"] { left: 25.26%; top: 18.18%; opacity: 0.6; }
 .floating-card[data-pos="0"]:hover { opacity: 1; }
 
+/* 카드 1: 좌측 중앙 */
 .floating-card[data-pos="1"] { left: 13.65%; top: 35.45%; }
 
-.floating-card[data-pos="2"] { left: 21.79%; top: 73%; opacity: 0.3; }
+/* 카드 2: 좌하단 */
+.floating-card[data-pos="2"] { left: 21.79%; top: 73%; opacity: 0.3; border-radius: 6.048px; }
 .floating-card[data-pos="2"]:hover { opacity: 1; }
 
-.floating-card[data-pos="3"] { left: 64.58%; top: 18.18%; opacity: 0.6; }
+/* 카드 3: 우상단 */
+.floating-card[data-pos="3"] { left: 64.58%; top: 18.18%; opacity: 0.6; border-radius: 5.292px; }
 .floating-card[data-pos="3"]:hover { opacity: 1; }
 
-.floating-card[data-pos="4"] { left: 76.18%; top: 35.45%; }
+/* 카드 4: 우측 중앙 */
+.floating-card[data-pos="4"] { left: 76.18%; top: 35.45%; border-radius: 6.048px; }
 
-.floating-card[data-pos="5"] { left: 68.11%; top: 73%; opacity: 0.3; }
+/* 카드 5: 우하단 */
+.floating-card[data-pos="5"] { left: 68.11%; top: 73%; opacity: 0.3; border-radius: 6.048px; }
 .floating-card[data-pos="5"]:hover { opacity: 1; }
+
+/* ===== 하단 그라데이션 오버레이 (Figma) ===== */
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 68px;
+  background: linear-gradient(180deg, rgba(30, 21, 42, 0) -6.84%, #1E152A 106.16%);
+  opacity: 0.44;
+  z-index: 2;
+  pointer-events: none;
+}
 
 /* ===== Responsive ===== */
 @media (max-width: 1440px) {

@@ -8,9 +8,13 @@ export class CoursesService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   // ===== 과정 =====
-  findAllByBootcamp(bootcampId: number) {
+  findAllByBootcamp(bootcampId: number, excludeHidden = false) {
+    const where: any = { bootcampId };
+    if (excludeHidden) {
+      where.status = { not: 'HIDDEN' };
+    }
     return this.prisma.course.findMany({
-      where: { bootcampId },
+      where,
       include: { _count: { select: { lectures: true, assignments: true } } },
       orderBy: { sortOrder: 'asc' },
     });
@@ -36,6 +40,18 @@ export class CoursesService {
 
   deleteCourse(id: number) {
     return this.prisma.course.delete({ where: { id } });
+  }
+
+  // ===== 부트캠프별 강의 카테고리 =====
+  async findLectureCategories(bootcampId: number): Promise<string[]> {
+    const lectures = await this.prisma.lecture.findMany({
+      where: { course: { bootcampId } },
+      select: { category: true },
+      distinct: ['category'],
+    });
+    return lectures
+      .map(l => l.category)
+      .filter(c => c && c.trim() !== '');
   }
 
   // ===== 강의 =====
@@ -93,11 +109,17 @@ export class CoursesService {
 
 
   createAssignment(courseId: number, data: CreateAssignmentDto) {
-    return this.prisma.assignment.create({ data: { ...data, courseId } as Prisma.AssignmentUncheckedCreateInput });
+    const mapped: any = { ...data, courseId };
+    if (mapped.dueDate) mapped.dueDate = new Date(mapped.dueDate);
+    if (mapped.dueDateEnd) mapped.dueDateEnd = new Date(mapped.dueDateEnd);
+    return this.prisma.assignment.create({ data: mapped as Prisma.AssignmentUncheckedCreateInput });
   }
 
   updateAssignment(id: number, data: Partial<CreateAssignmentDto>) {
-    return this.prisma.assignment.update({ where: { id }, data: data as Prisma.AssignmentUpdateInput });
+    const mapped: any = { ...data };
+    if (mapped.dueDate) mapped.dueDate = new Date(mapped.dueDate);
+    if (mapped.dueDateEnd) mapped.dueDateEnd = new Date(mapped.dueDateEnd);
+    return this.prisma.assignment.update({ where: { id }, data: mapped as Prisma.AssignmentUpdateInput });
   }
 
   deleteAssignment(id: number) {
@@ -185,7 +207,7 @@ export class CoursesService {
   findSubmissionComments(submissionId: number) {
     return this.prisma.submissionComment.findMany({
       where: { submissionId },
-      include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
+      include: { author: { select: { id: true, name: true, nickname: true, role: true, profileImage: true } } },
       orderBy: { createdAt: 'asc' },
     });
   }
@@ -193,7 +215,7 @@ export class CoursesService {
   createSubmissionComment(submissionId: number, authorId: number, body: string) {
     return this.prisma.submissionComment.create({
       data: { body, submissionId, authorId },
-      include: { author: { select: { id: true, name: true, nickname: true, role: true } } },
+      include: { author: { select: { id: true, name: true, nickname: true, role: true, profileImage: true } } },
     });
   }
 

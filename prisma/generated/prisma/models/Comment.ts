@@ -28,16 +28,26 @@ export type AggregateComment = {
 
 export type CommentAvgAggregateOutputType = {
   id: number | null
+  markerNum: number | null
+  markerTop: number | null
+  markerLeft: number | null
+  markerImageIndex: number | null
   contentId: number | null
   authorId: number | null
+  parentId: number | null
   likeCount: number | null
   reportCount: number | null
 }
 
 export type CommentSumAggregateOutputType = {
   id: number | null
+  markerNum: number | null
+  markerTop: number | null
+  markerLeft: number | null
+  markerImageIndex: number | null
   contentId: number | null
   authorId: number | null
+  parentId: number | null
   likeCount: number | null
   reportCount: number | null
 }
@@ -45,9 +55,15 @@ export type CommentSumAggregateOutputType = {
 export type CommentMinAggregateOutputType = {
   id: number | null
   status: $Enums.ContentStatus | null
+  type: string | null
   body: string | null
+  markerNum: number | null
+  markerTop: number | null
+  markerLeft: number | null
+  markerImageIndex: number | null
   contentId: number | null
   authorId: number | null
+  parentId: number | null
   likeCount: number | null
   reportCount: number | null
   createdAt: Date | null
@@ -56,9 +72,15 @@ export type CommentMinAggregateOutputType = {
 export type CommentMaxAggregateOutputType = {
   id: number | null
   status: $Enums.ContentStatus | null
+  type: string | null
   body: string | null
+  markerNum: number | null
+  markerTop: number | null
+  markerLeft: number | null
+  markerImageIndex: number | null
   contentId: number | null
   authorId: number | null
+  parentId: number | null
   likeCount: number | null
   reportCount: number | null
   createdAt: Date | null
@@ -67,9 +89,16 @@ export type CommentMaxAggregateOutputType = {
 export type CommentCountAggregateOutputType = {
   id: number
   status: number
+  type: number
   body: number
+  images: number
+  markerNum: number
+  markerTop: number
+  markerLeft: number
+  markerImageIndex: number
   contentId: number
   authorId: number
+  parentId: number
   likeCount: number
   reportCount: number
   createdAt: number
@@ -79,16 +108,26 @@ export type CommentCountAggregateOutputType = {
 
 export type CommentAvgAggregateInputType = {
   id?: true
+  markerNum?: true
+  markerTop?: true
+  markerLeft?: true
+  markerImageIndex?: true
   contentId?: true
   authorId?: true
+  parentId?: true
   likeCount?: true
   reportCount?: true
 }
 
 export type CommentSumAggregateInputType = {
   id?: true
+  markerNum?: true
+  markerTop?: true
+  markerLeft?: true
+  markerImageIndex?: true
   contentId?: true
   authorId?: true
+  parentId?: true
   likeCount?: true
   reportCount?: true
 }
@@ -96,9 +135,15 @@ export type CommentSumAggregateInputType = {
 export type CommentMinAggregateInputType = {
   id?: true
   status?: true
+  type?: true
   body?: true
+  markerNum?: true
+  markerTop?: true
+  markerLeft?: true
+  markerImageIndex?: true
   contentId?: true
   authorId?: true
+  parentId?: true
   likeCount?: true
   reportCount?: true
   createdAt?: true
@@ -107,9 +152,15 @@ export type CommentMinAggregateInputType = {
 export type CommentMaxAggregateInputType = {
   id?: true
   status?: true
+  type?: true
   body?: true
+  markerNum?: true
+  markerTop?: true
+  markerLeft?: true
+  markerImageIndex?: true
   contentId?: true
   authorId?: true
+  parentId?: true
   likeCount?: true
   reportCount?: true
   createdAt?: true
@@ -118,9 +169,16 @@ export type CommentMaxAggregateInputType = {
 export type CommentCountAggregateInputType = {
   id?: true
   status?: true
+  type?: true
   body?: true
+  images?: true
+  markerNum?: true
+  markerTop?: true
+  markerLeft?: true
+  markerImageIndex?: true
   contentId?: true
   authorId?: true
+  parentId?: true
   likeCount?: true
   reportCount?: true
   createdAt?: true
@@ -216,9 +274,16 @@ export type CommentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type CommentGroupByOutputType = {
   id: number
   status: $Enums.ContentStatus
+  type: string
   body: string
+  images: string[]
+  markerNum: number | null
+  markerTop: number | null
+  markerLeft: number | null
+  markerImageIndex: number | null
   contentId: number
   authorId: number
+  parentId: number | null
   likeCount: number
   reportCount: number
   createdAt: Date
@@ -250,27 +315,47 @@ export type CommentWhereInput = {
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   id?: Prisma.IntFilter<"Comment"> | number
   status?: Prisma.EnumContentStatusFilter<"Comment"> | $Enums.ContentStatus
+  type?: Prisma.StringFilter<"Comment"> | string
   body?: Prisma.StringFilter<"Comment"> | string
+  images?: Prisma.StringNullableListFilter<"Comment">
+  markerNum?: Prisma.IntNullableFilter<"Comment"> | number | null
+  markerTop?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerLeft?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerImageIndex?: Prisma.IntNullableFilter<"Comment"> | number | null
   contentId?: Prisma.IntFilter<"Comment"> | number
   authorId?: Prisma.IntFilter<"Comment"> | number
+  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   likeCount?: Prisma.IntFilter<"Comment"> | number
   reportCount?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   content?: Prisma.XOR<Prisma.ContentScalarRelationFilter, Prisma.ContentWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
+  replies?: Prisma.CommentListRelationFilter
+  likes?: Prisma.CommentLikeListRelationFilter
 }
 
 export type CommentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  images?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerTop?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerLeft?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrderInput | Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   content?: Prisma.ContentOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
+  parent?: Prisma.CommentOrderByWithRelationInput
+  replies?: Prisma.CommentOrderByRelationAggregateInput
+  likes?: Prisma.CommentLikeOrderByRelationAggregateInput
 }
 
 export type CommentWhereUniqueInput = Prisma.AtLeast<{
@@ -279,22 +364,39 @@ export type CommentWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CommentWhereInput[]
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   status?: Prisma.EnumContentStatusFilter<"Comment"> | $Enums.ContentStatus
+  type?: Prisma.StringFilter<"Comment"> | string
   body?: Prisma.StringFilter<"Comment"> | string
+  images?: Prisma.StringNullableListFilter<"Comment">
+  markerNum?: Prisma.IntNullableFilter<"Comment"> | number | null
+  markerTop?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerLeft?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerImageIndex?: Prisma.IntNullableFilter<"Comment"> | number | null
   contentId?: Prisma.IntFilter<"Comment"> | number
   authorId?: Prisma.IntFilter<"Comment"> | number
+  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   likeCount?: Prisma.IntFilter<"Comment"> | number
   reportCount?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   content?: Prisma.XOR<Prisma.ContentScalarRelationFilter, Prisma.ContentWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
+  replies?: Prisma.CommentListRelationFilter
+  likes?: Prisma.CommentLikeListRelationFilter
 }, "id">
 
 export type CommentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  images?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerTop?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerLeft?: Prisma.SortOrderInput | Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrderInput | Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -311,9 +413,16 @@ export type CommentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CommentScalarWhereWithAggregatesInput | Prisma.CommentScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   status?: Prisma.EnumContentStatusWithAggregatesFilter<"Comment"> | $Enums.ContentStatus
+  type?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   body?: Prisma.StringWithAggregatesFilter<"Comment"> | string
+  images?: Prisma.StringNullableListFilter<"Comment">
+  markerNum?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
+  markerTop?: Prisma.FloatNullableWithAggregatesFilter<"Comment"> | number | null
+  markerLeft?: Prisma.FloatNullableWithAggregatesFilter<"Comment"> | number | null
+  markerImageIndex?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
   contentId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   authorId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
+  parentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
   likeCount?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   reportCount?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
@@ -321,52 +430,95 @@ export type CommentScalarWhereWithAggregatesInput = {
 
 export type CommentCreateInput = {
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
   content: Prisma.ContentCreateNestedOneWithoutCommentsInput
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   contentId: number
   authorId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUpdateInput = {
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   content?: Prisma.ContentUpdateOneRequiredWithoutCommentsNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   contentId?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentCreateManyInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   contentId: number
   authorId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
@@ -374,7 +526,13 @@ export type CommentCreateManyInput = {
 
 export type CommentUpdateManyMutationInput = {
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,9 +541,16 @@ export type CommentUpdateManyMutationInput = {
 export type CommentUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   contentId?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -401,12 +566,24 @@ export type CommentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type CommentNullableScalarRelationFilter = {
+  is?: Prisma.CommentWhereInput | null
+  isNot?: Prisma.CommentWhereInput | null
+}
+
 export type CommentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  images?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrder
+  markerTop?: Prisma.SortOrder
+  markerLeft?: Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -414,8 +591,13 @@ export type CommentCountOrderByAggregateInput = {
 
 export type CommentAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrder
+  markerTop?: Prisma.SortOrder
+  markerLeft?: Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
 }
@@ -423,9 +605,15 @@ export type CommentAvgOrderByAggregateInput = {
 export type CommentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrder
+  markerTop?: Prisma.SortOrder
+  markerLeft?: Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -434,9 +622,15 @@ export type CommentMaxOrderByAggregateInput = {
 export type CommentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrder
+  markerTop?: Prisma.SortOrder
+  markerLeft?: Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -444,10 +638,20 @@ export type CommentMinOrderByAggregateInput = {
 
 export type CommentSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  markerNum?: Prisma.SortOrder
+  markerTop?: Prisma.SortOrder
+  markerLeft?: Prisma.SortOrder
+  markerImageIndex?: Prisma.SortOrder
   contentId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   reportCount?: Prisma.SortOrder
+}
+
+export type CommentScalarRelationFilter = {
+  is?: Prisma.CommentWhereInput
+  isNot?: Prisma.CommentWhereInput
 }
 
 export type CommentCreateNestedManyWithoutContentInput = {
@@ -490,6 +694,95 @@ export type CommentUncheckedUpdateManyWithoutContentNestedInput = {
   update?: Prisma.CommentUpdateWithWhereUniqueWithoutContentInput | Prisma.CommentUpdateWithWhereUniqueWithoutContentInput[]
   updateMany?: Prisma.CommentUpdateManyWithWhereWithoutContentInput | Prisma.CommentUpdateManyWithWhereWithoutContentInput[]
   deleteMany?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
+}
+
+export type CommentCreateimagesInput = {
+  set: string[]
+}
+
+export type CommentCreateNestedOneWithoutRepliesInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutRepliesInput, Prisma.CommentUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutRepliesInput
+  connect?: Prisma.CommentWhereUniqueInput
+}
+
+export type CommentCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput> | Prisma.CommentCreateWithoutParentInput[] | Prisma.CommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutParentInput | Prisma.CommentCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.CommentCreateManyParentInputEnvelope
+  connect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+}
+
+export type CommentUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput> | Prisma.CommentCreateWithoutParentInput[] | Prisma.CommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutParentInput | Prisma.CommentCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.CommentCreateManyParentInputEnvelope
+  connect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+}
+
+export type CommentUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type CommentUpdateOneWithoutRepliesNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutRepliesInput, Prisma.CommentUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutRepliesInput
+  upsert?: Prisma.CommentUpsertWithoutRepliesInput
+  disconnect?: Prisma.CommentWhereInput | boolean
+  delete?: Prisma.CommentWhereInput | boolean
+  connect?: Prisma.CommentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommentUpdateToOneWithWhereWithoutRepliesInput, Prisma.CommentUpdateWithoutRepliesInput>, Prisma.CommentUncheckedUpdateWithoutRepliesInput>
+}
+
+export type CommentUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput> | Prisma.CommentCreateWithoutParentInput[] | Prisma.CommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutParentInput | Prisma.CommentCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.CommentUpsertWithWhereUniqueWithoutParentInput | Prisma.CommentUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.CommentCreateManyParentInputEnvelope
+  set?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  disconnect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  delete?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  connect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  update?: Prisma.CommentUpdateWithWhereUniqueWithoutParentInput | Prisma.CommentUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.CommentUpdateManyWithWhereWithoutParentInput | Prisma.CommentUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
+}
+
+export type CommentUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput> | Prisma.CommentCreateWithoutParentInput[] | Prisma.CommentUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutParentInput | Prisma.CommentCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.CommentUpsertWithWhereUniqueWithoutParentInput | Prisma.CommentUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.CommentCreateManyParentInputEnvelope
+  set?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  disconnect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  delete?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  connect?: Prisma.CommentWhereUniqueInput | Prisma.CommentWhereUniqueInput[]
+  update?: Prisma.CommentUpdateWithWhereUniqueWithoutParentInput | Prisma.CommentUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.CommentUpdateManyWithWhereWithoutParentInput | Prisma.CommentUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
+}
+
+export type CommentCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutLikesInput, Prisma.CommentUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutLikesInput
+  connect?: Prisma.CommentWhereUniqueInput
+}
+
+export type CommentUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.CommentCreateWithoutLikesInput, Prisma.CommentUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.CommentCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.CommentUpsertWithoutLikesInput
+  connect?: Prisma.CommentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommentUpdateToOneWithWhereWithoutLikesInput, Prisma.CommentUpdateWithoutLikesInput>, Prisma.CommentUncheckedUpdateWithoutLikesInput>
 }
 
 export type CommentCreateNestedManyWithoutAuthorInput = {
@@ -536,21 +829,39 @@ export type CommentUncheckedUpdateManyWithoutAuthorNestedInput = {
 
 export type CommentCreateWithoutContentInput = {
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutContentInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   authorId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutCommentInput
 }
 
 export type CommentCreateOrConnectWithoutContentInput = {
@@ -585,31 +896,299 @@ export type CommentScalarWhereInput = {
   NOT?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
   id?: Prisma.IntFilter<"Comment"> | number
   status?: Prisma.EnumContentStatusFilter<"Comment"> | $Enums.ContentStatus
+  type?: Prisma.StringFilter<"Comment"> | string
   body?: Prisma.StringFilter<"Comment"> | string
+  images?: Prisma.StringNullableListFilter<"Comment">
+  markerNum?: Prisma.IntNullableFilter<"Comment"> | number | null
+  markerTop?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerLeft?: Prisma.FloatNullableFilter<"Comment"> | number | null
+  markerImageIndex?: Prisma.IntNullableFilter<"Comment"> | number | null
   contentId?: Prisma.IntFilter<"Comment"> | number
   authorId?: Prisma.IntFilter<"Comment"> | number
+  parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   likeCount?: Prisma.IntFilter<"Comment"> | number
   reportCount?: Prisma.IntFilter<"Comment"> | number
   createdAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
 }
 
-export type CommentCreateWithoutAuthorInput = {
+export type CommentCreateWithoutRepliesInput = {
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
   content: Prisma.ContentCreateNestedOneWithoutCommentsInput
+  author: Prisma.UserCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  likes?: Prisma.CommentLikeCreateNestedManyWithoutCommentInput
+}
+
+export type CommentUncheckedCreateWithoutRepliesInput = {
+  id?: number
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  contentId: number
+  authorId: number
+  parentId?: number | null
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  likes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutCommentInput
+}
+
+export type CommentCreateOrConnectWithoutRepliesInput = {
+  where: Prisma.CommentWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommentCreateWithoutRepliesInput, Prisma.CommentUncheckedCreateWithoutRepliesInput>
+}
+
+export type CommentCreateWithoutParentInput = {
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  content: Prisma.ContentCreateNestedOneWithoutCommentsInput
+  author: Prisma.UserCreateNestedOneWithoutCommentsInput
+  replies?: Prisma.CommentCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeCreateNestedManyWithoutCommentInput
+}
+
+export type CommentUncheckedCreateWithoutParentInput = {
+  id?: number
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  contentId: number
+  authorId: number
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutCommentInput
+}
+
+export type CommentCreateOrConnectWithoutParentInput = {
+  where: Prisma.CommentWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput>
+}
+
+export type CommentCreateManyParentInputEnvelope = {
+  data: Prisma.CommentCreateManyParentInput | Prisma.CommentCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type CommentUpsertWithoutRepliesInput = {
+  update: Prisma.XOR<Prisma.CommentUpdateWithoutRepliesInput, Prisma.CommentUncheckedUpdateWithoutRepliesInput>
+  create: Prisma.XOR<Prisma.CommentCreateWithoutRepliesInput, Prisma.CommentUncheckedCreateWithoutRepliesInput>
+  where?: Prisma.CommentWhereInput
+}
+
+export type CommentUpdateToOneWithWhereWithoutRepliesInput = {
+  where?: Prisma.CommentWhereInput
+  data: Prisma.XOR<Prisma.CommentUpdateWithoutRepliesInput, Prisma.CommentUncheckedUpdateWithoutRepliesInput>
+}
+
+export type CommentUpdateWithoutRepliesInput = {
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.ContentUpdateOneRequiredWithoutCommentsNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  likes?: Prisma.CommentLikeUpdateManyWithoutCommentNestedInput
+}
+
+export type CommentUncheckedUpdateWithoutRepliesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentId?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
+}
+
+export type CommentUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.CommentWhereUniqueInput
+  update: Prisma.XOR<Prisma.CommentUpdateWithoutParentInput, Prisma.CommentUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.CommentCreateWithoutParentInput, Prisma.CommentUncheckedCreateWithoutParentInput>
+}
+
+export type CommentUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.CommentWhereUniqueInput
+  data: Prisma.XOR<Prisma.CommentUpdateWithoutParentInput, Prisma.CommentUncheckedUpdateWithoutParentInput>
+}
+
+export type CommentUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.CommentScalarWhereInput
+  data: Prisma.XOR<Prisma.CommentUpdateManyMutationInput, Prisma.CommentUncheckedUpdateManyWithoutParentInput>
+}
+
+export type CommentCreateWithoutLikesInput = {
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  content: Prisma.ContentCreateNestedOneWithoutCommentsInput
+  author: Prisma.UserCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentCreateNestedManyWithoutParentInput
+}
+
+export type CommentUncheckedCreateWithoutLikesInput = {
+  id?: number
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  contentId: number
+  authorId: number
+  parentId?: number | null
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type CommentCreateOrConnectWithoutLikesInput = {
+  where: Prisma.CommentWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommentCreateWithoutLikesInput, Prisma.CommentUncheckedCreateWithoutLikesInput>
+}
+
+export type CommentUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.CommentUpdateWithoutLikesInput, Prisma.CommentUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.CommentCreateWithoutLikesInput, Prisma.CommentUncheckedCreateWithoutLikesInput>
+  where?: Prisma.CommentWhereInput
+}
+
+export type CommentUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.CommentWhereInput
+  data: Prisma.XOR<Prisma.CommentUpdateWithoutLikesInput, Prisma.CommentUncheckedUpdateWithoutLikesInput>
+}
+
+export type CommentUpdateWithoutLikesInput = {
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.ContentUpdateOneRequiredWithoutCommentsNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutParentNestedInput
+}
+
+export type CommentUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentId?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type CommentCreateWithoutAuthorInput = {
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+  content: Prisma.ContentCreateNestedOneWithoutCommentsInput
+  parent?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  replies?: Prisma.CommentCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutAuthorInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   contentId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
+  likes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutCommentInput
 }
 
 export type CommentCreateOrConnectWithoutAuthorInput = {
@@ -641,8 +1220,15 @@ export type CommentUpdateManyWithWhereWithoutAuthorInput = {
 export type CommentCreateManyContentInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   authorId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
@@ -650,27 +1236,123 @@ export type CommentCreateManyContentInput = {
 
 export type CommentUpdateWithoutContentInput = {
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutContentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateManyWithoutContentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CommentCreateManyParentInput = {
+  id?: number
+  status?: $Enums.ContentStatus
+  type?: string
+  body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
+  contentId: number
+  authorId: number
+  likeCount?: number
+  reportCount?: number
+  createdAt?: Date | string
+}
+
+export type CommentUpdateWithoutParentInput = {
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  content?: Prisma.ContentUpdateOneRequiredWithoutCommentsNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUpdateManyWithoutCommentNestedInput
+}
+
+export type CommentUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentId?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  reportCount?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
+}
+
+export type CommentUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentId?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -680,8 +1362,15 @@ export type CommentUncheckedUpdateManyWithoutContentInput = {
 export type CommentCreateManyAuthorInput = {
   id?: number
   status?: $Enums.ContentStatus
+  type?: string
   body: string
+  images?: Prisma.CommentCreateimagesInput | string[]
+  markerNum?: number | null
+  markerTop?: number | null
+  markerLeft?: number | null
+  markerImageIndex?: number | null
   contentId: number
+  parentId?: number | null
   likeCount?: number
   reportCount?: number
   createdAt?: Date | string
@@ -689,97 +1378,200 @@ export type CommentCreateManyAuthorInput = {
 
 export type CommentUpdateWithoutAuthorInput = {
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   content?: Prisma.ContentUpdateOneRequiredWithoutCommentsNestedInput
+  parent?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   contentId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
+  likes?: Prisma.CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CommentUpdateimagesInput | string[]
+  markerNum?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  markerTop?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerLeft?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  markerImageIndex?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   contentId?: Prisma.IntFieldUpdateOperationsInput | number
+  parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   reportCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
+/**
+ * Count Type CommentCountOutputType
+ */
+
+export type CommentCountOutputType = {
+  replies: number
+  likes: number
+}
+
+export type CommentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  replies?: boolean | CommentCountOutputTypeCountRepliesArgs
+  likes?: boolean | CommentCountOutputTypeCountLikesArgs
+}
+
+/**
+ * CommentCountOutputType without action
+ */
+export type CommentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentCountOutputType
+   */
+  select?: Prisma.CommentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CommentCountOutputType without action
+ */
+export type CommentCountOutputTypeCountRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
+/**
+ * CommentCountOutputType without action
+ */
+export type CommentCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentLikeWhereInput
+}
+
 
 export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   status?: boolean
+  type?: boolean
   body?: boolean
+  images?: boolean
+  markerNum?: boolean
+  markerTop?: boolean
+  markerLeft?: boolean
+  markerImageIndex?: boolean
   contentId?: boolean
   authorId?: boolean
+  parentId?: boolean
   likeCount?: boolean
   reportCount?: boolean
   createdAt?: boolean
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.Comment$repliesArgs<ExtArgs>
+  likes?: boolean | Prisma.Comment$likesArgs<ExtArgs>
+  _count?: boolean | Prisma.CommentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   status?: boolean
+  type?: boolean
   body?: boolean
+  images?: boolean
+  markerNum?: boolean
+  markerTop?: boolean
+  markerLeft?: boolean
+  markerImageIndex?: boolean
   contentId?: boolean
   authorId?: boolean
+  parentId?: boolean
   likeCount?: boolean
   reportCount?: boolean
   createdAt?: boolean
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   status?: boolean
+  type?: boolean
   body?: boolean
+  images?: boolean
+  markerNum?: boolean
+  markerTop?: boolean
+  markerLeft?: boolean
+  markerImageIndex?: boolean
   contentId?: boolean
   authorId?: boolean
+  parentId?: boolean
   likeCount?: boolean
   reportCount?: boolean
   createdAt?: boolean
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectScalar = {
   id?: boolean
   status?: boolean
+  type?: boolean
   body?: boolean
+  images?: boolean
+  markerNum?: boolean
+  markerTop?: boolean
+  markerLeft?: boolean
+  markerImageIndex?: boolean
   contentId?: boolean
   authorId?: boolean
+  parentId?: boolean
   likeCount?: boolean
   reportCount?: boolean
   createdAt?: boolean
 }
 
-export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "body" | "contentId" | "authorId" | "likeCount" | "reportCount" | "createdAt", ExtArgs["result"]["comment"]>
+export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "body" | "images" | "markerNum" | "markerTop" | "markerLeft" | "markerImageIndex" | "contentId" | "authorId" | "parentId" | "likeCount" | "reportCount" | "createdAt", ExtArgs["result"]["comment"]>
 export type CommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
+  replies?: boolean | Prisma.Comment$repliesArgs<ExtArgs>
+  likes?: boolean | Prisma.Comment$likesArgs<ExtArgs>
+  _count?: boolean | Prisma.CommentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
 }
 export type CommentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
 }
 
 export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -787,13 +1579,23 @@ export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     content: Prisma.$ContentPayload<ExtArgs>
     author: Prisma.$UserPayload<ExtArgs>
+    parent: Prisma.$CommentPayload<ExtArgs> | null
+    replies: Prisma.$CommentPayload<ExtArgs>[]
+    likes: Prisma.$CommentLikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     status: $Enums.ContentStatus
+    type: string
     body: string
+    images: string[]
+    markerNum: number | null
+    markerTop: number | null
+    markerLeft: number | null
+    markerImageIndex: number | null
     contentId: number
     authorId: number
+    parentId: number | null
     likeCount: number
     reportCount: number
     createdAt: Date
@@ -1193,6 +1995,9 @@ export interface Prisma__CommentClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   content<T extends Prisma.ContentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContentDefaultArgs<ExtArgs>>): Prisma.Prisma__ContentClient<runtime.Types.Result.GetResult<Prisma.$ContentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parent<T extends Prisma.Comment$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$parentArgs<ExtArgs>>): Prisma.Prisma__CommentClient<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  replies<T extends Prisma.Comment$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likes<T extends Prisma.Comment$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1224,9 +2029,16 @@ export interface Prisma__CommentClient<T, Null = never, ExtArgs extends runtime.
 export interface CommentFieldRefs {
   readonly id: Prisma.FieldRef<"Comment", 'Int'>
   readonly status: Prisma.FieldRef<"Comment", 'ContentStatus'>
+  readonly type: Prisma.FieldRef<"Comment", 'String'>
   readonly body: Prisma.FieldRef<"Comment", 'String'>
+  readonly images: Prisma.FieldRef<"Comment", 'String[]'>
+  readonly markerNum: Prisma.FieldRef<"Comment", 'Int'>
+  readonly markerTop: Prisma.FieldRef<"Comment", 'Float'>
+  readonly markerLeft: Prisma.FieldRef<"Comment", 'Float'>
+  readonly markerImageIndex: Prisma.FieldRef<"Comment", 'Int'>
   readonly contentId: Prisma.FieldRef<"Comment", 'Int'>
   readonly authorId: Prisma.FieldRef<"Comment", 'Int'>
+  readonly parentId: Prisma.FieldRef<"Comment", 'Int'>
   readonly likeCount: Prisma.FieldRef<"Comment", 'Int'>
   readonly reportCount: Prisma.FieldRef<"Comment", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Comment", 'DateTime'>
@@ -1628,6 +2440,73 @@ export type CommentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Comments to delete.
    */
   limit?: number
+}
+
+/**
+ * Comment.parent
+ */
+export type Comment$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+}
+
+/**
+ * Comment.replies
+ */
+export type Comment$repliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Comment.likes
+ */
+export type Comment$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentLike
+   */
+  select?: Prisma.CommentLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentLike
+   */
+  omit?: Prisma.CommentLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentLikeInclude<ExtArgs> | null
+  where?: Prisma.CommentLikeWhereInput
+  orderBy?: Prisma.CommentLikeOrderByWithRelationInput | Prisma.CommentLikeOrderByWithRelationInput[]
+  cursor?: Prisma.CommentLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentLikeScalarFieldEnum | Prisma.CommentLikeScalarFieldEnum[]
 }
 
 /**

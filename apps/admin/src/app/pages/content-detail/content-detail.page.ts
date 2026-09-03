@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,16 +53,45 @@ export class ContentDetailPage implements OnInit {
       const c = await this.api.contents.findOne(id);
       this.content.set(c);
       const comments = await this.api.comments.findByContent(id);
-      this.commentData = comments.map((cm: Comment) => ({
-        id: cm.id,
-        status: '노출',
-        type: cm.parentId ? '대댓글' : '댓글',
-        content: cm.body,
-        author: cm.author?.nickname || cm.author?.name || '',
-        reports: cm.reportCount || 0,
-        likes: cm.likeCount || 0,
-        createdAt: new Date(cm.createdAt).toLocaleString('ko-KR'),
-      }));
+      const rows: CommentRow[] = [];
+      for (const cm of comments) {
+        rows.push({
+          id: cm.id,
+          status: cm.status === 'VISIBLE' ? '노출' : '숨김',
+          type: '댓글',
+          content: cm.body,
+          author: cm.author?.nickname || cm.author?.name || '',
+          reports: cm.reportCount || 0,
+          likes: cm.likeCount || 0,
+          createdAt: formatDate(cm.createdAt),
+          images: (cm as any).images || [],
+        });
+        for (const reply of ((cm as any).replies || [])) {
+          rows.push({
+            id: reply.id,
+            status: reply.status === 'VISIBLE' ? '노출' : '숨김',
+            type: '대댓글',
+            content: reply.body,
+            author: reply.author?.nickname || reply.author?.name || '',
+            reports: reply.reportCount || 0,
+            likes: reply.likeCount || 0,
+            createdAt: formatDate(reply.createdAt),
+            images: reply.images || [],
+          });
+        }
+      }
+      this.commentData.set(rows);
+
+      // 콘텐츠 신고 내역 로드
+      const reports = await this.api.reports.findAll({ type: 'CONTENT', targetId: String(id) });
+      this.reportData.set(reports.map((r: any) => ({
+        id: r.id,
+        title: c.title || '-',
+        commentContent: '',
+        content: r.reason || '',
+        reporter: r.reporter?.nickname || r.reporter?.name || '',
+        reportedAt: formatDate(r.createdAt),
+      })));
     } catch (e) {
       console.error('콘텐츠 상세 로드 실패:', e);
     }
@@ -107,7 +137,7 @@ export class ContentDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  commentData: CommentRow[] = [];
+  commentData = signal<CommentRow[]>([]);
 
   // ===== 콘텐츠 신고내역 그리드 =====
   reportColumns: GridColumn[] = [
@@ -116,9 +146,10 @@ export class ContentDetailPage implements OnInit {
     { key: 'content', label: '내용' },
     { key: 'reporter', label: '신고자', width: '100px' },
     { key: 'reportedAt', label: '신고일시', width: '160px' },
+    { key: 'delete', label: '', width: '50px', type: 'action' },
   ];
 
-  reportData: ReportRow[] = [];
+  reportData = signal<ReportRow[]>([]);
 
   // ===== 댓글 상세 사이드 드로어 =====
   showCommentDrawer = signal(false);
@@ -126,17 +157,31 @@ export class ContentDetailPage implements OnInit {
   selectedComment = signal<CommentRow | null>(null);
 
   drawerReportColumns: GridColumn[] = [
-    { key: 'title', label: '콘텐츠 제목' },
     { key: 'content', label: '내용' },
     { key: 'reporter', label: '신고자', width: '120px' },
     { key: 'reportedAt', label: '신고일시', width: '150px' },
+    { key: 'delete', label: '', width: '50px', type: 'action' },
   ];
 
-  drawerReportData: ReportRow[] = [];
+  drawerReportData = signal<ReportRow[]>([]);
 
-  openCommentDrawer(comment: CommentRow): void {
+  async openCommentDrawer(comment: CommentRow): Promise<void> {
     this.selectedComment.set(comment);
     this.showCommentDrawer.set(true);
+    // 해당 댓글의 신고 내역 로드
+    try {
+      const reports = await this.api.reports.findAll({ type: 'COMMENT', targetId: String(comment.id) });
+      this.drawerReportData.set(reports.map((r: any) => ({
+        id: r.id,
+        commentContent: comment.content,
+        content: r.reason || '',
+        reporter: r.reporter?.nickname || r.reporter?.name || '',
+        reportedAt: formatDate(r.createdAt),
+      })));
+    } catch (e) {
+      console.error('신고 내역 로드 실패:', e);
+      this.drawerReportData.set([]);
+    }
   }
 
   closeCommentDrawer(): void {
@@ -147,9 +192,20 @@ export class ContentDetailPage implements OnInit {
   toggleDrawerKebab(event: Event): void { event.stopPropagation(); this.drawerKebabOpen.update(v => !v); }
   closeDrawerKebab(): void { this.drawerKebabOpen.set(false); }
 
-  onDrawerHide(): void {
+  async onDrawerHide(): Promise<void> {
     this.drawerKebabOpen.set(false);
-    this.toast.success('숨김 되었습니다.');
+    const comment = this.selectedComment();
+    if (comment) {
+      try {
+        await this.api.comments.update(comment.id, { status: 'HIDDEN' as any });
+        this.toast.success('숨김 되었습니다.');
+        const id = Number(this.route.snapshot.paramMap.get('id'));
+        if (id) await this.loadContent(id);
+        this.showCommentDrawer.set(false);
+      } catch (e: unknown) {
+        this.toast.error(e instanceof Error ? e.message : '처리 실패');
+      }
+    }
   }
 
   onDrawerDelete(): void {
@@ -197,5 +253,41 @@ export class ContentDetailPage implements OnInit {
     }
     this.showCommentDeleteDialog.set(false);
     this.showCommentDrawer.set(false);
+  }
+
+  // ===== 신고 삭제 =====
+  async onReportDelete(event: { key: string; row: any }): Promise<void> {
+    try {
+      await this.api.reports.delete(event.row.id);
+      this.toast.success('신고가 삭제되었습니다.');
+      const id = Number(this.route.snapshot.paramMap.get('id'));
+      if (id) await this.loadContent(id);
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '삭제 실패');
+    }
+  }
+
+  async onDrawerReportDelete(event: { key: string; row: any }): Promise<void> {
+    try {
+      await this.api.reports.delete(event.row.id);
+      this.toast.success('신고가 삭제되었습니다.');
+      // 드로어 신고 내역 새로고침
+      const comment = this.selectedComment();
+      if (comment) {
+        const reports = await this.api.reports.findAll({ type: 'COMMENT', targetId: String(comment.id) });
+        this.drawerReportData.set(reports.map((r: any) => ({
+          id: r.id,
+          commentContent: comment.content,
+          content: r.reason || '',
+          reporter: r.reporter?.nickname || r.reporter?.name || '',
+          reportedAt: formatDate(r.createdAt),
+        })));
+      }
+      // 댓글 그리드도 새로고침 (reportCount 반영)
+      const id = Number(this.route.snapshot.paramMap.get('id'));
+      if (id) await this.loadContent(id);
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '삭제 실패');
+    }
   }
 }

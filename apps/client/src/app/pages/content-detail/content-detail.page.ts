@@ -1,4 +1,5 @@
-import { Component, computed, effect, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, NgZone, PLATFORM_ID, afterNextRender, ApplicationRef } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -17,19 +18,23 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
+  private appRef = inject(ApplicationRef);
 
-  /* Mock data — 나중에 API로 교체 */
+  /* 동적 데이터 — API에서 로드 */
   contentId = '';
-  authorName = '고뚱이고뚱이고뚱이';
-  authorRole = '강사';
-  title = '크리스마스 트리가 있는 녹차밭 제목 30자 이내로 제한';
-  description = '크리스마스 트리가 있는 녹차밭을 그려봤어요. 얼씨구 절씨구 ! 크리스마스 트리가 있는 녹차밭을 그려봤어요. 크리스마스 트리가 있는 녹차밭을 그려봤어요. 얼씨구 절씨구 ! 크리스마스 트리가 있는 녹차밭을 그려봤어요. 크리스마스 트리가 있는 녹차밭을 그려봤어요. 얼씨구 절씨구 ! 크리스마스 트리가 있는 녹차밭을 그려봤어요.';
-  category = '카테고리명';
-  bookmarkCount = 314;
-  commentCount = 30;
-  dateStr = '2024. 7. 10 13:23';
+  authorName = '';
+  authorRole = '';
+  title = '';
+  description = '';
+  category = '';
+  bookmarkCount = 0;
+  commentCount = 0;
+  dateStr = '';
   isBookmarked = signal(false);
-  isDescOpen = signal(false);
+  isDescOpen = signal(true);
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
   isSidebarOpen = signal(true);
   isMobileCommentOpen = signal(false);
@@ -41,9 +46,19 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     }
   });
   commentMode = signal<'general' | 'feedback'>('general');
+  markersVisible = signal(true);
+  hoveredCommentId = signal<number | null>(null);
   isLoggedIn = this.authService.isLoggedIn;
-  pendingMarker = signal<{top: number; left: number} | null>(null);
+  currentUserName = signal('');  
+  currentUserAvatar = signal('');  
+  currentUserProfileImage = signal('');
+  currentUserId = signal(0);
+  pendingMarker = signal<{top: number; left: number; imageIndex: number} | null>(null);
   commentText = '';
+  attachedImages = signal<{ file: File; preview: string }[]>([]);
+  private readonly MAX_IMAGES = 5;
+  private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  replyingTo = signal<{ id: number; userName: string } | null>(null);
 
   /* 콘텐츠 번역 드롭다운 */
   isTranslateOpen = signal(false);
@@ -120,41 +135,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     setTimeout(() => this.isLinkCopied.set(false), 2000);
   }
 
-  images = [
-    { gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', markers: [{rank: 1, top: 33, left: 33}, {rank: 2, top: 83, left: 562}, {rank: 3, top: 433, left: 882}] },
-    { gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', markers: [{rank: 4, top: 92, left: 571}, {rank: 5, top: 442, left: 891}] },
-  ];
+  images: { gradient: string; markers: { rank: number; top: number; left: number; commentId?: number }[] }[] = [];
 
-  comments = [
-    {
-      id: 1, userName: '고식혜', avatar: 'N', markerNum: 1, isMe: true, isActive: false, type: 'feedback' as const,
-      content: '피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용',
-      time: '3시간 전', likes: 30, liked: true, replyCount: 30,
-      replies: [
-        { id: 11, userName: '고식혜', avatar: 'N', isMe: true,
-          content: '피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용',
-          time: '3시간 전', likes: 30, liked: false, images: 5 },
-        { id: 12, userName: '고식혜', avatar: 'N', isMe: true,
-          content: '피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용',
-          time: '3시간 전', likes: 30, liked: false, images: 5 },
-      ]
-    },
-    {
-      id: 2, userName: '고식혜', avatar: 'N', markerNum: 2, isMe: true, isActive: true, type: 'feedback' as const,
-      content: '피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용 피드백 댓글 내용',
-      time: '3시간 전', likes: 30, liked: false, replyCount: 30, replies: []
-    },
-    {
-      id: 4, userName: '고식혜', avatar: 'N', markerNum: null, isMe: true, isActive: false, type: 'general' as const,
-      content: '색감이 정말 좋네요! 톤앤매너가 잘 맞는 것 같아요.',
-      time: '5시간 전', likes: 8, liked: false, replyCount: 0, replies: []
-    },
-    {
-      id: 3, userName: '고식혜', avatar: 'N', markerNum: 3, isMe: false, isActive: false, type: 'feedback' as const,
-      content: '배경의 그라데이션 처리가 인상적입니다. 어떤 브러시를 사용하셨나요?',
-      time: '1일 전', likes: 5, liked: false, replyCount: 2, replies: []
-    },
-  ];
+  comments: any[] = [];
 
   get filteredComments() {
     const tab = this.activeCommentTab();
@@ -167,24 +150,155 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   get allCount() { return this.comments.length; }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.contentId = params['id'] || '1';
-      this.loadContent(Number(this.contentId));
-    });
-    document.body.classList.add('page-content-detail');
+    if (isPlatformBrowser(this.platformId)) {
+      this.route.params.subscribe(params => {
+        this.contentId = params['id'] || '1';
+        this.loadContent(Number(this.contentId));
+      });
+      document.body.classList.add('page-content-detail');
+    }
   }
 
-  private async loadContent(id: number): Promise<void> {
-    try {
-      const content = await this.api.contents.findOne(id);
-      this.title = content.title;
-      this.description = content.body || this.description;
-      this.authorName = content.author?.nickname || content.author?.name || this.authorName;
-      this.category = content.category?.name || this.category;
-      this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
-    } catch (e) {
-      console.error('콘텐츠 로드 실패:', e);
-    }
+  private loadContent(id: number): void {
+    this.ngZone.run(async () => {
+      try {
+        // 3개 API 병렬 호출
+        const [meResult, contentResult, commentsResult] = await Promise.allSettled([
+          this.api.users.me(),
+          this.api.contents.findOne(id),
+          this.api.comments.findByContent(id),
+        ]);
+
+        // 유저 정보
+        if (meResult.status === 'fulfilled') {
+          const me = meResult.value;
+          const name = me.nickname || me.name || '';
+          this.currentUserName.set(name);
+          this.currentUserAvatar.set(name.charAt(0));
+          this.currentUserProfileImage.set(me.profileImage || '');
+          this.currentUserId.set(me.id);
+        }
+
+        // 콘텐츠 정보
+        if (contentResult.status === 'fulfilled') {
+          const content = contentResult.value;
+          this.title = content.title;
+          this.description = content.body || '';
+          this.authorName = content.author?.nickname || content.author?.name || '작성자';
+          this.authorRole = (content.author as any)?.role || '';
+          this.category = content.category?.name || '미분류';
+          this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
+          this.commentCount = (content as any)._count?.comments || (content as any).comments?.length || 0;
+
+          const imageList: typeof this.images = [];
+          if (content.thumbnail) {
+            imageList.push({ gradient: `url(${content.thumbnail}) center/cover no-repeat`, markers: [] });
+          }
+          if (content.images && content.images.length > 0) {
+            for (const imgUrl of content.images) {
+              imageList.push({ gradient: `url(${imgUrl}) center/cover no-repeat`, markers: [] });
+            }
+          }
+          if (imageList.length === 0) {
+            imageList.push({ gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', markers: [] });
+          }
+          this.images = imageList;
+        }
+
+        // 댓글
+        if (commentsResult.status === 'fulfilled') {
+          const serverComments = commentsResult.value;
+          this.comments = serverComments.map((c: any) => {
+            return {
+              id: c.id,
+              userName: c.author?.nickname || c.author?.name || '익명',
+              avatar: (c.author?.nickname || c.author?.name || 'U').charAt(0),
+              profileImage: c.author?.profileImage || '',
+              markerNum: c.markerNum ?? null,
+              markerTop: c.markerTop ?? null,
+              markerLeft: c.markerLeft ?? null,
+              isMe: c.author?.id === this.currentUserId(),
+              isActive: false,
+              type: (c.type || 'general') as 'feedback' | 'general',
+              content: c.body,
+              time: this.timeAgo(new Date(c.createdAt)),
+              likes: c.likeCount || 0, liked: (c.likes?.length || 0) > 0,
+              replyCount: c.replies?.length || 0,
+              replies: (c.replies || []).map((r: any) => ({
+                id: r.id,
+                userName: r.author?.nickname || r.author?.name || '익명',
+                avatar: (r.author?.nickname || r.author?.name || 'U').charAt(0),
+                profileImage: r.author?.profileImage || '',
+                markerNum: r.markerNum ?? null,
+                markerTop: r.markerTop ?? null,
+                markerLeft: r.markerLeft ?? null,
+                isMe: r.author?.id === this.currentUserId(),
+                type: (r.type || 'general') as 'feedback' | 'general',
+                content: r.body,
+                time: this.timeAgo(new Date(r.createdAt)),
+                likes: r.likeCount || 0, liked: (r.likes?.length || 0) > 0,
+                imageUrls: r.images || [],
+              })),
+              imageUrls: c.images || [],
+            };
+          });
+          this.commentCount = this.comments.length;
+
+          // 이미지에 영구 마커 복원 (댓글 + 대댓글 모두, 이미지별 분배)
+          if (this.images.length > 0) {
+            // 각 이미지의 마커 배열 초기화
+            for (const img of this.images) {
+              img.markers = [];
+            }
+            const addMarker = (c: any) => {
+              if (c.markerNum && c.markerTop != null) {
+                const idx = c.markerImageIndex ?? 0;
+                if (idx < this.images.length) {
+                  this.images[idx].markers.push({ rank: c.markerNum, top: c.markerTop, left: c.markerLeft, commentId: c.id });
+                }
+              }
+            };
+            for (const c of this.comments) {
+              addMarker(c);
+              for (const r of (c.replies || [])) {
+                addMarker(r);
+              }
+            }
+          }
+        }
+
+        // 책갈피 상태 확인
+        if (this.isLoggedIn()) {
+          try {
+            const albums = await this.api.albums.findAll('BOOKMARK');
+            const contentId = id;
+            const ids: number[] = [];
+            for (const a of albums) {
+              const contents = a.albumContents || [];
+              if (contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId)) {
+                ids.push(a.id);
+              }
+            }
+            this.bookmarkedAlbumIds = ids;
+            this.isBookmarked.set(ids.length > 0);
+          } catch { /* ignore */ }
+        }
+      } catch (e) {
+        console.error('콘텐츠 로드 실패:', e);
+      } finally {
+        this.appRef.tick();
+      }
+    });
+  }
+
+  private timeAgo(date: Date): string {
+    const diff = Date.now() - date.getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}분 전`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}시간 전`;
+    const days = Math.floor(hours / 24);
+    return `${days}일 전`;
   }
 
   ngOnDestroy(): void {
@@ -196,16 +310,23 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  toggleBookmark(): void {
+  async toggleBookmark(): Promise<void> {
     if (!this.isLoggedIn()) {
       this.isLoginRequiredModalOpen.set(true);
       return;
     }
     if (this.isBookmarked()) {
-      // 이미 추가된 상태면 해제
+      // 이미 추가된 상태면 모든 앨범에서 제거
+      const contentId = Number(this.contentId);
+      for (const albumId of this.bookmarkedAlbumIds) {
+        try {
+          await this.api.albums.removeContent(albumId, contentId);
+        } catch { /* ignore */ }
+      }
+      this.bookmarkedAlbumIds = [];
       this.isBookmarked.set(false);
     } else {
-      // 미추가 상태면 모달 열기 (버튼 상태는 아직 변경 안 함)
+      // 미추가 상태면 모달 열기
       this.openBookmarkModal();
     }
   }
@@ -220,6 +341,93 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   onCommentInput(event: Event): void {
     this.commentText = (event.target as HTMLTextAreaElement).value;
+  }
+
+  startReply(comment: { id: number; userName: string }): void {
+    if (this.replyingTo()?.id === comment.id) {
+      // 같은 댓글 다시 클릭 → 닫기 + 초기화
+      this.cancelReply();
+      return;
+    }
+    this.replyingTo.set(comment);
+    this.commentText = '';
+    this.attachedImages().forEach(img => URL.revokeObjectURL(img.preview));
+    this.attachedImages.set([]);
+    this.commentMode.set('general');
+  }
+
+  cancelReply(): void {
+    this.replyingTo.set(null);
+    this.commentText = '';
+    this.attachedImages().forEach(img => URL.revokeObjectURL(img.preview));
+    this.attachedImages.set([]);
+  }
+
+  async toggleLike(target: any): Promise<void> {
+    if (!this.isLoggedIn()) return;
+    // 낙관적 업데이트: 즉시 UI 반영
+    const prevLiked = target.liked;
+    const prevLikes = target.likes;
+    target.liked = !prevLiked;
+    target.likes = prevLiked ? Math.max(0, prevLikes - 1) : prevLikes + 1;
+    try {
+      const result = await this.api.comments.toggleLike(target.id);
+      // 서버 실제 값으로 보정
+      target.liked = result.liked;
+      target.likes = result.likeCount;
+    } catch (e) {
+      // 실패 시 롤백
+      target.liked = prevLiked;
+      target.likes = prevLikes;
+      console.error('좋아요 실패:', e);
+    }
+  }
+
+  /** 숨겨진 file input 트리거 */
+  triggerImageInput(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = (e) => this.onImagesSelected(e);
+    input.click();
+  }
+
+  /** 파일 선택 후 유효성 검증 + 프리뷰 생성 */
+  onImagesSelected(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files) return;
+
+    const current = this.attachedImages();
+    const remaining = this.MAX_IMAGES - current.length;
+    if (remaining <= 0) {
+      alert('이미지는 최대 5장까지 첨부 가능합니다.');
+      return;
+    }
+
+    const newFiles: { file: File; preview: string }[] = [];
+    for (let i = 0; i < Math.min(files.length, remaining); i++) {
+      const file = files[i];
+      if (file.size > this.MAX_FILE_SIZE) {
+        alert(`${file.name}: 이미지당 최대 용량은 10MB입니다.`);
+        continue;
+      }
+      if (!file.type.startsWith('image/')) continue;
+      newFiles.push({ file, preview: URL.createObjectURL(file) });
+    }
+
+    if (files.length > remaining) {
+      alert(`이미지는 최대 5장까지 첨부 가능합니다. ${remaining}장만 추가되었습니다.`);
+    }
+
+    this.attachedImages.set([...current, ...newFiles]);
+  }
+
+  /** 첨부 이미지 제거 */
+  removeAttachedImage(index: number): void {
+    const current = this.attachedImages();
+    URL.revokeObjectURL(current[index].preview);
+    this.attachedImages.set(current.filter((_, i) => i !== index));
   }
 
   toggleSidebar(): void {
@@ -262,27 +470,78 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.pendingMarker.set(null);
   }
 
-  onImageClick(event: Event): void {
-    if (this.commentMode() !== 'feedback') return;
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    if (event instanceof MouseEvent) {
-      const top = event.clientY - rect.top;
-      const left = event.clientX - rect.left;
-      this.pendingMarker.set({ top, left });
+
+
+  onImageFrameClick(event: Event, imageIndex: number): void {
+    if (this.commentMode() === 'feedback') {
+      event.stopPropagation();
+      event.preventDefault();
+      const frame = (event.target as HTMLElement).closest('.detail-image') || event.currentTarget as HTMLElement;
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      if (event instanceof MouseEvent) {
+        const top = ((event.clientY - rect.top) / rect.height) * 100;
+        const left = ((event.clientX - rect.left) / rect.width) * 100;
+        this.pendingMarker.set({ top, left, imageIndex });
+      } else {
+        this.pendingMarker.set({ top: 50, left: 50, imageIndex });
+      }
     } else {
-      this.pendingMarker.set({ top: rect.height / 2, left: rect.width / 2 });
+      this.openManuscriptViewer(imageIndex);
     }
   }
 
   get nextMarkerNum(): number {
-    const nums = this.comments.filter(c => c.markerNum).map(c => c.markerNum as number);
+    const nums: number[] = [];
+    for (const c of this.comments) {
+      if (c.markerNum) nums.push(c.markerNum);
+      for (const r of (c.replies || [])) {
+        if (r.markerNum) nums.push(r.markerNum);
+      }
+    }
     return nums.length > 0 ? Math.max(...nums) + 1 : 1;
+  }
+
+  activateMarkerComment(rank: number, event: Event): void {
+    event.stopPropagation();
+
+    // 최상위 댓글에서 찾기
+    let target = this.comments.find(c => c.markerNum === rank);
+    let scrollTargetId = target ? `comment-${target.id}` : '';
+
+    // 대댓글에서 찾기
+    if (!target) {
+      for (const c of this.comments) {
+        const reply = (c.replies || []).find((r: any) => r.markerNum === rank);
+        if (reply) {
+          target = c; // 부모 댓글 활성화
+          scrollTargetId = `comment-${reply.id}`; // 대댓글로 스크롤
+          break;
+        }
+      }
+    }
+
+    if (!target) return;
+
+    if (target.isActive && scrollTargetId === `comment-${target.id}`) {
+      // 이미 활성 → 비활성화 (토글 해제)
+      target.isActive = false;
+    } else {
+      // 모든 댓글 비활성화 후 해당 마커 댓글 활성화
+      this.comments.forEach(c => c.isActive = false);
+      target.isActive = true;
+      // 해당 댓글/대댓글로 스크롤
+      setTimeout(() => {
+        const el = document.getElementById(scrollTargetId);
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
   }
 
   /* 신고 모달 */
   isReportModalOpen = signal(false);
   reportType = signal<'content' | 'comment'>('content');
+  reportTargetId = signal<number>(0);
   reportText = '';
 
   /* 로그인 필요 모달 */
@@ -294,42 +553,59 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       return;
     }
     this.reportType.set('content');
+    this.reportTargetId.set(Number(this.contentId));
     this.isReportModalOpen.set(true);
   }
 
-  openCommentReportModal(): void {
+  openCommentReportModal(commentId: number): void {
     if (!this.isLoggedIn()) {
       this.isLoginRequiredModalOpen.set(true);
       return;
     }
     this.reportType.set('comment');
+    this.reportTargetId.set(commentId);
     this.isReportModalOpen.set(true);
   }
 
   closeReportModal(): void {
     this.isReportModalOpen.set(false);
     this.reportText = '';
+    this.reportTargetId.set(0);
   }
 
   onReportInput(event: Event): void {
     this.reportText = (event.target as HTMLTextAreaElement).value;
   }
 
-  submitReport(): void {
+  async submitReport(): Promise<void> {
     if (!this.reportText.trim()) return;
-    // 추후 API 연결
-    this.closeReportModal();
+    try {
+      await this.api.reports.create({
+        type: this.reportType() === 'comment' ? 'COMMENT' : 'CONTENT',
+        targetId: this.reportTargetId(),
+        reason: this.reportText.trim(),
+      } as any);
+      this.closeReportModal();
+    } catch (e) {
+      console.error('신고 실패:', e);
+    }
   }
 
   /* 원고 뷰어 모달 */
   isViewerOpen = signal(false);
   currentViewerPage = signal(1);
-  totalPages = 17;
 
-  manuscriptImages = Array.from({ length: 17 }, (_, i) => ({
-    id: i + 1,
-    gradient: `linear-gradient(${135 + i * 15}deg, #667eea ${i * 3}%, #764ba2 ${50 + i * 2}%, #f093fb 100%)`,
-  }));
+  get totalPages(): number {
+    return this.images.length;
+  }
+
+  get manuscriptImages(): { gradient: string; markers?: { rank: number; top: number; left: number; commentId?: number }[] }[] {
+    const visible = this.markersVisible();
+    return this.images.map(img => ({
+      gradient: img.gradient,
+      markers: visible ? img.markers : [],
+    }));
+  }
 
   openManuscriptViewer(imageIndex: number): void {
     if (this.commentMode() === 'feedback') return;
@@ -371,10 +647,163 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.deleteTargetComment.set(null);
   }
 
-  confirmDelete(): void {
+  async submitComment(): Promise<void> {
+    const text = this.commentText.trim();
+    if (!text || !this.contentId) return;
+
+    const isFeedback = this.commentMode() === 'feedback';
+    const currentMarkerNum = isFeedback ? this.nextMarkerNum : null;
+    const attached = this.attachedImages();
+    const localPreviews = attached.map(a => a.preview);
+    const replyTarget = this.replyingTo();
+
+    try {
+      // 이미지가 있으면 먼저 업로드
+      let serverImageUrls: string[] = [];
+      if (attached.length > 0) {
+        try {
+          const uploaded = await this.api.upload.multiple(attached.map(a => a.file), 'comments');
+          serverImageUrls = uploaded.map(u => u.url);
+        } catch (uploadErr) {
+          console.warn('이미지 업로드 실패:', uploadErr);
+        }
+      }
+
+      // 댓글/답글 생성
+      const pm = this.pendingMarker();
+      const created = await this.api.comments.create(Number(this.contentId), {
+        body: text,
+        ...(serverImageUrls.length > 0 ? { images: serverImageUrls } : {}),
+        ...(replyTarget ? { parentId: replyTarget.id } : {}),
+        type: isFeedback ? 'feedback' : 'general',
+        ...(isFeedback && pm ? { markerNum: currentMarkerNum!, markerTop: pm.top, markerLeft: pm.left, markerImageIndex: pm.imageIndex } : {}),
+      });
+      
+      const newEntry: any = {
+        id: created.id,
+        userName: this.currentUserName() || '나',
+        avatar: this.currentUserAvatar() || 'N',
+        profileImage: this.currentUserProfileImage() || '',
+        isMe: true,
+        content: created.body,
+        time: '방금 전',
+        likes: 0,
+        liked: false,
+        imageUrls: serverImageUrls.length > 0 ? serverImageUrls : localPreviews,
+      };
+
+      if (replyTarget) {
+        // 답글 모드: 해당 댓글의 replies에 추가
+        newEntry.type = (isFeedback ? 'feedback' : 'general') as 'feedback' | 'general';
+        newEntry.markerNum = currentMarkerNum;
+
+        // 대댓글 피드백 마커 위치 저장
+        if (isFeedback && pm) {
+          newEntry.markerTop = pm.top;
+          newEntry.markerLeft = pm.left;
+          newEntry.markerImageIndex = pm.imageIndex;
+          const idx = pm.imageIndex;
+          if (idx < this.images.length) {
+            this.images[idx] = {
+              ...this.images[idx],
+              markers: [...this.images[idx].markers, { rank: currentMarkerNum!, top: pm.top, left: pm.left, commentId: created.id }]
+            };
+            this.images = [...this.images];
+          }
+        }
+
+        const parent = this.comments.find(c => c.id === replyTarget.id);
+        if (parent) {
+          parent.replies = [...(parent.replies || []), newEntry];
+          parent.replyCount = (parent.replyCount || 0) + 1;
+        }
+        this.replyingTo.set(null);
+      } else {
+        // 일반 댓글
+        newEntry.markerNum = currentMarkerNum;
+        newEntry.isActive = false;
+        newEntry.type = (isFeedback ? 'feedback' : 'general') as 'feedback' | 'general';
+        newEntry.replyCount = 0;
+        newEntry.replies = [];
+
+        // 피드백 마커 위치 저장
+        if (isFeedback && pm) {
+          newEntry.markerTop = pm.top;
+          newEntry.markerLeft = pm.left;
+          newEntry.markerImageIndex = pm.imageIndex;
+          // 이미지에 영구 마커 추가 (immutable update로 Angular 감지)
+          const idx = pm.imageIndex;
+          if (idx < this.images.length) {
+            this.images[idx] = {
+              ...this.images[idx],
+              markers: [...this.images[idx].markers, { rank: currentMarkerNum!, top: pm.top, left: pm.left, commentId: created.id }]
+            };
+            this.images = [...this.images];
+          }
+        }
+
+        this.comments = [newEntry, ...this.comments];
+      }
+
+      this.commentCount = this.comments.length;
+      this.commentText = '';
+      if (serverImageUrls.length > 0) {
+        localPreviews.forEach(p => URL.revokeObjectURL(p));
+      }
+      this.attachedImages.set([]);
+
+      // 먼저 이미지 마커가 렌더링되도록 detectChanges
+      this.cdr.detectChanges();
+
+      if (isFeedback) {
+        // 약간의 딜레이로 pending 마커 제거 (saved 마커가 먼저 렌더링되도록)
+        setTimeout(() => {
+          this.commentMode.set('general');
+          this.pendingMarker.set(null);
+          this.cdr.detectChanges();
+        }, 50);
+      }
+    } catch (e) {
+      console.error('댓글 작성 실패:', e);
+    }
+  }
+
+  async confirmDelete(): Promise<void> {
     const target = this.deleteTargetComment();
     if (target) {
-      this.comments = this.comments.filter(c => c.id !== target.id);
+      try {
+        await this.api.comments.delete(target.id);
+        // 최상위 댓글인지 확인
+        const isTopLevel = this.comments.some(c => c.id === target.id);
+        if (isTopLevel) {
+          // 피드백 마커 제거
+          const deleted = this.comments.find(c => c.id === target.id);
+          if (deleted?.markerNum && this.images.length > 0) {
+            const idx = deleted.markerImageIndex ?? 0;
+            if (idx < this.images.length) {
+              this.images[idx] = {
+                ...this.images[idx],
+                markers: this.images[idx].markers.filter(m => m.rank !== deleted.markerNum)
+              };
+              this.images = [...this.images];
+            }
+          }
+          this.comments = this.comments.filter(c => c.id !== target.id);
+        } else {
+          // 대댓글 삭제: 부모 댓글에서 제거
+          for (const comment of this.comments) {
+            if (comment.replies?.some((r: any) => r.id === target.id)) {
+              comment.replies = comment.replies.filter((r: any) => r.id !== target.id);
+              comment.replyCount = Math.max(0, (comment.replyCount || 0) - 1);
+              break;
+            }
+          }
+        }
+        this.commentCount = this.comments.length;
+        this.cdr.detectChanges();
+      } catch (e) {
+        console.error('댓글 삭제 실패:', e);
+      }
     }
     this.closeDeleteModal();
   }
@@ -394,12 +823,29 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.editingCommentText.set('');
   }
 
-  saveEdit(commentId: number): void {
+  async saveEdit(commentId: number): Promise<void> {
     const newText = this.editingCommentText().trim();
     if (newText) {
-      this.comments = this.comments.map(c =>
-        c.id === commentId ? { ...c, content: newText } : c
-      );
+      try {
+        await this.api.comments.update(commentId, { body: newText });
+        // 최상위 댓글 수정
+        const topLevel = this.comments.find(c => c.id === commentId);
+        if (topLevel) {
+          topLevel.content = newText;
+        } else {
+          // 대댓글 수정
+          for (const comment of this.comments) {
+            const reply = comment.replies?.find((r: any) => r.id === commentId);
+            if (reply) {
+              reply.content = newText;
+              break;
+            }
+          }
+        }
+        this.cdr.detectChanges();
+      } catch (e) {
+        console.error('댓글 수정 실패:', e);
+      }
     }
     this.cancelEdit();
   }
@@ -437,20 +883,37 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   /* ===== 책갈피 추가 모달 ===== */
   isBookmarkModalOpen = signal(false);
   bookmarkSaved = signal(false);
-  /** 현재 편집(삭제) 대상으로 선택된 카테고리 ID Set. 다중 선택 가능 */
   selectedEditIds = signal<Set<number>>(new Set());
-  bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnail: string}[]>([
-    { id: 1, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-    { id: 2, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'private', thumbnail: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-    { id: 3, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-    { id: 4, name: '채용 오퍼레이션을 위한', count: 0, selected: false, visibility: 'public', thumbnail: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-  ]);
+  bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnail: string}[]>([]);
   hasSelectedCategories = computed(() => this.bookmarkCategories().some(c => c.selected));
   newCategoryName = '';
+  /** 현재 콘텐츠가 속한 앨범 ID 목록 (책갈피 해제용) */
+  private bookmarkedAlbumIds: number[] = [];
 
-  openBookmarkModal(): void {
+  async openBookmarkModal(): Promise<void> {
     this.isBookmarkModalOpen.set(true);
     document.body.style.overflow = 'hidden';
+
+    try {
+      const albums = await this.api.albums.findAll('BOOKMARK');
+      const contentId = Number(this.contentId);
+      
+      this.bookmarkCategories.set(albums.map((a: any) => {
+        const contents = a.albumContents || [];
+        const isInAlbum = contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId);
+        const firstThumb = contents[0]?.content?.thumbnail;
+        return {
+          id: a.id,
+          name: a.name,
+          count: a._count?.albumContents ?? contents.length,
+          selected: isInAlbum,
+          visibility: 'public' as const,
+          thumbnail: firstThumb ? `url(${firstThumb}) center/cover no-repeat` : 'linear-gradient(135deg, #3F3F46, #52525B)',
+        };
+      }));
+    } catch (e) {
+      console.error('앨범 목록 로드 실패:', e);
+    }
   }
 
   closeBookmarkModal(): void {
@@ -461,7 +924,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  /** 로우 클릭: 카테고리 선택/해제 토글 + 편집 상태 토글 (다중 선택) */
   toggleRowEdit(id: number): void {
     this.toggleBookmarkCategory(id);
     this.selectedEditIds.update(ids => {
@@ -475,14 +937,19 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     });
   }
 
-  removeBookmarkCategory(id: number, event: Event): void {
+  async removeBookmarkCategory(id: number, event: Event): Promise<void> {
     event.stopPropagation();
-    this.bookmarkCategories.update(cats => cats.filter(c => c.id !== id));
-    this.selectedEditIds.update(ids => {
-      const next = new Set(ids);
-      next.delete(id);
-      return next;
-    });
+    try {
+      await this.api.albums.delete(id);
+      this.bookmarkCategories.update(cats => cats.filter(c => c.id !== id));
+      this.selectedEditIds.update(ids => {
+        const next = new Set(ids);
+        next.delete(id);
+        return next;
+      });
+    } catch (e) {
+      console.error('앨범 삭제 실패:', e);
+    }
   }
 
   toggleBookmarkCategory(id: number): void {
@@ -495,26 +962,110 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.newCategoryName = (event.target as HTMLInputElement).value;
   }
 
-  addNewCategory(): void {
-    const name = this.newCategoryName.trim() || `새 카테고리 ${this.bookmarkCategories().length + 1}`;
-    this.bookmarkCategories.update(cats => [
-      ...cats,
-      { id: Date.now(), name, count: 0, selected: true, visibility: 'public' as const, thumbnail: 'linear-gradient(135deg, #3F3F46, #52525B)' }
-    ]);
+  /* 인라인 새 카테고리 추가 */
+  isAddingNewCategory = signal(false);
+
+  startAddCategory(): void {
+    this.newCategoryName = '';
+    this.isAddingNewCategory.set(true);
+  }
+
+  cancelAddCategory(): void {
+    this.isAddingNewCategory.set(false);
     this.newCategoryName = '';
   }
 
-  confirmBookmark(): void {
-    const selected = this.bookmarkCategories().filter(c => c.selected);
-    console.log('책갈피 추가:', selected.map(c => c.name));
-    this.bookmarkSaved.set(true);
-    this.isBookmarked.set(true);
-    this.closeBookmarkModal();
+  async confirmAddCategory(): Promise<void> {
+    const name = this.newCategoryName.trim();
+    if (!name) { this.cancelAddCategory(); return; }
+    try {
+      const created = await this.api.albums.create({ name, type: 'BOOKMARK' });
+      this.bookmarkCategories.update(cats => [
+        ...cats,
+        { id: created.id, name: created.name, count: 0, selected: true, visibility: 'public' as const, thumbnail: 'linear-gradient(135deg, #3F3F46, #52525B)' }
+      ]);
+    } catch (e) {
+      console.error('카테고리 생성 실패:', e);
+    }
+    this.cancelAddCategory();
+  }
+
+  /* 인라인 이름 변경 */
+  editingCategoryId = signal<number | null>(null);
+  editingCategoryName = signal('');
+
+  startRenameCategory(id: number, event: Event): void {
+    event.stopPropagation();
+    const cat = this.bookmarkCategories().find(c => c.id === id);
+    if (!cat) return;
+    this.editingCategoryId.set(id);
+    this.editingCategoryName.set(cat.name);
+  }
+
+  onEditCategoryNameInput(event: Event): void {
+    this.editingCategoryName.set((event.target as HTMLInputElement).value);
+  }
+
+  cancelRenameCategory(): void {
+    this.editingCategoryId.set(null);
+    this.editingCategoryName.set('');
+  }
+
+  async confirmRenameCategory(): Promise<void> {
+    const id = this.editingCategoryId();
+    const name = this.editingCategoryName().trim();
+    if (!id || !name) { this.cancelRenameCategory(); return; }
+    try {
+      await this.api.albums.update(id, { name });
+      this.bookmarkCategories.update(cats =>
+        cats.map(c => c.id === id ? { ...c, name } : c)
+      );
+    } catch (e) {
+      console.error('카테고리 이름 변경 실패:', e);
+    }
+    this.cancelRenameCategory();
+  }
+
+  async confirmBookmark(): Promise<void> {
+    const contentId = Number(this.contentId);
+    const categories = this.bookmarkCategories();
+    const selected = categories.filter(c => c.selected);
+    const unselected = categories.filter(c => !c.selected);
+
+    try {
+      // 선택된 앨범에 콘텐츠 추가
+      for (const cat of selected) {
+        try {
+          await this.api.albums.addContent(cat.id, contentId);
+        } catch { /* 이미 추가됨 */ }
+      }
+      // 선택 해제된 앨범에서 콘텐츠 제거
+      for (const cat of unselected) {
+        try {
+          await this.api.albums.removeContent(cat.id, contentId);
+        } catch { /* 이미 제거됨 */ }
+      }
+
+      this.bookmarkedAlbumIds = selected.map(c => c.id);
+      this.isBookmarked.set(selected.length > 0);
+      this.bookmarkSaved.set(true);
+      this.closeBookmarkModal();
+    } catch (e) {
+      console.error('책갈피 저장 실패:', e);
+    }
   }
 
   onBookmarkOverlayClick(event: Event): void {
     if ((event.target as HTMLElement).classList.contains('bm-overlay')) {
       this.closeBookmarkModal();
     }
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  scrollToBottom(): void {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
 }

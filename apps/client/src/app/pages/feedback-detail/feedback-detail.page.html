@@ -56,6 +56,7 @@
       <!-- 제목 + 더보기 -->
       <div class="flex justify-between items-start w-full gap-2.5">
         <h2 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-800 m-0 flex-1 min-w-0 break-words">{{ assignmentTitle() }}</h2>
+        @if (isAuthor() || isInstructor()) {
         <div class="sd-more-wrap">
           <button class="sd-more-btn" aria-label="더보기" (click)="toggleMore()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
@@ -67,11 +68,17 @@
           @if (isMoreOpen()) {
             <div class="sd-more-backdrop" (click)="closeMore()" (keydown.escape)="closeMore()" aria-hidden="true"></div>
             <div class="sd-more-dropdown" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-              <button class="sd-more-item" (click)="onEdit()">수정</button>
-              <button class="sd-more-item" (click)="onDelete()">삭제</button>
+              @if (isAuthor()) {
+                <button class="sd-more-item" (click)="onEdit()">수정</button>
+                <button class="sd-more-item" (click)="onDelete()">삭제</button>
+              }
+              @if (isInstructor()) {
+                <button class="sd-more-item" (click)="onRegisterFeedback()">피드백 등록</button>
+              }
             </div>
           }
         </div>
+        }
       </div>
 
       <!-- 구분선 -->
@@ -96,9 +103,9 @@
           <div class="sd-materials-body">
             <div class="flex flex-wrap gap-3">
               @for (file of learningFiles(); track file.name) {
-                <div class="sd-file-chip">
+                <div class="sd-file-chip" (click)="downloadFile(file)" style="cursor: pointer;">
                   <span class="sd-file-name">{{ file.name }}</span>
-                  <button class="sd-file-download" aria-label="다운로드">
+                  <button class="sd-file-download" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
@@ -125,10 +132,15 @@
         <!-- 댓글 입력 -->
         <div class="flex flex-col gap-3">
           <div class="flex items-center gap-2">
-            <div class="sd-avatar">
-              <span>N</span>
-            </div>
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">newon</span>
+            @if (currentUserImage()) {
+              <img [src]="currentUserImage()" [alt]="currentUserName()"
+                   class="w-8 h-8 rounded-full object-cover border border-[#E5E7EB] shrink-0" />
+            } @else {
+              <div class="sd-avatar">
+                <span>{{ currentUserInitial() }}</span>
+              </div>
+            }
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">{{ currentUserName() }}</span>
           </div>
           <div class="sd-comment-input-wrap">
             <textarea class="sd-comment-textarea" placeholder="댓글을 입력해주세요." rows="3" (input)="onCommentInput($event)"></textarea>

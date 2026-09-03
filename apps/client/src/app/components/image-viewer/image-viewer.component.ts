@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 export interface ViewerImage {
   gradient: string;
   url?: string;
+  markers?: { rank: number; top: number; left: number }[];
 }
 
 @Component({
@@ -16,6 +17,7 @@ export interface ViewerImage {
 export class ImageViewerComponent implements OnChanges {
   @Input() images: ViewerImage[] = [];
   @Input() isOpen = false;
+  @Input() startPage = 1;
   @Input() pageLabel = '회';
   @Output() closed = new EventEmitter<void>();
 
@@ -27,7 +29,7 @@ export class ImageViewerComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
-      this.currentPage.set(1);
+      this.currentPage.set(this.startPage || 1);
       document.body.style.overflow = 'hidden';
     }
     if (changes['isOpen'] && !this.isOpen) {

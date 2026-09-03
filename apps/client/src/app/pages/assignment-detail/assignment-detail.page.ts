@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface LearningFile {
   name: string;
@@ -51,6 +52,34 @@ export class AssignmentDetailPage implements OnInit {
 
   learningFiles = signal<LearningFile[]>([]);
   submissions = signal<Submission[]>([]);
+  showAllSubmissions = signal(false);
+
+  readonly SUBMISSION_LIMIT = 4;
+
+  visibleSubmissions = computed(() => {
+    const all = this.submissions();
+    if (this.showAllSubmissions()) return all;
+
+    // parent 그룹 단위로 제한 (parent + 자식 피드백을 하나의 그룹으로)
+    let parentCount = 0;
+    let cutIndex = all.length;
+    for (let i = 0; i < all.length; i++) {
+      if (!all[i].isReply) {
+        parentCount++;
+        if (parentCount > this.SUBMISSION_LIMIT) {
+          cutIndex = i;
+          break;
+        }
+      }
+    }
+    return all.slice(0, cutIndex);
+  });
+
+  hasMoreSubmissions = computed(() => {
+    const all = this.submissions();
+    const parentCount = all.filter(s => !s.isReply).length;
+    return !this.showAllSubmissions() && parentCount > this.SUBMISSION_LIMIT;
+  });
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
@@ -92,7 +121,8 @@ export class AssignmentDetailPage implements OnInit {
   private async loadSubmissions(assignmentId: number): Promise<void> {
     try {
       const list: any[] = await this.api.submissions.findByAssignment(assignmentId);
-      this.submissions.set(list.map((s: any) => ({
+
+      const toItem = (s: any) => ({
         id: s.id,
         title: s.title,
         badge: s.type === 'FEEDBACK' ? '피드백' as const : '과제제출' as const,
@@ -102,7 +132,31 @@ export class AssignmentDetailPage implements OnInit {
         commentCount: s._count?.comments || 0,
         isReply: !!s.parentId,
         isInstructor: s.author?.role === 'INSTRUCTOR',
-      })));
+        parentId: s.parentId || null,
+        createdAt: s.createdAt,
+      });
+
+      // parent(과제제출)와 children(피드백)을 그룹핑
+      const parents = list.filter(s => !s.parentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const childrenMap = new Map<number, any[]>();
+      list.filter(s => s.parentId).forEach(s => {
+        const arr = childrenMap.get(s.parentId) || [];
+        arr.push(s);
+        childrenMap.set(s.parentId, arr);
+      });
+
+      // parent → 해당 feedback 순서로 정렬
+      const grouped: any[] = [];
+      for (const parent of parents) {
+        grouped.push(toItem(parent));
+        const children = (childrenMap.get(parent.id) || [])
+          .sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        for (const child of children) {
+          grouped.push(toItem(child));
+        }
+      }
+
+      this.submissions.set(grouped);
     } catch (err) {
       console.error('제출 목록 로드 실패:', err);
     }
@@ -168,5 +222,13 @@ export class AssignmentDetailPage implements OnInit {
 
   navigateToSubmit(): void {
     this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', this.assignmentId, 'submit']);
+  }
+
+  toggleShowAll(): void {
+    this.showAllSubmissions.set(true);
+  }
+
+  downloadFile(file: LearningFile): void {
+    _downloadFile(file.url, file.name);
   }
 }

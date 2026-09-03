@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -71,7 +72,7 @@ export class LectureDetailPage implements OnInit {
           id: lecture.course.id,
           name: lecture.course.name || lecture.course.title || '',
           status: SM[lecture.course.status] || lecture.course.status || '',
-          createdAt: lecture.course.createdAt ? new Date(lecture.course.createdAt).toLocaleString('ko-KR') : '',
+          createdAt: lecture.course.createdAt ? formatDate(lecture.course.createdAt) : '',
         });
       }
     } catch (err) { console.error('강의 로드 실패:', err); }

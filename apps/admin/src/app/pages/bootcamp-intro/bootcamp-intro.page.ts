@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, computed, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -95,7 +96,7 @@ export class BootcampIntroPage implements OnInit {
         header: b.header,
         content: b.content,
         link: b.link || '',
-        createdAt: new Date(b.createdAt).toLocaleString('ko-KR'),
+        createdAt: formatDate(b.createdAt),
         _raw: b,
       })));
     } catch (e) {
@@ -175,7 +176,7 @@ export class BootcampIntroPage implements OnInit {
       this.posterData.set(data.map(p => ({
         id: p.id,
         image: p.imageUrl || '',
-        createdAt: new Date(p.createdAt).toLocaleString('ko-KR'),
+        createdAt: formatDate(p.createdAt),
         _raw: p,
       })));
     } catch (e) {
@@ -202,7 +203,7 @@ export class BootcampIntroPage implements OnInit {
         logo: p.logoUrl || '',
         name: p.name,
         link: p.link || '',
-        createdAt: new Date(p.createdAt).toLocaleString('ko-KR'),
+        createdAt: formatDate(p.createdAt),
         _raw: p,
       })));
     } catch (e) {
@@ -557,6 +558,11 @@ export class BootcampIntroPage implements OnInit {
     link: '',
   });
 
+  bannerContextMenuFn = (row: any): string[] => {
+    const isVisible = row.status === '노출';
+    return [isVisible ? '숨김' : '노출', '수정', '삭제'];
+  };
+
   onBannerContextMenu(event: { action: string; row: any }): void {
     if (event.action === '수정') {
       this.openBannerDrawer(event.row);
@@ -564,6 +570,8 @@ export class BootcampIntroPage implements OnInit {
       this.deleteBanner(event.row._raw?.id || event.row.id);
     } else if (event.action === '숨김') {
       this.toggleBannerStatus(event.row._raw?.id || event.row.id, 'HIDDEN');
+    } else if (event.action === '노출') {
+      this.toggleBannerStatus(event.row._raw?.id || event.row.id, 'VISIBLE');
     }
   }
 

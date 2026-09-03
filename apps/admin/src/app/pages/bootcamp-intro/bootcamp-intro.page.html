@@ -86,7 +86,7 @@
         <adm-data-grid
           [columns]="bannerColumns"
           [data]="bannerData()"
-          [contextMenuItems]="['숨김', '수정', '삭제']"
+          [contextMenuItemsFn]="bannerContextMenuFn"
           (contextMenuSelect)="onBannerContextMenu($event)"
           searchPlaceholder="검색어를 입력하세요">
           <button gridActions

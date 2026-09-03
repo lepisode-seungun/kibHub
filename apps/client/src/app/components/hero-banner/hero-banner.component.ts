@@ -31,10 +31,15 @@ export class HeroBannerComponent {
   /** 외부에서 전달받는 카드 데이터 (최대 6장) */
   cards = input<FloatingCard[]>([]);
 
-  /** 외부 카드만 사용, 없으면 빈 배열. 이미지 없으면 테마 그라데이션 할당 */
+  /** 외부 카드만 사용, 없으면 빈 배열.
+   *  반응형에서 숨겨지지 않는 위치(1, 4)를 먼저 채움 */
+  private readonly positionOrder = [1, 4, 0, 3, 2, 5];
+
   floatingCards = computed(() => {
-    return this.cards().slice(0, 6).map((c, i) => ({
+    const raw = this.cards().slice(0, 6);
+    return raw.map((c, i) => ({
       ...c,
+      posIndex: this.positionOrder[i] ?? i,
       thumbnailGradient: c.thumbnailGradient || THEME_GRADIENTS[i % THEME_GRADIENTS.length],
     }));
   });

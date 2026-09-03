@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -104,7 +105,7 @@ export class AssignmentDetailPage implements OnInit {
           id: assignment.course.id,
           name: assignment.course.name || assignment.course.title || '',
           status: SM[assignment.course.status] || assignment.course.status || '',
-          createdAt: assignment.course.createdAt ? new Date(assignment.course.createdAt).toLocaleString('ko-KR') : '',
+          createdAt: assignment.course.createdAt ? formatDate(assignment.course.createdAt) : '',
         });
       }
     } catch (err) {
@@ -137,7 +138,7 @@ export class AssignmentDetailPage implements OnInit {
           comments: s._count?.comments || 0,
           permission: roleMap[s.author?.role] || '일반',
           author: s.author?.name || s.author?.nickname || '',
-          createdAt: new Date(s.createdAt).toLocaleString('ko-KR'),
+          createdAt: formatDate(s.createdAt),
         };
       });
     } catch (err) {

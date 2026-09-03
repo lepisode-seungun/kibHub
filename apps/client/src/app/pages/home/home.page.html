@@ -14,14 +14,18 @@
         </button>
       }
       <div class="cards-track" #track>
-        @for (card of commentCards; track card.id) {
-          <article class="comment-card">
+        @for (card of commentCards(); track card.id) {
+          <article class="comment-card" [routerLink]="['/content', card.contentId || card.id]" style="cursor: pointer">
             <div class="card-content">
               <div class="flex justify-between items-center w-full">
                 <div class="flex items-center gap-[18px]">
-                  <div class="w-[42px] h-[42px] rounded-full border border-white/25 bg-gradient-to-br from-[#A148FF] to-[#6C2BD9] flex items-center justify-center shrink-0">
-                    <span class="font-suit font-semibold text-base text-white">{{ card.userName.charAt(0) }}</span>
-                  </div>
+                  @if (card.profileImage) {
+                    <img [src]="card.profileImage" alt="프로필" class="w-[42px] h-[42px] rounded-full border border-white/25 shrink-0 object-cover" />
+                  } @else {
+                    <div class="w-[42px] h-[42px] rounded-full border border-white/25 bg-gradient-to-br from-[#A148FF] to-[#6C2BD9] flex items-center justify-center shrink-0">
+                      <span class="font-suit font-semibold text-base text-white">{{ card.userName.charAt(0) }}</span>
+                    </div>
+                  }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -40,7 +44,7 @@
               </div>
             </div>
             <div class="card-thumbnail">
-              <div class="thumbnail-image" [style.background]="card.thumbnailGradient"></div>
+              <div class="thumbnail-image" [style.background]="card.thumbnailUrl ? 'url(' + card.thumbnailUrl + ') center/cover no-repeat' : card.thumbnailGradient"></div>
               <div class="thumbnail-overlay-top"></div>
               <div class="thumbnail-overlay-left"></div>
             </div>
@@ -103,9 +107,13 @@
         </button>
 
         <!-- Sub Category Buttons -->
-        @for (sub of subCategories; track sub.id) {
-          <button class="sub-category-btn">
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ sub.label }}{{ sub.count }}</span>
+        @for (sub of subCategories(); track sub.id) {
+          <button class="sub-category-btn"
+            [class.sub-category-btn-active]="activeSubCategory() === sub.id"
+            (click)="selectSubCategory(sub.id)">
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight"
+              [class.text-zinc-500]="activeSubCategory() !== sub.id"
+              [class.text-white]="activeSubCategory() === sub.id">{{ sub.label }}</span>
           </button>
         }
       </div>
@@ -125,20 +133,22 @@
       <!-- Content Grid -->
       <div class="content-grid">
         @for (card of filteredContentCards(); track card.id) {
-          <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" style="cursor:pointer">
+          <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), url(' + card.thumbnailUrl + ')' : 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
             <div class="gallery-card-inner">
               <!-- Top: User + Rank -->
               <div class="flex justify-between items-start w-full">
                 <div class="flex items-center gap-1.5">
-                  <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                  @if (card.profileImage) {
+                    <img [src]="card.profileImage" alt="프로필" class="w-6 h-6 rounded-xl shrink-0 object-cover" />
+                  } @else {
+                    <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                  }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
                 </div>
-                @if (card.rank) {
-                  <div class="relative flex items-start justify-center w-[38px] h-[54px]">
-                    <img class="w-[38px] h-[54px]" src="rank-marker.svg" alt="" />
-                    <span class="absolute top-0 left-0 w-8 h-8 flex items-center justify-center font-suit font-semibold text-base leading-6 tracking-tight text-white pointer-events-none">{{ card.rank }}</span>
-                  </div>
-                }
+                <div class="relative flex items-start justify-center w-[38px] h-[54px]">
+                  <img class="w-[38px] h-[54px]" src="/icons/marker-active.svg" alt="" />
+                  <span class="absolute top-0 left-0 w-8 h-8 flex items-center justify-center font-suit font-semibold text-base leading-6 tracking-tight text-white pointer-events-none">{{ card.feedbackCount }}</span>
+                </div>
               </div>
               <!-- Bottom: Title + Feedback -->
               <div class="flex flex-col items-start gap-3 w-full">
@@ -262,19 +272,21 @@
   <section class="more-content" id="more-content">
     <div class="content-grid">
       @for (card of filteredMoreContentCards(); track card.id) {
-        <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" style="cursor:pointer">
+        <article class="gallery-card" [routerLink]="['/content', card.id]" [style.background]="card.thumbnailUrl ? 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), url(' + card.thumbnailUrl + ')' : 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%), ' + card.thumbnailGradient" [style.background-size]="'cover'" [style.background-position]="'center'" style="cursor:pointer">
           <div class="gallery-card-inner">
             <div class="flex justify-between items-start w-full">
               <div class="flex items-center gap-1.5">
-                <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                @if (card.profileImage) {
+                  <img [src]="card.profileImage" alt="프로필" class="w-6 h-6 rounded-xl shrink-0 object-cover" />
+                } @else {
+                  <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                }
                 <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
               </div>
-              @if (card.rank) {
-                <div class="relative flex items-start justify-center w-[38px] h-[54px]">
-                  <img class="w-[38px] h-[54px]" src="rank-marker.svg" alt="" />
-                  <span class="absolute top-0 left-0 w-8 h-8 flex items-center justify-center font-suit font-semibold text-base leading-6 tracking-tight text-white pointer-events-none">{{ card.rank }}</span>
-                </div>
-              }
+              <div class="relative flex items-start justify-center w-[38px] h-[54px]">
+                <img class="w-[38px] h-[54px]" src="/icons/marker-active.svg" alt="" />
+                <span class="absolute top-0 left-0 w-8 h-8 flex items-center justify-center font-suit font-semibold text-base leading-6 tracking-tight text-white pointer-events-none">{{ card.feedbackCount }}</span>
+              </div>
             </div>
             <div class="flex flex-col items-start gap-3 w-full">
               <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0 overflow-hidden text-ellipsis whitespace-nowrap w-full">{{ card.title }}</h3>

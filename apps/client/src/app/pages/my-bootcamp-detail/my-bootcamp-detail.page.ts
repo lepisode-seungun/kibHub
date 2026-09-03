@@ -48,7 +48,7 @@ export class MyBootcampDetailPage implements OnInit {
   courseSections = signal<CourseSection[]>([]);
 
   /* ===== 강의 탭 ===== */
-  lectureFilterChips = ['전체', '진행중', '완료', '미수강 강의', '수강 완료'];
+  lectureFilterChips = signal<string[]>(['전체']);
   activeLectureFilter = signal('전체');
   lectureSearchText = '';
 
@@ -70,14 +70,8 @@ export class MyBootcampDetailPage implements OnInit {
   get filteredLectures() {
     const filter = this.activeLectureFilter();
     let items = this.lectureCards();
-    if (filter === '진행중') {
-      items = items.filter(i => i.status === 'progress');
-    } else if (filter === '완료') {
-      items = items.filter(i => i.status === 'complete');
-    } else if (filter === '미수강 강의') {
-      items = items.filter(i => i.status === 'progress');
-    } else if (filter === '수강 완료') {
-      items = items.filter(i => i.status === 'complete');
+    if (filter !== '전체') {
+      items = items.filter(i => i.category === filter);
     }
     if (this.lectureSearchText.trim()) {
       const q = this.lectureSearchText.trim().toLowerCase();
@@ -95,7 +89,7 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   /* ===== 과제 탭 ===== */
-  assignmentFilterChips = ['전체', '과정1. 웹툰의 기초', '캐릭터 모작하기.인체학 강좌', '미제출 과제', '제출한 과제'];
+  assignmentFilterChips = signal<string[]>(['전체']);
   activeAssignmentFilter = signal('전체');
   assignmentSearchText = '';
 
@@ -104,11 +98,7 @@ export class MyBootcampDetailPage implements OnInit {
   get filteredAssignments() {
     const filter = this.activeAssignmentFilter();
     let items = this.assignmentCards();
-    if (filter === '미제출 과제') {
-      items = items.filter(i => !i.submitted);
-    } else if (filter === '제출한 과제') {
-      items = items.filter(i => i.submitted);
-    } else if (filter !== '전체') {
+    if (filter !== '전체') {
       items = items.filter(i => i.course === filter);
     }
     if (this.assignmentSearchText.trim()) {
@@ -169,6 +159,11 @@ export class MyBootcampDetailPage implements OnInit {
         try {
           const applicants = await this.api.applicants.findByUser(user.id);
           const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
+          // 내보내기(REJECTED)된 수강생은 접근 차단
+          if (myApp?.status === 'REJECTED') {
+            this.router.navigate(['/my-bootcamp']);
+            return;
+          }
           this.bootcampStatus.set(myApp
             ? (this.STATUS_LABEL[myApp.status] || myApp.status)
             : (this.STATUS_LABEL[bootcamp.status] || bootcamp.status));
@@ -218,6 +213,34 @@ export class MyBootcampDetailPage implements OnInit {
       this.lectureCards.set(allLectures);
       this.assignmentCards.set(allAssignments);
       this.courseSections.set([...sections]); // trigger re-render
+
+      // 강의 탭 필터 칩: 서버에서 카테고리 목록 가져오기
+      try {
+        const categories = await this.api.lectures.findCategories(bootcampId);
+        this.lectureFilterChips.set(['전체', ...categories]);
+      } catch {
+        // fallback: 로드된 강의 데이터에서 추출
+        const cats = [...new Set(allLectures.map((l: any) => l.category).filter((c: string) => c))];
+        this.lectureFilterChips.set(['전체', ...cats]);
+      }
+
+      // 과제 탭 필터 칩: 과정명 기반
+      const courseNames = sections.map(s => s.title).filter(t => t);
+      this.assignmentFilterChips.set(['전체', ...courseNames]);
+
+      // 공지사항 로드
+      try {
+        const noticeList: any[] = await this.api.notices.findByBootcamp(bootcampId);
+        this.notices.set(noticeList.map((n: any) => ({
+          id: n.id,
+          title: n.title || '',
+          description: n.body || '',
+          date: new Date(n.createdAt).toLocaleDateString('ko-KR'),
+          isPinned: !!n.pinned,
+        })));
+      } catch {
+        this.notices.set([]);
+      }
     } catch (err) {
       console.error('부트캠프 데이터 로드 실패:', err);
     }
@@ -296,7 +319,7 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   /* ===== 공지사항 탭 ===== */
-  notices: Notice[] = [];
+  notices = signal<Notice[]>([]);
 
   currentNoticePage = signal(1);
   totalNoticePages = 5;

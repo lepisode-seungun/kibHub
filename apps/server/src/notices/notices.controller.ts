@@ -1,8 +1,9 @@
-﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { NoticesService } from './notices.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateNoticeDto } from '@kibhub/shared';
+import { Request } from 'express';
 
 @ApiTags('notices')
 @Controller()
@@ -10,8 +11,8 @@ export class NoticesController {
   constructor(@Inject(NoticesService) private noticesService: NoticesService) {}
 
   @Get('notices')
-  findAll(@Query() query: { search?: string; type?: string; page?: string; limit?: string }) {
-    return this.noticesService.findAll(query);
+  findAll(@Query() query: { search?: string; type?: string; page?: string; limit?: string; excludeHidden?: string }) {
+    return this.noticesService.findAll({ ...query, excludeHidden: query.excludeHidden === 'true' });
   }
 
   @Get('notices/:id')
@@ -21,8 +22,8 @@ export class NoticesController {
 
   @Post('notices')
   @UseGuards(AuthGuard)
-  create(@Body() data: CreateNoticeDto) {
-    return this.noticesService.create(data);
+  create(@Req() req: Request & { userId: number }, @Body() data: CreateNoticeDto) {
+    return this.noticesService.create({ ...data, authorId: req.userId });
   }
 
   @Patch('notices/:id')
@@ -39,13 +40,13 @@ export class NoticesController {
 
   // 부트캠프 공지
   @Get('bootcamps/:bootcampId/notices')
-  findByBootcamp(@Param('bootcampId', ParseIntPipe) bootcampId: number, @Query() query: { search?: string }) {
-    return this.noticesService.findAll({ ...query, type: 'BOOTCAMP', bootcampId });
+  findByBootcamp(@Param('bootcampId', ParseIntPipe) bootcampId: number, @Query() query: { search?: string; excludeHidden?: string }) {
+    return this.noticesService.findAll({ ...query, type: 'BOOTCAMP', bootcampId, excludeHidden: query.excludeHidden === 'true' });
   }
 
   @Post('bootcamps/:bootcampId/notices')
   @UseGuards(AuthGuard)
-  createForBootcamp(@Param('bootcampId', ParseIntPipe) bootcampId: number, @Body() data: CreateNoticeDto) {
-    return this.noticesService.create({ ...data, type: 'BOOTCAMP', bootcampId });
+  createForBootcamp(@Req() req: Request & { userId: number }, @Param('bootcampId', ParseIntPipe) bootcampId: number, @Body() data: CreateNoticeDto) {
+    return this.noticesService.create({ ...data, type: 'BOOTCAMP', bootcampId, authorId: req.userId });
   }
 }

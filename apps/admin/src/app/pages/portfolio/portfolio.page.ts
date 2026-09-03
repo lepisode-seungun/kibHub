@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -13,7 +14,7 @@ function toPortfolioRow(p: Portfolio): PortfolioRow {
     thumbnail: p.thumbnail || '',
     name: p.userName,
     bootcampName: p.bootcampName,
-    createdAt: new Date(p.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(p.createdAt),
     launchPlatform: p.launchPlatform || '',
   };
 }

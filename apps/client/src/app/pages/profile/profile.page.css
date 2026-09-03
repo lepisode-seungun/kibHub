@@ -1,9 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #151419;
+}
+
 /* ===== 프로필 페이지 ===== */
 .pf-wrap {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
+  flex: 1;
   background: #151419;
   position: relative;
 }
@@ -356,6 +364,7 @@
   padding: 60px 200px 60px 600px;
   width: 100%;
   box-sizing: border-box;
+  flex: 1;
 }
 
 /* ===== 앨범 카드 슬라이더 ===== */
@@ -625,6 +634,8 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  position: relative;
+  z-index: 2;
 }
 
 /* content-title -> TW inline */
@@ -788,32 +799,43 @@
 }
 
 .pf-card-comment {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5.6px 8.4px;
-  background: #A148FF;
-  border-radius: 999px;
-  position: relative;
-}
-
-.pf-card-comment::after {
-  content: '';
   position: absolute;
-  bottom: -5px;
-  left: 40%;
-  width: 8px;
-  height: 8px;
-  background: #A148FF;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 4px 4px;
 }
 
-.pf-card-comment-count {
+.pf-card-comment-author {
   font-family: 'SUIT', sans-serif;
   font-weight: 700;
-  font-size: 14px;
-  line-height: 17px;
-  color: #FFFFFF;
+  font-size: 11px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #956DFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-card-comment-body {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.85);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pf-card-title {

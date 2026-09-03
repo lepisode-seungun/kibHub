@@ -500,6 +500,16 @@
   border-color: #71717A;
 }
 
+.sub-category-btn-active {
+  background: #7A48FF;
+  border-color: #7A48FF;
+}
+
+.sub-category-btn-active:hover {
+  background: #6B3DE8;
+  border-color: #6B3DE8;
+}
+
 /* ===== Content Grid ===== */
 /* [TW-KEEP] flex wrap grid */
 .content-grid {

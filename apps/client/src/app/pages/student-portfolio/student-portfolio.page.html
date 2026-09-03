@@ -26,29 +26,45 @@
       </div>
     </div>
 
-    <!-- 왼쪽 이미지 카드들 -->
+    <!-- 왼쪽 이미지 카드들 (동적) -->
     <div class="hero-cards hero-cards--left">
       <div class="flex flex-col gap-10 self-start">
-        <div class="hero-card opacity-20" style="background: linear-gradient(135deg, #3a2a5c, #1a1030);"></div>
-        <div class="hero-card opacity-60" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
-        <div class="hero-card opacity-20" style="background: linear-gradient(135deg, #4a2a6c, #1a1040);"></div>
+        @for (card of bannerLeftCol1(); track card.id; let i = $index) {
+          <div class="hero-card"
+               [class.opacity-20]="i === 0 || i === 2"
+               [class.opacity-60]="i === 1"
+               [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
+          </div>
+        }
       </div>
       <div class="flex flex-col gap-10 mt-[285px]">
-        <div class="hero-card" style="background: linear-gradient(135deg, #6a4a9c, #3a2a60);"></div>
-        <div class="hero-card opacity-60" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+        @for (card of bannerLeftCol2(); track card.id; let i = $index) {
+          <div class="hero-card"
+               [class.opacity-60]="i === 1"
+               [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
+          </div>
+        }
       </div>
     </div>
 
-    <!-- 오른쪽 이미지 카드들 -->
+    <!-- 오른쪽 이미지 카드들 (동적) -->
     <div class="hero-cards hero-cards--right">
       <div class="flex flex-col gap-10 mt-[81px]">
-        <div class="hero-card opacity-20" style="background: linear-gradient(135deg, #3a2a5c, #1a1030);"></div>
-        <div class="hero-card opacity-60" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
-        <div class="hero-card opacity-20" style="background: linear-gradient(135deg, #4a2a6c, #1a1040);"></div>
+        @for (card of bannerRightCol1(); track card.id; let i = $index) {
+          <div class="hero-card"
+               [class.opacity-20]="i === 0 || i === 2"
+               [class.opacity-60]="i === 1"
+               [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
+          </div>
+        }
       </div>
       <div class="flex flex-col gap-10 self-start">
-        <div class="hero-card opacity-60" style="background: linear-gradient(135deg, #6a4a9c, #3a2a60);"></div>
-        <div class="hero-card" style="background: linear-gradient(135deg, #5a3a8c, #2a1a50);"></div>
+        @for (card of bannerRightCol2(); track card.id; let i = $index) {
+          <div class="hero-card"
+               [class.opacity-60]="i === 0"
+               [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
+          </div>
+        }
       </div>
     </div>
 
@@ -73,10 +89,8 @@
         <div class="portfolio-row">
           @for (card of row; track card.id) {
             <article class="portfolio-card" [routerLink]="'/student-portfolio/' + card.id">
-              <div class="portfolio-thumb" [style.background]="card.thumbnail ? 'none' : card.gradient">
-                @if (card.thumbnail) {
-                  <img [src]="card.thumbnail" [alt]="card.workTitle" class="w-full h-full object-cover rounded-lg" />
-                }
+              <div class="portfolio-thumb"
+                   [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
               </div>
               <div class="flex flex-col gap-3 px-1">
                 <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ card.workTitle || card.bootcampName || '작품명' }}</span>

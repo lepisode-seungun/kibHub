@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -66,19 +67,19 @@ export class CourseDetailPage implements OnInit {
         id: c.id,
         status: STATUS_MAP[c.status] || c.status,
         name: c.name,
-        createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
+        createdAt: formatDate(c.createdAt),
       });
 
       // 강의 + 과제 합산 목록
       const rows: LectureAssignmentRow[] = [];
       if (c.lectures) {
         c.lectures.forEach((l: any) => {
-          rows.push({ id: l.id, type: '강의', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''), name: l.title, createdAt: new Date(l.createdAt).toLocaleString('ko-KR') });
+          rows.push({ id: l.id, type: '강의', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
         });
       }
       if (c.assignments) {
         c.assignments.forEach((a: Assignment) => {
-          rows.push({ id: a.id, type: '과제', thumbnail: '', name: a.title, createdAt: new Date(a.createdAt).toLocaleString('ko-KR') });
+          rows.push({ id: a.id, type: '과제', thumbnail: '', name: a.title, createdAt: formatDate(a.createdAt) });
         });
       }
       this.lectureData.set(rows);

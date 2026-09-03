@@ -14,6 +14,12 @@ export class BootcampsController {
     return this.bootcampsService.findAll(query);
   }
 
+  // 강사별 부트캠프 목록 (:id 보다 먼저 정의)
+  @Get('instructor/:userId')
+  findBootcampsByInstructor(@Param('userId', ParseIntPipe) userId: number) {
+    return this.bootcampsService.findBootcampsByInstructor(userId);
+  }
+
   // interview-settings 라우트를 :id 보다 먼저 정의 (라우트 우선순위)
   @Get(':id/interview-settings')
   getInterviewSettings(@Param('id', ParseIntPipe) id: number) {
@@ -50,5 +56,30 @@ export class BootcampsController {
   @UseGuards(AuthGuard)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.bootcampsService.delete(id);
+  }
+
+  // ===== 강사 관리 =====
+
+  @Get(':id/instructors')
+  findInstructors(@Param('id', ParseIntPipe) id: number) {
+    return this.bootcampsService.findInstructors(id);
+  }
+
+  @Post(':id/instructors')
+  @UseGuards(AuthGuard)
+  addInstructor(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { userId: number },
+  ) {
+    return this.bootcampsService.addInstructor(id, body.userId);
+  }
+
+  @Delete(':id/instructors/:userId')
+  @UseGuards(AuthGuard)
+  removeInstructor(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.bootcampsService.removeInstructor(id, userId);
   }
 }

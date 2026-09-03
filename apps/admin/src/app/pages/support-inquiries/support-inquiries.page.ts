@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -14,8 +15,15 @@ function toInquiryRow(i: Inquiry): InquiryRow {
     title: i.title,
     content: i.body,
     author: i.author?.nickname || i.author?.name || '',
-    createdAt: new Date(i.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(i.createdAt),
     reply: i.reply || '',
+    files: ((i as any).files || []).map((f: any) => ({
+      id: f.id,
+      name: f.name,
+      url: f.url,
+      size: f.size || 0,
+      mimeType: f.mimeType || '',
+    })),
   };
 }
 
@@ -126,5 +134,16 @@ export class SupportInquiriesPage implements OnInit {
   onDeleteCancel(): void {
     this.showDeleteDialog.set(false);
     this.deleteTarget.set(null);
+  }
+
+  downloadFile(file: { name: string; url: string }): void {
+    if (!file.url) return;
+    const a = document.createElement('a');
+    a.href = file.url;
+    a.download = file.name;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

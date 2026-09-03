@@ -4,15 +4,18 @@ import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
 import { SearchService } from '../../services/search.service';
 import { ApiService } from '../../services/api.service';
-import { Bootcamp, Content } from '@kibhub/shared';
+import { Bootcamp, Content, ContentCategory } from '@kibhub/shared';
 
 interface CommentCard {
   id: number;
   userName: string;
+  profileImage?: string;
   commentLikes: string;
   comment: string;
   postTitle: string;
   thumbnailGradient: string;
+  thumbnailUrl?: string;
+  contentId?: number;
 }
 
 interface CategoryTab {
@@ -24,10 +27,15 @@ interface CategoryTab {
 interface ContentCard {
   id: number;
   userName: string;
+  profileImage?: string;
   title: string;
+  type: string;
+  categoryName: string;
+  thumbnailUrl?: string;
   thumbnailGradient: string;
   rank: number | null;
   featured: boolean;
+  feedbackCount: number;
   comment?: string;
   commenter?: string;
   commentTime?: string;
@@ -36,6 +44,7 @@ interface ContentCard {
 interface MentorCard {
   id: number;
   userName: string;
+  profileImage?: string;
   comment: string;
   contentTitle: string;
   likes: string;
@@ -109,7 +118,7 @@ export class HomePage implements AfterViewInit, OnInit {
   ];
 
   ngOnInit(): void {
-    Promise.all([this.loadBootcamps(), this.loadContents()]).finally(() => {
+    Promise.all([this.loadBootcamps(), this.loadContents(), this.loadSubCategories(), this.loadRecentComments()]).finally(() => {
       this.isLoading.set(false);
     });
   }
@@ -133,46 +142,64 @@ export class HomePage implements AfterViewInit, OnInit {
   private async loadContents(): Promise<void> {
     try {
       const contents = await this.api.contents.findAll();
-      this.contentCards = contents.slice(0, 12).map((c, i) => ({
+      const mapCard = (c: Content, i: number): ContentCard => ({
         id: c.id,
         userName: c.author?.nickname || c.author?.name || 'user',
+        profileImage: (c.author as any)?.profileImage || '',
         title: c.title,
+        type: c.type,
+        categoryName: c.category?.name || '',
+        thumbnailUrl: c.thumbnail || undefined,
         thumbnailGradient: this.gradients[i % this.gradients.length],
+        rank: null,
+        featured: false,
+        feedbackCount: (c as any).feedbackCount || 0,
+      });
+      // 첫 12개는 갤러리
+      this.contentCards.set(contents.slice(0, 12).map((c, i) => ({
+        ...mapCard(c, i),
         rank: i < 4 ? i + 1 : null,
         featured: i === 2,
-      }));
+      })));
+      // 나머지는 More Content
+      this.moreContentCards.set(contents.slice(12).map((c, i) => mapCard(c, i + 12)));
     } catch (e) {
       console.error('콘텐츠 로드 실패:', e);
     }
   }
 
+  private async loadRecentComments(): Promise<void> {
+    try {
+      const comments = await this.api.comments.findRecent(10);
+      this.commentCards.set(comments.map((c: any, i: number) => ({
+        id: c.id,
+        contentId: c.content?.id || c.contentId,
+        userName: c.author?.nickname || c.author?.name || '익명',
+        profileImage: c.author?.profileImage || '',
+        commentLikes: String(c.likeCount || 0),
+        comment: c.body,
+        postTitle: c.content?.title || '',
+        thumbnailUrl: c.content?.thumbnail || undefined,
+        thumbnailGradient: this.gradients[i % this.gradients.length],
+      })));
+    } catch (e) {
+      console.error('최근 댓글 로드 실패:', e);
+    }
+  }
+
+  private async loadSubCategories(): Promise<void> {
+    try {
+      const cats = await this.api.contentCategories.findAll();
+      this.subCategories.set(cats.map(c => ({ id: String(c.id), label: c.name, count: 0 })));
+    } catch (e) {
+      console.error('카테고리 로드 실패:', e);
+    }
+  }
+
+
+
   /* ===== Recent Comments ===== */
-  commentCards: CommentCard[] = [
-    {
-      id: 1, userName: 'Newon', commentLikes: '1,320',
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      postTitle: '포스트 제목이 들어갑니다.',
-      thumbnailGradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    },
-    {
-      id: 2, userName: 'Newon', commentLikes: '1,320',
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      postTitle: '포스트 제목이 들어갑니다.',
-      thumbnailGradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    },
-    {
-      id: 3, userName: 'Newon', commentLikes: '1,320',
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      postTitle: '포스트 제목이 들어갑니다.',
-      thumbnailGradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    },
-    {
-      id: 4, userName: 'Newon', commentLikes: '1,320',
-      comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다.',
-      postTitle: '포스트 제목이 들어갑니다.',
-      thumbnailGradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    },
-  ];
+  commentCards = signal<CommentCard[]>([]);
 
   scrollLeft(): void {
     const el = this.track.nativeElement;
@@ -212,44 +239,54 @@ export class HomePage implements AfterViewInit, OnInit {
     { id: 'writing', label: '글', iconBg: '#7B7EDF' },
   ];
 
-  subCategories = [
-    { id: 'sub1', label: 'Category', count: 1 },
-    { id: 'sub2', label: 'Category', count: 2 },
-    { id: 'sub3', label: 'Category', count: 3 },
-    { id: 'sub4', label: 'Category', count: 4 },
-    { id: 'sub5', label: 'Category', count: 5 },
-    { id: 'sub6', label: 'Category', count: 6 },
-    { id: 'sub7', label: 'Category', count: 7 },
-  ];
+  subCategories = signal<{ id: string; label: string; count: number }[]>([]);
+  activeSubCategory = signal('');
 
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
 
-  contentCards: ContentCard[] = [];
+  contentCards = signal<ContentCard[]>([]);
 
   selectCategory(id: string): void {
-    this.activeCategory.set(id);
+    this.activeCategory.set(this.activeCategory() === id ? 'all' : id);
+    this.activeSubCategory.set('');
   }
 
-  /** 검색어 기반 필터링 */
-  filteredContentCards = computed(() => {
-    const q = this.searchQuery().toLowerCase().trim();
-    if (!q) return this.contentCards;
-    return this.contentCards.filter(c =>
-      c.title.toLowerCase().includes(q) ||
-      c.userName.toLowerCase().includes(q) ||
-      (c.comment && c.comment.toLowerCase().includes(q))
-    );
-  });
+  selectSubCategory(id: string): void {
+    this.activeSubCategory.set(this.activeSubCategory() === id ? '' : id);
+  }
 
-  filteredMoreContentCards = computed(() => {
+  private typeMap: Record<string, string> = {
+    'webtoon': 'PORTFOLIO',
+    'art': 'PORTFOLIO',
+    'writing': 'REVIEW',
+  };
+
+  private filterCards(cards: ContentCard[]): ContentCard[] {
+    let result = cards;
+    const cat = this.activeCategory();
+    if (cat !== 'all') {
+      const type = this.typeMap[cat];
+      if (type) result = result.filter(c => c.type === type);
+    }
+    const sub = this.activeSubCategory();
+    if (sub) {
+      const subCat = this.subCategories().find(s => s.id === sub);
+      if (subCat) result = result.filter(c => c.categoryName === subCat.label);
+    }
     const q = this.searchQuery().toLowerCase().trim();
-    if (!q) return this.moreContentCards;
-    return this.moreContentCards.filter(c =>
-      c.title.toLowerCase().includes(q) ||
-      c.userName.toLowerCase().includes(q) ||
-      (c.comment && c.comment.toLowerCase().includes(q))
-    );
-  });
+    if (q) {
+      result = result.filter(c =>
+        c.title.toLowerCase().includes(q) ||
+        c.userName.toLowerCase().includes(q) ||
+        (c.comment && c.comment.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }
+
+  filteredContentCards = computed(() => this.filterCards(this.contentCards()));
+
+  filteredMoreContentCards = computed(() => this.filterCards(this.moreContentCards()));
 
   /* ===== Best Mentor ===== */
   mentorCards: MentorCard[] = [
@@ -278,5 +315,5 @@ export class HomePage implements AfterViewInit, OnInit {
   }
 
   /* ===== More Content ===== */
-  moreContentCards: ContentCard[] = [];
+  moreContentCards = signal<ContentCard[]>([]);
 }

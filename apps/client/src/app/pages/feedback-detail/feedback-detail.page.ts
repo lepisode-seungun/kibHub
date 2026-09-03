@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface LearningFile {
   name: string;
@@ -62,6 +63,11 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
 
   newComment = signal('');
 
+  // 현재 로그인 유저 프로필
+  currentUserName = signal('');
+  currentUserInitial = signal('');
+  currentUserImage = signal('');
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
@@ -100,6 +106,12 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
       const user = this.authService.currentUser();
       this.isAuthor.set(user?.id === s.authorId);
       this.isInstructor.set(user?.role === 'INSTRUCTOR' || user?.role === 'ADMIN');
+      // 현재 유저 프로필 설정
+      if (user) {
+        this.currentUserName.set(user.name || user.nickname || '');
+        this.currentUserInitial.set((user.name || user.nickname || 'U').charAt(0).toUpperCase());
+        this.currentUserImage.set(user.profileImage || '');
+      }
       this.cdr.markForCheck();
     } catch (err) {
       console.error('피드백 상세 로드 실패:', err);
@@ -164,12 +176,6 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
     }
   }
 
-  onRegisterFeedback(): void {
-    this.closeMore();
-    this.router.navigate([
-      '/my-bootcamp', this.bootcampId, 'feedback', this.feedbackId, 'register',
-    ]);
-  }
 
   onCommentInput(event: Event): void {
     this.newComment.set((event.target as HTMLTextAreaElement).value);
@@ -191,5 +197,16 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
     } catch (err) {
       console.error('댓글 등록 실패:', err);
     }
+  }
+
+  onRegisterFeedback(): void {
+    this.closeMore();
+    this.router.navigate([
+      '/my-bootcamp', this.bootcampId, 'submission', this.feedbackId, 'feedback-register',
+    ]);
+  }
+
+  downloadFile(file: LearningFile): void {
+    _downloadFile(file.url, file.name);
   }
 }

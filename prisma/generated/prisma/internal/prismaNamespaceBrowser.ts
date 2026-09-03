@@ -54,9 +54,13 @@ export const ModelName = {
   Applicant: 'Applicant',
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
+  BootcampInstructor: 'BootcampInstructor',
   Content: 'Content',
   ContentCategory: 'ContentCategory',
+  Album: 'Album',
+  AlbumContent: 'AlbumContent',
   Comment: 'Comment',
+  CommentLike: 'CommentLike',
   Report: 'Report',
   Course: 'Course',
   Lecture: 'Lecture',
@@ -148,6 +152,16 @@ export const BootcampScalarFieldEnum = {
 export type BootcampScalarFieldEnum = (typeof BootcampScalarFieldEnum)[keyof typeof BootcampScalarFieldEnum]
 
 
+export const BootcampInstructorScalarFieldEnum = {
+  id: 'id',
+  bootcampId: 'bootcampId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type BootcampInstructorScalarFieldEnum = (typeof BootcampInstructorScalarFieldEnum)[keyof typeof BootcampInstructorScalarFieldEnum]
+
+
 export const ContentScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -155,6 +169,7 @@ export const ContentScalarFieldEnum = {
   title: 'title',
   body: 'body',
   thumbnail: 'thumbnail',
+  images: 'images',
   viewCount: 'viewCount',
   categoryId: 'categoryId',
   authorId: 'authorId',
@@ -174,18 +189,57 @@ export const ContentCategoryScalarFieldEnum = {
 export type ContentCategoryScalarFieldEnum = (typeof ContentCategoryScalarFieldEnum)[keyof typeof ContentCategoryScalarFieldEnum]
 
 
+export const AlbumScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
+
+
+export const AlbumContentScalarFieldEnum = {
+  id: 'id',
+  albumId: 'albumId',
+  contentId: 'contentId',
+  createdAt: 'createdAt'
+} as const
+
+export type AlbumContentScalarFieldEnum = (typeof AlbumContentScalarFieldEnum)[keyof typeof AlbumContentScalarFieldEnum]
+
+
 export const CommentScalarFieldEnum = {
   id: 'id',
   status: 'status',
+  type: 'type',
   body: 'body',
+  images: 'images',
+  markerNum: 'markerNum',
+  markerTop: 'markerTop',
+  markerLeft: 'markerLeft',
+  markerImageIndex: 'markerImageIndex',
   contentId: 'contentId',
   authorId: 'authorId',
+  parentId: 'parentId',
   likeCount: 'likeCount',
   reportCount: 'reportCount',
   createdAt: 'createdAt'
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const CommentLikeScalarFieldEnum = {
+  id: 'id',
+  commentId: 'commentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentLikeScalarFieldEnum = (typeof CommentLikeScalarFieldEnum)[keyof typeof CommentLikeScalarFieldEnum]
 
 
 export const ReportScalarFieldEnum = {
@@ -247,6 +301,7 @@ export const AssignmentScalarFieldEnum = {
   content: 'content',
   videoUrl: 'videoUrl',
   dueDate: 'dueDate',
+  dueDateEnd: 'dueDateEnd',
   courseId: 'courseId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -1,3 +1,4 @@
+import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -27,7 +28,7 @@ function toCourseRow(c: Course): CourseRow {
     name: c.name,
     lecture: c.lectures?.length || 0,
     assignment: c.assignments?.length || 0,
-    createdAt: new Date(c.createdAt).toLocaleString('ko-KR'),
+    createdAt: formatDate(c.createdAt),
   };
 }
 

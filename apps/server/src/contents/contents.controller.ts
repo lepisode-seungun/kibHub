@@ -1,4 +1,4 @@
-﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ContentsService } from './contents.service';
 import { AuthGuard } from '../auth/auth.guard';
@@ -9,6 +9,7 @@ import { CreateContentDto, CreateReportDto } from '@kibhub/shared';
 @Controller()
 export class ContentsController {
   constructor(@Inject(ContentsService) private contentsService: ContentsService) {}
+  // deleteReport route added
 
   // ===== 콘텐츠 =====
   @Get('contents')
@@ -64,20 +65,35 @@ export class ContentsController {
   }
 
   // ===== 댓글 =====
+  @Get('comments/recent')
+  findRecentComments(@Query('take') take?: string) {
+    return this.contentsService.findRecentComments(take ? parseInt(take) : 10);
+  }
+
   @Get('contents/:contentId/comments')
-  findComments(@Param('contentId', ParseIntPipe) contentId: number) {
-    return this.contentsService.findComments(contentId);
+  findComments(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request) {
+    // 쿠키에서 userId를 optional로 추출 (인증 없이도 조회 가능)
+    let userId: number | undefined;
+    try {
+      const token = req.cookies?.kiphub_token;
+      if (token) {
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, process.env['JWT_SECRET'] || 'kiphub-jwt-secret-key-2026') as { userId: number };
+        userId = decoded.userId;
+      }
+    } catch {}
+    return this.contentsService.findComments(contentId, userId);
   }
 
   @Post('contents/:contentId/comments')
   @UseGuards(AuthGuard)
-  createComment(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request & { userId: number }, @Body() data: { body: string }) {
-    return this.contentsService.createComment(contentId, { body: data.body, authorId: req.userId });
+  createComment(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request & { userId: number }, @Body() data: { body: string; images?: string[]; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) {
+    return this.contentsService.createComment(contentId, { body: data.body, images: data.images, authorId: req.userId, parentId: data.parentId, type: data.type, markerNum: data.markerNum, markerTop: data.markerTop, markerLeft: data.markerLeft, markerImageIndex: data.markerImageIndex });
   }
 
   @Patch('comments/:id')
   @UseGuards(AuthGuard)
-  updateComment(@Param('id', ParseIntPipe) id: number, @Body() data: { body?: string }) {
+  updateComment(@Param('id', ParseIntPipe) id: number, @Body() data: { body?: string; status?: string }) {
     return this.contentsService.updateComment(id, data);
   }
 
@@ -87,9 +103,15 @@ export class ContentsController {
     return this.contentsService.deleteComment(id);
   }
 
+  @Post('comments/:id/like')
+  @UseGuards(AuthGuard)
+  toggleCommentLike(@Param('id', ParseIntPipe) id: number, @Req() req: Request & { userId: number }) {
+    return this.contentsService.toggleCommentLike(id, req.userId);
+  }
+
   // ===== 신고 =====
   @Get('reports')
-  findReports(@Query() query: { type?: string }) {
+  findReports(@Query() query: { type?: string; targetId?: string }) {
     return this.contentsService.findReports(query);
   }
 
@@ -97,5 +119,11 @@ export class ContentsController {
   @UseGuards(AuthGuard)
   createReport(@Req() req: Request & { userId: number }, @Body() data: CreateReportDto) {
     return this.contentsService.createReport({ ...data, reporterId: req.userId });
+  }
+
+  @Post('reports/:id/delete')
+  @UseGuards(AuthGuard)
+  deleteReport(@Param('id', ParseIntPipe) id: number) {
+    return this.contentsService.deleteReport(id);
   }
 }
