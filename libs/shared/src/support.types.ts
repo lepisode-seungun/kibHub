@@ -69,6 +69,7 @@ export interface Inquiry {
 export interface CreateInquiryDto {
   title: string;
   body: string;
+  files?: { name: string; url: string; size: number; mimeType: string }[];
 }
 
 export interface InquiryReplyDto {

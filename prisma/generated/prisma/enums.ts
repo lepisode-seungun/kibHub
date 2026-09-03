@@ -31,15 +31,17 @@ export type BootcampStatus = (typeof BootcampStatus)[keyof typeof BootcampStatus
 
 export const ContentStatus = {
   VISIBLE: 'VISIBLE',
-  HIDDEN: 'HIDDEN'
+  HIDDEN: 'HIDDEN',
+  DELETED: 'DELETED'
 } as const
 
 export type ContentStatus = (typeof ContentStatus)[keyof typeof ContentStatus]
 
 
 export const ContentType = {
-  PORTFOLIO: 'PORTFOLIO',
-  REVIEW: 'REVIEW'
+  WEBTOON: 'WEBTOON',
+  ILLUSTRATION: 'ILLUSTRATION',
+  WRITING: 'WRITING'
 } as const
 
 export type ContentType = (typeof ContentType)[keyof typeof ContentType]

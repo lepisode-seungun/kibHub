@@ -8,6 +8,10 @@ import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Content, Comment, CommentRow, ReportRow } from '../../shared/types';
 
+const TYPE_DISPLAY: Record<string, string> = {
+  WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글',
+};
+
 @Component({
   selector: 'adm-content-detail',
   standalone: true,
@@ -26,7 +30,6 @@ export class ContentDetailPage implements OnInit {
   section3Expanded = signal(true);
   section4Expanded = signal(true);
   moreMenuOpen = signal(false);
-  moreMenu2Open = signal(false);
 
   // ===== 토스트 =====
   toastMessage = signal('');
@@ -57,7 +60,7 @@ export class ContentDetailPage implements OnInit {
       for (const cm of comments) {
         rows.push({
           id: cm.id,
-          status: cm.status === 'VISIBLE' ? '노출' : '숨김',
+          status: cm.status === 'VISIBLE' ? '노출' : cm.status === 'DELETED' ? '삭제' : '숨김',
           type: '댓글',
           content: cm.body,
           author: cm.author?.nickname || cm.author?.name || '',
@@ -69,7 +72,7 @@ export class ContentDetailPage implements OnInit {
         for (const reply of ((cm as any).replies || [])) {
           rows.push({
             id: reply.id,
-            status: reply.status === 'VISIBLE' ? '노출' : '숨김',
+            status: reply.status === 'VISIBLE' ? '노출' : reply.status === 'DELETED' ? '삭제' : '숨김',
             type: '대댓글',
             content: reply.body,
             author: reply.author?.nickname || reply.author?.name || '',
@@ -102,26 +105,30 @@ export class ContentDetailPage implements OnInit {
   toggleSection3(): void { this.section3Expanded.update(v => !v); }
   toggleSection4(): void { this.section4Expanded.update(v => !v); }
 
-  toggleMoreMenu(event: Event): void { event.stopPropagation(); this.moreMenuOpen.update(v => !v); }
-  toggleMoreMenu2(event: Event): void { event.stopPropagation(); this.moreMenu2Open.update(v => !v); }
-  closeMoreMenu(): void { this.moreMenuOpen.set(false); }
-  closeMoreMenu2(): void { this.moreMenu2Open.set(false); }
+  getTypeDisplay(): string {
+    const type = this.content()?.type;
+    return type ? (TYPE_DISPLAY[type] || type) : '-';
+  }
 
-  async onHide(): Promise<void> {
+  toggleMoreMenu(event: Event): void { event.stopPropagation(); this.moreMenuOpen.update(v => !v); }
+  closeMoreMenu(): void { this.moreMenuOpen.set(false); }
+
+  async onToggleVisibility(): Promise<void> {
     this.moreMenuOpen.set(false);
-    this.moreMenu2Open.set(false);
     const c = this.content();
     if (c) {
+      const newStatus = c.status === 'VISIBLE' ? 'HIDDEN' : 'VISIBLE';
+      const label = newStatus === 'HIDDEN' ? '숨김' : '노출';
       try {
-        await this.api.contents.update(c.id, { status: 'HIDDEN' });
-        this.toast.success('숨김 되었습니다.');
+        await this.api.contents.update(c.id, { status: newStatus as any });
+        this.toast.success(`${label} 처리되었습니다.`);
+        await this.loadContent(c.id);
       } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     }
   }
 
   onDelete(): void {
     this.moreMenuOpen.set(false);
-    this.moreMenu2Open.set(false);
     this.openDeleteDialog();
   }
 
@@ -138,6 +145,37 @@ export class ContentDetailPage implements OnInit {
   ];
 
   commentData = signal<CommentRow[]>([]);
+
+  /** 댓글 우클릭 컨텍스트 메뉴 — 상태에 따라 동적 항목 */
+  commentContextMenuFn = (row: any): string[] => {
+    const items: string[] = [];
+    if (row.status !== '노출') items.push('노출');
+    if (row.status !== '숨김') items.push('숨김');
+    items.push('삭제');
+    return items;
+  };
+
+  async onCommentContextMenu(event: { action: string; row: any }): Promise<void> {
+    const { action, row } = event;
+    const id = row.id;
+    try {
+      if (action === '노출') {
+        await this.api.comments.update(id, { status: 'VISIBLE' as any });
+        this.toast.success('댓글이 노출 처리되었습니다.');
+      } else if (action === '숨김') {
+        await this.api.comments.update(id, { status: 'HIDDEN' as any });
+        this.toast.success('댓글이 숨김 처리되었습니다.');
+      } else if (action === '삭제') {
+        await this.api.comments.delete(id);
+        this.toast.success('댓글이 삭제 처리되었습니다.');
+      }
+      // 데이터 새로고침
+      const contentId = this.content()?.id;
+      if (contentId) await this.loadContent(contentId);
+    } catch (e) {
+      this.toast.error('처리 실패');
+    }
+  }
 
   // ===== 콘텐츠 신고내역 그리드 =====
   reportColumns: GridColumn[] = [
@@ -218,7 +256,6 @@ export class ContentDetailPage implements OnInit {
 
   openDeleteDialog(): void {
     this.moreMenuOpen.set(false);
-    this.moreMenu2Open.set(false);
     this.showDeleteDialog.set(true);
   }
 

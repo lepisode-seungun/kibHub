@@ -9,7 +9,7 @@ import { ApiService } from '../../services/api.service';
 import { Content, ContentCategory, ContentRow } from '../../shared/types';
 
 const TYPE_MAP: Record<string, string> = {
-  PORTFOLIO: '포트폴리오', REVIEW: '후기',
+  WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글',
 };
 const STATUS_DISPLAY: Record<string, string> = {
   VISIBLE: '노출', HIDDEN: '숨김',
@@ -77,6 +77,58 @@ export class ContentPage implements OnInit {
 
   onRowClick(row: ContentRow): void {
     this.router.navigate(['/content', row.id]);
+  }
+
+  // ===== 우클릭 컨텍스트 메뉴 =====
+  gridContextMenuFn = (row: ContentRow): string[] => {
+    return [row.status === '숨김' ? '노출' : '숨김', '삭제'];
+  };
+
+  // 삭제 다이얼로그
+  showDeleteDialog = signal(false);
+  deleteTargetRow = signal<ContentRow | null>(null);
+
+  async onContextMenuSelect(event: { action: string; row: ContentRow }): Promise<void> {
+    const { action, row } = event;
+    if (action === '숨김') {
+      try {
+        await this.api.contents.update(row.id, { status: 'HIDDEN' });
+        this.toast.success('숨김 처리 되었습니다.');
+        await this.loadContents();
+      } catch (e: unknown) {
+        this.toast.error(e instanceof Error ? e.message : '처리 실패');
+      }
+    } else if (action === '노출') {
+      try {
+        await this.api.contents.update(row.id, { status: 'VISIBLE' });
+        this.toast.success('노출 처리 되었습니다.');
+        await this.loadContents();
+      } catch (e: unknown) {
+        this.toast.error(e instanceof Error ? e.message : '처리 실패');
+      }
+    } else if (action === '삭제') {
+      this.deleteTargetRow.set(row);
+      this.showDeleteDialog.set(true);
+    }
+  }
+
+  closeDeleteDialog(): void {
+    this.showDeleteDialog.set(false);
+    this.deleteTargetRow.set(null);
+  }
+
+  async confirmDelete(): Promise<void> {
+    const row = this.deleteTargetRow();
+    if (!row) return;
+    try {
+      await this.api.contents.delete(row.id);
+      this.toast.success('삭제가 완료 되었습니다.');
+      this.showDeleteDialog.set(false);
+      this.deleteTargetRow.set(null);
+      await this.loadContents();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '삭제 실패');
+    }
   }
 
   // ===== 카테고리 설정 드로어 =====

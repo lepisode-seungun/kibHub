@@ -51,8 +51,9 @@
       searchPlaceholder="검색어를 입력하세요">
       <button gridActions
               class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
-              style="min-width: 111px;">
-        엑셀 다운로드
+              style="min-width: 111px;"
+              (click)="openAutoHideDrawer()">
+        자동 숨김 설정
       </button>
     </adm-data-grid>
   }

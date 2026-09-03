@@ -256,9 +256,9 @@ export class HomePage implements AfterViewInit, OnInit {
   }
 
   private typeMap: Record<string, string> = {
-    'webtoon': 'PORTFOLIO',
-    'art': 'PORTFOLIO',
-    'writing': 'REVIEW',
+    'webtoon': 'WEBTOON',
+    'art': 'ILLUSTRATION',
+    'writing': 'WRITING',
   };
 
   private filterCards(cards: ContentCard[]): ContentCard[] {

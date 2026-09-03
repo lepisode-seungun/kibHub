@@ -490,8 +490,10 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   private mapTypeToContentType(type: string): ContentType {
     switch (type) {
-      case '글': return 'REVIEW';
-      default: return 'PORTFOLIO';
+      case '웹툰': return 'WEBTOON';
+      case '그림': return 'ILLUSTRATION';
+      case '글': return 'WRITING';
+      default: return 'WEBTOON';
     }
   }
 

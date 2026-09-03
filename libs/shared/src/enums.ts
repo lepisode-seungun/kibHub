@@ -8,8 +8,8 @@ export type BootcampStatus = 'PREPARING' | 'RECRUITING' | 'CLOSED' | 'OPERATING'
 export type ApplicantStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
 
 // ===== Content 관련 Enum =====
-export type ContentType = 'PORTFOLIO' | 'REVIEW';
-export type ContentStatus = 'VISIBLE' | 'HIDDEN';
+export type ContentType = 'WEBTOON' | 'ILLUSTRATION' | 'WRITING';
+export type ContentStatus = 'VISIBLE' | 'HIDDEN' | 'DELETED';
 
 // ===== Course 관련 Enum =====
 export type CourseStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';

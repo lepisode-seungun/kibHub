@@ -126,7 +126,8 @@ export class ApiService {
   // ===== Contents =====
   readonly contents = {
     findAll: (query?: Record<string, string>): Promise<Content[]> => {
-      const qs = query ? '?' + new URLSearchParams(query).toString() : '';
+      const params = { showAll: 'true', ...query };
+      const qs = '?' + new URLSearchParams(params).toString();
       return this.get<Content[]>(`/contents${qs}`);
     },
     findOne: (id: number): Promise<Content> => this.get<Content>(`/contents/${id}`),
@@ -145,10 +146,10 @@ export class ApiService {
 
   // ===== Comments =====
   readonly comments = {
-    findByContent: (contentId: number): Promise<Comment[]> => this.get<Comment[]>(`/contents/${contentId}/comments`),
+    findByContent: (contentId: number): Promise<Comment[]> => this.get<Comment[]>(`/contents/${contentId}/comments?showAll=true`),
     create: (contentId: number, data: { body: string }): Promise<Comment> => this.post<Comment>(`/contents/${contentId}/comments`, data),
     update: (id: number, data: { body?: string; status?: ContentStatus }): Promise<Comment> => this.patch<Comment>(`/comments/${id}`, data),
-    delete: (id: number): Promise<void> => this.del<void>(`/comments/${id}`),
+    delete: (id: number): Promise<void> => this.del<void>(`/comments/${id}?hard=true`),
   };
 
   // ===== Reports =====

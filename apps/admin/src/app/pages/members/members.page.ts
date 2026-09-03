@@ -58,7 +58,7 @@ export class MembersPage implements OnInit {
 
   async loadMembers(): Promise<void> {
     try {
-      const data = await this.api.users.findAll();
+      const data = await this.api.users.findAll({ excludeRole: 'ADMIN' });
       this.members.set(data.map(toMemberRow));
     } catch (e) {
       console.error('회원 목록 로드 실패:', e);

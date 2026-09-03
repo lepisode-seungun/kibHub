@@ -7,6 +7,7 @@
 export const CONTENT_STATUS_BADGES: Record<string, string> = {
   '노출': 'bg-emerald-50 border-emerald-300 text-emerald-600',
   '숨김': 'bg-zinc-50 border-zinc-200 text-zinc-500',
+  '삭제': 'bg-red-50 border-red-300 text-red-500',
 };
 
 // ===== 부트캠프 상태 =====

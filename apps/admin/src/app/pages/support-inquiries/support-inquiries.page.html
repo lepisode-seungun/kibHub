@@ -60,6 +60,23 @@
         <p class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 m-0">{{ drawerTarget()?.content }}</p>
       </div>
 
+      <!-- 첨부파일 -->
+      @if (drawerTarget()?.files && drawerTarget()!.files!.length > 0) {
+        <div class="flex flex-col gap-2 w-full">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-500">첨부파일 ({{ drawerTarget()!.files!.length }})</span>
+          @for (file of drawerTarget()!.files!; track file.id) {
+            <button class="flex items-center gap-2 px-3 py-2 w-full bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                    style="text-align: left;"
+                    (click)="downloadFile(file)">
+              <svg width="16" height="16" viewBox="0 0 17 16" fill="none" style="flex-shrink: 0;">
+                <path d="M9.16667 0V8.78717L12.8333 5.1205L14.1295 6.41667L8.25 12.2962L2.3705 6.41667L3.66667 5.1205L7.33333 8.78717V0H9.16667ZM0 13.75H16.5V15.5833H0V13.75Z" fill="#3C8EEE"/>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ file.name }}</span>
+            </button>
+          }
+        </div>
+      }
+
       <!-- 구분선 -->
       <div class="w-full h-0 border-t border-gray-200"></div>
 

@@ -94,7 +94,8 @@
           <div class="field-group">
             <span class="field-label">포트폴리오(첨부파일)</span>
             @if (applicant().portfolioFile) {
-              <a class="file-chip" [href]="applicant().portfolioFile.url" target="_blank" download style="text-decoration: none; cursor: pointer;">
+              <button class="file-chip" style="text-decoration: none; cursor: pointer; border: none; background: transparent;"
+                      (click)="downloadFile(applicant().portfolioFile.url, applicant().portfolioFile.name)">
                 <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
                   <path d="M9.16667 0V8.78717L12.8333 5.1205L14.1295 6.41667L8.25 12.2962L2.3705 6.41667L3.66667 5.1205L7.33333 8.78717V0H9.16667ZM0 13.75H16.5V15.5833H0V13.75Z" fill="#3C8EEE"/>
                 </svg>
@@ -102,7 +103,7 @@
                   <span class="file-name" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ applicant().portfolioFile.name }}</span>
                   <span class="file-size">({{ applicant().portfolioFile.size }})</span>
                 </div>
-              </a>
+              </button>
             } @else {
               <span class="field-value">-</span>
             }

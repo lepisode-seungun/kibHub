@@ -141,8 +141,16 @@ export class ApiService {
   readonly inquiries = {
     findAll: (): Promise<Inquiry[]> => this.get<Inquiry[]>('/inquiries'),
     findOne: (id: number): Promise<Inquiry> => this.get<Inquiry>(`/inquiries/${id}`),
-    create: (data: { title: string; body: string }): Promise<Inquiry> => this.post<Inquiry>('/inquiries', data),
+    create: (data: { title: string; body: string; files?: { name: string; url: string; size: number; mimeType: string }[] }): Promise<Inquiry> => this.post<Inquiry>('/inquiries', data),
   };
+
+  // ===== Upload =====
+  async uploadFile(file: File, folder = 'inquiries'): Promise<{ url: string; originalName: string; size: number; mimeType: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+    return firstValueFrom(this.http.post<any>(`${BASE}/upload`, formData, { withCredentials: true }));
+  }
 
   // ===== Users (profile) =====
   readonly users = {

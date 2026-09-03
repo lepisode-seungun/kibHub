@@ -13,7 +13,7 @@ export class ContentsController {
 
   // ===== 콘텐츠 =====
   @Get('contents')
-  findAll(@Query() query: { search?: string; status?: string; type?: string; page?: string; limit?: string }) {
+  findAll(@Query() query: { search?: string; status?: string; type?: string; showAll?: string; page?: string; limit?: string }) {
     return this.contentsService.findAll(query);
   }
 
@@ -71,7 +71,7 @@ export class ContentsController {
   }
 
   @Get('contents/:contentId/comments')
-  findComments(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request) {
+  findComments(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request, @Query('showAll') showAll?: string) {
     // 쿠키에서 userId를 optional로 추출 (인증 없이도 조회 가능)
     let userId: number | undefined;
     try {
@@ -82,7 +82,7 @@ export class ContentsController {
         userId = decoded.userId;
       }
     } catch {}
-    return this.contentsService.findComments(contentId, userId);
+    return this.contentsService.findComments(contentId, userId, showAll === 'true');
   }
 
   @Post('contents/:contentId/comments')
@@ -99,8 +99,8 @@ export class ContentsController {
 
   @Delete('comments/:id')
   @UseGuards(AuthGuard)
-  deleteComment(@Param('id', ParseIntPipe) id: number) {
-    return this.contentsService.deleteComment(id);
+  deleteComment(@Param('id', ParseIntPipe) id: number, @Query('hard') hard?: string) {
+    return this.contentsService.deleteComment(id, hard === 'true');
   }
 
   @Post('comments/:id/like')

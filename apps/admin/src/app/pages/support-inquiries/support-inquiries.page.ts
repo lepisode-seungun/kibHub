@@ -136,14 +136,35 @@ export class SupportInquiriesPage implements OnInit {
     this.deleteTarget.set(null);
   }
 
-  downloadFile(file: { name: string; url: string }): void {
+  async downloadFile(file: { name: string; url: string }): Promise<void> {
     if (!file.url) return;
-    const a = document.createElement('a');
-    a.href = file.url;
-    a.download = file.name;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const response = await fetch(file.url);
+      const blob = await response.blob();
+      if ('showSaveFilePicker' in window) {
+        const ext = file.name.includes('.') ? file.name.split('.').pop() || '' : '';
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: file.name,
+          types: ext ? [{ description: file.name, accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] } }] : [],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      }
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return;
+      const a = document.createElement('a');
+      a.href = file.url;
+      a.download = file.name;
+      a.click();
+    }
   }
 }

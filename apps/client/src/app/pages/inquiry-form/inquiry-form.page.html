@@ -57,8 +57,15 @@
       <!-- 파일 업로드 -->
       <div class="flex flex-col items-start gap-2 w-full">
         <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">파일업로드</span>
+        <input type="file" #fileInput multiple hidden (change)="onFileInputChange($event)" accept="*/*">
         <div class="flex flex-col items-start gap-3 w-full">
-          <div class="flex flex-col justify-center items-center p-4 gap-4 w-full h-[200px] bg-zinc-800 border border-dashed border-zinc-500 shadow-sm rounded-xl box-border">
+          <div class="flex flex-col justify-center items-center p-4 gap-4 w-full h-[200px] bg-zinc-800 border border-dashed shadow-sm rounded-xl box-border transition-colors duration-200"
+               [class.border-zinc-500]="!isDragOver()"
+               [class.border-purple-400]="isDragOver()"
+               [class.bg-zinc-700]="isDragOver()"
+               (dragover)="onDragOver($event)"
+               (dragleave)="onDragLeave($event)"
+               (drop)="onDrop($event)">
             <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center">첨부할 파일을 여기에 끌어다 놓거나, 파일 선택<br>버튼을 눌러 파일을 직접 선택해 주세요.</span>
             <button class="flex justify-center items-center px-3 py-2 gap-1 h-12 border border-zinc-300 rounded-xl bg-transparent cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.8px] text-zinc-500 transition-colors duration-150 hover:bg-white/5" (click)="onFileSelect()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
@@ -94,6 +101,8 @@
                   <svg class="if-file-spinner" width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="#956DFF" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
                   </svg>
+                } @else if (file.status === 'error') {
+                  <span class="font-suit font-medium text-sm text-red-400">실패</span>
                 } @else {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="#956DFF"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
                 }

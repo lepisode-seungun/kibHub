@@ -46,7 +46,23 @@ export class InquiriesService {
   }
 
   create(data: CreateInquiryDto & { authorId: number }) {
-    return this.prisma.inquiry.create({ data: data as Prisma.InquiryUncheckedCreateInput });
+    const { files, ...rest } = data;
+    return this.prisma.inquiry.create({
+      data: {
+        ...rest,
+        ...(files && files.length > 0 ? {
+          files: {
+            create: files.map(f => ({
+              name: f.name,
+              url: f.url,
+              size: f.size,
+              mimeType: f.mimeType,
+            })),
+          },
+        } : {}),
+      } as any,
+      include: { files: true },
+    });
   }
 
   update(id: number, data: Partial<CreateInquiryDto>) {

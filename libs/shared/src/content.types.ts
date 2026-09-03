@@ -26,6 +26,7 @@ export interface Content {
   createdAt: string;
   updatedAt?: string;
   _count?: { comments: number };
+  bookmarkCount?: number;
 }
 
 export interface CreateContentDto {
@@ -66,6 +67,8 @@ export interface Report {
   reason: string;
   reporterId: number;
   reporter?: User;
+  targetTitle?: string;
+  targetBody?: string;
   createdAt: string;
 }
 

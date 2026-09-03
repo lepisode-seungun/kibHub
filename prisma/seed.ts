@@ -37,10 +37,10 @@ async function main() {
   console.log(`  ✅ Contents: 3 created`);
 
   // ===== Additional Contents =====
-  await prisma.content.upsert({ where: { id: 4 }, update: {}, create: { type: 'PORTFOLIO', title: '판타지 웹툰 캐릭터 시트', body: '다양한 캐릭터 디자인 시트를 공유합니다.', viewCount: 89, authorId: user2.id, categoryId: cat1.id } });
-  await prisma.content.upsert({ where: { id: 5 }, update: {}, create: { type: 'REVIEW', title: '2기 아카데미 수강 후기', body: '처음 웹툰을 접했지만 체계적인 커리큘럼 덕분에 완성할 수 있었습니다.', viewCount: 201, authorId: user1.id, categoryId: cat2.id } });
-  await prisma.content.upsert({ where: { id: 6 }, update: {}, create: { type: 'PORTFOLIO', title: '도시 풍경 일러스트 시리즈', body: '서울의 다양한 풍경을 그려보았습니다.', viewCount: 178, authorId: user2.id, categoryId: cat3.id } });
-  await prisma.content.upsert({ where: { id: 7 }, update: {}, create: { type: 'PORTFOLIO', title: '미니 웹툰 - 일상 에피소드', body: '짧은 일상 에피소드를 웹툰으로 그려봤습니다.', viewCount: 445, authorId: user1.id, categoryId: cat1.id } });
+  await prisma.content.upsert({ where: { id: 4 }, update: {}, create: { type: 'PORTFOLIO', title: '판타지 웹툰 캐릭터 시트', body: '다양한 캐릭터 디자인 시트를 공유합니다.', viewCount: 0, authorId: user2.id, categoryId: cat1.id } });
+  await prisma.content.upsert({ where: { id: 5 }, update: {}, create: { type: 'REVIEW', title: '2기 아카데미 수강 후기', body: '처음 웹툰을 접했지만 체계적인 커리큘럼 덕분에 완성할 수 있었습니다.', viewCount: 0, authorId: user1.id, categoryId: cat2.id } });
+  await prisma.content.upsert({ where: { id: 6 }, update: {}, create: { type: 'PORTFOLIO', title: '도시 풍경 일러스트 시리즈', body: '서울의 다양한 풍경을 그려보았습니다.', viewCount: 0, authorId: user2.id, categoryId: cat3.id } });
+  await prisma.content.upsert({ where: { id: 7 }, update: {}, create: { type: 'PORTFOLIO', title: '미니 웹툰 - 일상 에피소드', body: '짧은 일상 에피소드를 웹툰으로 그려봤습니다.', viewCount: 0, authorId: user1.id, categoryId: cat1.id } });
 
   console.log(`  ✅ Additional Contents: 4 created`);
 

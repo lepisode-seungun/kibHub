@@ -14,6 +14,7 @@ export class SiteSettingsController {
 
   @Put(':key')
   async set(@Param('key') key: string, @Body('value') value: string) {
+    console.log(`[SiteSettings] PUT key=${key}, value=${value}`);
     return this.service.set(key, value);
   }
 }

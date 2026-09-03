@@ -22,11 +22,13 @@ model Content {
 enum ContentStatus {
   VISIBLE
   HIDDEN
+  DELETED
 }
 
 enum ContentType {
-  PORTFOLIO
-  REVIEW
+  WEBTOON
+  ILLUSTRATION
+  WRITING
 }
 
 model ContentCategory {

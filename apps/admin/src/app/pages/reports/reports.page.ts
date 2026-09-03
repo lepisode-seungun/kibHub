@@ -2,14 +2,28 @@ import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Report, ReportRow } from '../../shared/types';
 
-function toReportRow(r: Report): ReportRow {
+const CONTENT_AUTO_HIDE_KEY = 'autoHideContentReportCount';
+const COMMENT_AUTO_HIDE_KEY = 'autoHideCommentReportCount';
+
+function toContentReportRow(r: any): any {
   return {
     id: r.id,
-    commentContent: r.reason,
-    content: r.reason,
+    contentTitle: r.targetTitle || '-',
+    reason: r.reason || '-',
+    reporter: r.reporter?.nickname || r.reporter?.name || '',
+    reportedAt: formatDate(r.createdAt),
+  };
+}
+
+function toCommentReportRow(r: any): any {
+  return {
+    id: r.id,
+    commentContent: r.targetBody || '-',
+    content: r.reason || '-',
     reporter: r.reporter?.nickname || r.reporter?.name || '',
     reportedAt: formatDate(r.createdAt),
   };
@@ -24,6 +38,7 @@ function toReportRow(r: Report): ReportRow {
 })
 export class ReportsPage implements OnInit {
   private api = inject(ApiService);
+  private toast = inject(ToastService);
   activeTab = signal<'content' | 'comment'>('content');
 
   setTab(tab: 'content' | 'comment'): void {
@@ -36,13 +51,13 @@ export class ReportsPage implements OnInit {
 
   async loadReports(): Promise<void> {
     try {
-      const data = await this.api.reports.findAll();
-      const contentReports: ReportRow[] = [];
-      const commentReports: ReportRow[] = [];
-      data.forEach((r: Report) => {
-        const mapped = toReportRow(r);
-        if (r.type === 'CONTENT') contentReports.push(mapped);
-        else commentReports.push(mapped);
+      const raw = await this.api.reports.findAll();
+      const data: any[] = Array.isArray(raw) ? raw : (raw as any).data || [];
+      const contentReports: any[] = [];
+      const commentReports: any[] = [];
+      data.forEach((r: any) => {
+        if (r.type === 'CONTENT') contentReports.push(toContentReportRow(r));
+        else commentReports.push(toCommentReportRow(r));
       });
       this.contentReportData.set(contentReports);
       this.commentReportData.set(commentReports);
@@ -53,13 +68,13 @@ export class ReportsPage implements OnInit {
 
   contentReportColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
-    { key: 'commentContent', label: '댓글내용' },
-    { key: 'content', label: '내용' },
+    { key: 'contentTitle', label: '콘텐츠 제목' },
+    { key: 'reason', label: '신고 사유' },
     { key: 'reporter', label: '신고자', width: '100px' },
     { key: 'reportedAt', label: '신고일시', width: '160px' },
   ];
 
-  contentReportData = signal<ReportRow[]>([]);
+  contentReportData = signal<any[]>([]);
 
   commentReportColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
@@ -69,17 +84,49 @@ export class ReportsPage implements OnInit {
     { key: 'reportedAt', label: '신고일시', width: '160px' },
   ];
 
-  commentReportData = signal<ReportRow[]>([]);
+  commentReportData = signal<any[]>([]);
 
+  // ===== 자동 숨김 설정 드로어 =====
   showAutoHideDrawer = signal(false);
   reportCountValue = signal('');
 
-  openAutoHideDrawer(): void { this.showAutoHideDrawer.set(true); }
+  /** 현재 활성 탭에 따라 올바른 설정 키 반환 */
+  private get autoHideKey(): string {
+    return this.activeTab() === 'content' ? CONTENT_AUTO_HIDE_KEY : COMMENT_AUTO_HIDE_KEY;
+  }
+
+  private get autoHideLabel(): string {
+    return this.activeTab() === 'content' ? '콘텐츠' : '댓글';
+  }
+
+  async openAutoHideDrawer(): Promise<void> {
+    try {
+      const result = await this.api.siteSettings.get(this.autoHideKey);
+      this.reportCountValue.set(result.value || '');
+    } catch {
+      this.reportCountValue.set('');
+    }
+    this.showAutoHideDrawer.set(true);
+  }
+
   closeAutoHideDrawer(): void { this.showAutoHideDrawer.set(false); }
 
   onReportCountInput(event: Event): void {
     this.reportCountValue.set((event.target as HTMLInputElement).value);
   }
 
-  submitAutoHide(): void { this.showAutoHideDrawer.set(false); }
+  async submitAutoHide(): Promise<void> {
+    const val = this.reportCountValue().trim();
+    if (!val || isNaN(Number(val)) || Number(val) < 1) {
+      this.toast.error('1 이상의 숫자를 입력하세요.');
+      return;
+    }
+    try {
+      await this.api.siteSettings.set(this.autoHideKey, val);
+      this.toast.success(`${this.autoHideLabel} 신고 ${val}회 이상 시 자동 숨김 설정이 저장되었습니다.`);
+      this.showAutoHideDrawer.set(false);
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '저장 실패');
+    }
+  }
 }

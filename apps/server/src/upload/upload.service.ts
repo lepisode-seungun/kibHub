@@ -39,7 +39,7 @@ export class UploadService {
     file: Express.Multer.File,
     folder = 'general',
   ): Promise<UploadResult> {
-    this.validate(file);
+    this.validate(file, folder);
 
     const ext = extname(file.originalname) || this.guessExt(file.mimetype);
     const safeName = `${randomUUID()}${ext}`;
@@ -80,8 +80,21 @@ export class UploadService {
   }
 
   /** 유효성 검증 */
-  private validate(file: Express.Multer.File): void {
+  private validate(file: Express.Multer.File, folder = 'general'): void {
     const ext = extname(file.originalname).toLowerCase();
+
+    // inquiries 폴더는 zip만 제외하고 모든 형식 허용
+    if (folder === 'inquiries') {
+      if (ext === '.zip') {
+        throw new BadRequestException('zip 파일은 첨부할 수 없습니다.');
+      }
+      const MAX_INQUIRY_SIZE = 20 * 1024 * 1024; // 20MB
+      if (file.size > MAX_INQUIRY_SIZE) {
+        throw new BadRequestException(`파일 크기 초과 (최대 20MB): ${file.originalname}`);
+      }
+      return;
+    }
+
     const allowedExts = ['.hwpx'];
     const mimeAllowed = ALLOWED_MIME.includes(file.mimetype);
     const extAllowed = file.mimetype === 'application/octet-stream' && allowedExts.includes(ext);

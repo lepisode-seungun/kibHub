@@ -41,8 +41,52 @@ export class BootcampsService {
     return this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
   }
 
-  delete(id: number) {
-    return this.prisma.bootcamp.delete({ where: { id } });
+  async delete(id: number) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. 지원자 삭제
+      await tx.applicant.deleteMany({ where: { bootcampId: id } });
+
+      // 2. 공지사항: NoticeFile → Notice 순서
+      const noticeIds = (await tx.notice.findMany({ where: { bootcampId: id }, select: { id: true } })).map(n => n.id);
+      if (noticeIds.length > 0) {
+        await tx.noticeFile.deleteMany({ where: { noticeId: { in: noticeIds } } });
+        await tx.notice.deleteMany({ where: { id: { in: noticeIds } } });
+      }
+
+      // 3. 과정 하위 데이터: leaf-first 삭제
+      const courseIds = (await tx.course.findMany({ where: { bootcampId: id }, select: { id: true } })).map(c => c.id);
+      if (courseIds.length > 0) {
+        // 강의 파일 → 강의
+        const lectureIds = (await tx.lecture.findMany({ where: { courseId: { in: courseIds } }, select: { id: true } })).map(l => l.id);
+        if (lectureIds.length > 0) {
+          await tx.lectureFile.deleteMany({ where: { lectureId: { in: lectureIds } } });
+          await tx.lecture.deleteMany({ where: { id: { in: lectureIds } } });
+        }
+
+        // 과제 → 제출물 → 제출물 파일/댓글
+        const assignmentIds = (await tx.assignment.findMany({ where: { courseId: { in: courseIds } }, select: { id: true } })).map(a => a.id);
+        if (assignmentIds.length > 0) {
+          const submissionIds = (await tx.submission.findMany({ where: { assignmentId: { in: assignmentIds } }, select: { id: true } })).map(s => s.id);
+          if (submissionIds.length > 0) {
+            await tx.submissionComment.deleteMany({ where: { submissionId: { in: submissionIds } } });
+            await tx.submissionFile.deleteMany({ where: { submissionId: { in: submissionIds } } });
+            // 자기참조 FK 해제 후 삭제
+            await tx.submission.updateMany({ where: { id: { in: submissionIds }, parentId: { not: null } }, data: { parentId: null } });
+            await tx.submission.deleteMany({ where: { id: { in: submissionIds } } });
+          }
+          await tx.assignmentFile.deleteMany({ where: { assignmentId: { in: assignmentIds } } });
+          await tx.assignment.deleteMany({ where: { id: { in: assignmentIds } } });
+        }
+
+        await tx.course.deleteMany({ where: { id: { in: courseIds } } });
+      }
+
+      // 4. 강사 관계 삭제
+      await tx.bootcampInstructor.deleteMany({ where: { bootcampId: id } });
+
+      // 5. 부트캠프 삭제
+      return tx.bootcamp.delete({ where: { id } });
+    });
   }
 
   async getInterviewSettings(id: number) {

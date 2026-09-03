@@ -67,17 +67,35 @@ export class BootcampPage implements OnInit {
     this.router.navigate(['/bootcamp/home/dashboard']);
   }
 
+  // ===== 삭제 다이얼로그 =====
+  showDeleteDialog = signal(false);
+  deleteTargetRow = signal<BootcampRow | null>(null);
+
   async onContextMenuAction(event: { action: string; row: BootcampRow }): Promise<void> {
     if (event.action === '수정') {
       await this.openEditDrawer(event.row.id);
     } else if (event.action === '삭제') {
-      try {
-        await this.api.bootcamps.delete(event.row.id);
-        this.toast.success('삭제가 완료 되었습니다.');
-        await this.loadBootcamps();
-      } catch (e: unknown) {
-        this.toast.error(e instanceof Error ? e.message : '삭제 실패');
-      }
+      this.deleteTargetRow.set(event.row);
+      this.showDeleteDialog.set(true);
+    }
+  }
+
+  closeDeleteDialog(): void {
+    this.showDeleteDialog.set(false);
+    this.deleteTargetRow.set(null);
+  }
+
+  async confirmDelete(): Promise<void> {
+    const row = this.deleteTargetRow();
+    if (!row) return;
+    try {
+      await this.api.bootcamps.delete(row.id);
+      this.toast.success('삭제가 완료 되었습니다.');
+      this.showDeleteDialog.set(false);
+      this.deleteTargetRow.set(null);
+      await this.loadBootcamps();
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '삭제 실패');
     }
   }
 

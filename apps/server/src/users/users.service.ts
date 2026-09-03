@@ -8,10 +8,11 @@ import { paginate, parsePagination } from '../common/pagination';
 export class UsersService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
-  async findAll(query?: { search?: string; status?: string; role?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
+  async findAll(query?: { search?: string; status?: string; role?: string; excludeRole?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.UserWhereInput = {};
     if (query?.status) where.status = query.status as Prisma.UserWhereInput['status'];
     if (query?.role) where.role = query.role as Prisma.UserWhereInput['role'];
+    if (query?.excludeRole) where.role = { not: query.excludeRole } as any;
     if (query?.search) {
       where.OR = [
         { email: { contains: query.search, mode: 'insensitive' } },

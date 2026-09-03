@@ -2,13 +2,76 @@
   [columns]="columns"
   [data]="contents()"
   searchPlaceholder="검색어를 입력하세요"
-  (rowClick)="onRowClick($event)">
+  [contextMenuItemsFn]="gridContextMenuFn"
+  (rowClick)="onRowClick($event)"
+  (contextMenuSelect)="onContextMenuSelect($event)">
   <button gridActions
           class="flex items-center justify-center px-3 py-2 w-[108px] h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-blue-50 transition-colors whitespace-nowrap"
           (click)="openCategoryDrawer()">
     카테고리 설정
   </button>
 </adm-data-grid>
+
+<!-- ===== 삭제 확인 다이얼로그 ===== -->
+@if (showDeleteDialog()) {
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       role="dialog" aria-modal="true" tabindex="0"
+       (click)="closeDeleteDialog()"
+       (keyup.escape)="closeDeleteDialog()">
+
+    <div class="flex flex-col justify-center items-center p-4 gap-6 w-[400px] bg-white shadow-lg rounded-2xl"
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keyup.escape)="$event.stopPropagation()">
+
+      <!-- 아이콘 + 타이틀 -->
+      <div class="flex flex-col justify-center items-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2.333C7.557 2.333 2.333 7.557 2.333 14S7.557 25.667 14 25.667 25.667 20.443 25.667 14 20.443 2.333 14 2.333zm0 18.084a1.167 1.167 0 110-2.334 1.167 1.167 0 010 2.334zm1.167-5.834a1.167 1.167 0 01-2.334 0V8.167a1.167 1.167 0 012.334 0v6.416z" fill="#EF4444"/>
+        </svg>
+        <span class="font-suit font-semibold text-xl leading-[25px] tracking-[-0.8px] text-gray-800">콘텐츠 삭제</span>
+      </div>
+
+      <!-- 삭제 대상 정보 -->
+      <div class="flex flex-col items-start p-3 gap-3 w-full border-y border-gray-200">
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">제목</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ deleteTargetRow()?.title || '-' }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">타입</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ deleteTargetRow()?.type || '-' }}</span>
+        </div>
+        <div class="flex items-center justify-between w-full">
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-500">작성자</span>
+          <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-800">{{ deleteTargetRow()?.author || '-' }}</span>
+        </div>
+      </div>
+
+      <!-- 경고 메시지 -->
+      <div class="flex flex-col gap-1.5 text-center">
+        <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-gray-600 m-0">
+          삭제된 콘텐츠는 복구할 수 없으며,
+        </p>
+        <p class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-red-500 m-0">
+          수강생에게 사전 고지 없이 삭제 시 문의가 발생할 수 있습니다.
+        </p>
+      </div>
+
+      <!-- 버튼 -->
+      <div class="flex items-center justify-center gap-3 w-full">
+        <button class="flex-1 flex items-center justify-center h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"
+                (click)="closeDeleteDialog()">
+          취소
+        </button>
+        <button class="flex-1 flex items-center justify-center h-10 border-none rounded-xl bg-red-500 cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-red-600 transition-colors"
+                (click)="confirmDelete()">
+          삭제
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- ===== 카테고리 설정 사이드 드로어 ===== -->
 @if (showCategoryDrawer()) {
