@@ -3,11 +3,12 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
 @Component({
   selector: 'adm-assignment-register',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TextEditorComponent],
   templateUrl: './assignment-register.page.html',
   styleUrl: './assignment-register.page.css',
 })
@@ -40,17 +41,22 @@ export class AssignmentRegisterPage {
   editorContent = signal('');
 
   // 썸네일
-  thumbnailFile = signal<{ name: string; size: string } | null>(null);
+  thumbnailFile = signal<{ name: string; size: string; previewUrl: string } | null>(null);
 
   onThumbnailSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      this.thumbnailFile.set({ name: file.name, size: (file.size / 1024).toFixed(0) + 'KB' });
+      const previewUrl = URL.createObjectURL(file);
+      this.thumbnailFile.set({ name: file.name, size: (file.size / 1024).toFixed(0) + 'KB', previewUrl });
     }
   }
 
-  removeThumbnail(): void { this.thumbnailFile.set(null); }
+  removeThumbnail(): void {
+    const current = this.thumbnailFile();
+    if (current?.previewUrl) URL.revokeObjectURL(current.previewUrl);
+    this.thumbnailFile.set(null);
+  }
 
   // 학습 자료 (다중)
   materialFiles = signal<{ name: string; size: string }[]>([]);
@@ -77,11 +83,18 @@ export class AssignmentRegisterPage {
 
   async submit(): Promise<void> {
     if (this.isSubmitting()) return;
+    if (this.deadlineStart() && this.deadlineEnd() && this.deadlineStart() > this.deadlineEnd()) {
+      this.toast.error('시작일은 종료일보다 이후일 수 없습니다.');
+      return;
+    }
     this.isSubmitting.set(true);
     try {
       await this.api.assignments.create(this.courseId, {
         title: this.assignmentName(),
         content: this.editorContent(),
+        videoUrl: this.videoUrl(),
+        dueDate: this.deadlineStart() || undefined,
+        dueDateEnd: this.deadlineEnd() || undefined,
       } as any);
       this.toast.success('등록 완료 되었습니다.');
       this.location.back();

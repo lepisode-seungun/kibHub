@@ -48,6 +48,7 @@
                      class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400 outline-none focus:border-[#3C8EEE] focus:text-gray-800 transition-colors box-border"
                      style="height: 40px;"
                      [value]="deadlineStart()"
+                     [max]="deadlineEnd()"
                      (input)="deadlineStart.set($any($event.target).value)" />
             </div>
             <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">-</span>
@@ -56,6 +57,7 @@
                      class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-400 outline-none focus:border-[#3C8EEE] focus:text-gray-800 transition-colors box-border"
                      style="height: 40px;"
                      [value]="deadlineEnd()"
+                     [min]="deadlineStart()"
                      (input)="deadlineEnd.set($any($event.target).value)" />
             </div>
           </div>
@@ -80,54 +82,12 @@
         <!-- 내용 (에디터) -->
         <div class="flex flex-col gap-2 w-full">
           <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">내용</span>
-          <div class="flex flex-col w-full border border-gray-300 rounded-lg overflow-hidden">
-            <!-- 에디터 툴바 -->
-            <div class="flex items-start p-3 gap-4 bg-gray-50 border-b border-gray-100" style="border-radius: 8px 8px 0 0;">
-              <button class="flex items-center gap-1 bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15h3l1-3h6l1 3h3L11 3H9L3 15zm5.5-5L10 6l1.5 4H8.5z" fill="#6B7280"/></svg>
-                <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="#8A9099" stroke-width="1.2" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2h4.5L7 14H2.5L6 2z" stroke="#6B7280" stroke-width="1.5"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2h5a3 3 0 010 6H4V2zM4 8h6a3 3 0 010 6H4V8z" stroke="#6B7280" stroke-width="1.5"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 14h10M5 2v10M11 2v10" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M7 9a3 3 0 004.24-4.24L9 2.5M9 7a3 3 0 00-4.24 4.24L7 13.5" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#6B7280" stroke-width="1.2"/><path d="M7 12.5a3.5 3.5 0 0 0 6 0" stroke="#6B7280" stroke-width="1.2" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="2" stroke="#6B7280" stroke-width="1.5"/><circle cx="7" cy="8" r="1.5" stroke="#6B7280" stroke-width="1"/><path d="M2 14l4-4 3 3 3-3 6 4" stroke="#6B7280" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 5h11M6 10h11M6 15h11" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/><circle cx="3" cy="5" r="1" fill="#6B7280"/><circle cx="3" cy="10" r="1" fill="#6B7280"/><circle cx="3" cy="15" r="1" fill="#6B7280"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4h10M8 10h10M8 16h10" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/><path d="M3.75 5.5H2.875V2.875H2V2H3.75V5.5Z" fill="#6B7280"/><path d="M3.75 13.375H2V12.5H4.625V13.125L2.875 14.875H4.625V15.75H2V14.875L3.75 13.125Z" fill="#6B7280"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 4h16M2 8h12M2 12h16M2 16h12" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 4h16M5 8h10M2 12h16M5 16h10" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-              <button class="flex items-center bg-transparent border-none cursor-pointer p-0 opacity-80 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 4h16M6 8h12M2 12h16M6 16h12" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-            </div>
-            <!-- 에디터 본문 -->
-            <textarea class="w-full border-none outline-none resize-none p-4 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-300 bg-white box-border"
-                      style="min-height: 400px;"
-                      [value]="editorContent()"
-                      (input)="editorContent.set($any($event.target).value)"
-                      placeholder="내용을 입력해주세요"></textarea>
-          </div>
+          <adm-text-editor
+            placeholder="내용을 입력해주세요"
+            minHeight="400px"
+            [content]="editorContent()"
+            (contentChange)="editorContent.set($event)"
+          ></adm-text-editor>
         </div>
 
       </div>
@@ -168,7 +128,7 @@
           </label>
           @if (thumbnailFile()) {
             <div class="flex items-start gap-2.5 p-2.5 bg-white border border-[#E2E8F0] rounded-md">
-              <div class="w-[35px] h-[46px] rounded bg-gray-100 shrink-0"></div>
+              <img [src]="thumbnailFile()!.previewUrl" alt="썸네일 미리보기" class="w-[35px] h-[46px] rounded object-cover shrink-0" />
               <div class="flex items-center justify-between flex-1" style="min-height: 46px;">
                 <div class="flex flex-col gap-1">
                   <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ thumbnailFile()!.name }}</span>
@@ -195,7 +155,12 @@
           </label>
           @for (file of materialFiles(); track file.name; let i = $index) {
             <div class="flex items-start gap-2.5 p-2.5 bg-white border border-[#E2E8F0] rounded-md">
-              <div class="w-[35px] h-[46px] rounded bg-gray-100 shrink-0"></div>
+              <div class="flex items-center justify-center w-[35px] h-[46px] rounded bg-blue-50 shrink-0">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 2h8l4 4v10a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="#3C8EEE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 2v4h4" stroke="#3C8EEE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
               <div class="flex items-center justify-between flex-1" style="min-height: 46px;">
                 <div class="flex flex-col gap-1">
                   <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">{{ file.name }}</span>

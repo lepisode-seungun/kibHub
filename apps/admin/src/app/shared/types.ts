@@ -112,6 +112,11 @@ export interface PortfolioRow {
   bootcampName: string;
   createdAt: string;
   launchPlatform?: string;
+  workTitle?: string;
+  authorName?: string;
+  genre?: string;
+  workIntro?: string;
+  launchUrl?: string;
 }
 
 /** 공지사항 행 */

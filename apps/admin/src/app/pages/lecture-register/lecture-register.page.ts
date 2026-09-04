@@ -3,11 +3,12 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
 @Component({
   selector: 'adm-lecture-register',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TextEditorComponent],
   templateUrl: './lecture-register.page.html',
   styleUrl: './lecture-register.page.css',
 })
@@ -39,18 +40,21 @@ export class LectureRegisterPage {
   editorContent = signal('');
 
   // 썸네일 파일
-  thumbnailFile = signal<{ name: string; size: string } | null>(null);
+  thumbnailFile = signal<{ name: string; size: string; previewUrl: string } | null>(null);
 
   onThumbnailSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
       const sizeKB = (file.size / 1024).toFixed(0) + 'KB';
-      this.thumbnailFile.set({ name: file.name, size: sizeKB });
+      const previewUrl = URL.createObjectURL(file);
+      this.thumbnailFile.set({ name: file.name, size: sizeKB, previewUrl });
     }
   }
 
   removeThumbnail(): void {
+    const current = this.thumbnailFile();
+    if (current?.previewUrl) URL.revokeObjectURL(current.previewUrl);
     this.thumbnailFile.set(null);
   }
 

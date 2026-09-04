@@ -488,10 +488,6 @@ export type EnumContentStatusFieldUpdateOperationsInput = {
   set?: $Enums.ContentStatus
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }

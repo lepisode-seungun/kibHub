@@ -29,7 +29,7 @@
     <!-- 왼쪽 이미지 카드들 (동적) -->
     <div class="hero-cards hero-cards--left">
       <div class="flex flex-col gap-10 self-start">
-        @for (card of bannerLeftCol1(); track card.id; let i = $index) {
+        @for (card of bannerLeftCol1(); track $index; let i = $index) {
           <div class="hero-card"
                [class.opacity-20]="i === 0 || i === 2"
                [class.opacity-60]="i === 1"
@@ -38,7 +38,7 @@
         }
       </div>
       <div class="flex flex-col gap-10 mt-[285px]">
-        @for (card of bannerLeftCol2(); track card.id; let i = $index) {
+        @for (card of bannerLeftCol2(); track $index; let i = $index) {
           <div class="hero-card"
                [class.opacity-60]="i === 1"
                [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
@@ -49,19 +49,20 @@
 
     <!-- 오른쪽 이미지 카드들 (동적) -->
     <div class="hero-cards hero-cards--right">
-      <div class="flex flex-col gap-10 mt-[81px]">
-        @for (card of bannerRightCol1(); track card.id; let i = $index) {
+      <!-- 왼쪽 열: 2장 천장에서 내려오는 느낌 -->
+      <div class="flex flex-col gap-10" style="margin-top: -10px;">
+        @for (card of bannerRightCol2(); track $index; let i = $index) {
           <div class="hero-card"
-               [class.opacity-20]="i === 0 || i === 2"
-               [class.opacity-60]="i === 1"
+               [style.opacity]="i === 0 ? 0.25 : 1"
                [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
           </div>
         }
       </div>
-      <div class="flex flex-col gap-10 self-start">
-        @for (card of bannerRightCol2(); track card.id; let i = $index) {
+      <!-- 오른쪽 열: 3장 -->
+      <div class="flex flex-col gap-10 self-start" style="margin-top: 60px;">
+        @for (card of bannerRightCol1(); track $index; let i = $index) {
           <div class="hero-card"
-               [class.opacity-60]="i === 0"
+               [style.opacity]="i === 0 ? 0.9 : i === 1 ? 0.6 : 0.2"
                [style.background]="card.thumbnail ? 'url(' + card.thumbnail + ') center/cover no-repeat' : card.gradient">
           </div>
         }

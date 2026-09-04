@@ -83,7 +83,7 @@
       <!-- 에러 메시지 -->
       @if (showError()) {
         <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 w-[420px] max-w-full text-left">
-          아이디 또는 비밀번호가 올바르지 않습니다.
+          {{ errorMessage() }}
         </span>
       }
 

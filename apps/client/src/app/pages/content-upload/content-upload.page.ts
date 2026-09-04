@@ -56,6 +56,11 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   // 제출 상태
   isSubmitting = signal(false);
   formError = signal('');
+  categoryError = signal('');
+  titleError = signal('');
+  subDescError = signal('');
+  descError = signal('');
+  thumbError = signal('');
 
   // 타입 목록 (처음 3개)
   types: CategoryChip[] = [
@@ -102,10 +107,18 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   @ViewChild('thumbFileInput') thumbFileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('titleInput') titleInputRef!: ElementRef<HTMLInputElement>;
 
+  private readonly TYPE_MAP: Record<string, string> = {
+    webtoon: '웹툰',
+    image: '그림',
+    text: '글',
+  };
+
   ngOnInit(): void {
     document.body.classList.add('page-content-upload');
     this.route.paramMap.subscribe((params) => {
       this.contentType = params.get('type') || 'webtoon';
+      const mapped = this.TYPE_MAP[this.contentType];
+      if (mapped) this.selectedType.set(mapped);
     });
     this.loadCategories();
   }
@@ -507,15 +520,36 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   }
 
   async submitContent(): Promise<void> {
-    // 유효성 검사
+    // 인라인 에러 초기화
+    this.categoryError.set('');
+    this.titleError.set('');
+    this.subDescError.set('');
+    this.descError.set('');
+    this.thumbError.set('');
+    this.formError.set('');
+
+    let hasError = false;
+    if (!this.selectedCategory()) {
+      this.categoryError.set('카테고리를 선택해주세요.');
+      hasError = true;
+    }
     if (!this.title.trim()) {
-      this.formError.set('제목을 입력해주세요.');
-      return;
+      this.titleError.set('제목을 입력해주세요.');
+      hasError = true;
+    }
+    if (!this.subDescription.trim()) {
+      this.subDescError.set('설명을 입력해주세요.');
+      hasError = true;
     }
     if (!this.description.trim()) {
-      this.formError.set('내용을 입력해주세요.');
-      return;
+      this.descError.set('내용을 입력해주세요.');
+      hasError = true;
     }
+    if (!this.croppedThumbnailUrl()) {
+      this.thumbError.set('썸네일을 등록해주세요.');
+      hasError = true;
+    }
+    if (hasError) return;
 
     this.formError.set('');
     this.isSubmitting.set(true);

@@ -1,31 +1,33 @@
 <div class="editor-wrapper">
   <!-- 툴바 -->
   <div class="editor-toolbar">
-    <!-- 폰트 크기 드롭다운 -->
-    <div class="toolbar-group" style="position: relative;">
-      <button class="toolbar-btn font-size-btn" title="폰트 크기"
-              (mousedown)="$event.preventDefault(); toggleFontSizeMenu()">
-        <span class="font-suit font-medium text-sm text-gray-600">{{ currentFontSize() }}</span>
-        <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
-          <path d="M4.121 4.845L6.835 2.934C7.184 2.594 6.943 2 6.456 2H1.544C1.057 2 0.816 2.594 1.165 2.934L3.121 4.845C3.332 5.052 3.668 5.052 3.879 4.845Z" fill="#8A9099"/>
-        </svg>
-      </button>
-      @if (fontSizeOpen()) {
-        <div class="fontsize-dropdown">
-          @for (fs of fontSizes; track fs.value) {
-            <button class="fontsize-option"
-                    [class.active]="currentFontSize() === fs.value"
-                    (mousedown)="$event.preventDefault()"
-                    (click)="setFontSize(fs.value)">
-              {{ fs.label }}
-            </button>
-          }
-        </div>
-      }
-    </div>
 
-    <div class="toolbar-divider"></div>
+    @if (showFontSize()) {
+      <!-- 폰트 크기 드롭다운 -->
+      <div class="toolbar-group" style="position: relative;">
+        <button class="toolbar-btn font-size-btn" title="폰트 크기"
+                (mousedown)="$event.preventDefault(); toggleFontSizeMenu()">
+          <span class="font-suit font-medium text-sm text-gray-600">{{ currentFontSize() }}</span>
+          <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+            <path d="M4.121 4.845L6.835 2.934C7.184 2.594 6.943 2 6.456 2H1.544C1.057 2 0.816 2.594 1.165 2.934L3.121 4.845C3.332 5.052 3.668 5.052 3.879 4.845Z" fill="#8A9099"/>
+          </svg>
+        </button>
+        @if (fontSizeOpen()) {
+          <div class="fontsize-dropdown">
+            @for (fs of fontSizes; track fs.value) {
+              <button class="fontsize-option"
+                      [class.active]="currentFontSize() === fs.value"
+                      (mousedown)="$event.preventDefault()"
+                      (click)="setFontSize(fs.value)">
+                {{ fs.label }}
+              </button>
+            }
+          </div>
+        }
+      </div>
 
+      <div class="toolbar-divider"></div>
+    }
     <!-- 텍스트 서식 -->
     <div class="toolbar-group">
       <button class="toolbar-btn" [class.active]="isItalic()" title="기울임" (click)="toggleItalic()">
@@ -47,18 +49,45 @@
 
     <div class="toolbar-divider"></div>
 
-    <!-- 링크 -->
+    <!-- 글 색상 -->
+    <div class="toolbar-group" style="position: relative;">
+      <button class="toolbar-btn" title="글 색상"
+              (mousedown)="$event.preventDefault(); toggleColorPalette()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6.2 1h3.6L14 13h-2.6l-1-2.6H5.6L4.6 13H2L6.2 1zm1.8 2.4L5.9 9h4.2L8 3.4z" fill="#6B7280"/>
+          <rect x="0" y="14" width="16" height="2" rx="0.5" [attr.fill]="currentColor()"/>
+        </svg>
+      </button>
+      @if (colorPaletteOpen()) {
+        <div class="color-palette">
+          @for (color of colorOptions; track color) {
+            <button class="color-swatch"
+                    [style.background-color]="color"
+                    [class.active]="currentColor() === color"
+                    [title]="color"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="setTextColor(color)">
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- 이미지 업로드 -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" title="링크" (click)="insertLink()">
+      <button class="toolbar-btn" title="이미지 삽입"
+              (mousedown)="$event.preventDefault()"
+              (click)="imageFileInput.click()">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M11.479 0C10.283 -0.01 9.131 0.448 8.271 1.275L6.953 2.579C6.658 2.871 6.657 3.346 6.95 3.64C7.243 3.934 7.72 3.935 8.015 3.643L9.321 2.35C9.896 1.799 10.666 1.493 11.466 1.5C12.267 1.507 13.033 1.827 13.599 2.391C14.165 2.955 14.487 3.718 14.494 4.515C14.5 5.311 14.194 6.077 13.64 6.65L11.361 8.921C11.051 9.229 10.678 9.468 10.268 9.62C9.858 9.772 9.419 9.835 8.982 9.804C8.545 9.773 8.12 9.648 7.736 9.439C7.351 9.23 7.017 8.941 6.754 8.592C6.505 8.26 6.033 8.193 5.7 8.441C5.367 8.689 5.299 9.159 5.548 9.49C5.94 10.012 6.44 10.443 7.014 10.756C7.587 11.068 8.222 11.254 8.875 11.3C9.527 11.347 10.182 11.253 10.794 11.025C11.407 10.798 11.964 10.442 12.426 9.981L14.711 7.706L14.72 7.697C15.551 6.84 16.01 5.693 16 4.502C15.989 3.311 15.51 2.172 14.664 1.33C13.818 0.488 12.675 0.011 11.479 0ZM7.125 4.7C6.473 4.653 5.818 4.747 5.206 4.975C4.593 5.202 4.036 5.559 3.574 6.019L1.289 8.294L1.28 8.303C0.449 9.16 -0.01 10.307 0 11.498C0.011 12.689 0.49 13.828 1.336 14.67C2.182 15.512 3.325 15.99 4.521 16C5.717 16.01 6.869 15.553 7.73 14.725L9.041 13.419C9.335 13.126 9.335 12.652 9.041 12.359C8.747 12.066 8.27 12.066 7.976 12.359L6.679 13.651C6.103 14.202 5.333 14.507 4.534 14.5C3.733 14.493 2.967 14.173 2.401 13.609C1.835 13.045 1.513 12.282 1.506 11.485C1.5 10.689 1.806 9.923 2.36 9.35L4.639 7.08C4.949 6.771 5.322 6.533 5.732 6.38C6.142 6.228 6.581 6.165 7.018 6.196C7.455 6.227 7.88 6.352 8.264 6.561C8.649 6.77 8.983 7.059 9.246 7.408C9.495 7.74 9.967 7.808 10.3 7.559C10.633 7.311 10.701 6.841 10.452 6.51C10.06 5.988 9.56 5.557 8.986 5.244C8.413 4.932 7.778 4.746 7.125 4.7Z" fill="#6B7280"/>
+          <rect x="1" y="2" width="14" height="12" rx="2" stroke="#6B7280" stroke-width="1.3"/>
+          <circle cx="5" cy="6" r="1.5" stroke="#6B7280" stroke-width="1"/>
+          <path d="M1 12l3.5-4 2.5 2.5 2.5-3L14 12" stroke="#6B7280" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button class="toolbar-btn" title="이모지">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 0C12.417 0 16 3.582 16 7.999C16 12.418 12.417 16 8 16C3.582 16 0 12.418 0 8C0 3.582 3.582 0 8 0ZM8 1.667C4.502 1.667 1.667 4.501 1.667 7.999C1.667 11.497 4.503 14.332 8 14.332C11.497 14.332 14.334 11.498 14.334 8C14.334 4.502 11.497 1.667 8 1.667ZM4.387 9.106C4.697 8.952 5.067 9.077 5.224 9.381C5.26 9.448 5.96 10.707 8.001 10.707C10.053 10.707 10.749 9.435 10.777 9.38C10.938 9.078 11.315 8.959 11.617 9.113C11.922 9.27 12.046 9.64 11.893 9.945C11.85 10.031 10.853 11.957 8.001 11.957C5.151 11.957 4.152 10.034 4.107 9.946C3.953 9.637 4.078 9.261 4.387 9.106ZM5.917 4.875C6.607 4.875 7.167 5.528 7.167 6.333C7.167 7.139 6.608 7.792 5.918 7.792C5.227 7.792 4.667 7.139 4.667 6.333C4.667 5.527 5.227 4.875 5.917 4.875ZM10.083 4.875C10.773 4.875 11.333 5.527 11.333 6.333C11.333 7.139 10.774 7.792 10.083 7.792C9.393 7.792 8.833 7.138 8.833 6.333C8.833 5.528 9.393 4.875 10.083 4.875Z" fill="#6B7280"/>
-        </svg>
-      </button>
+      <input type="file" accept="image/*" class="hidden" #imageFileInput
+             (change)="onImageUpload($event)" />
     </div>
 
     <div class="toolbar-divider"></div>

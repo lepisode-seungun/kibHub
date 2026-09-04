@@ -1,0 +1,11 @@
+// ===== 관리자 (회원과 분리) =====
+model Admin {
+  id        Int         @id @default(autoincrement())
+  loginId   String      @unique
+  password  String
+  name      String
+  role      AdminRole   @default(NORMAL)
+  status    UserStatus  @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

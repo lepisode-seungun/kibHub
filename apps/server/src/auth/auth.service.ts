@@ -15,7 +15,8 @@ export class AuthService {
 
   verifyToken(token: string): { userId: number } | null {
     try {
-      return jwt.verify(token, JWT_SECRET) as { userId: number };
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      return { userId: decoded.userId || decoded.adminId };
     } catch {
       return null;
     }
@@ -41,6 +42,7 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
+    if (user.status === 'BLOCKED') throw new Error('차단된 계정입니다. 관리자에게 문의하세요.');
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
@@ -58,7 +60,7 @@ export class AuthService {
       where: { id },
       select: {
         id: true, email: true, nickname: true, name: true, phone: true,
-        countryCode: true, birthday: true, intro: true, profileImage: true,
+        countryCode: true, birthday: true, intro: true, profileImage: true, coverImage: true,
         role: true, status: true, adminRole: true,
         sns: true,
       },

@@ -5,12 +5,13 @@
     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-[5]">
       <div class="flex flex-col items-start gap-2">
         <div class="flex items-center gap-3">
-          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6]">배경 변경</button>
+          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6]" (click)="triggerCoverUpload()">배경 변경</button>
           <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-transparent border border-zinc-500 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-white/10" (click)="resetToDefaultCover()">기본 이미지로 변경</button>
         </div>
         <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-white/50 ml-16">권장 사이즈 : 1920x300</span>
       </div>
     </div>
+    <input type="file" #coverInput accept="image/*" class="hidden" (change)="onCoverFileSelected($event)" />
   </div>
 
 
@@ -50,12 +51,12 @@
     <div class="pf-follow-stats">
       <div class="pf-follow-row">
         <div class="pf-follow-item">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">1,345</span>
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">0</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">팔로잉</span>
         </div>
         <span class="pf-follow-divider"></span>
         <div class="pf-follow-item">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">42</span>
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">0</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">팔로워</span>
         </div>
       </div>
@@ -123,39 +124,34 @@
       <div class="pf-activity-grid">
         <div class="pf-activity-row">
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">12</span>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ albums().length }}</span>
             <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">앨범</span>
           </div>
           <span class="pf-activity-divider"></span>
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">545</span>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ contents().length }}</span>
             <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">콘텐츠</span>
           </div>
           <span class="pf-activity-divider"></span>
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">2</span>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ categories().length }}</span>
             <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">책갈피</span>
           </div>
         </div>
         <div class="pf-activity-row">
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">12</span>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">포트폴리오</span>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ feedbackCount() }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">피드백 댓글</span>
           </div>
           <span class="pf-activity-divider"></span>
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">545</span>
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">의뢰 방문</span>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ generalCount() }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">일반 댓글</span>
           </div>
           <span class="pf-activity-divider"></span>
           <div class="pf-activity-item">
-            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">2</span>
-            <div class="flex items-center gap-1">
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">좋아요</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-              </svg>
-            </div>
+            <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ receivedLikes() }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">좋아요</span>
           </div>
         </div>
       </div>

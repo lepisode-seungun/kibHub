@@ -38,20 +38,23 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string): Promise<boolean> {
+  async login(loginId: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/admins/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ loginId, password }),
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        return { success: false, error: data.error || '로그인에 실패했습니다.' };
+      }
       const data = await res.json();
       this._currentUser.set(data.user);
-      return true;
+      return { success: true };
     } catch {
-      return false;
+      return { success: false, error: '서버에 연결할 수 없습니다.' };
     }
   }
 

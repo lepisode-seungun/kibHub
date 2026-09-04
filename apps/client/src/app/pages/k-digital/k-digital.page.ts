@@ -7,7 +7,7 @@ export interface BootcampCard {
   id: number;
   name: string;
   summary: string;
-  status: 'recruiting' | 'closed';
+  status: string;
   statusText: string;
   deadline: string | null;
   thumbnailGradient: string;
@@ -70,22 +70,33 @@ export class KDigitalPage implements OnInit, OnDestroy {
     }
   }
 
+  private readonly STATUS_MAP: Record<string, { status: string; text: string }> = {
+    PREPARING: { status: 'preparing', text: '준비중' },
+    RECRUITING: { status: 'recruiting', text: '모집중' },
+    OPERATING: { status: 'operating', text: '운영중' },
+    CLOSED: { status: 'closed', text: '마감' },
+    ENDED: { status: 'ended', text: '종료' },
+  };
+
   async loadMore(): Promise<void> {
     if (this.isLoading() || !this.hasMore()) return;
     this.isLoading.set(true);
 
     try {
       const result = await this.api.bootcamps.findPaged(this.currentPage, this.pageSize);
-      const newCards = result.data.map((b, i) => ({
-        id: b.id,
-        name: b.name,
-        summary: b.description || '',
-        status: b.status === 'RECRUITING' ? 'recruiting' as const : 'closed' as const,
-        statusText: b.status === 'RECRUITING' ? '모집중' : '모집마감',
-        deadline: null,
-        thumbnailGradient: this.gradients[(this.bootcampCards().length + i) % this.gradients.length],
-        thumbnailUrl: b.thumbnail || null,
-      }));
+      const newCards = result.data.map((b, i) => {
+        const mapped = this.STATUS_MAP[b.status] || { status: 'closed', text: b.status };
+        return {
+          id: b.id,
+          name: b.name,
+          summary: b.description || '',
+          status: mapped.status,
+          statusText: mapped.text,
+          deadline: null,
+          thumbnailGradient: this.gradients[(this.bootcampCards().length + i) % this.gradients.length],
+          thumbnailUrl: b.thumbnail || null,
+        };
+      });
 
       this.bootcampCards.update(prev => [...prev, ...newCards]);
       this.hasMore.set(this.currentPage < result.meta.totalPages);

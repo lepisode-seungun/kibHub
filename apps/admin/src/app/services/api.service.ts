@@ -48,6 +48,25 @@ export class ApiService {
     updateRole: (id: number, role: string): Promise<User> => this.patch<User>(`/users/${id}/role`, { role }),
     delete: (id: number): Promise<void> => this.del<void>(`/users/${id}`),
     findBootcamps: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/bootcamps`),
+    findContents: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/contents`),
+    findComments: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/comments`),
+  };
+
+  // ===== Admins (분리된 관리자 테이블) =====
+  readonly admins = {
+    findAll: (): Promise<any[]> => this.get<any[]>('/admins'),
+    findOne: (id: number): Promise<any> => this.get<any>(`/admins/${id}`),
+    create: (data: { loginId: string; password: string; name: string; role?: string }): Promise<any> =>
+      this.post<any>('/admins', data),
+    update: (id: number, data: { name?: string; role?: string; loginId?: string }): Promise<any> =>
+      this.patch<any>(`/admins/${id}`, data),
+    block: (id: number, status: 'ACTIVE' | 'BLOCKED'): Promise<any> =>
+      this.patch<any>(`/admins/${id}/block`, { status }),
+    delete: (id: number): Promise<void> => this.del<void>(`/admins/${id}`),
+    checkLoginId: (loginId: string): Promise<{ available: boolean }> =>
+      this.post<{ available: boolean }>('/admins/check-login-id', { loginId }),
+    login: (data: { loginId: string; password: string }): Promise<any> =>
+      this.post<any>('/admins/login', data),
   };
 
   // ===== Bootcamps =====

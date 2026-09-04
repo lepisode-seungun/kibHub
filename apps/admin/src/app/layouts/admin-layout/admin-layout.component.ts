@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
+import { ApiService } from '../../services/api.service';
 
 interface NavItem {
   label: string;
@@ -22,9 +23,11 @@ interface NavItem {
 export class AdminLayoutComponent implements OnInit {
   private router = inject(Router);
   readonly bootcampCtx = inject(BootcampContextService);
+  private api = inject(ApiService);
 
   expandedMenus = signal<Set<string>>(new Set());
   navMode = signal<'main' | 'bootcampHome'>('main');
+  profileDropdownOpen = signal(false);
 
   roleName = '최고관리자';
   roleLabel = '권한';
@@ -124,9 +127,18 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   private syncFromUrl(url: string): void {
-    // bootcamp/home 경로면 자동으로 bootcampHome 모드 전환
-    if (url.startsWith('/bootcamp/home') && this.bootcampCtx.currentBootcampId()) {
-      this.navMode.set('bootcampHome');
+    if (url.startsWith('/bootcamp/home')) {
+      // bootcamp/home 경로 → bootcampHome 모드 (context가 있으면 전환, 없으면 목록으로 리다이렉트)
+      if (this.bootcampCtx.currentBootcampId()) {
+        this.navMode.set('bootcampHome');
+      } else {
+        this.navMode.set('main');
+        this.router.navigate(['/bootcamp']);
+        return;
+      }
+    } else if (this.navMode() === 'bootcampHome') {
+      // bootcamp/home 밖 → main 모드로 복구 (context는 유지하여 앞으로가기 대비)
+      this.navMode.set('main');
     }
 
     const match = this.findBestMatch(url);
@@ -181,5 +193,17 @@ export class AdminLayoutComponent implements OnInit {
     }
     this.currentMenuTitle = label;
     this.router.navigate([route]);
+  }
+
+  toggleProfileDropdown(): void {
+    this.profileDropdownOpen.update(v => !v);
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await this.api.auth.logout();
+    } catch { /* ignore */ }
+    this.profileDropdownOpen.set(false);
+    this.router.navigate(['/login']);
   }
 }

@@ -92,11 +92,15 @@ export class ApplicantsService {
     });
   }
 
-  updateStatus(id: number, status: 'PENDING' | 'ACCEPTED' | 'REJECTED') {
+  async remove(id: number) {
+    return this.prisma.applicant.delete({ where: { id } });
+  }
+
+  async updateStatus(id: number, status: 'PENDING' | 'ACCEPTED' | 'WAITING' | 'COMPLETED' | 'REJECTED') {
     return this.prisma.applicant.update({ where: { id }, data: { status } });
   }
 
-  bulkUpdateStatus(ids: number[], status: 'ACCEPTED' | 'REJECTED') {
+  async bulkUpdateStatus(ids: number[], status: 'ACCEPTED' | 'WAITING' | 'COMPLETED' | 'REJECTED') {
     return this.prisma.applicant.updateMany({
       where: { id: { in: ids } },
       data: { status },
@@ -104,7 +108,7 @@ export class ApplicantsService {
   }
 
   /**
-   * 관리자 초대: 이메일로 유저를 찾아 해당 부트캠프에 ACCEPTED 상태로 등록
+   * 관리자 초대: 이메일로 유저를 찾아 해당 부트캠프에 합격(ACCEPTED) 상태로 등록
    */
   async invite(bootcampId: number, email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });

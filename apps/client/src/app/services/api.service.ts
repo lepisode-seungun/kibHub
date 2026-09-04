@@ -160,12 +160,15 @@ export class ApiService {
     },
     findOne: (id: number): Promise<User> => this.get<User>(`/users/${id}`),
     update: (id: number, data: UpdateUserDto): Promise<User> => this.patch<User>(`/users/${id}`, data),
+    commentStats: (id: number): Promise<{ feedbackCount: number; generalCount: number; receivedLikes: number }> =>
+      this.get(`/users/${id}/comment-stats`),
   };
 
   // ===== Comments =====
   readonly comments = {
     findByContent: (contentId: number): Promise<Comment[]> => this.get<Comment[]>(`/contents/${contentId}/comments`),
     findRecent: (take = 10): Promise<any[]> => this.get<any[]>(`/comments/recent?take=${take}`),
+    findBest: (take = 10): Promise<any[]> => this.get<any[]>(`/comments/best?take=${take}`),
     create: (contentId: number, data: { body: string; images?: string[]; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }): Promise<Comment> => this.post<Comment>(`/contents/${contentId}/comments`, data),
     update: (id: number, data: { body?: string }): Promise<Comment> => this.patch<Comment>(`/comments/${id}`, data),
     delete: (id: number): Promise<any> => this.del(`/comments/${id}`),

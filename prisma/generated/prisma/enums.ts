@@ -12,6 +12,8 @@
 export const ApplicantStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
+  WAITING: 'WAITING',
+  COMPLETED: 'COMPLETED',
   REJECTED: 'REJECTED'
 } as const
 

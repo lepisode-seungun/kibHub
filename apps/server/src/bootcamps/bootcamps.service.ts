@@ -37,8 +37,29 @@ export class BootcampsService {
     return this.prisma.bootcamp.create({ data: data as Prisma.BootcampCreateInput });
   }
 
-  update(id: number, data: Partial<CreateBootcampDto>) {
-    return this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
+  async update(id: number, data: Partial<CreateBootcampDto>) {
+    const updated = await this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
+
+    // 부트캠프 상태 변경 시 수강생 상태 자동 전환
+    if ((data as any).status) {
+      const newStatus = (data as any).status;
+
+      if (newStatus === 'ENDED') {
+        // 종료 → 합격(ACCEPTED)만 수료(COMPLETED)로 자동 전환
+        await this.prisma.applicant.updateMany({
+          where: { bootcampId: id, status: 'ACCEPTED' },
+          data: { status: 'COMPLETED' },
+        });
+      } else if (newStatus === 'OPERATING') {
+        // 운영으로 원복 → 수료(COMPLETED)를 합격(ACCEPTED)으로 되돌림
+        await this.prisma.applicant.updateMany({
+          where: { bootcampId: id, status: 'COMPLETED' },
+          data: { status: 'ACCEPTED' },
+        });
+      }
+    }
+
+    return updated;
   }
 
   async delete(id: number) {

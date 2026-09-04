@@ -10,6 +10,7 @@ model User {
   birthday      String?
   intro         String      @default("")
   profileImage  String?
+  coverImage    String?
   role          UserRole    @default(STUDENT)
   status        UserStatus  @default(ACTIVE)
   // 관리자 전용

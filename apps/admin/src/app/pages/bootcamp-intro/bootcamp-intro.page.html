@@ -53,6 +53,7 @@
     <div class="flex flex-col gap-4">
       <adm-text-editor
         placeholder="소개 내용을 입력하세요."
+        [showFontSize]="true"
         [content]="academyIntroContent()"
         (contentChange)="onAcademyIntroChange($event)"
       ></adm-text-editor>
@@ -249,13 +250,13 @@
                     </svg>
                   </button>
                   @if (activeYearMenu() === group.year) {
-                    <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 flex flex-col p-2 gap-1 bg-white rounded-md z-[100]"
-                         style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); min-width: 64px;">
-                      <button class="flex items-center justify-center px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    <div class="absolute left-1/2 -translate-x-1/2 top-full mt-1 flex flex-col p-1 gap-0.5 bg-white rounded-md z-[100]"
+                         style="box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06); min-width: 56px;">
+                      <button class="flex items-center justify-center px-1 py-1.5 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
                               (click)="onYearAction(group.year, '수정')">
                         수정
                       </button>
-                      <button class="flex items-center justify-center px-3 py-2 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-gray-700 hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                      <button class="flex items-center justify-center px-1 py-1.5 rounded-md border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] bg-white text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
                               (click)="onYearAction(group.year, '삭제')">
                         삭제
                       </button>
@@ -266,7 +267,14 @@
 
               <!-- 히스토리 항목들 -->
               @for (item of group.items; track $index) {
-                <div class="flex items-center border-b border-gray-200 relative"
+                <div class="flex items-center border-b border-gray-200 relative transition-all duration-150"
+                     [class.opacity-50]="dragItemYear === group.year && dragItemIndex === $index"
+                     [class.bg-blue-50]="dragItemYear === group.year && dragItemIndex !== $index && dragItemIndex !== null"
+                     draggable="true"
+                     (dragstart)="onDragStart(group.year, $index, $event)"
+                     (dragover)="onDragOver($event)"
+                     (drop)="onDrop(group.year, $index, $event)"
+                     (dragend)="onDragEnd()"
                      (contextmenu)="toggleHistoryItemMenu(group.year, $index, $event)">
                   <!-- 체크박스 -->
                   <div class="flex items-center justify-center w-[52px] py-2 px-4">
@@ -296,18 +304,18 @@
                         <circle cx="8" cy="13" r="1.5" fill="#6B7280"/>
                       </svg>
                     </button>
-                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none" style="cursor: grab;">
                       <path d="M0 0h18v2H0zM0 5h18v2H0zM0 10h18v2H0z" fill="#6B7280"/>
                     </svg>
 
                     <!-- 드롭다운 메뉴 -->
                     @if (activeHistoryItemMenu()?.year === group.year && activeHistoryItemMenu()?.index === $index) {
-                      <div class="absolute top-full right-0 mt-1 w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
-                        <button class="w-full px-4 py-2 text-left font-suit font-medium text-sm text-gray-700 bg-transparent border-none cursor-pointer hover:bg-gray-50 transition-colors"
+                      <div class="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[80px] bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+                        <button class="w-full px-1 py-1.5 text-center font-suit font-medium text-sm text-gray-700 bg-transparent border-none cursor-pointer hover:bg-gray-50 transition-colors"
                                 (click)="onHistoryItemAction(group.year, item, '수정')">
                           수정
                         </button>
-                        <button class="w-full px-4 py-2 text-left font-suit font-medium text-sm text-red-500 bg-transparent border-none cursor-pointer hover:bg-gray-50 transition-colors"
+                        <button class="w-full px-1 py-1.5 text-center font-suit font-medium text-sm text-red-500 bg-transparent border-none cursor-pointer hover:bg-gray-50 transition-colors"
                                 (click)="onHistoryItemAction(group.year, item, '삭제')">
                           삭제
                         </button>

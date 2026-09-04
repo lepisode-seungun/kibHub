@@ -1,4 +1,4 @@
-import { Inject, Controller, Get, Post, Patch, Param, Body, ParseIntPipe, Req } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApplicantsService } from './applicants.service';
 import { AuthService } from '../auth/auth.service';
@@ -53,13 +53,13 @@ export class ApplicantsController {
   @Patch('applicants/:id/status')
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { status: 'PENDING' | 'ACCEPTED' | 'REJECTED' },
+    @Body() body: { status: 'PENDING' | 'ACCEPTED' | 'WAITING' | 'COMPLETED' | 'REJECTED' },
   ) {
     return this.applicantsService.updateStatus(id, body.status);
   }
 
   @Patch('applicants/bulk-status')
-  bulkUpdateStatus(@Body() body: { ids: number[]; status: 'ACCEPTED' | 'REJECTED' }) {
+  bulkUpdateStatus(@Body() body: { ids: number[]; status: 'ACCEPTED' | 'WAITING' | 'COMPLETED' | 'REJECTED' }) {
     return this.applicantsService.bulkUpdateStatus(body.ids, body.status);
   }
 
@@ -69,5 +69,10 @@ export class ApplicantsController {
     @Body() body: { email: string },
   ) {
     return this.applicantsService.invite(bootcampId, body.email);
+  }
+
+  @Delete('applicants/:id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.applicantsService.remove(id);
   }
 }

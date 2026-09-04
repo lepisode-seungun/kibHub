@@ -15,5 +15,7 @@ model Applicant {
 enum ApplicantStatus {
   PENDING
   ACCEPTED
+  WAITING
+  COMPLETED
   REJECTED
 }

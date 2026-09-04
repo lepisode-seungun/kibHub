@@ -18,6 +18,7 @@ export class LoginPage {
   password = '';
   autoLogin = signal(false);
   showError = signal(false);
+  errorMessage = signal('아이디 또는 비밀번호가 올바르지 않습니다.');
 
   roleName = '채용대행사';
   roleLabel = '권한';
@@ -38,10 +39,11 @@ export class LoginPage {
 
   async onLogin(): Promise<void> {
     if (!this.email || !this.password) return;
-    const success = await this.authService.login(this.email, this.password);
-    if (success) {
+    const result = await this.authService.login(this.email, this.password);
+    if (result.success) {
       this.router.navigate(['/members']);
     } else {
+      this.errorMessage.set(result.error || '아이디 또는 비밀번호가 올바르지 않습니다.');
       this.showError.set(true);
     }
   }

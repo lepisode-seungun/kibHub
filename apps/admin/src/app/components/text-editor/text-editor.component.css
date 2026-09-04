@@ -65,7 +65,7 @@
 /* 에디터 콘텐츠 영역 */
 .editor-content {
   padding: 16px;
-  background: #FFFFFF;
+  background: #D9D9D9;
   font-family: 'SUIT', sans-serif;
   font-weight: 500;
   font-size: 14px;
@@ -128,6 +128,48 @@
   background: #EFF6FF;
   color: #3C8EEE;
   font-weight: 600;
+}
+
+/* 색상 팔레트 드롭다운 */
+.color-palette {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 148px;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.color-swatch[style*="background-color: #FFFFFF"],
+.color-swatch[style*="background-color: rgb(255, 255, 255)"] {
+  border-color: #D1D5DB;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.color-swatch.active {
+  border-color: #3C8EEE;
+  box-shadow: 0 0 0 1px #3C8EEE;
 }
 
 /* 에디터 내 heading 스타일 */

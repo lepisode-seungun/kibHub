@@ -1,7 +1,6 @@
-import { Inject, Controller, Get, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { AuthGuard } from '../auth/auth.guard';
 import { UpdateUserDto } from '@kibhub/shared';
 
 @ApiTags('users')
@@ -14,25 +13,33 @@ export class UsersController {
     return this.usersService.findAll(query);
   }
 
+  @Post('admin')
+  createAdmin(@Body() body: { loginId: string; password: string; name: string; adminRole?: string }) {
+    return this.usersService.createAdmin(body);
+  }
+
+  @Post('check-login-id')
+  async checkLoginId(@Body() body: { loginId: string }) {
+    const available = await this.usersService.checkLoginId(body.loginId);
+    return { available };
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard)
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto) {
     return this.usersService.update(id, data);
   }
 
   @Patch(':id/block')
-  @UseGuards(AuthGuard)
   updateStatus(@Param('id', ParseIntPipe) id: number, @Body() body: { status: 'ACTIVE' | 'BLOCKED' }) {
     return this.usersService.updateStatus(id, body.status);
   }
 
   @Patch(':id/role')
-  @UseGuards(AuthGuard)
   updateRole(@Param('id', ParseIntPipe) id: number, @Body() body: { role: string }) {
     return this.usersService.updateRole(id, body.role);
   }
@@ -42,8 +49,22 @@ export class UsersController {
     return this.usersService.findUserBootcamps(id);
   }
 
+  @Get(':id/contents')
+  findUserContents(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findUserContents(id);
+  }
+
+  @Get(':id/comments')
+  findUserComments(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findUserComments(id);
+  }
+
+  @Get(':id/comment-stats')
+  findUserCommentStats(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findUserCommentStats(id);
+  }
+
   @Delete(':id')
-  @UseGuards(AuthGuard)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);
   }

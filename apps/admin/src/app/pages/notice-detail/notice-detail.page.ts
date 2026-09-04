@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -40,6 +40,9 @@ export class NoticeDetailPage implements OnInit {
   // ?�보�?메뉴
   moreMenuOpen = signal(false);
   toggleMoreMenu(event: Event): void { event.stopPropagation(); this.moreMenuOpen.update(v => !v); }
+
+  @HostListener('document:click')
+  onDocumentClick(): void { this.moreMenuOpen.set(false); }
 
   // 공지 데이터
   noticeId = 0;

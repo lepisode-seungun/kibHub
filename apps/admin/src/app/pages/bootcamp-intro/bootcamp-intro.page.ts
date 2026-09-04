@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, computed, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
@@ -405,6 +405,15 @@ export class BootcampIntroPage implements OnInit {
     this.activeYearMenu.set(null);
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocClickIntro(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-wrapper') && !target.closest('.relative')) {
+      this.activeYearMenu.set(null);
+      this.activeHistoryItemMenu.set(null);
+    }
+  }
+
   // ===== 히스토리 연도 드로어 =====
   showYearDrawer = signal(false);
   yearDrawerMode = signal<'add' | 'edit'>('add');
@@ -544,6 +553,70 @@ export class BootcampIntroPage implements OnInit {
       this.historyData.set(data);
     } catch (e) {
       console.error('히스토리 로드 실패:', e);
+    }
+  }
+
+  // ===== 히스토리 드래그앤드롭 =====
+  dragItemYear: string | null = null;
+  dragItemIndex: number | null = null;
+
+  onDragStart(year: string, index: number, event: DragEvent): void {
+    this.dragItemYear = year;
+    this.dragItemIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', `${year}:${index}`);
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDrop(year: string, targetIndex: number, event: DragEvent): void {
+    event.preventDefault();
+    if (this.dragItemYear !== year || this.dragItemIndex === null || this.dragItemIndex === targetIndex) {
+      this.dragItemYear = null;
+      this.dragItemIndex = null;
+      return;
+    }
+
+    const group = this.historyData().find(g => g.year === year);
+    if (!group) return;
+
+    const items = [...group.items];
+    const [moved] = items.splice(this.dragItemIndex, 1);
+    items.splice(targetIndex, 0, moved);
+
+    // 로컬 상태 즉시 업데이트
+    this.historyData.update(data =>
+      data.map(g => g.year === year ? { ...g, items } : g)
+    );
+
+    // DB sortOrder 업데이트
+    this.updateHistorySortOrder(items);
+
+    this.dragItemYear = null;
+    this.dragItemIndex = null;
+  }
+
+  onDragEnd(): void {
+    this.dragItemYear = null;
+    this.dragItemIndex = null;
+  }
+
+  private async updateHistorySortOrder(items: any[]): Promise<void> {
+    try {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].id) {
+          await this.api.histories.update(items[i].id, { displayOrder: i });
+        }
+      }
+    } catch (e) {
+      console.error('순서 저장 실패:', e);
     }
   }
 

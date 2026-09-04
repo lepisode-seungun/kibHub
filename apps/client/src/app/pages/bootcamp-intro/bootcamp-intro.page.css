@@ -155,16 +155,34 @@
   white-space: nowrap;
 }
 
+/* 준비중 */
+.status-badge--preparing {
+  background: #3F3F46;
+  color: #A1A1AA;
+}
+
 /* 모집중 */
 .status-badge--recruiting {
   background: #7A48FF;
   color: #FFFFFF;
 }
 
-/* 모집마감 */
+/* 운영중 */
+.status-badge--operating {
+  background: #059669;
+  color: #FFFFFF;
+}
+
+/* 마감 */
 .status-badge--closed {
   background: #52525B;
   color: #E4E4E7;
+}
+
+/* 종료 */
+.status-badge--ended {
+  background: #EF4444;
+  color: #FFFFFF;
 }
 
 /* 마감일 뱃지 */
@@ -551,11 +569,13 @@
 }
 
 .grid-img {
+  flex: 1;
   height: 100%;
   border-radius: 6px;
   background-size: cover;
   background-position: center;
   min-width: 0;
+  display: block;
 }
 
 /* 그리드 4방향 페이드 */

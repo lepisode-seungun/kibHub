@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -43,6 +43,9 @@ export class CourseDetailPage implements OnInit {
   toggleMoreMenu(): void { this.moreMenuOpen.update(v => !v); }
   closeMoreMenu(): void { this.moreMenuOpen.set(false); }
 
+  @HostListener('document:click')
+  onDocumentClick(): void { this.moreMenuOpen.set(false); this.lectureMenuOpen.set(false); }
+
   async onMoreMenuAction(action: string): Promise<void> {
     this.moreMenuOpen.set(false);
     if (action === 'hide') {
@@ -82,12 +85,12 @@ export class CourseDetailPage implements OnInit {
       const rows: LectureAssignmentRow[] = [];
       if (c.lectures) {
         c.lectures.forEach((l: any) => {
-          rows.push({ id: l.id, type: '강의', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
+          rows.push({ id: l.id, type: '강의', thumbnail: this.getVideoThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
         });
       }
       if (c.assignments) {
         c.assignments.forEach((a: Assignment) => {
-          rows.push({ id: a.id, type: '과제', thumbnail: '', name: a.title, createdAt: formatDate(a.createdAt) });
+          rows.push({ id: a.id, type: '과제', thumbnail: this.getVideoThumbnail(a.videoUrl || ''), name: a.title, createdAt: formatDate(a.createdAt) });
         });
       }
       this.lectureData.set(rows);
@@ -179,9 +182,14 @@ export class CourseDetailPage implements OnInit {
     }
   }
 
-  private getYoutubeThumbnail(url: string): string {
+  private getVideoThumbnail(url: string): string {
     if (!url) return '';
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    // Vimeo
+    const vimeoMatch = url.match(/(?:vimeo\.com\/)([0-9]+)/);
+    if (vimeoMatch) return `https://vumbnail.com/${vimeoMatch[1]}.jpg`;
+    return '';
   }
 }

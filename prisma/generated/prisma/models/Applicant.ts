@@ -398,18 +398,6 @@ export type EnumApplicantStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApplicantStatus
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ApplicantCreateNestedManyWithoutBootcampInput = {
   create?: Prisma.XOR<Prisma.ApplicantCreateWithoutBootcampInput, Prisma.ApplicantUncheckedCreateWithoutBootcampInput> | Prisma.ApplicantCreateWithoutBootcampInput[] | Prisma.ApplicantUncheckedCreateWithoutBootcampInput[]
   connectOrCreate?: Prisma.ApplicantCreateOrConnectWithoutBootcampInput | Prisma.ApplicantCreateOrConnectWithoutBootcampInput[]

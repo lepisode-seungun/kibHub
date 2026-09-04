@@ -32,7 +32,14 @@
             <!-- 뱃지 행 -->
             <div class="badge-row">
               <span
-                [ngClass]="card.status === 'recruiting' ? 'status-badge status-badge--recruiting' : (card.status === 'closed' ? 'status-badge status-badge--closed' : 'status-badge')"
+                class="status-badge"
+                [ngClass]="{
+                  'status-badge--preparing': card.status === 'preparing',
+                  'status-badge--recruiting': card.status === 'recruiting',
+                  'status-badge--operating': card.status === 'operating',
+                  'status-badge--closed': card.status === 'closed',
+                  'status-badge--ended': card.status === 'ended'
+                }"
               >{{ card.statusText }}</span>
               @if (card.deadline) {
                 <span class="deadline-badge">{{ card.deadline }}</span>
@@ -122,18 +129,41 @@
       <!-- 마우스 커서 (Polygon 1) -->
       <img class="deco-cursor" src="/icons/cursor-pointer.svg" alt="" />
 
-      <!-- 이미지 그리드 -->
+      <!-- 이미지 그리드 (부트캠프 카드 동적 연동) -->
       <div class="academy-grid">
-        <div class="academy-grid-row">
-          <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-          <div class="grid-img" style="flex: 195; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-          <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
-        </div>
-        <div class="academy-grid-row">
-          <div class="grid-img" style="flex: 236; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
-          <div class="grid-img" style="flex: 217; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
-          <div class="grid-img" style="flex: 130; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);"></div>
-        </div>
+        @if (bootcampCards().length > 0) {
+          <div class="academy-grid-row">
+            @for (card of bootcampCards().slice(0, 3); track card.id) {
+              <a class="grid-img" [routerLink]="['/k-digital', card.id]"
+                 [ngStyle]="card.thumbnailUrl
+                   ? { 'background-image': 'url(' + card.thumbnailUrl + ')', 'background-size': 'cover', 'background-position': 'center' }
+                   : { 'background': card.thumbnailGradient }">
+              </a>
+            }
+          </div>
+          @if (bootcampCards().length > 3) {
+            <div class="academy-grid-row">
+              @for (card of bootcampCards().slice(3, 6); track card.id) {
+                <a class="grid-img" [routerLink]="['/k-digital', card.id]"
+                   [ngStyle]="card.thumbnailUrl
+                     ? { 'background-image': 'url(' + card.thumbnailUrl + ')', 'background-size': 'cover', 'background-position': 'center' }
+                     : { 'background': card.thumbnailGradient }">
+                </a>
+              }
+            </div>
+          }
+        } @else {
+          <div class="academy-grid-row">
+            <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            <div class="grid-img" style="flex: 195; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+          </div>
+          <div class="academy-grid-row">
+            <div class="grid-img" style="flex: 236; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+            <div class="grid-img" style="flex: 217; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+            <div class="grid-img" style="flex: 130; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);"></div>
+          </div>
+        }
         <!-- 4방향 페이드 -->
         <div class="grid-fade grid-fade--top"></div>
         <div class="grid-fade grid-fade--left"></div>

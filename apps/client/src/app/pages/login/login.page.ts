@@ -18,6 +18,7 @@ export class LoginPage {
   password = '';
   autoLogin = signal(false);
   showPasswordError = signal(false);
+  errorMessage = signal('');
 
   onEmailInput(event: Event): void {
     this.email = (event.target as HTMLInputElement).value;
@@ -33,10 +34,11 @@ export class LoginPage {
 
   async onLogin(): Promise<void> {
     if (!this.email || !this.password) return;
-    const success = await this.authService.login(this.email, this.password);
-    if (success) {
+    const result = await this.authService.login(this.email, this.password);
+    if (result.success) {
       this.router.navigate(['/']);
     } else {
+      this.errorMessage.set(result.error || '이메일 또는 비밀번호가 올바르지 않습니다.');
       this.showPasswordError.set(true);
     }
   }

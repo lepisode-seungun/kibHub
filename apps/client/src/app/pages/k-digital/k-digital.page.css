@@ -93,8 +93,11 @@
   letter-spacing: -0.04em;
 }
 
+.kd-status--preparing { background: #3F3F46; color: #A1A1AA; }
 .kd-status--recruiting { background: #7A48FF; color: #FFFFFF; }
+.kd-status--operating { background: #059669; color: #FFFFFF; }
 .kd-status--closed { background: #52525B; color: #E4E4E7; }
+.kd-status--ended { background: #EF4444; color: #FFFFFF; }
 
 /* 반응형 */
 @media (max-width: 1440px) {

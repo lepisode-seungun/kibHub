@@ -70,6 +70,11 @@ export class ContentsController {
     return this.contentsService.findRecentComments(take ? parseInt(take) : 10);
   }
 
+  @Get('comments/best')
+  findBestComments(@Query('take') take?: string) {
+    return this.contentsService.findBestComments(take ? parseInt(take) : 10);
+  }
+
   @Get('contents/:contentId/comments')
   findComments(@Param('contentId', ParseIntPipe) contentId: number, @Req() req: Request, @Query('showAll') showAll?: string) {
     // 쿠키에서 userId를 optional로 추출 (인증 없이도 조회 가능)

@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES, APPLICANT_STATUS_BADGES, BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
@@ -105,7 +105,7 @@ export class BootcampDashboardPage implements OnInit {
     try {
       const data = await this.api.applicants.findByBootcamp(bootcampId);
       const STATUS_MAP: Record<string, string> = {
-        PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+        PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
       const filtered = data.filter((a: any) => a.status !== 'REJECTED');
       this.studentData.set(filtered.map((a: any) => {
@@ -125,7 +125,10 @@ export class BootcampDashboardPage implements OnInit {
   }
 
   toggleSection(): void { this.sectionOpen.update(v => !v); }
-  toggleDropdown(): void { this.dropdownOpen.update(v => !v); }
+  toggleDropdown(event?: Event): void { event?.stopPropagation(); this.dropdownOpen.update(v => !v); }
+
+  @HostListener('document:click')
+  onDocumentClick(): void { this.dropdownOpen.set(false); this.statusSubMenuOpen.set(false); }
 
   // 상태 변경 서브메뉴
   statusSubMenuOpen = signal(false);
@@ -158,6 +161,8 @@ export class BootcampDashboardPage implements OnInit {
       await this.api.bootcamps.update(this.bootcampId, { status } as any);
       this.toast.success('상태가 변경되었습니다.');
       await this.loadBootcamp(this.bootcampId);
+      await this.loadApplicants(this.bootcampId);
+      await this.loadInstructors(this.bootcampId);
     } catch (e) {
       this.toast.error('상태 변경에 실패했습니다.');
     }
@@ -345,6 +350,13 @@ export class BootcampDashboardPage implements OnInit {
         return;
       }
       this.searchedInstructor.set(user);
+      // 중복 체크
+      const alreadyExists = this.instructorData().some(i => i.id === user.id);
+      if (alreadyExists) {
+        this.searchMessage.set({ text: `'${user.name}'은(는) 이미 등록된 강사입니다.`, type: 'error' });
+        this.searchedInstructor.set(null);
+        return;
+      }
       this.instructorInviteForm.update(f => ({ ...f, name: user.name || '', phone: user.phone || '' }));
       this.searchMessage.set({ text: `강사 '${user.name}'을(를) 찾았습니다.`, type: 'success' });
     } catch (e: any) {
@@ -405,6 +417,13 @@ export class BootcampDashboardPage implements OnInit {
         return;
       }
       this.searchedStudent.set(user);
+      // 중복 체크: userId 기반 (applicant가 아닌 user.id로 비교)
+      const alreadyExists = this.studentData().some(s => s.email === user.email);
+      if (alreadyExists) {
+        this.studentSearchMessage.set({ text: `'${user.name}'은(는) 이미 등록된 수강생입니다.`, type: 'error' });
+        this.searchedStudent.set(null);
+        return;
+      }
       this.studentInviteForm.update(f => ({ ...f, name: user.name || '', phone: user.phone || '' }));
       this.studentSearchMessage.set({ text: `수강생 '${user.name}'을(를) 찾았습니다.`, type: 'success' });
     } catch (e: any) {

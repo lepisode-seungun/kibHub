@@ -210,6 +210,18 @@ export class ContentsService {
     });
   }
 
+  findBestComments(take = 10) {
+    return this.prisma.comment.findMany({
+      take,
+      where: { status: 'VISIBLE', likeCount: { gt: 0 } },
+      orderBy: { likeCount: 'desc' },
+      include: {
+        author: { select: { id: true, nickname: true, name: true, profileImage: true } },
+        content: { select: { id: true, title: true, thumbnail: true } },
+      },
+    });
+  }
+
   createComment(contentId: number, data: { body: string; images?: string[]; authorId: number; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) {
     return this.prisma.comment.create({
       data: {

@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -112,6 +112,9 @@ export class ContentDetailPage implements OnInit {
 
   toggleMoreMenu(event: Event): void { event.stopPropagation(); this.moreMenuOpen.update(v => !v); }
   closeMoreMenu(): void { this.moreMenuOpen.set(false); }
+
+  @HostListener('document:click')
+  onDocumentClick(): void { this.moreMenuOpen.set(false); this.drawerKebabOpen.set(false); }
 
   async onToggleVisibility(): Promise<void> {
     this.moreMenuOpen.set(false);

@@ -47,6 +47,7 @@
 
   @if (activeTab() === 'intro') {
     <adm-text-editor
+      [showFontSize]="true"
       [content]="introContent()"
       (contentChange)="introContent.set($event)"
       minHeight="326px"
@@ -64,6 +65,7 @@
 
   @if (activeTab() === 'curriculum') {
     <adm-text-editor
+      [showFontSize]="true"
       [content]="curriculumContent()"
       (contentChange)="curriculumContent.set($event)"
       minHeight="326px"
@@ -94,6 +96,7 @@
       </svg>
     </div>
     <adm-text-editor
+      [showFontSize]="true"
       [content]="reviewContent()"
       (contentChange)="reviewContent.set($event)"
       minHeight="326px"

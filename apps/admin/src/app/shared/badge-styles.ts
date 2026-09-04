@@ -23,7 +23,9 @@ export const BOOTCAMP_STATUS_BADGES: Record<string, string> = {
 export const APPLICANT_STATUS_BADGES: Record<string, string> = {
   '대기': 'bg-orange-50 border-orange-300 text-orange-600',
   '합격': 'bg-emerald-50 border-emerald-300 text-emerald-600',
-  '불합격': 'bg-zinc-50 border-zinc-200 text-zinc-500',
+  '수강대기': 'bg-blue-50 border-blue-300 text-blue-600',
+  '수료': 'bg-zinc-50 border-zinc-200 text-zinc-500',
+  '불합격': 'bg-red-50 border-red-300 text-red-500',
 };
 
 // ===== 권한 =====

@@ -76,10 +76,7 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
   currentViewerPage = signal(1);
   totalPages = 17;
 
-  manuscriptImages: { id: number; url?: string; gradient: string }[] = Array.from({ length: 17 }, (_, i) => ({
-    id: i + 1,
-    gradient: `linear-gradient(${135 + i * 15}deg, #2a2535 ${i * 3}%, #1a1520 ${50 + i * 2}%, #2a2035 100%)`,
-  }));
+  manuscriptImages: { id: number; url?: string; gradient: string }[] = [];
 
   openManuscriptViewer(): void {
     this.currentViewerPage.set(1);

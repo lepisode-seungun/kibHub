@@ -112,7 +112,9 @@ export interface Assignment {
   id: number;
   title: string;
   content: string;
+  videoUrl: string;
   dueDate: string | null;
+  dueDateEnd: string | null;
   courseId: number;
   course?: Course;
   createdAt: string;
@@ -139,6 +141,7 @@ export interface CreateLectureDto {
 export interface CreateAssignmentDto {
   title: string;
   content?: string;
+  videoUrl?: string;
   dueDate?: string;
   dueDateEnd?: string;
 }

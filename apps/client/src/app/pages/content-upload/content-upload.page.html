@@ -102,6 +102,9 @@
                       </button>
                     }
                   </div>
+                  @if (categoryError()) {
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ categoryError() }}</span>
+                  }
                 </div>
 
                 <!-- 제목 -->
@@ -113,25 +116,33 @@
                   <div class="flex items-center w-full">
                     <input #titleInput id="titleInput" class="cu-input" type="text" placeholder="입력해주세요." (input)="onTitleInput($event)"/>
                   </div>
+                  @if (titleError()) {
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ titleError() }}</span>
+                  }
                 </div>
 
                 <!-- 설명 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1">
                     <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">설명</span>
+                    <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
                   <div class="flex items-center w-full">
                     <input class="cu-input" type="text" placeholder="입력해주세요." (input)="onSubDescriptionInput($event)"/>
                   </div>
+                  @if (subDescError()) {
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ subDescError() }}</span>
+                  }
                 </div>
-
-                <!-- 내용 -->
                 <div class="flex flex-col gap-2">
                   <div class="flex items-center gap-1">
                     <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">내용</span>
                     <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
                   <textarea class="cu-textarea" placeholder="입력해주세요." rows="5" (input)="onDescriptionInput($event)"></textarea>
+                  @if (descError()) {
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ descError() }}</span>
+                  }
                 </div>
 
                 <!-- 앨범 등록 -->
@@ -315,6 +326,9 @@
                 <button class="cu-thumb-action-btn" (click)="applyTitleAsThumbnail()">제목으로 적용</button>
                 <button class="cu-thumb-action-btn" (click)="openThumbSelectModal()">직접 업로드</button>
               </div>
+              @if (thumbError()) {
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ thumbError() }}</span>
+              }
             </div>
           }
         </div>

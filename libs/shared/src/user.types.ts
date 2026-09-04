@@ -18,6 +18,7 @@ export interface User {
   birthday: string | null;
   intro: string;
   profileImage: string | null;
+  coverImage: string | null;
   role: UserRole;
   status: UserStatus;
   adminRole: AdminRole | null;
@@ -48,6 +49,7 @@ export interface UpdateUserDto {
   birthday?: string;
   intro?: string;
   profileImage?: string | null;
+  coverImage?: string | null;
   adminRole?: AdminRole | null;
   role?: string;
   status?: string;

@@ -110,6 +110,16 @@
   box-shadow: 0 2px 12px rgba(122, 72, 255, 0.08);
 }
 
+.mb-card-disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.mb-card-disabled:hover {
+  border-color: #E5E7EB;
+  box-shadow: none;
+}
+
 /* 동적 뱃지 */
 .mb-badge {
   display: flex;
@@ -126,7 +136,9 @@
 
 .mb-badge-applied { background: #F2EDFF; color: #7A48FF; }
 .mb-badge-active { background: #FFF7ED; color: #F97316; }
-.mb-badge-closed { background: #FAFAFA; border: 1px solid #F4F4F5; color: #52525B; }
+.mb-badge-waiting { background: #EFF6FF; color: #3B82F6; }
+.mb-badge-completed { background: #FAFAFA; border: 1px solid #F4F4F5; color: #52525B; }
+.mb-badge-closed { background: #FEF2F2; color: #EF4444; }
 
 /* 반응형 */
 @media (max-width: 1200px) {

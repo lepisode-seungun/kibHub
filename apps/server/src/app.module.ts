@@ -19,6 +19,7 @@ import { PostersModule } from './posters/posters.module';
 import { HistoriesModule } from './histories/histories.module';
 import { PartnersModule } from './partners/partners.module';
 import { AlbumsModule } from './albums/albums.module';
+import { AdminsModule } from './admins/admins.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { AlbumsModule } from './albums/albums.module';
     HistoriesModule,
     PartnersModule,
     AlbumsModule,
+    AdminsModule,
   ],
 })
 export class AppModule {}

@@ -8,6 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Admin.ts'
 export type * from './models/Applicant.ts'
 export type * from './models/Banner.ts'
 export type * from './models/Bootcamp.ts'

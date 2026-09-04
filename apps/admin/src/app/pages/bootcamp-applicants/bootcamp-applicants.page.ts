@@ -3,7 +3,7 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
-import { MEMBER_STATUS_BADGES } from '../../shared/badge-styles';
+import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
@@ -19,7 +19,7 @@ interface ApplicantRow {
 }
 
 const STATUS_MAP: Record<string, string> = {
-  PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격', CANCELLED: '취소',
+  PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격', CANCELLED: '취소',
 };
 
 function toApplicantRow(a: Applicant): ApplicantRow {
@@ -56,7 +56,7 @@ export class BootcampApplicantsPage implements OnInit {
 
   columns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
-    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: MEMBER_STATUS_BADGES },
+    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: APPLICANT_STATUS_BADGES },
     { key: 'name', label: '이름' },
     { key: 'phone', label: '연락처' },
     { key: 'email', label: '이메일' },
@@ -140,7 +140,7 @@ export class BootcampApplicantsPage implements OnInit {
 
   async changeStatus(status: string): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
-    const statusMap: Record<string, string> = { '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING' };
+    const statusMap: Record<string, string> = { '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING', '수강대기': 'WAITING', '수료': 'COMPLETED' };
     try {
       await this.api.applicants.bulkUpdateStatus(ids, statusMap[status] || status);
       this.toast.success('상태 변경 완료');

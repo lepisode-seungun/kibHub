@@ -54,15 +54,35 @@ export class StudentPortfolioPage implements OnInit {
     return rows;
   });
 
-  /** 배너 히어로 카드: 원래 2열 스태거 구조 유지 */
+  /** 배너 히어로 카드: 최소 10장 보장 (데이터 순환) */
+  private bannerCards = computed(() => {
+    const all = this.portfolios();
+    if (all.length === 0) {
+      // 데이터 없으면 그라디언트 플레이스홀더
+      return Array.from({ length: 10 }, (_, i) => ({
+        id: -(i + 1),
+        thumbnail: '',
+        gradient: this.gradients[i % this.gradients.length],
+        workTitle: '',
+        userName: '',
+        bootcampName: '',
+      }));
+    }
+    const cards: PortfolioCardData[] = [];
+    for (let i = 0; i < 10; i++) {
+      cards.push(all[i % all.length]);
+    }
+    return cards;
+  });
+
   /** 좌측 1열 (3장) */
-  bannerLeftCol1 = computed(() => this.portfolios().slice(0, 3));
+  bannerLeftCol1 = computed(() => this.bannerCards().slice(0, 3));
   /** 좌측 2열 (2장) */
-  bannerLeftCol2 = computed(() => this.portfolios().slice(3, 5));
+  bannerLeftCol2 = computed(() => this.bannerCards().slice(3, 5));
   /** 우측 1열 (3장) */
-  bannerRightCol1 = computed(() => this.portfolios().slice(5, 8));
+  bannerRightCol1 = computed(() => this.bannerCards().slice(5, 8));
   /** 우측 2열 (2장) */
-  bannerRightCol2 = computed(() => this.portfolios().slice(8, 10));
+  bannerRightCol2 = computed(() => this.bannerCards().slice(8, 10));
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {

@@ -80,18 +80,23 @@
       </div>
 
       <div class="w-full max-w-full md:max-w-[800px] relative overflow-hidden">
-        @if (manuscriptImages.length > 0 && manuscriptImages[0].url) {
-          <img [src]="manuscriptImages[0].url" alt="원고 미리보기" class="w-full rounded-lg" />
+        @if (manuscriptImages.length > 0) {
+          <div class="flex flex-col gap-4">
+            @for (img of manuscriptImages; track img.id) {
+              <img [src]="img.url" [alt]="'원고 ' + img.id + '회'" class="w-full rounded-lg" />
+            }
+          </div>
         } @else {
           <div style="background: linear-gradient(135deg, #2a2535 0%, #1a1520 50%, #2a2035 100%); height: 500px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
             <span class="font-suit text-zinc-500">원고가 등록되지 않았습니다.</span>
           </div>
         }
-        <div class="absolute bottom-0 left-0 right-0 h-[200px] bg-gradient-to-t from-[#090909] to-transparent pointer-events-none"></div>
       </div>
 
       <!-- 더보기 버튼 -->
-      <button class="w-[200px] h-12 rounded-xl bg-gradient-to-r from-accent to-[#5FCCB6] border border-white/10 font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-opacity duration-150 hover:opacity-85" (click)="openManuscriptViewer()">원고보기</button>
+      @if (manuscriptImages.length > 0) {
+        <button class="w-[200px] h-12 rounded-xl bg-gradient-to-r from-accent to-[#5FCCB6] border border-white/10 font-suit font-semibold text-base leading-[150%] tracking-tight text-white cursor-pointer transition-opacity duration-150 hover:opacity-85" (click)="openManuscriptViewer()">원고보기</button>
+      }
     </div>
 
     <!-- 하단: 문의하기 -->

@@ -46,15 +46,19 @@
     <!-- 카드 그리드 -->
     <div class="flex flex-wrap items-start content-start gap-5 w-full">
       @for (item of filteredItems; track item.id) {
-        <div class="mb-card" [routerLink]="['/my-bootcamp', item.bootcampId]">
+        <div class="mb-card"
+             [class.mb-card-disabled]="!item.canEnter"
+             [routerLink]="item.canEnter ? ['/my-bootcamp', item.bootcampId] : null">
           <div class="flex flex-col items-start p-5 gap-3 w-full">
             <div class="flex justify-between items-center gap-3 w-full">
-              <span [ngClass]="item.status === '수강중' ? 'mb-badge mb-badge-active' : (item.status === '신청 완료' ? 'mb-badge mb-badge-applied' : (item.status === '불합격' ? 'mb-badge mb-badge-closed' : 'mb-badge'))">
+              <span [ngClass]="getBadgeClass(item.status)">
                 {{ item.status }}
               </span>
-              <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="#27272A">
-                <path d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"/>
-              </svg>
+              @if (item.canEnter) {
+                <svg class="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="#27272A">
+                  <path d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"/>
+                </svg>
+              }
             </div>
             <div class="flex items-center gap-3 w-full">
               <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800 flex-1">{{ item.name }}</span>

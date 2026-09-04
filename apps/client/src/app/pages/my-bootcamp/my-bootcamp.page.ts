@@ -8,7 +8,8 @@ interface BootcampItem {
   id: number;
   bootcampId: number;
   name: string;
-  status: '신청 완료' | '수강중' | '불합격';
+  status: string;
+  canEnter: boolean;
   dateRange: string;
 }
 
@@ -25,15 +26,17 @@ export class MyBootcampPage implements OnInit {
   private api = inject(ApiService);
   private platformId = inject(PLATFORM_ID);
 
-  tabs = ['전체', '수강중', '신청 완료'];
+  tabs = ['전체', '수강중', '신청 완료', '수강대기', '불합격'];
   activeTab = signal('전체');
 
   allItems = signal<BootcampItem[]>([]);
 
   /** 어드민 ApplicantStatus → 클라이언트 뱃지 매핑 */
-  private readonly STATUS_MAP: Record<string, '신청 완료' | '수강중' | '불합격'> = {
+  private readonly STATUS_MAP: Record<string, string> = {
     PENDING: '신청 완료',
     ACCEPTED: '수강중',
+    WAITING: '수강대기',
+    COMPLETED: '수료',
     REJECTED: '불합격',
   };
 
@@ -61,49 +64,67 @@ export class MyBootcampPage implements OnInit {
     const user = this.authService.currentUser();
     if (!user) return;
 
-    try {
-      const items: BootcampItem[] = [];
+    const items: BootcampItem[] = [];
+    const instructorBootcampIds = new Set<number>();
 
-      // 1. 지원자(수강생)로 등록된 부트캠프
-      const applicants = await this.api.applicants.findByUser(user.id);
-      const filtered = applicants.filter(a => a.status !== 'REJECTED');
-      for (const a of filtered) {
-        const bc = a.bootcamp || {};
-        const fmt = (d: string) => d ? d.substring(0, 10) : '';
-        items.push({
-          id: a.id,
-          bootcampId: bc.id || a.bootcampId,
-          name: bc.name || `부트캠프 #${a.bootcampId}`,
-          status: this.STATUS_MAP[a.status] || '신청 완료',
-          dateRange: bc.startDate && bc.endDate
-            ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
-            : '',
-        });
-      }
-
-      // 2. 강사로 초대된 부트캠프
-      if (user.role === 'INSTRUCTOR') {
+    // 1. 강사로 초대된 부트캠프 (우선 로드)
+    if (user.role === 'INSTRUCTOR' || user.role === 'ADMIN') {
+      try {
         const bootcamps = await this.api.bootcamps.findByInstructor(user.id);
+        const BOOTCAMP_STATUS_MAP: Record<string, string> = {
+          PREPARING: '수강대기', RECRUITING: '수강대기', OPERATING: '수강중', CLOSED: '수료', ENDED: '수료',
+        };
         for (const bc of bootcamps) {
-          // 이미 지원자로 등록된 부트캠프 중복 방지
-          if (items.some(i => i.bootcampId === bc.id)) continue;
+          instructorBootcampIds.add(bc.id);
+          // 종료된 부트캠프만 목록에서 숨기기
+          if (bc.status === 'ENDED') continue;
           const fmt = (d: string) => d ? d.substring(0, 10) : '';
           items.push({
             id: bc.id,
             bootcampId: bc.id,
             name: bc.name || `부트캠프 #${bc.id}`,
-            status: '수강중',
+            status: BOOTCAMP_STATUS_MAP[bc.status] || bc.status || '수강중',
+            canEnter: bc.status !== 'CLOSED',
             dateRange: bc.startDate && bc.endDate
               ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
               : '',
           });
         }
+      } catch (e) {
+        console.error('강사 부트캠프 로드 실패:', e);
       }
-
-      this.allItems.set(items);
-    } catch (e) {
-      console.error('내 부트캠프 로드 실패:', e);
     }
+
+    // 2. 지원자(수강생)로 등록된 부트캠프 (강사인 부트캠프는 무시)
+    try {
+      const applicants = await this.api.applicants.findByUser(user.id);
+      for (const a of applicants) {
+        const bc = a.bootcamp || {};
+        const bootcampId = bc.id || a.bootcampId;
+        // 강사인 부트캠프의 수강생 데이터는 무시
+        if (instructorBootcampIds.has(bootcampId)) continue;
+        const fmt = (d: string) => d ? d.substring(0, 10) : '';
+        const mappedStatus = this.STATUS_MAP[a.status] || '신청 완료';
+        const bcStatus = bc.status || '';
+        const bootcampClosed = bcStatus === 'CLOSED' || bcStatus === 'ENDED';
+        // 종료된 부트캠프만 목록에서 숨기기
+        if (bcStatus === 'ENDED') continue;
+        items.push({
+          id: a.id,
+          bootcampId,
+          name: bc.name || `부트캠프 #${a.bootcampId}`,
+          status: mappedStatus,
+          canEnter: mappedStatus === '수강중' && bcStatus !== 'CLOSED',
+          dateRange: bc.startDate && bc.endDate
+            ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
+            : '',
+        });
+      }
+    } catch (e) {
+      console.error('수강생 부트캠프 로드 실패:', e);
+    }
+
+    this.allItems.set(items);
   }
 
   get filteredItems(): BootcampItem[] {
@@ -119,5 +140,16 @@ export class MyBootcampPage implements OnInit {
 
   navigateToDetail(id: number): void {
     this.router.navigate(['/my-bootcamp', id]);
+  }
+
+  getBadgeClass(status: string): string {
+    switch (status) {
+      case '수강중': return 'mb-badge mb-badge-active';
+      case '신청 완료': return 'mb-badge mb-badge-applied';
+      case '수강대기': return 'mb-badge mb-badge-waiting';
+      case '수료': return 'mb-badge mb-badge-completed';
+      case '불합격': return 'mb-badge mb-badge-closed';
+      default: return 'mb-badge';
+    }
   }
 }

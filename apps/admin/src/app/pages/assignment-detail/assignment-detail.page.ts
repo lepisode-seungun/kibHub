@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -49,6 +49,9 @@ export class AssignmentDetailPage implements OnInit {
   // 과제 기본 정보 드롭다운
   assignmentInfoMenuOpen = signal(false);
   toggleAssignmentInfoMenu(): void { this.assignmentInfoMenuOpen.update(v => !v); }
+
+  @HostListener('document:click')
+  onDocumentClick(): void { this.assignmentInfoMenuOpen.set(false); }
   onAssignmentInfoMenuAction(action: string): void {
     this.assignmentInfoMenuOpen.set(false);
     if (action === 'edit') {
@@ -215,12 +218,14 @@ export class AssignmentDetailPage implements OnInit {
   editCategory = signal('');
   editDueDate = signal('');
   editDueDateEnd = signal('');
+  editVideoUrl = signal('');
 
   openEditDrawer(): void {
     const d = this.assignmentData();
     this.editTitle.set(d.name || '');
     this.editCategory.set(d.category || '');
     this.editContent.set(d.content || '');
+    this.editVideoUrl.set(d.videoUrl || '');
     // Raw 날짜를 date input용 YYYY-MM-DD 포맷으로 변환
     this.editDueDate.set(d.deadlineStartRaw ? new Date(d.deadlineStartRaw).toISOString().substring(0, 10) : '');
     this.editDueDateEnd.set(d.deadlineEndRaw ? new Date(d.deadlineEndRaw).toISOString().substring(0, 10) : '');
@@ -234,9 +239,13 @@ export class AssignmentDetailPage implements OnInit {
   async submitEdit(): Promise<void> {
     const title = this.editTitle().trim();
     if (!title) { this.toast.error('과제명을 입력해주세요.'); return; }
+    if (this.editDueDate() && this.editDueDateEnd() && this.editDueDate() > this.editDueDateEnd()) {
+      this.toast.error('시작일은 종료일보다 이후일 수 없습니다.');
+      return;
+    }
     try {
       const assignmentId = this.assignmentData().id;
-      const payload: any = { title, category: this.editCategory(), content: this.editContent() };
+      const payload: any = { title, category: this.editCategory(), content: this.editContent(), videoUrl: this.editVideoUrl() };
       if (this.editDueDate()) payload.dueDate = this.editDueDate();
       if (this.editDueDateEnd()) payload.dueDateEnd = this.editDueDateEnd();
       await this.api.assignments.update(assignmentId, payload);
@@ -320,6 +329,31 @@ export class AssignmentDetailPage implements OnInit {
       await this.loadAssignment(this.assignmentData().id);
     } catch (e) {
       this.toast.error('파일 삭제에 실패했습니다.');
+    }
+  }
+
+  async downloadMaterial(mat: any): Promise<void> {
+    if (!mat.url) { this.toast.error('다운로드 URL이 없습니다.'); return; }
+    try {
+      const res = await fetch(mat.url);
+      const blob = await res.blob();
+      if ('showSaveFilePicker' in window) {
+        const ext = mat.name?.split('.').pop() || '';
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: mat.name || 'file',
+          types: ext ? [{ description: ext.toUpperCase(), accept: { 'application/octet-stream': [`.${ext}`] } }] : [],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = mat.name || 'file'; a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e: any) {
+      if (e?.name !== 'AbortError') this.toast.error('다운로드에 실패했습니다.');
     }
   }
 

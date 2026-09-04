@@ -9,7 +9,7 @@ export interface BootcampCard {
   id: number;
   name: string;
   summary: string;
-  status: 'recruiting' | 'closed';
+  status: string;
   statusText: string;
   deadline: string | null;
   thumbnailGradient: string;
@@ -114,19 +114,30 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     return url;
   }
 
+  private readonly STATUS_MAP: Record<string, { status: string; text: string }> = {
+    PREPARING: { status: 'preparing', text: '준비중' },
+    RECRUITING: { status: 'recruiting', text: '모집중' },
+    OPERATING: { status: 'operating', text: '운영중' },
+    CLOSED: { status: 'closed', text: '마감' },
+    ENDED: { status: 'ended', text: '종료' },
+  };
+
   private async loadBootcamps(): Promise<void> {
     try {
       const data = await this.api.bootcamps.findAll();
-      this.bootcampCards.set(data.map((b, i) => ({
-        id: b.id,
-        name: b.name,
-        summary: b.description || '',
-        status: b.status === 'RECRUITING' ? 'recruiting' as const : 'closed' as const,
-        statusText: b.status === 'RECRUITING' ? '모집중' : '모집마감',
-        deadline: null,
-        thumbnailGradient: this.gradients[i % this.gradients.length],
-        thumbnailUrl: b.thumbnail || null,
-      })));
+      this.bootcampCards.set(data.map((b, i) => {
+        const mapped = this.STATUS_MAP[b.status] || { status: 'closed', text: b.status };
+        return {
+          id: b.id,
+          name: b.name,
+          summary: b.description || '',
+          status: mapped.status,
+          statusText: mapped.text,
+          deadline: null,
+          thumbnailGradient: this.gradients[i % this.gradients.length],
+          thumbnailUrl: b.thumbnail || null,
+        };
+      }));
     } catch (e) {
       console.error('부트캠프 로드 실패:', e);
     }

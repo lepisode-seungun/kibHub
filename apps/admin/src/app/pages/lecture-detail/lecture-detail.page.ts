@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -28,7 +28,10 @@ export class LectureDetailPage implements OnInit {
 
   // ===== 강의 기본 정보 케밥 =====
   lectureInfoMenuOpen = signal(false);
-  toggleLectureInfoMenu(): void { this.lectureInfoMenuOpen.update(v => !v); }
+  toggleLectureInfoMenu(event?: Event): void { event?.stopPropagation(); this.lectureInfoMenuOpen.update(v => !v); }
+
+  @HostListener('document:click')
+  onDocumentClick(): void { this.lectureInfoMenuOpen.set(false); }
   onLectureInfoMenuAction(action: string): void {
     this.lectureInfoMenuOpen.set(false);
     if (action === 'edit') this.openEditDrawer();

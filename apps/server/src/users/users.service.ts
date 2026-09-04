@@ -1,6 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../../../../prisma/generated/prisma/client';
+import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 
@@ -42,7 +43,7 @@ export class UsersService {
       where: { id },
       select: {
         id: true, email: true, nickname: true, name: true, phone: true,
-        countryCode: true, birthday: true, intro: true, profileImage: true,
+        countryCode: true, birthday: true, intro: true, profileImage: true, coverImage: true,
         role: true, status: true, adminRole: true, loginId: true,
         createdAt: true, updatedAt: true,
         sns: true,
@@ -107,5 +108,85 @@ export class UsersService {
       endDate: a.bootcamp.endDate,
       createdAt: a.bootcamp.createdAt,
     }));
+  }
+
+  /** 유저가 작성한 콘텐츠 목록 */
+  async findUserContents(userId: number) {
+    return this.prisma.content.findMany({
+      where: { authorId: userId },
+      include: {
+        category: { select: { name: true } },
+        _count: { select: { comments: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /** 유저가 작성한 댓글 목록 */
+  async findUserComments(userId: number) {
+    return this.prisma.comment.findMany({
+      where: { authorId: userId },
+      include: {
+        content: { select: { id: true, title: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /** 유저 댓글 통계: 피드백 댓글, 일반 댓글, 받은 좋아요 */
+  async findUserCommentStats(userId: number) {
+    const [feedbackCount, generalCount, likeResult] = await Promise.all([
+      this.prisma.comment.count({ where: { authorId: userId, type: 'feedback' } }),
+      this.prisma.comment.count({ where: { authorId: userId, type: 'general' } }),
+      this.prisma.comment.aggregate({
+        where: { authorId: userId },
+        _sum: { likeCount: true },
+      }),
+    ]);
+    return {
+      feedbackCount,
+      generalCount,
+      receivedLikes: likeResult._sum.likeCount || 0,
+    };
+  }
+
+  async createAdmin(data: { loginId: string; password: string; name: string; adminRole?: string }) {
+    if (!data.loginId || !data.password || !data.name) {
+      throw new BadRequestException('아이디, 비밀번호, 이름은 필수입니다.');
+    }
+
+    // loginId 중복 체크
+    const existingByLoginId = await this.prisma.user.findFirst({
+      where: { loginId: data.loginId },
+    });
+    if (existingByLoginId) throw new ConflictException('이미 사용 중인 아이디입니다.');
+
+    // 관리자 전용 이메일 생성 (일반 회원 email과 충돌 방지)
+    const adminEmail = `${data.loginId}@admin.kibhub.local`;
+    const existingByEmail = await this.prisma.user.findUnique({
+      where: { email: adminEmail },
+    });
+    if (existingByEmail) throw new ConflictException('이미 사용 중인 아이디입니다.');
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    return this.prisma.user.create({
+      data: {
+        email: adminEmail,
+        loginId: data.loginId,
+        password: hashedPassword,
+        name: data.name,
+        nickname: data.name,
+        role: 'ADMIN',
+        adminRole: data.adminRole === 'SUPER' ? 'SUPER' : 'NORMAL',
+      },
+    });
+  }
+
+  async checkLoginId(loginId: string): Promise<boolean> {
+    if (!loginId) return false;
+    const existing = await this.prisma.user.findFirst({
+      where: { loginId },
+    });
+    return !existing;
   }
 }

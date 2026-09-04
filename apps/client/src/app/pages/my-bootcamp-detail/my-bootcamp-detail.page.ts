@@ -138,8 +138,13 @@ export class MyBootcampDetailPage implements OnInit {
   private readonly STATUS_LABEL: Record<string, string> = {
     PENDING: '신청 완료',
     ACCEPTED: '수강중',
+    WAITING: '수강대기',
+    COMPLETED: '수료',
     REJECTED: '불합격',
+    PREPARING: '준비중',
     RECRUITING: '모집중',
+    OPERATING: '수강중',
+    CLOSED: '종료',
     ENDED: '종료',
   };
 
@@ -153,22 +158,37 @@ export class MyBootcampDetailPage implements OnInit {
       this.dateRange.set(bootcamp.startDate && bootcamp.endDate
         ? `${fmt(bootcamp.startDate)} ~ ${fmt(bootcamp.endDate)}` : '');
 
-      // 유저의 지원 상태 가져오기
+      // 유저의 지원 상태 가져오기 (강사/관리자는 스킵)
       const user = this.authService.currentUser();
       if (user) {
-        try {
-          const applicants = await this.api.applicants.findByUser(user.id);
-          const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
-          // 내보내기(REJECTED)된 수강생은 접근 차단
-          if (myApp?.status === 'REJECTED') {
+        if (user.role === 'INSTRUCTOR' || user.role === 'ADMIN') {
+          // 마감/종료 상태면 강사도 진입 차단
+          if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
             this.router.navigate(['/my-bootcamp']);
             return;
           }
-          this.bootcampStatus.set(myApp
-            ? (this.STATUS_LABEL[myApp.status] || myApp.status)
-            : (this.STATUS_LABEL[bootcamp.status] || bootcamp.status));
-        } catch {
-          this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
+          // 강사/관리자는 부트캠프 상태 직접 표시
+          this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status || '수강중');
+        } else {
+          try {
+            const applicants = await this.api.applicants.findByUser(user.id);
+            const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
+            // 수강중(ACCEPTED)이 아닌 상태는 접근 차단
+            if (!myApp || myApp.status !== 'ACCEPTED') {
+              this.router.navigate(['/my-bootcamp']);
+              return;
+            }
+            // 부트캠프가 마감/종료 상태면 진입 차단
+            if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
+              this.router.navigate(['/my-bootcamp']);
+              return;
+            }
+            this.bootcampStatus.set(myApp
+              ? (this.STATUS_LABEL[myApp.status] || myApp.status)
+              : (this.STATUS_LABEL[bootcamp.status] || bootcamp.status));
+          } catch {
+            this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
+          }
         }
       } else {
         this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);

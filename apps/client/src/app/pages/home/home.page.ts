@@ -47,6 +47,7 @@ interface MentorCard {
   profileImage?: string;
   comment: string;
   contentTitle: string;
+  contentId: number;
   likes: string;
 }
 
@@ -118,7 +119,7 @@ export class HomePage implements AfterViewInit, OnInit {
   ];
 
   ngOnInit(): void {
-    Promise.all([this.loadBootcamps(), this.loadContents(), this.loadSubCategories(), this.loadRecentComments()]).finally(() => {
+    Promise.all([this.loadBootcamps(), this.loadContents(), this.loadSubCategories(), this.loadRecentComments(), this.loadBestMentors()]).finally(() => {
       this.isLoading.set(false);
     });
   }
@@ -291,13 +292,28 @@ export class HomePage implements AfterViewInit, OnInit {
   filteredMoreContentCards = computed(() => this.filterCards(this.moreContentCards()));
 
   /* ===== Best Mentor ===== */
-  mentorCards: MentorCard[] = [
-    { id: 1, userName: 'NEWON', comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다. 최대4줄까지 표시됩니다.', contentTitle: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐', likes: '2,132' },
-    { id: 2, userName: 'NEWON', comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다. 최대4줄까지 표시됩니다.', contentTitle: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐', likes: '2,132' },
-    { id: 3, userName: 'NEWON', comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다. 최대4줄까지 표시됩니다.', contentTitle: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐', likes: '2,132' },
-    { id: 4, userName: 'NEWON', comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다. 최대4줄까지 표시됩니다.', contentTitle: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐', likes: '2,132' },
-    { id: 5, userName: 'NEWON', comment: '현재 부분 시간에 따른 그림자 표현이 적절하게 되어야할 것 같아요. 지금은 전혀 반영되지 않아 이미지가 너무 어색해 보입니다. 최대4줄까지 표시됩니다.', contentTitle: '콘텐츠 제목 30자 이내 콘텐츠 제목 콘텐', likes: '2,132' },
-  ];
+  mentorCards = signal<MentorCard[]>([]);
+
+  private async loadBestMentors(): Promise<void> {
+    try {
+      let comments = await this.api.comments.findBest(10);
+      // 좋아요 있는 댓글이 없으면 최신 댓글로 폴백
+      if (comments.length === 0) {
+        comments = await this.api.comments.findRecent(10);
+      }
+      this.mentorCards.set(comments.map((c: any) => ({
+        id: c.id,
+        userName: c.author?.nickname || c.author?.name || '익명',
+        profileImage: c.author?.profileImage || undefined,
+        comment: c.body,
+        contentTitle: c.content?.title || '',
+        contentId: c.content?.id || 0,
+        likes: String(c.likeCount || 0),
+      })));
+    } catch (e) {
+      console.error('베스트 멘토 로드 실패:', e);
+    }
+  }
 
   scrollMentorRight(): void {
     const el = this.mentorTrack.nativeElement;

@@ -89,14 +89,18 @@
       </div>
       <div class="flex items-start gap-2 w-full">
         <input type="text"
-               class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+               class="flex-1 h-10 px-4 border-2 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] outline-none transition-colors"
+               [ngClass]="drawerMode() === 'edit' ? 'bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white border-gray-300 text-gray-800 focus:border-[#3C8EEE]'"
                placeholder="아이디를 입력하세요"
                [value]="drawerForm().loginId"
+               [readOnly]="drawerMode() === 'edit'"
                (input)="updateField('loginId', $event)"/>
-        <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors font-suit font-medium text-base tracking-[-0.04em] text-white whitespace-nowrap"
-                (click)="checkIdDuplicate()">
-          중복확인
-        </button>
+        @if (drawerMode() === 'create') {
+          <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors font-suit font-medium text-base tracking-[-0.04em] text-white whitespace-nowrap"
+                  (click)="checkIdDuplicate()">
+            중복확인
+          </button>
+        }
       </div>
       <!-- 중복확인 결과 메시지 -->
       @if (idCheckStatus() === 'available') {
@@ -137,16 +141,24 @@
         <div class="flex items-center gap-0.5">
           <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">패스워드</span>
         </div>
+        @if (drawerMode() === 'edit') {
+          <input type="password"
+                 class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
+                 style="box-sizing: border-box;"
+                 placeholder="기존 비밀번호를 입력하세요"
+                 [value]="drawerForm().currentPassword"
+                 (input)="updateField('currentPassword', $event)"/>
+        }
         <input type="password"
                class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
                style="box-sizing: border-box;"
-               placeholder="패스워드를 입력하세요"
+               [placeholder]="drawerMode() === 'edit' ? '새 비밀번호를 입력하세요' : '패스워드를 입력하세요'"
                [value]="drawerForm().password"
                (input)="updateField('password', $event)"/>
         <input type="password"
                class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors"
                style="box-sizing: border-box;"
-               placeholder="패스워드를 다시 입력하세요"
+               [placeholder]="drawerMode() === 'edit' ? '새 비밀번호를 다시 입력하세요' : '패스워드를 다시 입력하세요'"
                [value]="drawerForm().passwordConfirm"
                (input)="updateField('passwordConfirm', $event)"/>
       </div>

@@ -27,7 +27,7 @@ export class ApplicantDetailPage implements OnInit {
   applicant = signal<any>({});
 
   private readonly STATUS_MAP: Record<string, string> = {
-    PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+    PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
   };
 
   ngOnInit(): void {
@@ -96,7 +96,7 @@ export class ApplicantDetailPage implements OnInit {
   }
 
   private readonly REVERSE_STATUS_MAP: Record<string, string> = {
-    '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING',
+    '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING', '수강대기': 'WAITING', '수료': 'COMPLETED',
   };
 
   async changeStatus(status: string): Promise<void> {

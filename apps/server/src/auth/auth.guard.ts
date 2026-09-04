@@ -8,7 +8,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-    const token = request.cookies?.kiphub_token;
+    const token = request.cookies?.kiphub_token || request.cookies?.kiphub_admin_token;
 
     if (!token) {
       throw new UnauthorizedException('인증 토큰이 필요합니다.');

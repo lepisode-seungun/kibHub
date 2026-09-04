@@ -44,7 +44,13 @@ export class ProfilePage implements OnInit, OnDestroy {
   userInitial = signal('');
   userSns = signal<{ type: string; url: string }[]>([]);
   userRole = signal('');
+  userId = signal<number>(0);
   isInstructor = computed(() => this.userRole() === 'INSTRUCTOR' || this.userRole() === 'ADMIN');
+
+  // 활동 정보 카운트
+  feedbackCount = signal(0);
+  generalCount = signal(0);
+  receivedLikes = signal(0);
 
   ngOnInit(): void {
     document.body.style.backgroundColor = '#151419';
@@ -58,21 +64,28 @@ export class ProfilePage implements OnInit, OnDestroy {
   private async loadProfile(): Promise<void> {
     try {
       const user = await this.api.users.me();
+      this.userId.set(user.id);
       this.userName.set(user.name);
       this.userNickname.set(user.nickname || user.name);
       this.userEmail.set(user.email);
       this.userBio.set(user.intro || '');
       this.userProfileImage.set(user.profileImage || null);
       this.userInitial.set((user.nickname || user.name || 'U').charAt(0).toUpperCase());
+
+      // 커버 이미지 로드
+      if ((user as any).coverImage) {
+        this.bannerBackground.set(`url('${(user as any).coverImage}') center center / cover no-repeat`);
+      }
       if (user.sns && user.sns.length > 0) {
         this.userSns.set(user.sns.map((s: any) => ({ type: s.type, url: s.url })));
       }
       this.userRole.set(user.role || '');
 
-      // 프로필 로드 후 콘텐츠/카테고리/앨범 로드
+      // 프로필 로드 후 콘텐츠/카테고리/앨범/포트폴리오 로드
       this.loadContents();
       this.loadCategories();
       this.loadAlbums();
+      this.loadCommentStats(user.id);
     } catch (e) {
       console.error('프로필 로드 실패:', e);
     }
@@ -173,15 +186,58 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
+  private async loadCommentStats(userId: number): Promise<void> {
+    try {
+      const stats = await this.api.users.commentStats(userId);
+      this.feedbackCount.set(stats.feedbackCount);
+      this.generalCount.set(stats.generalCount);
+      this.receivedLikes.set(stats.receivedLikes);
+    } catch (e) {
+      console.error('댓글 통계 로드 실패:', e);
+    }
+  }
+
   /* ===== 배너 커버 ===== */
-  /** 기본 커버 그라디언트 */
+  @ViewChild('coverInput') coverInputRef!: ElementRef<HTMLInputElement>;
+  private readonly BANNER_IMAGE = "url('/images/profile-banner.jpg') center center / cover no-repeat";
   private readonly DEFAULT_COVER = "url('/images/default-banner.svg') center center / cover no-repeat";
-  /** 커스텀 배너 배경 (이미지 URL 또는 기본 그라디언트) */
   bannerBackground = signal<string>("url('/images/profile-banner.jpg') center center / cover no-repeat");
 
-  /** 기본 커버로 변경 */
-  resetToDefaultCover(): void {
+  /** 파일 업로드 트리거 */
+  triggerCoverUpload(): void {
+    this.coverInputRef?.nativeElement?.click();
+  }
+
+  /** 파일 선택 시 업로드 + DB 저장 */
+  async onCoverFileSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    try {
+      const result = await this.api.upload.single(file, 'covers');
+      this.bannerBackground.set(`url('${result.url}') center center / cover no-repeat`);
+      // DB에 저장
+      const uid = this.userId();
+      if (uid) {
+        await this.api.users.update(uid, { coverImage: result.url });
+      }
+    } catch (e) {
+      console.error('배너 업로드 실패:', e);
+    }
+    input.value = '';
+  }
+
+  /** 기본 커버로 변경 + DB 저장 */
+  async resetToDefaultCover(): Promise<void> {
     this.bannerBackground.set(this.DEFAULT_COVER);
+    try {
+      const uid = this.userId();
+      if (uid) {
+        await this.api.users.update(uid, { coverImage: '/images/default-banner.svg' });
+      }
+    } catch (e) {
+      console.error('기본 배너 저장 실패:', e);
+    }
   }
 
   /* ===== 프로필 편집 드롭다운 ===== */

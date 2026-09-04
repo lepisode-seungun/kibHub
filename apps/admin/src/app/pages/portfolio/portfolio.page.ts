@@ -16,6 +16,11 @@ function toPortfolioRow(p: Portfolio): PortfolioRow {
     bootcampName: p.bootcampName,
     createdAt: formatDate(p.createdAt),
     launchPlatform: p.launchPlatform || '',
+    workTitle: p.workTitle || '',
+    authorName: p.authorName || '',
+    genre: p.genre || '',
+    workIntro: p.workIntro || '',
+    launchUrl: p.launchUrl || '',
   };
 }
 
@@ -101,6 +106,9 @@ export class PortfolioPage implements OnInit {
     if (this.viewMode() !== 'list') this.viewMode.set('list');
   }
 
+  @HostListener('document:click')
+  onDocumentClick(): void { this.detailDropdownOpen.set(false); }
+
   // ===== 상세 뷰 상태 =====
   detailData = signal<PortfolioRow | null>(null);
   detailDropdownOpen = signal(false);
@@ -109,6 +117,7 @@ export class PortfolioPage implements OnInit {
   detailPlanExpanded = signal(true);
   detailPlanUrl = signal('');
   detailManuscripts = signal<{ episode: number; url: string; name: string }[]>([]);
+  detailThumbnailExpanded = signal(true);
 
   async toggleVisibility(): Promise<void> {
     this.detailDropdownOpen.set(false);
@@ -132,7 +141,11 @@ export class PortfolioPage implements OnInit {
     this.detailDropdownOpen.set(false);
     const detail = this.detailData();
     if (detail) {
-      await this.openEditForm(detail);
+      if (this.activeTab() === 'hallOfFame') {
+        await this.openHofEditDrawer(detail.id);
+      } else {
+        await this.openEditForm(detail);
+      }
     }
   }
 
@@ -166,7 +179,11 @@ export class PortfolioPage implements OnInit {
         this.toast.error(e instanceof Error ? e.message : '삭제 실패');
       }
     } else if (event.action === '수정') {
-      await this.openEditForm(event.row);
+      if (this.activeTab() === 'hallOfFame') {
+        await this.openHofEditDrawer(event.row.id);
+      } else {
+        await this.openEditForm(event.row);
+      }
     }
   }
 
@@ -187,8 +204,29 @@ export class PortfolioPage implements OnInit {
       } else {
         this.thumbnailFile.set(null);
       }
-      this.planFile.set(null);
-      this.manuscriptFiles.set([]);
+      // 기획서 로드
+      if (p.files?.length) {
+        const plan = p.files.find((f: any) => !f.episode);
+        if (plan) {
+          this.planFile.set({ name: plan.name || '기존 기획서', size: '', preview: plan.url });
+        } else {
+          this.planFile.set(null);
+        }
+        // 원고 로드
+        const manuscripts = p.files
+          .filter((f: any) => f.episode)
+          .sort((a: any, b: any) => a.episode - b.episode);
+        this.manuscriptFiles.set(manuscripts.map((f: any) => ({
+          episode: f.episode,
+          name: f.name || `${f.episode}회 원고`,
+          size: '',
+          preview: f.url,
+          url: f.url,
+        })));
+      } else {
+        this.planFile.set(null);
+        this.manuscriptFiles.set([]);
+      }
       history.pushState({ view: 'form' }, '');
       this.viewMode.set('form');
     } catch (e: unknown) {
@@ -204,7 +242,38 @@ export class PortfolioPage implements OnInit {
   });
   hofThumbnail = signal<{ name: string; size: string; preview: string; rawFile?: File } | null>(null);
 
-  openHofDrawer(): void { this.hofDrawerOpen.set(true); }
+  hofEditingId = signal<number | null>(null);
+
+  openHofDrawer(): void {
+    this.hofEditingId.set(null);
+    this.hofForm.set({ name: '', bootcampName: '', workTitle: '', workIntro: '', launchPlatform: '', launchUrl: '' });
+    this.hofThumbnail.set(null);
+    this.hofDrawerOpen.set(true);
+  }
+
+  async openHofEditDrawer(id: number): Promise<void> {
+    try {
+      const p = await this.api.portfolios.findOne(id);
+      this.hofEditingId.set(p.id);
+      this.hofForm.set({
+        name: p.userName || '',
+        bootcampName: p.bootcampName || '',
+        workTitle: p.workTitle || '',
+        workIntro: p.workIntro || '',
+        launchPlatform: p.launchPlatform || '',
+        launchUrl: p.launchUrl || '',
+      });
+      if (p.thumbnail) {
+        this.hofThumbnail.set({ name: '기존 썸네일', size: '', preview: p.thumbnail });
+      } else {
+        this.hofThumbnail.set(null);
+      }
+      this.hofDrawerOpen.set(true);
+    } catch (e: unknown) {
+      this.toast.error(e instanceof Error ? e.message : '데이터 로드 실패');
+    }
+  }
+
   closeHofDrawer(): void { this.hofDrawerOpen.set(false); }
 
   updateHofField(field: string, event: Event): void {
@@ -241,9 +310,11 @@ export class PortfolioPage implements OnInit {
       if (thumb?.rawFile) {
         const uploadRes = await this.api.upload.single(thumb.rawFile, 'portfolios');
         thumbnailUrl = uploadRes.url;
+      } else if (thumb?.preview && !thumb.rawFile) {
+        thumbnailUrl = thumb.preview;
       }
 
-      await this.api.portfolios.create({
+      const payload: any = {
         userName: form.name,
         bootcampName: form.bootcampName,
         workTitle: form.workTitle,
@@ -252,12 +323,28 @@ export class PortfolioPage implements OnInit {
         launchUrl: form.launchUrl,
         thumbnail: thumbnailUrl,
         isHallOfFame: true,
-      });
+      };
+
+      const eid = this.hofEditingId();
+      if (eid) {
+        await this.api.portfolios.update(eid, payload);
+        this.toast.success('수정 완료 되었습니다.');
+      } else {
+        await this.api.portfolios.create(payload);
+        this.toast.success('등록 완료 되었습니다.');
+      }
       this.hofDrawerOpen.set(false);
+      this.hofEditingId.set(null);
       this.hofForm.set({ name: '', bootcampName: '', workTitle: '', workIntro: '', launchPlatform: '', launchUrl: '' });
       this.hofThumbnail.set(null);
-      this.toast.success('등록 완료 되었습니다.');
       await this.loadHallOfFame();
+      if (this.viewMode() === 'detail') {
+        const detail = this.detailData();
+        if (detail && eid) {
+          const updated = await this.api.portfolios.findOne(eid);
+          this.detailData.set(toPortfolioRow(updated));
+        }
+      }
     } catch (e: unknown) {
       this.toast.error(e instanceof Error ? e.message : '등록 실패');
     }
@@ -372,25 +459,76 @@ export class PortfolioPage implements OnInit {
   manuscriptFiles = signal<{ episode: number; name: string; size: string; preview: string; rawFile?: File }[]>([]);
 
   onManuscriptUpload(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    const sizeKB = Math.round(file.size / 1024);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const current = this.manuscriptFiles();
-      this.manuscriptFiles.set([...current, {
-        episode: current.length + 1, name: file.name,
-        size: `${sizeKB}KB`, preview: reader.result as string,
-        rawFile: file,
-      }]);
-    };
-    reader.readAsDataURL(file);
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    if (!files || files.length === 0) return;
+
+    const current = this.manuscriptFiles();
+    let startEpisode = current.length + 1;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const sizeKB = Math.round(file.size / 1024);
+      const episode = startEpisode + i;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.manuscriptFiles.update(prev => [...prev, {
+          episode,
+          name: file.name,
+          size: `${sizeKB}KB`,
+          preview: reader.result as string,
+          rawFile: file,
+        }]);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // input 초기화 (같은 파일 재선택 가능)
+    input.value = '';
   }
 
   removeManuscript(index: number): void {
     this.manuscriptFiles.update(files =>
       files.filter((_, i) => i !== index).map((f, i) => ({ ...f, episode: i + 1 }))
     );
+  }
+
+  // ===== 원고 드래그앤드롭 =====
+  msDragIndex: number | null = null;
+
+  onMsDragStart(index: number, event: DragEvent): void {
+    this.msDragIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', String(index));
+    }
+  }
+
+  onMsDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onMsDrop(targetIndex: number, event: DragEvent): void {
+    event.preventDefault();
+    if (this.msDragIndex === null || this.msDragIndex === targetIndex) {
+      this.msDragIndex = null;
+      return;
+    }
+
+    const files = [...this.manuscriptFiles()];
+    const [moved] = files.splice(this.msDragIndex, 1);
+    files.splice(targetIndex, 0, moved);
+
+    // episode 번호 재배정
+    this.manuscriptFiles.set(files.map((f, i) => ({ ...f, episode: i + 1 })));
+    this.msDragIndex = null;
+  }
+
+  onMsDragEnd(): void {
+    this.msDragIndex = null;
   }
 
   thumbnailFile = signal<{ name: string; size: string; preview: string; rawFile?: File } | null>(null);

@@ -35,6 +35,18 @@
               합격
             </button>
             <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    (click)="changeStatus('수강대기')">
+              수강대기
+            </button>
+            <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    (click)="changeStatus('수료')">
+              수료
+            </button>
+            <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
+                    (click)="changeStatus('대기')">
+              대기
+            </button>
+            <button class="flex items-center justify-center w-full px-3 py-2 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-600 bg-white hover:bg-[#ECF4FE] hover:text-[#3C8EEE] transition-colors"
                     (click)="onFailClick()">
               불합격
             </button>

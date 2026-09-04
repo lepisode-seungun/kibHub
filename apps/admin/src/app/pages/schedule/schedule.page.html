@@ -30,6 +30,7 @@
     <adm-text-editor
       [content]="termsContent()"
       (contentChange)="onTermsChange($event)"
+      [showFontSize]="true"
       minHeight="326px"
       placeholder="이용약관 내용을 입력하세요">
     </adm-text-editor>
@@ -49,6 +50,7 @@
     <adm-text-editor
       [content]="privacyContent()"
       (contentChange)="onPrivacyChange($event)"
+      [showFontSize]="true"
       minHeight="326px"
       placeholder="개인정보처리방침 내용을 입력하세요">
     </adm-text-editor>

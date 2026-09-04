@@ -103,7 +103,7 @@ export class MemberDetailPage implements OnInit {
     try {
       const applications = await this.api.applicants.findByUser(id);
       const statusMap: Record<string, string> = {
-        PENDING: '대기', ACCEPTED: '합격', REJECTED: '불합격',
+        PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
       this.bootcampHistory.set(applications.map((a: any) => ({
         id: a.id,
@@ -132,6 +132,48 @@ export class MemberDetailPage implements OnInit {
       })));
     } catch (e) {
       console.error('참여 부트캠프 로드 실패:', e);
+    }
+
+    // 콘텐츠 로드
+    try {
+      const contents = await this.api.users.findContents(id);
+      const typeMap: Record<string, string> = { WEBTOON: '웹툰', ILLUSTRATION: '일러스트', WRITING: '글' };
+      const statusMap: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', DELETED: '삭제' };
+      this.portfolioHistory.set(contents.map((c: any, i: number) => ({
+        id: i + 1,
+        contentId: c.id,
+        status: statusMap[c.status] || c.status,
+        type: typeMap[c.type] || c.type,
+        category: c.category?.name || '-',
+        title: c.title,
+        author: this.member().name || '-',
+        comments: c._count?.comments || 0,
+        views: c.viewCount || 0,
+      })));
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+    }
+
+    // 댓글 로드
+    try {
+      const comments = await this.api.users.findComments(id);
+      const statusMap: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', DELETED: '삭제' };
+      const typeMap: Record<string, string> = { general: '일반', feedback: '피드백' };
+      this.commentHistory.set(comments.map((c: any, i: number) => ({
+        id: i + 1,
+        commentId: c.id,
+        contentId: c.content?.id,
+        status: statusMap[c.status] || c.status,
+        type: typeMap[c.type] || c.type,
+        contentTitle: c.content?.title || '-',
+        content: c.body?.substring(0, 50) || '-',
+        author: this.member().name || '-',
+        reports: c.reportCount || 0,
+        likes: c.likeCount || 0,
+        createdAt: c.createdAt ? new Date(c.createdAt).toLocaleDateString('ko-KR') : '-',
+      })));
+    } catch (e) {
+      console.error('댓글 로드 실패:', e);
     }
   }
 
@@ -167,7 +209,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'views', label: '조회수', width: '80px' },
   ];
 
-  portfolioHistory: ContentRow[] = [];
+  portfolioHistory = signal<any[]>([]);
 
   // ===== 댓글 그리드 =====
   commentColumns: GridColumn[] = [
@@ -182,7 +224,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  commentHistory: CommentRow[] = [];
+  commentHistory = signal<any[]>([]);
 
   // ===== 아코디언 =====
   toggleSection(key: string): void {
@@ -201,6 +243,14 @@ export class MemberDetailPage implements OnInit {
   onJoinedBootcampClick(row: any): void {
     this.bootcampCtx.setBootcamp(row.bootcampId, row.title);
     this.router.navigate(['/bootcamp/home/dashboard']);
+  }
+
+  onContentClick(row: any): void {
+    this.router.navigate(['/content', row.contentId]);
+  }
+
+  onCommentClick(row: any): void {
+    if (row.contentId) this.router.navigate(['/content', row.contentId]);
   }
 
   // ===== 케밥 메뉴 =====
