@@ -1,7 +1,10 @@
 import { Inject, Controller, Post, Get, Body, Req, Res, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import * as path from 'path';
+import * as fs from 'fs';
 import { AuthService } from './auth.service';
+import { MailService } from '../mail/mail.service';
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -14,11 +17,14 @@ const COOKIE_OPTIONS = {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(AuthService) private authService: AuthService) {}
+  constructor(
+    @Inject(AuthService) private authService: AuthService,
+    @Inject(MailService) private mailService: MailService,
+  ) {}
 
   @Post('register')
   async register(
-    @Body() body: { email: string; password: string; nickname: string; phone?: string; intro?: string },
+    @Body() body: { email: string; password: string; name?: string; nickname: string; phone?: string; birthday?: string; intro?: string },
     @Res() res: Response,
   ) {
     try {
@@ -55,6 +61,20 @@ export class AuthController {
     }
   }
 
+  @Post('find-email')
+  async findEmail(@Body() body: { phone: string; birthday?: string }, @Res() res: Response) {
+    if (!body.phone) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: '연락처를 입력해주세요.' });
+    }
+    try {
+      const email = await this.authService.findEmail(body.phone, body.birthday);
+      return res.json({ email });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '이메일 찾기 실패';
+      return res.status(HttpStatus.NOT_FOUND).json({ error: message });
+    }
+  }
+
   @Post('check-email')
   async checkEmail(@Body() body: { email: string }, @Res() res: Response) {
     if (!body.email) {
@@ -82,5 +102,133 @@ export class AuthController {
   logout(@Res() res: Response) {
     res.clearCookie('kiphub_token', { path: '/' });
     return res.json({ success: true });
+  }
+
+  // ===== 인증번호 발송 =====
+  @Post('send-verification')
+  async sendVerification(@Body() body: { email: string }, @Res() res: Response) {
+    try {
+      if (!body.email) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ error: '이메일을 입력해주세요.' });
+      }
+      await this.authService.sendVerificationCode(body.email);
+      return res.json({ message: '인증번호가 발송되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '인증번호 발송 실패';
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: message });
+    }
+  }
+
+  // ===== 인증번호 검증 =====
+  @Post('verify-code')
+  async verifyCode(@Body() body: { email: string; code: string }, @Res() res: Response) {
+    if (!body.email || !body.code) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ verified: false, error: '이메일과 인증번호를 입력해주세요.' });
+    }
+    const verified = this.authService.verifyCode(body.email, body.code);
+    if (!verified) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ verified: false, error: '인증번호가 올바르지 않거나 만료되었습니다.' });
+    }
+    return res.json({ verified: true });
+  }
+
+  // ===== 이메일 변경 =====
+  @Post('change-email')
+  async changeEmail(@Req() req: Request, @Body() body: { newEmail: string; code: string }, @Res() res: Response) {
+    const token = req.cookies?.kiphub_token;
+    if (!token) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '로그인이 필요합니다.' });
+
+    const decoded = this.authService.verifyToken(token);
+    if (!decoded) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '유효하지 않은 토큰입니다.' });
+
+    try {
+      await this.authService.changeEmail(decoded.userId, body.newEmail);
+      return res.json({ message: '이메일이 변경되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '이메일 변경 실패';
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: message });
+    }
+  }
+
+  // ===== 비밀번호 변경 =====
+  @Post('change-password')
+  async changePassword(@Req() req: Request, @Body() body: { currentPassword: string; newPassword: string }, @Res() res: Response) {
+    const token = req.cookies?.kiphub_token;
+    if (!token) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '로그인이 필요합니다.' });
+
+    const decoded = this.authService.verifyToken(token);
+    if (!decoded) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '유효하지 않은 토큰입니다.' });
+
+    try {
+      await this.authService.changePassword(decoded.userId, body.currentPassword, body.newPassword);
+      return res.json({ message: '비밀번호가 변경되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '비밀번호 변경 실패';
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: message });
+    }
+  }
+
+  // ===== 비밀번호 재설정 링크 발송 =====
+  @Post('reset-password')
+  async resetPassword(@Body() body: { email: string }, @Res() res: Response) {
+    try {
+      if (!body.email) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ error: '이메일을 입력해주세요.' });
+      }
+      await this.authService.resetPassword(body.email);
+      return res.json({ message: '비밀번호 재설정 이메일이 발송되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '비밀번호 찾기 실패';
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: message });
+    }
+  }
+
+  // ===== 비밀번호 재설정 확인 =====
+  @Post('confirm-reset-password')
+  async confirmResetPassword(@Body() body: { token: string; newPassword: string }, @Res() res: Response) {
+    try {
+      if (!body.token || !body.newPassword) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ error: '토큰과 새 비밀번호를 입력해주세요.' });
+      }
+      await this.authService.confirmResetPassword(body.token, body.newPassword);
+      return res.json({ message: '비밀번호가 성공적으로 변경되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '비밀번호 재설정 실패';
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: message });
+    }
+  }
+
+  // ===== 이메일 템플릿 미리보기 (개발용) =====
+  @Get('preview-reset-email')
+  previewResetEmail(@Res() res: Response) {
+    const html = this.mailService.getResetPasswordHtml('https://example.com/reset-password?token=SAMPLE_TOKEN');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  }
+
+  @Get('preview-verification-email')
+  previewVerificationEmail(@Res() res: Response) {
+    const html = this.mailService.getVerificationCodeHtml('123456');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  }
+
+  @Get('preview-temp-password-email')
+  previewTempPasswordEmail(@Res() res: Response) {
+    const html = this.mailService.getTempPasswordHtml('TmpP@ss2024!');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  }
+
+  // ===== 로고 이미지 서빙 =====
+  @Get('logo.png')
+  serveLogo(@Res() res: Response) {
+    const logoPath = path.join(__dirname, '..', 'mail', 'assets', 'kiphub-logo.png');
+    if (!fs.existsSync(logoPath)) {
+      return res.status(HttpStatus.NOT_FOUND).json({ error: 'Logo not found' });
+    }
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    return res.sendFile(logoPath);
   }
 }
