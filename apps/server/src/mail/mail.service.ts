@@ -37,13 +37,25 @@ export class MailService {
 
     return `<!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#E4E4E7;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#E4E4E7;padding:40px 0;">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @media only screen and (min-width: 601px) {
+    .email-outer { padding: 40px 0 !important; background: #E4E4E7 !important; }
+    .email-container { border-radius: 24px !important; }
+  }
+  @media only screen and (max-width: 600px) {
+    .email-body { padding: 48px 16px !important; }
+    .email-header { padding: 16px 12px !important; height: auto !important; }
+    .email-footer { padding: 24px 12px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#FFFFFF;">
 <tr><td align="center">
-<table role="presentation" width="800" cellpadding="0" cellspacing="0" style="max-width:800px;width:100%;border-radius:24px;overflow:hidden;">
+<table role="presentation" cellpadding="0" cellspacing="0" class="email-container" style="max-width:800px;width:100%;overflow:hidden;">
   <tr>
-    <td style="background:#FFFFFF;padding:24px 24px 24px 16px;height:80px;box-sizing:border-box;">
+    <td class="email-header" style="background:#FFFFFF;padding:24px 24px 24px 16px;height:80px;box-sizing:border-box;">
       <table cellpadding="0" cellspacing="0"><tr>
         <td style="vertical-align:middle;padding-right:8px;">
           <img src="${logoSrc}" alt="KIPhub" width="48" style="display:block;height:auto;" />
@@ -53,12 +65,12 @@ export class MailService {
     </td>
   </tr>
   <tr>
-    <td style="background:#FAFAFA;padding:100px 24px;text-align:center;">
+    <td class="email-body" style="background:#FAFAFA;padding:100px 24px;text-align:center;">
       ${bodyContent}
     </td>
   </tr>
   <tr>
-    <td style="background:#FFFFFF;padding:32px 32px 32px 16px;">
+    <td class="email-footer" style="background:#FFFFFF;padding:32px 32px 32px 16px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td>
         <table cellpadding="0" cellspacing="0" style="margin-bottom:16px;"><tr>
           <td style="vertical-align:middle;padding-right:8px;">
@@ -169,13 +181,25 @@ export class MailService {
   private wrapEmailTemplateForPreview(bodyContent: string, logoUrl: string): string {
     return `<!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#E4E4E7;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#E4E4E7;padding:40px 0;">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @media only screen and (min-width: 601px) {
+    .email-outer { padding: 40px 0 !important; background: #E4E4E7 !important; }
+    .email-container { border-radius: 24px !important; }
+  }
+  @media only screen and (max-width: 600px) {
+    .email-body { padding: 48px 16px !important; }
+    .email-header { padding: 16px 12px !important; height: auto !important; }
+    .email-footer { padding: 24px 12px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-outer" style="background:#FFFFFF;">
 <tr><td align="center">
-<table role="presentation" width="800" cellpadding="0" cellspacing="0" style="max-width:800px;width:100%;border-radius:24px;overflow:hidden;">
+<table role="presentation" cellpadding="0" cellspacing="0" class="email-container" style="max-width:800px;width:100%;overflow:hidden;">
   <tr>
-    <td style="background:#FFFFFF;padding:24px 24px 24px 16px;height:80px;box-sizing:border-box;">
+    <td class="email-header" style="background:#FFFFFF;padding:24px 24px 24px 16px;height:80px;box-sizing:border-box;">
       <table cellpadding="0" cellspacing="0"><tr>
         <td style="vertical-align:middle;padding-right:8px;">
           <img src="${logoUrl}" alt="KIPhub" width="48" style="display:block;height:auto;" />
@@ -185,12 +209,12 @@ export class MailService {
     </td>
   </tr>
   <tr>
-    <td style="background:#FAFAFA;padding:100px 24px;text-align:center;">
+    <td class="email-body" style="background:#FAFAFA;padding:100px 24px;text-align:center;">
       ${bodyContent}
     </td>
   </tr>
   <tr>
-    <td style="background:#FFFFFF;padding:32px 32px 32px 16px;">
+    <td class="email-footer" style="background:#FFFFFF;padding:32px 32px 32px 16px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td>
         <table cellpadding="0" cellspacing="0" style="margin-bottom:16px;"><tr>
           <td style="vertical-align:middle;padding-right:8px;">
