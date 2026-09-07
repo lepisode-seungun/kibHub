@@ -160,6 +160,9 @@ export class ApiService {
     },
     findOne: (id: number): Promise<User> => this.get<User>(`/users/${id}`),
     update: (id: number, data: UpdateUserDto): Promise<User> => this.patch<User>(`/users/${id}`, data),
+    contents: (id: number): Promise<unknown[]> => this.get<unknown[]>(`/users/${id}/contents`),
+    albums: (id: number, type?: 'ALBUM' | 'BOOKMARK'): Promise<unknown[]> =>
+      this.get<unknown[]>(`/users/${id}/albums${type ? '?type=' + type : ''}`),
     commentStats: (id: number): Promise<{ feedbackCount: number; generalCount: number; receivedLikes: number }> =>
       this.get(`/users/${id}/comment-stats`),
     toggleFollow: (id: number, userId: number): Promise<{ followed: boolean }> =>

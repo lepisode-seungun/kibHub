@@ -320,15 +320,21 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   allCount = signal(0);
   albumCount = signal(0);
+  searchQuery = signal('');
 
-  /** 앨범 선택에 따른 필터링된 콘텐츠 */
+  /** 앨범 선택 + 검색어에 따른 필터링된 콘텐츠 */
   filteredContents = computed(() => {
     const albumId = this.selectedAlbumId();
-    const all = this.contents();
-    if (!albumId) return all;
-    const album = this.albums().find(a => a.id === albumId);
-    if (!album) return all;
-    return all.filter(c => album.contentIds.includes(c.id));
+    const query = this.searchQuery().toLowerCase().trim();
+    let result = this.contents();
+    if (albumId) {
+      const album = this.albums().find(a => a.id === albumId);
+      if (album) result = result.filter(c => album.contentIds.includes(c.id));
+    }
+    if (query) {
+      result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
+    }
+    return result;
   });
 
   // 북마크 콘텐츠
@@ -336,18 +342,29 @@ export class ProfilePage implements OnInit, OnDestroy {
   bookmarkCount = signal(0);
   selectedCategoryId = signal<number | null>(null);
 
-  /** 카테고리(앨범) 선택에 따른 필터링된 북마크 콘텐츠 */
+  /** 카테고리 선택 + 검색어에 따른 필터링된 북마크 콘텐츠 */
   filteredBookmarkContents = computed(() => {
     const catId = this.selectedCategoryId();
-    const all = this.bookmarkContents();
-    if (!catId) return all;
-    const cat = this.categories().find(c => c.id === catId);
-    if (!cat) return all;
-    return all.filter(c => cat.contentIds.includes(c.id));
+    const query = this.searchQuery().toLowerCase().trim();
+    let result = this.bookmarkContents();
+    if (catId) {
+      const cat = this.categories().find(c => c.id === catId);
+      if (cat) result = result.filter(c => cat.contentIds.includes(c.id));
+    }
+    if (query) {
+      result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
+    }
+    return result;
   });
 
   setTab(tab: 'all' | 'album'): void {
     this.activeTab.set(tab);
+    this.searchQuery.set('');
+  }
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
   }
 
   goToContentDetail(contentId: number): void {

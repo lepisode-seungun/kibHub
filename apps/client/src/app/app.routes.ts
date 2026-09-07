@@ -55,6 +55,13 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'user/:id',
+    loadComponent: () =>
+      import('./pages/user-profile/user-profile.page').then(
+        (m) => m.UserProfilePage
+      ),
+  },
+  {
     path: 'my-bootcamp',
     loadComponent: () =>
       import('./pages/my-bootcamp/my-bootcamp.page').then(

@@ -33,7 +33,7 @@
                       <span>강사</span>
                     </span>
                   }
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300">{{ authorName }}</span>
+                  <a [routerLink]="['/user', authorId]" class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 hover:text-white cursor-pointer" style="text-decoration:none">{{ authorName }}</a>
                 </div>
                 @if (!isOwnContent()) {
                   <button [ngClass]="isFollowing() ? 'detail-follow-btn detail-following-btn' : 'detail-follow-btn'" (click)="toggleFollow()">

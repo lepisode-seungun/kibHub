@@ -1,12 +1,16 @@
 import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
+import { AlbumsService } from '../albums/albums.service';
 import { UpdateUserDto } from '@kibhub/shared';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(@Inject(UsersService) private usersService: UsersService) {}
+  constructor(
+    @Inject(UsersService) private usersService: UsersService,
+    @Inject(AlbumsService) private albumsService: AlbumsService,
+  ) {}
 
   @Get()
   findAll(@Query() query: { search?: string; status?: string; role?: string; excludeRole?: string; page?: string; limit?: string }) {
@@ -52,6 +56,11 @@ export class UsersController {
   @Get(':id/contents')
   findUserContents(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findUserContents(id);
+  }
+
+  @Get(':id/albums')
+  findUserAlbums(@Param('id', ParseIntPipe) id: number, @Query('type') type?: 'ALBUM' | 'BOOKMARK') {
+    return this.albumsService.findAll(id, type);
   }
 
   @Get(':id/comments')

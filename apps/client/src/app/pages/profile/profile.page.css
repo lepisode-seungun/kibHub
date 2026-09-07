@@ -1546,3 +1546,44 @@
     font-size: 14px;
   }
 }
+
+/* ===== 팔로우 버튼 (공개 프로필 — content-detail과 동일) ===== */
+.detail-follow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  gap: 6px;
+  width: 280px;
+  height: 48px;
+  background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.detail-follow-btn:hover {
+  opacity: 0.85;
+}
+
+.detail-following-btn {
+  background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%);
+}
+
+.detail-following-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+}
+
+.detail-following-btn .follow-default { display: inline; }
+.detail-following-btn .follow-hover { display: none; }
+.detail-following-btn:hover .follow-default { display: none; }
+.detail-following-btn:hover .follow-hover { display: inline; }
