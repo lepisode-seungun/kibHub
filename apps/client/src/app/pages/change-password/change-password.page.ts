@@ -2,6 +2,7 @@ import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-change-password',
@@ -13,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class ChangePasswordPage {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private api = inject(ApiService);
 
   currentPassword = signal('');
   newPassword = signal('');
@@ -23,6 +25,7 @@ export class ChangePasswordPage {
   showConfirmPw = signal(false);
 
   passwordError = signal('');
+  successMessage = signal('');
   passwordMatch = computed(() => {
     const np = this.newPassword();
     const cp = this.confirmPassword();
@@ -64,8 +67,18 @@ export class ChangePasswordPage {
       this.passwordError.set('비밀번호가 일치하지 않습니다.');
       return;
     }
-    // TODO: 비밀번호 변경 API 연동
-    this.router.navigate(['/profile']);
+
+    try {
+      await this.api.auth.changePassword({
+        currentPassword: this.currentPassword(),
+        newPassword: this.newPassword(),
+      });
+      this.successMessage.set('비밀번호가 변경되었습니다.');
+      setTimeout(() => this.router.navigate(['/profile']), 1500);
+    } catch (e: any) {
+      const msg = e?.error?.error || e?.error?.message || '비밀번호 변경에 실패했습니다.';
+      this.passwordError.set(msg);
+    }
   }
 
   goBack(): void {

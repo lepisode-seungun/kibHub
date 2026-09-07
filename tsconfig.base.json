@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false,
-    "paths": {}
+    "paths": {
+      "@kibhub/shared": ["libs/shared/src/index.ts"],
+      "@prisma/generated": ["prisma/generated/prisma/client"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

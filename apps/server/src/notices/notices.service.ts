@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../../../prisma/generated/prisma/client';
+import { Prisma } from '@prisma/generated';
 import { CreateNoticeDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 

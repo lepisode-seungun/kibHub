@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginPage {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   email = '';
   password = '';
@@ -36,7 +37,8 @@ export class LoginPage {
     if (!this.email || !this.password) return;
     const result = await this.authService.login(this.email, this.password);
     if (result.success) {
-      this.router.navigate(['/']);
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+      setTimeout(() => this.router.navigateByUrl(returnUrl), 100);
     } else {
       this.errorMessage.set(result.error || '이메일 또는 비밀번호가 올바르지 않습니다.');
       this.showPasswordError.set(true);

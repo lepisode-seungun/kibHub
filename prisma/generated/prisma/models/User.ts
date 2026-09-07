@@ -326,6 +326,8 @@ export type UserWhereInput = {
   bootcampInstructors?: Prisma.BootcampInstructorListRelationFilter
   albums?: Prisma.AlbumListRelationFilter
   commentLikes?: Prisma.CommentLikeListRelationFilter
+  followers?: Prisma.FollowListRelationFilter
+  following?: Prisma.FollowListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -360,6 +362,8 @@ export type UserOrderByWithRelationInput = {
   bootcampInstructors?: Prisma.BootcampInstructorOrderByRelationAggregateInput
   albums?: Prisma.AlbumOrderByRelationAggregateInput
   commentLikes?: Prisma.CommentLikeOrderByRelationAggregateInput
+  followers?: Prisma.FollowOrderByRelationAggregateInput
+  following?: Prisma.FollowOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -397,6 +401,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bootcampInstructors?: Prisma.BootcampInstructorListRelationFilter
   albums?: Prisma.AlbumListRelationFilter
   commentLikes?: Prisma.CommentLikeListRelationFilter
+  followers?: Prisma.FollowListRelationFilter
+  following?: Prisma.FollowListRelationFilter
 }, "id" | "email" | "loginId">
 
 export type UserOrderByWithAggregationInput = {
@@ -478,6 +484,8 @@ export type UserCreateInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -512,6 +520,8 @@ export type UserUncheckedCreateInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUpdateInput = {
@@ -545,6 +555,8 @@ export type UserUpdateInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -579,6 +591,8 @@ export type UserUncheckedUpdateInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -858,6 +872,34 @@ export type UserUpdateOneRequiredWithoutFaqsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFaqsInput, Prisma.UserUpdateWithoutFaqsInput>, Prisma.UserUncheckedUpdateWithoutFaqsInput>
 }
 
+export type UserCreateNestedOneWithoutFollowingInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowingInput, Prisma.UserUncheckedCreateWithoutFollowingInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowingInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutFollowersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowersInput, Prisma.UserUncheckedCreateWithoutFollowersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFollowingNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowingInput, Prisma.UserUncheckedCreateWithoutFollowingInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowingInput
+  upsert?: Prisma.UserUpsertWithoutFollowingInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFollowingInput, Prisma.UserUpdateWithoutFollowingInput>, Prisma.UserUncheckedUpdateWithoutFollowingInput>
+}
+
+export type UserUpdateOneRequiredWithoutFollowersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowersInput, Prisma.UserUncheckedCreateWithoutFollowersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowersInput
+  upsert?: Prisma.UserUpsertWithoutFollowersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFollowersInput, Prisma.UserUpdateWithoutFollowersInput>, Prisma.UserUncheckedUpdateWithoutFollowersInput>
+}
+
 export type UserCreateNestedOneWithoutInquiriesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutInquiriesInput, Prisma.UserUncheckedCreateWithoutInquiriesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutInquiriesInput
@@ -954,6 +996,8 @@ export type UserCreateWithoutApplicantsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutApplicantsInput = {
@@ -987,6 +1031,8 @@ export type UserUncheckedCreateWithoutApplicantsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutApplicantsInput = {
@@ -1035,6 +1081,8 @@ export type UserUpdateWithoutApplicantsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicantsInput = {
@@ -1068,6 +1116,8 @@ export type UserUncheckedUpdateWithoutApplicantsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutBootcampInstructorsInput = {
@@ -1100,6 +1150,8 @@ export type UserCreateWithoutBootcampInstructorsInput = {
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutBootcampInstructorsInput = {
@@ -1133,6 +1185,8 @@ export type UserUncheckedCreateWithoutBootcampInstructorsInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutBootcampInstructorsInput = {
@@ -1181,6 +1235,8 @@ export type UserUpdateWithoutBootcampInstructorsInput = {
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBootcampInstructorsInput = {
@@ -1214,6 +1270,8 @@ export type UserUncheckedUpdateWithoutBootcampInstructorsInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutContentsInput = {
@@ -1246,6 +1304,8 @@ export type UserCreateWithoutContentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutContentsInput = {
@@ -1279,6 +1339,8 @@ export type UserUncheckedCreateWithoutContentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutContentsInput = {
@@ -1327,6 +1389,8 @@ export type UserUpdateWithoutContentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContentsInput = {
@@ -1360,6 +1424,8 @@ export type UserUncheckedUpdateWithoutContentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutAlbumsInput = {
@@ -1392,6 +1458,8 @@ export type UserCreateWithoutAlbumsInput = {
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutAlbumsInput = {
@@ -1425,6 +1493,8 @@ export type UserUncheckedCreateWithoutAlbumsInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutAlbumsInput = {
@@ -1473,6 +1543,8 @@ export type UserUpdateWithoutAlbumsInput = {
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAlbumsInput = {
@@ -1506,6 +1578,8 @@ export type UserUncheckedUpdateWithoutAlbumsInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1538,6 +1612,8 @@ export type UserCreateWithoutCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1571,6 +1647,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1619,6 +1697,8 @@ export type UserUpdateWithoutCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1652,6 +1732,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutCommentLikesInput = {
@@ -1684,6 +1766,8 @@ export type UserCreateWithoutCommentLikesInput = {
   submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutCommentLikesInput = {
@@ -1717,6 +1801,8 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutCommentLikesInput = {
@@ -1765,6 +1851,8 @@ export type UserUpdateWithoutCommentLikesInput = {
   submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentLikesInput = {
@@ -1798,6 +1886,8 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -1830,6 +1920,8 @@ export type UserCreateWithoutReportsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -1863,6 +1955,8 @@ export type UserUncheckedCreateWithoutReportsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -1911,6 +2005,8 @@ export type UserUpdateWithoutReportsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -1944,6 +2040,8 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -1976,6 +2074,8 @@ export type UserCreateWithoutSubmissionsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -2009,6 +2109,8 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -2057,6 +2159,8 @@ export type UserUpdateWithoutSubmissionsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -2090,6 +2194,8 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutSubmissionCommentsInput = {
@@ -2122,6 +2228,8 @@ export type UserCreateWithoutSubmissionCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
@@ -2155,6 +2263,8 @@ export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionCommentsInput = {
@@ -2203,6 +2313,8 @@ export type UserUpdateWithoutSubmissionCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
@@ -2236,6 +2348,8 @@ export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutFaqsInput = {
@@ -2268,6 +2382,8 @@ export type UserCreateWithoutFaqsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutFaqsInput = {
@@ -2301,6 +2417,8 @@ export type UserUncheckedCreateWithoutFaqsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutFaqsInput = {
@@ -2349,6 +2467,8 @@ export type UserUpdateWithoutFaqsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFaqsInput = {
@@ -2382,6 +2502,316 @@ export type UserUncheckedUpdateWithoutFaqsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
+}
+
+export type UserCreateWithoutFollowingInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+}
+
+export type UserUncheckedCreateWithoutFollowingInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+}
+
+export type UserCreateOrConnectWithoutFollowingInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowingInput, Prisma.UserUncheckedCreateWithoutFollowingInput>
+}
+
+export type UserCreateWithoutFollowersInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
+}
+
+export type UserUncheckedCreateWithoutFollowersInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
+}
+
+export type UserCreateOrConnectWithoutFollowersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowersInput, Prisma.UserUncheckedCreateWithoutFollowersInput>
+}
+
+export type UserUpsertWithoutFollowingInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFollowingInput, Prisma.UserUncheckedUpdateWithoutFollowingInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowingInput, Prisma.UserUncheckedCreateWithoutFollowingInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFollowingInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFollowingInput, Prisma.UserUncheckedUpdateWithoutFollowingInput>
+}
+
+export type UserUpdateWithoutFollowingInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFollowingInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+}
+
+export type UserUpsertWithoutFollowersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFollowersInput, Prisma.UserUncheckedUpdateWithoutFollowersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowersInput, Prisma.UserUncheckedCreateWithoutFollowersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFollowersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFollowersInput, Prisma.UserUncheckedUpdateWithoutFollowersInput>
+}
+
+export type UserUpdateWithoutFollowersInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFollowersInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutInquiriesInput = {
@@ -2414,6 +2844,8 @@ export type UserCreateWithoutInquiriesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutInquiriesInput = {
@@ -2447,6 +2879,8 @@ export type UserUncheckedCreateWithoutInquiriesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutInquiriesInput = {
@@ -2484,6 +2918,8 @@ export type UserCreateWithoutInquiryRepliesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutInquiryRepliesInput = {
@@ -2517,6 +2953,8 @@ export type UserUncheckedCreateWithoutInquiryRepliesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutInquiryRepliesInput = {
@@ -2565,6 +3003,8 @@ export type UserUpdateWithoutInquiriesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiriesInput = {
@@ -2598,6 +3038,8 @@ export type UserUncheckedUpdateWithoutInquiriesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUpsertWithoutInquiryRepliesInput = {
@@ -2641,6 +3083,8 @@ export type UserUpdateWithoutInquiryRepliesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
@@ -2674,6 +3118,8 @@ export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutNoticesInput = {
@@ -2706,6 +3152,8 @@ export type UserCreateWithoutNoticesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutNoticesInput = {
@@ -2739,6 +3187,8 @@ export type UserUncheckedCreateWithoutNoticesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutNoticesInput = {
@@ -2787,6 +3237,8 @@ export type UserUpdateWithoutNoticesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNoticesInput = {
@@ -2820,6 +3272,8 @@ export type UserUncheckedUpdateWithoutNoticesInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserCreateWithoutSnsInput = {
@@ -2852,6 +3306,8 @@ export type UserCreateWithoutSnsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
 }
 
 export type UserUncheckedCreateWithoutSnsInput = {
@@ -2885,6 +3341,8 @@ export type UserUncheckedCreateWithoutSnsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
   albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
   commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
 }
 
 export type UserCreateOrConnectWithoutSnsInput = {
@@ -2933,6 +3391,8 @@ export type UserUpdateWithoutSnsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSnsInput = {
@@ -2966,6 +3426,8 @@ export type UserUncheckedUpdateWithoutSnsInput = {
   bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
   albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
   commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
 }
 
 
@@ -2988,6 +3450,8 @@ export type UserCountOutputType = {
   bootcampInstructors: number
   albums: number
   commentLikes: number
+  followers: number
+  following: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3005,6 +3469,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   bootcampInstructors?: boolean | UserCountOutputTypeCountBootcampInstructorsArgs
   albums?: boolean | UserCountOutputTypeCountAlbumsArgs
   commentLikes?: boolean | UserCountOutputTypeCountCommentLikesArgs
+  followers?: boolean | UserCountOutputTypeCountFollowersArgs
+  following?: boolean | UserCountOutputTypeCountFollowingArgs
 }
 
 /**
@@ -3115,6 +3581,20 @@ export type UserCountOutputTypeCountCommentLikesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.CommentLikeWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFollowersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FollowWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFollowingArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FollowWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3148,6 +3628,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   bootcampInstructors?: boolean | Prisma.User$bootcampInstructorsArgs<ExtArgs>
   albums?: boolean | Prisma.User$albumsArgs<ExtArgs>
   commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
+  followers?: boolean | Prisma.User$followersArgs<ExtArgs>
+  following?: boolean | Prisma.User$followingArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3227,6 +3709,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   bootcampInstructors?: boolean | Prisma.User$bootcampInstructorsArgs<ExtArgs>
   albums?: boolean | Prisma.User$albumsArgs<ExtArgs>
   commentLikes?: boolean | Prisma.User$commentLikesArgs<ExtArgs>
+  followers?: boolean | Prisma.User$followersArgs<ExtArgs>
+  following?: boolean | Prisma.User$followingArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3249,6 +3733,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     bootcampInstructors: Prisma.$BootcampInstructorPayload<ExtArgs>[]
     albums: Prisma.$AlbumPayload<ExtArgs>[]
     commentLikes: Prisma.$CommentLikePayload<ExtArgs>[]
+    followers: Prisma.$FollowPayload<ExtArgs>[]
+    following: Prisma.$FollowPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -3676,6 +4162,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   bootcampInstructors<T extends Prisma.User$bootcampInstructorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bootcampInstructorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BootcampInstructorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   albums<T extends Prisma.User$albumsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$albumsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   commentLikes<T extends Prisma.User$commentLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  followers<T extends Prisma.User$followersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  following<T extends Prisma.User$followingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4448,6 +4936,54 @@ export type User$commentLikesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.CommentLikeScalarFieldEnum | Prisma.CommentLikeScalarFieldEnum[]
+}
+
+/**
+ * User.followers
+ */
+export type User$followersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Follow
+   */
+  select?: Prisma.FollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Follow
+   */
+  omit?: Prisma.FollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FollowInclude<ExtArgs> | null
+  where?: Prisma.FollowWhereInput
+  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
+  cursor?: Prisma.FollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
+}
+
+/**
+ * User.following
+ */
+export type User$followingArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Follow
+   */
+  select?: Prisma.FollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Follow
+   */
+  omit?: Prisma.FollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FollowInclude<ExtArgs> | null
+  where?: Prisma.FollowWhereInput
+  orderBy?: Prisma.FollowOrderByWithRelationInput | Prisma.FollowOrderByWithRelationInput[]
+  cursor?: Prisma.FollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FollowScalarFieldEnum | Prisma.FollowScalarFieldEnum[]
 }
 
 /**

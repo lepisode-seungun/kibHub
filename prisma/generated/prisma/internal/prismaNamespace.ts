@@ -419,6 +419,7 @@ export const ModelName = {
   SubmissionComment: 'SubmissionComment',
   Faq: 'Faq',
   FaqFile: 'FaqFile',
+  Follow: 'Follow',
   History: 'History',
   Inquiry: 'Inquiry',
   InquiryFile: 'InquiryFile',
@@ -446,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "partner" | "portfolio" | "portfolioFile" | "poster" | "siteSetting" | "user" | "userSns"
+    modelProps: "admin" | "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "follow" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "partner" | "portfolio" | "portfolioFile" | "poster" | "siteSetting" | "user" | "userSns"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2078,6 +2079,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Follow: {
+      payload: Prisma.$FollowPayload<ExtArgs>
+      fields: Prisma.FollowFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FollowFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FollowFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        findFirst: {
+          args: Prisma.FollowFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FollowFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        findMany: {
+          args: Prisma.FollowFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>[]
+        }
+        create: {
+          args: Prisma.FollowCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        createMany: {
+          args: Prisma.FollowCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FollowCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>[]
+        }
+        delete: {
+          args: Prisma.FollowDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        update: {
+          args: Prisma.FollowUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        deleteMany: {
+          args: Prisma.FollowDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FollowUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FollowUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>[]
+        }
+        upsert: {
+          args: Prisma.FollowUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FollowPayload>
+        }
+        aggregate: {
+          args: Prisma.FollowAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFollow>
+        }
+        groupBy: {
+          args: Prisma.FollowGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FollowGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FollowCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FollowCountAggregateOutputType> | number
+        }
+      }
+    }
     History: {
       payload: Prisma.$HistoryPayload<ExtArgs>
       fields: Prisma.HistoryFieldRefs
@@ -3308,6 +3383,16 @@ export const FaqFileScalarFieldEnum = {
 export type FaqFileScalarFieldEnum = (typeof FaqFileScalarFieldEnum)[keyof typeof FaqFileScalarFieldEnum]
 
 
+export const FollowScalarFieldEnum = {
+  id: 'id',
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
+} as const
+
+export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
+
+
 export const HistoryScalarFieldEnum = {
   id: 'id',
   year: 'year',
@@ -3957,6 +4042,7 @@ export type GlobalOmitConfig = {
   submissionComment?: Prisma.SubmissionCommentOmit
   faq?: Prisma.FaqOmit
   faqFile?: Prisma.FaqFileOmit
+  follow?: Prisma.FollowOmit
   history?: Prisma.HistoryOmit
   inquiry?: Prisma.InquiryOmit
   inquiryFile?: Prisma.InquiryFileOmit

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, NgZone, PLATFORM_ID, afterNextRender, ApplicationRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,14 +19,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
-  private ngZone = inject(NgZone);
+
   private platformId = inject(PLATFORM_ID);
-  private appRef = inject(ApplicationRef);
+
 
   /* 동적 데이터 — API에서 로드 */
   contentId = '';
   authorName = '';
   authorRole = '';
+  authorProfileImage = '';
+  authorId = 0;
   title = '';
   description = '';
   category = '';
@@ -53,6 +55,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   currentUserAvatar = signal('');  
   currentUserProfileImage = signal('');
   currentUserId = signal(0);
+  isFollowing = signal(false);
+  isOwnContent = signal(false);
   pendingMarker = signal<{top: number; left: number; imageIndex: number} | null>(null);
   commentText = '';
   attachedImages = signal<{ file: File; preview: string }[]>([]);
@@ -141,8 +145,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   get filteredComments() {
     const tab = this.activeCommentTab();
-    if (tab === 'all') return this.comments;
-    return this.comments.filter(c => c.type === tab);
+    let list = tab === 'all' ? this.comments : this.comments.filter(c => c.type === tab);
+    if (!this.isLoggedIn()) {
+      list = list.slice(0, 2);
+    }
+    return list;
   }
 
   get feedbackCount() { return this.comments.filter(c => c.type === 'feedback').length; }
@@ -159,136 +166,151 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     }
   }
 
-  private loadContent(id: number): void {
-    this.ngZone.run(async () => {
-      try {
-        // 3개 API 병렬 호출
-        const [meResult, contentResult, commentsResult] = await Promise.allSettled([
-          this.api.users.me(),
-          this.api.contents.findOne(id),
-          this.api.comments.findByContent(id),
-        ]);
+  private async loadContent(id: number): Promise<void> {
+    try {
+      // 로그인 상태면 유저 정보도 병렬 호출, 비로그인이면 스킵
+      const isLoggedIn = this.isLoggedIn();
+      const [meResult, contentResult, commentsResult] = await Promise.allSettled([
+        isLoggedIn ? this.api.users.me() : Promise.reject('not logged in'),
+        this.api.contents.findOne(id),
+        this.api.comments.findByContent(id),
+      ]);
 
-        // 유저 정보
-        if (meResult.status === 'fulfilled') {
-          const me = meResult.value;
-          const name = me.nickname || me.name || '';
-          this.currentUserName.set(name);
-          this.currentUserAvatar.set(name.charAt(0));
-          this.currentUserProfileImage.set(me.profileImage || '');
-          this.currentUserId.set(me.id);
-        }
-
-        // 콘텐츠 정보
-        if (contentResult.status === 'fulfilled') {
-          const content = contentResult.value;
-          this.title = content.title;
-          this.description = content.body || '';
-          this.authorName = content.author?.nickname || content.author?.name || '작성자';
-          this.authorRole = (content.author as any)?.role || '';
-          this.category = content.category?.name || '미분류';
-          this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
-          this.commentCount = (content as any)._count?.comments || (content as any).comments?.length || 0;
-
-          const imageList: typeof this.images = [];
-          if (content.thumbnail) {
-            imageList.push({ gradient: `url(${content.thumbnail}) center/cover no-repeat`, markers: [] });
-          }
-          if (content.images && content.images.length > 0) {
-            for (const imgUrl of content.images) {
-              imageList.push({ gradient: `url(${imgUrl}) center/cover no-repeat`, markers: [] });
-            }
-          }
-          if (imageList.length === 0) {
-            imageList.push({ gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', markers: [] });
-          }
-          this.images = imageList;
-        }
-
-        // 댓글
-        if (commentsResult.status === 'fulfilled') {
-          const serverComments = commentsResult.value;
-          this.comments = serverComments.map((c: any) => {
-            return {
-              id: c.id,
-              userName: c.author?.nickname || c.author?.name || '익명',
-              avatar: (c.author?.nickname || c.author?.name || 'U').charAt(0),
-              profileImage: c.author?.profileImage || '',
-              markerNum: c.markerNum ?? null,
-              markerTop: c.markerTop ?? null,
-              markerLeft: c.markerLeft ?? null,
-              isMe: c.author?.id === this.currentUserId(),
-              isActive: false,
-              type: (c.type || 'general') as 'feedback' | 'general',
-              content: c.body,
-              time: this.timeAgo(new Date(c.createdAt)),
-              likes: c.likeCount || 0, liked: (c.likes?.length || 0) > 0,
-              replyCount: c.replies?.length || 0,
-              replies: (c.replies || []).map((r: any) => ({
-                id: r.id,
-                userName: r.author?.nickname || r.author?.name || '익명',
-                avatar: (r.author?.nickname || r.author?.name || 'U').charAt(0),
-                profileImage: r.author?.profileImage || '',
-                markerNum: r.markerNum ?? null,
-                markerTop: r.markerTop ?? null,
-                markerLeft: r.markerLeft ?? null,
-                isMe: r.author?.id === this.currentUserId(),
-                type: (r.type || 'general') as 'feedback' | 'general',
-                content: r.body,
-                time: this.timeAgo(new Date(r.createdAt)),
-                likes: r.likeCount || 0, liked: (r.likes?.length || 0) > 0,
-                imageUrls: r.images || [],
-              })),
-              imageUrls: c.images || [],
-            };
-          });
-          this.commentCount = this.comments.length;
-
-          // 이미지에 영구 마커 복원 (댓글 + 대댓글 모두, 이미지별 분배)
-          if (this.images.length > 0) {
-            // 각 이미지의 마커 배열 초기화
-            for (const img of this.images) {
-              img.markers = [];
-            }
-            const addMarker = (c: any) => {
-              if (c.markerNum && c.markerTop != null) {
-                const idx = c.markerImageIndex ?? 0;
-                if (idx < this.images.length) {
-                  this.images[idx].markers.push({ rank: c.markerNum, top: c.markerTop, left: c.markerLeft, commentId: c.id });
-                }
-              }
-            };
-            for (const c of this.comments) {
-              addMarker(c);
-              for (const r of (c.replies || [])) {
-                addMarker(r);
-              }
-            }
-          }
-        }
-
-        // 책갈피 상태 확인
-        if (this.isLoggedIn()) {
-          try {
-            const albums = await this.api.albums.findAll('BOOKMARK');
-            const contentId = id;
-            const ids: number[] = [];
-            for (const a of albums) {
-              const contents = a.albumContents || [];
-              if (contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId)) {
-                ids.push(a.id);
-              }
-            }
-            this.bookmarkedAlbumIds = ids;
-            this.isBookmarked.set(ids.length > 0);
-          } catch { /* ignore */ }
-        }
-      } catch (e) {
-        console.error('콘텐츠 로드 실패:', e);
-      } finally {
-        this.appRef.tick();
+      // 유저 정보
+      if (meResult.status === 'fulfilled') {
+        const me = meResult.value;
+        const name = me.nickname || me.name || '';
+        this.currentUserName.set(name);
+        this.currentUserAvatar.set(name.charAt(0));
+        this.currentUserProfileImage.set(me.profileImage || '');
+        this.currentUserId.set(me.id);
       }
-    });
+
+      // 콘텐츠 정보
+      if (contentResult.status === 'fulfilled') {
+        const content = contentResult.value;
+        this.title = content.title;
+        this.description = content.body || '';
+        this.authorName = content.author?.nickname || content.author?.name || '작성자';
+        this.authorRole = (content.author as any)?.role || '';
+        this.authorProfileImage = (content.author as any)?.profileImage || '';
+        this.authorId = (content.author as any)?.id || 0;
+        if (this.currentUserId() && this.authorId) {
+          this.isOwnContent.set(this.currentUserId() === this.authorId);
+          if (!this.isOwnContent()) {
+            this.api.users.followStatus(this.authorId, this.currentUserId()).then(res => {
+              this.isFollowing.set(res.isFollowing);
+            }).catch(() => {});
+          }
+        }
+        this.category = content.category?.name || '미분류';
+        this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
+        this.commentCount = (content as any)._count?.comments || (content as any).comments?.length || 0;
+
+        const imageList: typeof this.images = [];
+        if (content.thumbnail) {
+          imageList.push({ gradient: `url(${content.thumbnail}) center/cover no-repeat`, markers: [] });
+        }
+        if (content.images && content.images.length > 0) {
+          for (const imgUrl of content.images) {
+            imageList.push({ gradient: `url(${imgUrl}) center/cover no-repeat`, markers: [] });
+          }
+        }
+        if (imageList.length === 0) {
+          imageList.push({ gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', markers: [] });
+        }
+        this.images = imageList;
+      }
+
+      // 콘텐츠+이미지 데이터가 도착하면 즉시 렌더링
+      this.cdr.detectChanges();
+
+      // 댓글
+      if (commentsResult.status === 'fulfilled') {
+        const serverComments = commentsResult.value;
+        this.comments = serverComments.map((c: any) => {
+          return {
+            id: c.id,
+            userName: c.author?.nickname || c.author?.name || '익명',
+            avatar: (c.author?.nickname || c.author?.name || 'U').charAt(0),
+            profileImage: c.author?.profileImage || '',
+            markerNum: c.markerNum ?? null,
+            markerTop: c.markerTop ?? null,
+            markerLeft: c.markerLeft ?? null,
+            isMe: c.author?.id === this.currentUserId(),
+            isActive: false,
+            type: (c.type || 'general') as 'feedback' | 'general',
+            content: c.body,
+            time: this.timeAgo(new Date(c.createdAt)),
+            likes: c.likeCount || 0, liked: (c.likes?.length || 0) > 0,
+            replyCount: c.replies?.length || 0,
+            replies: (c.replies || []).map((r: any) => ({
+              id: r.id,
+              userName: r.author?.nickname || r.author?.name || '익명',
+              avatar: (r.author?.nickname || r.author?.name || 'U').charAt(0),
+              profileImage: r.author?.profileImage || '',
+              markerNum: r.markerNum ?? null,
+              markerTop: r.markerTop ?? null,
+              markerLeft: r.markerLeft ?? null,
+              isMe: r.author?.id === this.currentUserId(),
+              type: (r.type || 'general') as 'feedback' | 'general',
+              content: r.body,
+              time: this.timeAgo(new Date(r.createdAt)),
+              likes: r.likeCount || 0, liked: (r.likes?.length || 0) > 0,
+              imageUrls: r.images || [],
+            })),
+            imageUrls: c.images || [],
+          };
+        });
+        this.commentCount = this.comments.length;
+
+        // 이미지에 영구 마커 복원 (댓글 + 대댓글 모두, 이미지별 분배)
+        if (this.images.length > 0) {
+          // 각 이미지의 마커 배열 초기화
+          for (const img of this.images) {
+            img.markers = [];
+          }
+          const addMarker = (c: any) => {
+            if (c.markerNum && c.markerTop != null) {
+              const idx = c.markerImageIndex ?? 0;
+              if (idx < this.images.length) {
+                this.images[idx].markers.push({ rank: c.markerNum, top: c.markerTop, left: c.markerLeft, commentId: c.id });
+              }
+            }
+          };
+          for (const c of this.comments) {
+            addMarker(c);
+            for (const r of (c.replies || [])) {
+              addMarker(r);
+            }
+          }
+        }
+      }
+
+      // 댓글까지 렌더링
+      this.cdr.detectChanges();
+
+      // 책갈피 상태 확인 (로그인 시에만, 별도 실행)
+      if (this.isLoggedIn()) {
+        try {
+          const albums = await this.api.albums.findAll('BOOKMARK');
+          const contentId = id;
+          const ids: number[] = [];
+          for (const a of albums) {
+            const contents = a.albumContents || [];
+            if (contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId)) {
+              ids.push(a.id);
+            }
+          }
+          this.bookmarkedAlbumIds = ids;
+          this.isBookmarked.set(ids.length > 0);
+        } catch { /* ignore */ }
+      }
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+    } finally {
+      this.cdr.detectChanges();
+    }
   }
 
   private timeAgo(date: Date): string {
@@ -462,6 +484,36 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.commentMode.set('feedback');
     if (!this.isSidebarOpen()) {
       this.isSidebarOpen.set(true);
+    }
+  }
+
+  toggleFeedbackMode(): void {
+    if (!this.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
+    if (this.commentMode() === 'feedback') {
+      this.commentMode.set('general');
+      this.pendingMarker.set(null);
+    } else {
+      this.commentMode.set('feedback');
+      if (!this.isSidebarOpen()) {
+        this.isSidebarOpen.set(true);
+      }
+    }
+  }
+
+  async toggleFollow(): Promise<void> {
+    if (!this.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
+    if (this.isOwnContent() || !this.authorId) return;
+    try {
+      const result = await this.api.users.toggleFollow(this.authorId, this.currentUserId());
+      this.isFollowing.set(result.followed);
+    } catch {
+      // 에러 무시
     }
   }
 
@@ -859,10 +911,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   commentImageList = signal<string[]>([]);
   commentImageIndex = signal(0);
 
-  openCommentImageViewer(imageCount: number, clickedIndex: number): void {
-    const images = Array.from({ length: imageCount }, () =>
-      `linear-gradient(135deg, #3F3F46 0%, #52525B 100%)`
-    );
+  openCommentImageViewer(images: string[], clickedIndex: number): void {
     this.commentImageList.set(images);
     this.commentImageIndex.set(clickedIndex);
     this.isCommentImageViewerOpen.set(true);

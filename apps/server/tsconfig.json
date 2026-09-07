@@ -13,7 +13,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@kibhub/shared": ["../../libs/shared/src/index.ts"]
+      "@kibhub/shared": ["../../libs/shared/src/index.ts"],
+      "@prisma/generated": ["../../prisma/generated/prisma/client"]
     }
   },
   "ts-node": {

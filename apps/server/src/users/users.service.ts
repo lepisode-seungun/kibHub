@@ -1,6 +1,6 @@
 import { Inject, Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../../../prisma/generated/prisma/client';
+import { Prisma } from '@prisma/generated';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
@@ -188,5 +188,36 @@ export class UsersService {
       where: { loginId },
     });
     return !existing;
+  }
+  // ===== 팔로우 =====
+  async toggleFollow(followerId: number, followingId: number) {
+    if (followerId === followingId) {
+      throw new BadRequestException('자기 자신을 팔로우할 수 없습니다.');
+    }
+    const existing = await this.prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId, followingId } },
+    });
+    if (existing) {
+      await this.prisma.follow.delete({ where: { id: existing.id } });
+      return { followed: false };
+    } else {
+      await this.prisma.follow.create({ data: { followerId, followingId } });
+      return { followed: true };
+    }
+  }
+
+  async isFollowing(followerId: number, followingId: number) {
+    const follow = await this.prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId, followingId } },
+    });
+    return { isFollowing: !!follow };
+  }
+
+  async getFollowCounts(userId: number) {
+    const [followerCount, followingCount] = await Promise.all([
+      this.prisma.follow.count({ where: { followingId: userId } }),
+      this.prisma.follow.count({ where: { followerId: userId } }),
+    ]);
+    return { followerCount, followingCount };
   }
 }

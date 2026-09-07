@@ -72,8 +72,10 @@ export class AuthService {
   async register(payload: {
     email: string;
     password: string;
+    name?: string;
     nickname: string;
     phone?: string;
+    birthday?: string;
     intro?: string;
   }): Promise<{ success: boolean; error?: string }> {
     try {

@@ -157,6 +157,7 @@ export class HomePage implements AfterViewInit, OnInit {
         feedbackCount: (c as any).feedbackCount || 0,
         comment: (c as any).topComment?.body || '',
         commenter: (c as any).topComment?.author?.nickname || (c as any).topComment?.author?.name || '',
+        commentTime: (c as any).topComment?.createdAt ? this.getRelativeTime((c as any).topComment.createdAt) : '',
       });
       // 첫 12개는 갤러리
       this.contentCards.set(contents.slice(0, 12).map((c, i) => ({
@@ -334,4 +335,20 @@ export class HomePage implements AfterViewInit, OnInit {
 
   /* ===== More Content ===== */
   moreContentCards = signal<ContentCard[]>([]);
+
+  /* ===== Helpers ===== */
+  private getRelativeTime(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const diff = Math.max(0, now - then);
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return '방금 전';
+    if (minutes < 60) return `${minutes}분 전`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}시간 전`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}일 전`;
+    const months = Math.floor(days / 30);
+    return `${months}개월 전`;
+  }
 }

@@ -53,15 +53,15 @@ export class FindEmailPage implements OnInit, OnDestroy {
   async onFindEmail(): Promise<void> {
     this.findError.set('');
     this.foundEmail.set('');
-    if (!this.name || !this.phone || !this.birthday) {
-      this.findError.set('모든 항목을 입력해주세요.');
+    if (!this.phone || !this.birthday) {
+      this.findError.set('연락처와 생년월일을 모두 입력해주세요.');
       return;
     }
     try {
-      const result = await this.api.auth.findEmail({ name: this.name, phone: this.phone });
+      const result = await this.api.auth.findEmail({ phone: this.phone, birthday: this.birthday });
       this.foundEmail.set(result.email);
     } catch {
-      this.findError.set('존재하지 않는 사용자입니다. 정보를 확인 후 다시 시도해주세요.');
+      this.findError.set('일치하는 사용자가 없습니다. 정보를 확인 후 다시 시도해주세요.');
     }
   }
 }

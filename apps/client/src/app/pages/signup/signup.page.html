@@ -46,14 +46,16 @@
             <input type="email" [class]="emailCheckSuccess()
               ? 'flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none box-border bg-zinc-50'
               : 'flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border'"
-              placeholder="입력해주세요." [value]="email" [readonly]="emailCheckSuccess()" (input)="onInput('email', $event)" />
-            <button
-              [class]="email.length > 0
-                ? 'w-[68px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0'
-                : 'w-[68px] h-12 bg-[#E4E4E7] border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-[#A1A1AA] cursor-default shrink-0'"
-              [disabled]="email.length === 0"
-              (click)="checkEmailDuplicate()"
-            >인증</button>
+              placeholder="입력해주세요." [value]="email" [readonly]="codeSent()" (input)="onInput('email', $event)" />
+            @if (!codeSent()) {
+              <button type="button"
+                [class]="email.length > 0
+                  ? 'w-[68px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0'
+                  : 'w-[68px] h-12 bg-[#E4E4E7] border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-[#A1A1AA] cursor-default shrink-0'"
+                [disabled]="email.length === 0 || isCheckingEmail()"
+                (click)="checkEmailDuplicate()"
+              >{{ isCheckingEmail() ? '...' : '인증' }}</button>
+            }
           </div>
 
           <!-- 에러: 이미 가입된 이메일 -->
@@ -64,20 +66,42 @@
             </div>
           }
 
-          <!-- 인증 성공: 인증번호 입력 폼 -->
-          @if (emailCheckSuccess()) {
+          <!-- 인증번호 입력 -->
+          @if (codeSent() && !isCodeVerified()) {
+            <div class="flex items-center gap-1">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="5.5" stroke="#93C5FD" stroke-width="0.875" stroke-dasharray="1.75 1.75"/>
+                <path d="M8 5v3.5l2 1" stroke="#93C5FD" stroke-width="0.875" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#93C5FD]">인증번호가 발송되었습니다. (5분 유효)</span>
+            </div>
             <div class="flex gap-2 w-full">
-              <input type="text" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="인증번호를 입력해주세요." (input)="verificationCode = $any($event.target).value" />
-              <button class="w-[79px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0">인증하기</button>
+              <input type="text" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="인증번호 6자리를 입력해주세요." maxlength="6" (input)="onCodeInput($event)" />
+              <button type="button" class="w-[79px] h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] shrink-0"
+                [disabled]="isVerifying()"
+                (click)="verifyCode()"
+              >{{ isVerifying() ? '...' : '인증하기' }}</button>
             </div>
 
-            <!-- 인증번호 발송 안내 -->
-            <div class="flex items-center justify-center gap-1 w-full">
+            <!-- 인증번호 불일치 -->
+            @if (codeError()) {
+              <div class="flex items-center gap-1.5">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="#F87171" stroke-width="1.5"/>
+                  <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#F87171" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">인증번호가 일치하지 않습니다.</span>
+              </div>
+            }
+          }
+
+          <!-- 인증번호 일치 -->
+          @if (isCodeVerified()) {
+            <div class="flex items-center gap-1.5">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="5.5" stroke="#93C5FD" stroke-width="0.875"/>
-                <path d="M8 5.5V8L9.5 9" stroke="#93C5FD" stroke-width="0.875" stroke-linecap="round"/>
+                <path d="M6.36939 12.6L12.0194 6.95C12.1527 6.81667 12.3083 6.75 12.4861 6.75C12.6638 6.75 12.8194 6.81667 12.9527 6.95C13.0861 7.08333 13.1527 7.24178 13.1527 7.42533C13.1527 7.60889 13.0861 7.76711 12.9527 7.9L6.83606 14.0333C6.70272 14.1667 6.54717 14.2333 6.36939 14.2333C6.19161 14.2333 6.03606 14.1667 5.90272 14.0333L3.03606 11.1667C2.90272 11.0333 2.83872 10.8751 2.84406 10.692C2.84939 10.5089 2.91895 10.3504 3.05272 10.2167C3.1865 10.0829 3.34495 10.0162 3.52806 10.0167C3.71117 10.0171 3.86939 10.0838 4.00272 10.2167L6.36939 12.6Z" fill="#00E293"/>
               </svg>
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#93C5FD]">인증번호 발송이 완료되었습니다.</span>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#00E293]">인증번호가 일치합니다.</span>
             </div>
           }
         </div>

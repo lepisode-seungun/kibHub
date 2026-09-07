@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../../../prisma/generated/prisma/client';
+import { Prisma } from '@prisma/generated';
 import { CreateContentDto, CreateReportDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 
@@ -81,7 +81,7 @@ export class ContentsService {
     const content = await this.prisma.content.findUnique({
       where: { id },
       include: {
-        author: { select: { id: true, nickname: true, name: true, role: true } },
+        author: { select: { id: true, nickname: true, name: true, role: true, profileImage: true } },
         category: true,
         comments: {
           include: { author: { select: { id: true, nickname: true } } },

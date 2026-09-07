@@ -73,6 +73,7 @@ export const ModelName = {
   SubmissionComment: 'SubmissionComment',
   Faq: 'Faq',
   FaqFile: 'FaqFile',
+  Follow: 'Follow',
   History: 'History',
   Inquiry: 'Inquiry',
   InquiryFile: 'InquiryFile',
@@ -404,6 +405,16 @@ export const FaqFileScalarFieldEnum = {
 } as const
 
 export type FaqFileScalarFieldEnum = (typeof FaqFileScalarFieldEnum)[keyof typeof FaqFileScalarFieldEnum]
+
+
+export const FollowScalarFieldEnum = {
+  id: 'id',
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
+} as const
+
+export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
 export const HistoryScalarFieldEnum = {

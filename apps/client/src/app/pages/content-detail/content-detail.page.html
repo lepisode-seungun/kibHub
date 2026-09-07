@@ -15,7 +15,11 @@
       <div class="flex flex-col gap-3 w-full">
         <div class="flex justify-between items-start gap-2.5 w-full">
           <div class="flex items-start gap-2.5 flex-1">
-            <div class="detail-avatar"></div>
+            @if (authorProfileImage) {
+              <img [src]="authorProfileImage" alt="프로필" class="detail-avatar" style="object-fit: cover;" />
+            } @else {
+              <div class="detail-avatar"></div>
+            }
             <div class="flex flex-col justify-center gap-3 flex-1">
               <h1 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ title }}</h1>
               <div class="flex flex-wrap items-center gap-2">
@@ -31,12 +35,22 @@
                   }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300">{{ authorName }}</span>
                 </div>
-                <button class="detail-follow-btn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                  <span>팔로우</span>
-                </button>
+                @if (!isOwnContent()) {
+                  <button [ngClass]="isFollowing() ? 'detail-follow-btn detail-following-btn' : 'detail-follow-btn'" (click)="toggleFollow()">
+                    @if (isFollowing()) {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" stroke="#FFFFFF" stroke-width="1" fill="#FFFFFF"/>
+                      </svg>
+                      <span class="follow-default">팔로잉</span>
+                      <span class="follow-hover">팔로우 취소</span>
+                    } @else {
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      <span>팔로우</span>
+                    }
+                  </button>
+                }
               </div>
             </div>
           </div>
@@ -151,7 +165,7 @@
             </button>
           </div>
           <button class="floating-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/></svg></button>
-          <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="enterFeedbackMode()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+          <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="toggleFeedbackMode()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
           <button class="floating-circle" (click)="scrollToTop()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 14l5-5 5 5z"/></svg></button>
           <button class="floating-circle" (click)="scrollToBottom()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 10l5 5 5-5z"/></svg></button>
         </div>
@@ -292,7 +306,7 @@
           <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z"/>
         </svg>
         <span class="guest-text">로그인 후 피드백 댓글을 작성해보세요!</span>
-        <a class="guest-btn" routerLink="/login">로그인</a>
+        <a class="guest-btn" routerLink="/login" [queryParams]="{returnUrl: '/content/' + contentId}">로그인</a>
       </div>
     </div>
     }
@@ -425,7 +439,7 @@
                 @if (comment.imageUrls?.length) {
                   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
                     @for (imgUrl of comment.imageUrls; track $index) {
-                      <img [src]="imgUrl" alt="댓글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" />
+                      <img [src]="imgUrl" alt="댓글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(comment.imageUrls!, $index)" />
                     }
                   </div>
                 }
@@ -520,7 +534,7 @@
                   @if (reply.imageUrls?.length) {
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
                       @for (imgUrl of reply.imageUrls; track $index) {
-                        <img [src]="imgUrl" alt="답글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" />
+                        <img [src]="imgUrl" alt="답글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(reply.imageUrls!, $index)" />
                       }
                     </div>
                   }
@@ -774,7 +788,7 @@
           </button>
 
           <div class="cimg-image-area">
-            <div class="cimg-image" [style.background]="commentImageList()[commentImageIndex()]"></div>
+            <img [src]="commentImageList()[commentImageIndex()]" alt="댓글 이미지" class="cimg-image" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px;" />
           </div>
 
           <button class="cimg-nav cimg-nav--next" (click)="nextCommentImage()" aria-label="다음">
@@ -787,7 +801,7 @@
         <!-- 썸네일 바 -->
         <div class="cimg-thumbs">
           @for (img of commentImageList(); track $index) {
-            <div class="cimg-thumb" [class.cimg-thumb--active]="$index === commentImageIndex()" [style.background]="img" role="button" tabindex="0" (click)="commentImageIndex.set($index)" (keydown.enter)="commentImageIndex.set($index)"></div>
+            <div class="cimg-thumb" [class.cimg-thumb--active]="$index === commentImageIndex()" role="button" tabindex="0" (click)="commentImageIndex.set($index)" (keydown.enter)="commentImageIndex.set($index)"><img [src]="img" alt="썸네일" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" /></div>
           }
         </div>
       </div>
@@ -817,7 +831,7 @@
         <div class="login-req-footer">
           <div class="login-req-actions">
             <button class="login-req-btn-cancel" (click)="isLoginRequiredModalOpen.set(false)">취소</button>
-            <a class="login-req-btn-login" routerLink="/login">로그인하기</a>
+            <a class="login-req-btn-login" routerLink="/login" [queryParams]="{returnUrl: '/content/' + contentId}">로그인하기</a>
           </div>
         </div>
       </div>

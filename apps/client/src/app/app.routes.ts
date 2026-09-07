@@ -177,6 +177,13 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.page').then(
+        (m) => m.ResetPasswordPage
+      ),
+  },
+  {
     path: 'bootcamp-intro',
     loadComponent: () =>
       import('./pages/bootcamp-intro/bootcamp-intro.page').then(

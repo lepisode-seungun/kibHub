@@ -163,6 +163,15 @@
                     </div>
                   </div>
                 }
+                @if (card.commenter) {
+                  <div class="comment-author-row">
+                    <img src="/icons/chat-bubble.svg" alt="" width="19" height="19" />
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-white">{{ card.commenter }}</span>
+                    @if (card.commentTime) {
+                      <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-600">{{ card.commentTime }}</span>
+                    }
+                  </div>
+                }
               </div>
             </div>
           </article>
@@ -292,6 +301,15 @@
                     <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white line-clamp-3">{{ card.comment }}</span>
                     <span class="font-suit font-semibold text-lg leading-[17px] text-white shrink-0">"</span>
                   </div>
+                </div>
+              }
+              @if (card.commenter) {
+                <div class="comment-author-row">
+                  <img src="/icons/chat-bubble.svg" alt="" width="19" height="19" />
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-white">{{ card.commenter }}</span>
+                  @if (card.commentTime) {
+                    <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-600">{{ card.commentTime }}</span>
+                  }
                 </div>
               }
             </div>

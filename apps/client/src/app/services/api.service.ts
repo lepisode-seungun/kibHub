@@ -162,6 +162,12 @@ export class ApiService {
     update: (id: number, data: UpdateUserDto): Promise<User> => this.patch<User>(`/users/${id}`, data),
     commentStats: (id: number): Promise<{ feedbackCount: number; generalCount: number; receivedLikes: number }> =>
       this.get(`/users/${id}/comment-stats`),
+    toggleFollow: (id: number, userId: number): Promise<{ followed: boolean }> =>
+      this.post(`/users/${id}/follow`, { userId }),
+    followStatus: (id: number, userId: number): Promise<{ isFollowing: boolean }> =>
+      this.get(`/users/${id}/follow-status?userId=${userId}`),
+    followCounts: (id: number): Promise<{ followerCount: number; followingCount: number }> =>
+      this.get(`/users/${id}/follow-counts`),
   };
 
   // ===== Comments =====
@@ -187,14 +193,22 @@ export class ApiService {
     signup: (data: { email: string; password: string; name: string; nickname: string; phone?: string }): Promise<User> =>
       this.post('/auth/signup', data),
     me: (): Promise<User> => this.get<User>('/auth/me'),
-    findEmail: (data: { name: string; phone: string }): Promise<{ email: string }> =>
+    findEmail: (data: { phone: string; birthday: string }): Promise<{ email: string }> =>
       this.post('/auth/find-email', data),
+    checkEmail: (data: { email: string }): Promise<{ available: boolean }> =>
+      this.post('/auth/check-email', data),
     resetPassword: (data: { email: string }): Promise<{ message: string }> =>
       this.post('/auth/reset-password', data),
-    changeEmail: (data: { newEmail: string; password: string }): Promise<User> =>
-      this.patch<User>('/auth/change-email', data),
+    confirmResetPassword: (data: { token: string; newPassword: string }): Promise<{ message: string }> =>
+      this.post('/auth/confirm-reset-password', data),
+    sendVerification: (data: { email: string }): Promise<{ message: string }> =>
+      this.post('/auth/send-verification', data),
+    verifyCode: (data: { email: string; code: string }): Promise<{ verified: boolean }> =>
+      this.post('/auth/verify-code', data),
+    changeEmail: (data: { newEmail: string }): Promise<{ message: string }> =>
+      this.post('/auth/change-email', data),
     changePassword: (data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> =>
-      this.patch('/auth/change-password', data),
+      this.post('/auth/change-password', data),
     withdraw: (data: { password: string; reason?: string }): Promise<{ message: string }> =>
       this.post('/auth/withdraw', data),
     logout: (): Promise<{ message: string }> => this.post('/auth/logout', {}),

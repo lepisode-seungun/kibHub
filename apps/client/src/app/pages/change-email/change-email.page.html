@@ -1,7 +1,7 @@
-<!-- 모바일: 상단 네비게이션 바 -->
+<!-- 모바일 상단 네비게이션 -->
 <div class="md:hidden flex justify-end items-center px-5 py-[5px] gap-2.5 w-full h-14 bg-[#090909]">
   <div class="flex items-center gap-2.5 flex-1 h-6">
-    <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
+    <button type="button" class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#A1A1AA"/>
       </svg>
@@ -9,137 +9,146 @@
   </div>
 </div>
 
-<div class="flex flex-col items-center w-full min-h-screen md:min-h-screen bg-[#151419]">
-  <!-- 메인 콘텐츠 -->
-  <div class="flex flex-col items-center px-5 py-5 gap-8 md:px-[100px] md:py-20 md:gap-10 w-full max-w-[1920px] flex-1 box-border md:pb-20 pb-[108px]">
+<div class="flex flex-col items-center w-full min-h-screen bg-[#090909] pt-6 md:pt-16 pb-[120px] md:pb-10 px-5 md:px-0">
 
-    <!-- 데스크톱 타이틀 -->
-    <div class="hidden md:flex items-center gap-[172px] w-[500px]">
-      <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" (click)="goBack()" aria-label="뒤로 가기">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#FFFFFF"/>
-        </svg>
-      </button>
-      <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">이메일 변경</h1>
+  <!-- 데스크톱 뒤로가기 -->
+  <div class="hidden md:flex items-center gap-2 w-full max-w-[500px] mb-6">
+    <button type="button" class="flex items-center justify-center w-8 h-8 bg-transparent border-none cursor-pointer p-0" (click)="goBack()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#A1A1AA"/>
+      </svg>
+    </button>
+    <span class="font-suit font-semibold text-lg leading-[150%] tracking-tight text-white">이메일 변경</span>
+  </div>
+
+  <div class="flex flex-col items-start gap-6 w-full max-w-[500px]">
+
+    <!-- 현재 이메일 -->
+    <div class="flex flex-col items-start gap-2 w-full">
+      <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">현재 이메일</span>
+      <div class="flex items-center px-3 py-2 gap-2 w-full h-12 bg-zinc-800/50 rounded-xl box-border">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">{{ currentEmail() }}</span>
+      </div>
     </div>
 
-    <!-- 모바일 타이틀 -->
-    <h1 class="md:hidden font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">이메일 변경</h1>
-
-    <!-- 폼 -->
-    <div class="flex flex-col items-center gap-6 w-full md:w-[500px]">
-      <div class="flex flex-col items-start gap-6 w-full">
-
-        <!-- 등록된 이메일 -->
-        <div class="flex flex-col items-start gap-2 w-full">
-          <div class="flex items-center gap-1 w-full h-[42px]">
-            <div class="flex items-center gap-1">
-              <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">등록된 이메일</span>
-              <span class="w-1.5 h-1.5 bg-[#7A48FF] rounded-full shrink-0"></span>
-            </div>
-          </div>
-          <div class="flex items-center px-3 py-2 gap-2 w-full h-12 bg-zinc-700 rounded-xl box-border">
-            <span class="flex-1 font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ currentEmail() }}</span>
-          </div>
-        </div>
-
-        <!-- 이메일 -->
-        <div class="flex flex-col items-start gap-2 w-full">
-          <div class="flex flex-col items-start gap-1">
-            <div class="flex items-center gap-1">
-              <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">이메일</span>
-              <span class="w-1.5 h-1.5 bg-[#7A48FF] rounded-full shrink-0"></span>
-            </div>
-          </div>
-          <div class="flex items-start gap-2 w-full">
-            <div class="flex items-center px-3 py-2 gap-2 flex-1 h-12 bg-zinc-800 rounded-xl box-border">
-              <input
-                type="email"
-                class="flex-1 bg-transparent border-none outline-none font-suit font-medium text-base leading-[150%] tracking-tight text-white placeholder:text-zinc-500"
-                placeholder="입력해주세요."
-                (input)="onNewEmailInput($event)"
-              />
-            </div>
-            <button
-              class="flex justify-center items-center px-3 py-2 gap-1 w-[68px] h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85 shrink-0"
-              (click)="checkEmail()"
-              [disabled]="isChecking()"
-            >
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">인증</span>
-            </button>
-          </div>
-          <!-- 에러 뱃지 -->
-          @if (emailError()) {
-            <div class="flex items-center gap-1 rounded-md">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M4.667 4.667l6.666 6.666M11.333 4.667L4.667 11.333" stroke="#F87171" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ emailError() }}</span>
-            </div>
-          }
-          <!-- 인증번호 입력 (이메일 확인 성공 시) -->
-          @if (emailValid()) {
-            <div class="flex items-start gap-2 w-full">
-              <div class="flex items-center px-3 py-2 gap-2 flex-1 h-12 bg-zinc-800 rounded-xl box-border">
-                <input
-                  type="text"
-                  class="flex-1 bg-transparent border-none outline-none font-suit font-medium text-base leading-[150%] tracking-tight text-white placeholder:text-zinc-500"
-                  placeholder="인증번호를 입력해주세요."
-                  (input)="onCodeInput($event)"
-                />
-              </div>
-              <button
-                class="flex justify-center items-center px-3 py-2 gap-1 w-[68px] h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85 shrink-0"
-                (click)="verifyCode()"
-              >
-                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">확인</span>
-              </button>
-            </div>
-            <!-- 발송 완료 뱃지 -->
-            <div class="flex items-center gap-1 rounded-md">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="5.5" stroke="#93C5FD" stroke-width="0.875" stroke-dasharray="1.75 1.75"/>
-                <path d="M8 5v3.5l2 1" stroke="#93C5FD" stroke-width="0.875" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#93C5FD]">인증번호 발송이 완료되었습니다.</span>
-            </div>
-          }
-        </div>
-
+    <!-- 새 이메일 -->
+    <div class="flex flex-col items-start gap-2 w-full">
+      <div class="flex items-center gap-1">
+        <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">이메일</span>
+        <span class="w-1.5 h-1.5 bg-[#7A48FF] rounded-full shrink-0"></span>
       </div>
-
-      <!-- 데스크톱: 버튼 그룹 (인라인) -->
-      <div class="hidden md:flex justify-center items-start gap-3 w-full">
-        <button
-          class="flex justify-center items-center py-3 gap-2.5 w-1/2 h-12 bg-zinc-700 border border-white/[0.12] rounded-xl cursor-pointer box-border transition-opacity duration-150 hover:opacity-85"
-          (click)="cancel()"
-        >
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">취소</span>
-        </button>
-        <button
-          class="flex justify-center items-center py-3 gap-1 w-1/2 h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85"
-          (click)="confirm()"
-        >
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">확인</span>
-        </button>
+      <div class="flex items-start gap-2 w-full">
+        <div class="flex items-center px-3 py-2 gap-2 flex-1 h-12 bg-zinc-800 rounded-xl box-border">
+          <input
+            type="email"
+            class="flex-1 bg-transparent border-none outline-none font-suit font-medium text-base leading-[150%] tracking-tight text-white placeholder:text-zinc-500"
+            placeholder="새 이메일을 입력해주세요."
+            [(ngModel)]="newEmail"
+            [readOnly]="codeSent()"
+            (ngModelChange)="onNewEmailChange()"
+          />
+        </div>
+        @if (!codeSent()) {
+          <button type="button"
+            class="flex justify-center items-center px-3 py-2 gap-1 w-[68px] h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85 shrink-0"
+            (click)="checkEmail()"
+            [disabled]="isChecking()"
+          >
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">
+              {{ isChecking() ? '...' : '인증' }}
+            </span>
+          </button>
+        }
       </div>
+      <!-- 에러 -->
+      @if (emailError()) {
+        <div class="flex items-center gap-1 rounded-md">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4.667 4.667l6.666 6.666M11.333 4.667L4.667 11.333" stroke="#F87171" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ emailError() }}</span>
+        </div>
+      }
+      <!-- 인증번호 입력 -->
+      @if (codeSent() && !codeVerified()) {
+        <div class="flex items-center gap-1 rounded-md">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="5.5" stroke="#93C5FD" stroke-width="0.875" stroke-dasharray="1.75 1.75"/>
+            <path d="M8 5v3.5l2 1" stroke="#93C5FD" stroke-width="0.875" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#93C5FD]">인증번호가 발송되었습니다. (5분 유효)</span>
+        </div>
+        <div class="flex items-start gap-2 w-full">
+          <div class="flex items-center px-3 py-2 gap-2 flex-1 h-12 bg-zinc-800 rounded-xl box-border">
+            <input
+              type="text"
+              class="flex-1 bg-transparent border-none outline-none font-suit font-medium text-base leading-[150%] tracking-tight text-white placeholder:text-zinc-500"
+              placeholder="인증번호 6자리를 입력해주세요."
+              maxlength="6"
+              [(ngModel)]="verificationCode"
+            />
+          </div>
+          <button type="button"
+            class="flex justify-center items-center px-3 py-2 gap-1 w-[68px] h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85 shrink-0"
+            (click)="verifyCode()"
+            [disabled]="isVerifying()"
+          >
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">확인</span>
+          </button>
+        </div>
+        @if (codeError()) {
+          <div class="flex items-center gap-1.5 rounded-md">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="#F87171" stroke-width="1.5"/>
+              <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#F87171" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">인증번호가 일치하지 않습니다.</span>
+          </div>
+        }
+      }
+      <!-- 인증번호 일치 -->
+      @if (codeVerified()) {
+        <div class="flex items-center gap-1.5 rounded-md">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6.36939 12.6L12.0194 6.95C12.1527 6.81667 12.3083 6.75 12.4861 6.75C12.6638 6.75 12.8194 6.81667 12.9527 6.95C13.0861 7.08333 13.1527 7.24178 13.1527 7.42533C13.1527 7.60889 13.0861 7.76711 12.9527 7.9L6.83606 14.0333C6.70272 14.1667 6.54717 14.2333 6.36939 14.2333C6.19161 14.2333 6.03606 14.1667 5.90272 14.0333L3.03606 11.1667C2.90272 11.0333 2.83872 10.8751 2.84406 10.692C2.84939 10.5089 2.91895 10.3504 3.05272 10.2167C3.1865 10.0829 3.34495 10.0162 3.52806 10.0167C3.71117 10.0171 3.86939 10.0838 4.00272 10.2167L6.36939 12.6Z" fill="#00E293"/>
+          </svg>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#00E293]">인증번호가 일치합니다.</span>
+        </div>
+      }
     </div>
 
   </div>
 
-  <!-- 모바일: 하단 고정 버튼 바 -->
+  <!-- 데스크톱: 버튼 그룹 -->
+  <div class="hidden md:flex justify-center items-start gap-3 w-full max-w-[500px] mt-8">
+    <button type="button"
+      class="flex justify-center items-center py-3 gap-2.5 w-1/2 h-12 bg-zinc-700 border border-white/[0.12] rounded-xl cursor-pointer box-border transition-opacity duration-150 hover:opacity-85"
+      (click)="cancel()"
+    >
+      <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">취소</span>
+    </button>
+    <button type="button"
+      class="flex justify-center items-center py-3 gap-1 w-1/2 h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85"
+      (click)="confirm()"
+    >
+      <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">확인</span>
+    </button>
+  </div>
+
+  <!-- 모바일: 하단 고정 버튼 -->
   <div class="md:hidden fixed bottom-0 left-0 right-0 flex justify-center items-center px-5 py-5 gap-5 w-full h-[88px] bg-[#151419] border-t border-zinc-800 box-border z-40">
-    <button
+    <button type="button"
       class="flex justify-center items-center py-3 gap-2.5 flex-1 h-12 bg-zinc-700 border border-white/[0.12] rounded-xl cursor-pointer box-border transition-opacity duration-150 hover:opacity-85"
       (click)="cancel()"
     >
       <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">취소</span>
     </button>
-    <button
+    <button type="button"
       class="flex justify-center items-center py-3 gap-1 flex-1 h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-opacity duration-150 hover:opacity-85"
       (click)="confirm()"
     >
       <span class="font-suit font-bold text-base leading-[150%] tracking-tight text-white">확인</span>
     </button>
   </div>
+
 </div>

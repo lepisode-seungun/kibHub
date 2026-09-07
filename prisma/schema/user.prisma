@@ -33,6 +33,8 @@ model User {
   bootcampInstructors BootcampInstructor[]
   albums             Album[]
   commentLikes       CommentLike[]
+  followers          Follow[]  @relation("followers")
+  following          Follow[]  @relation("following")
 }
 
 enum UserRole {

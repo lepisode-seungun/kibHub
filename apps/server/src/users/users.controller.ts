@@ -64,6 +64,21 @@ export class UsersController {
     return this.usersService.findUserCommentStats(id);
   }
 
+  @Post(':id/follow')
+  toggleFollow(@Param('id', ParseIntPipe) id: number, @Body() body: { userId: number }) {
+    return this.usersService.toggleFollow(body.userId, id);
+  }
+
+  @Get(':id/follow-status')
+  isFollowing(@Param('id', ParseIntPipe) id: number, @Query('userId') userId: string) {
+    return this.usersService.isFollowing(parseInt(userId), id);
+  }
+
+  @Get(':id/follow-counts')
+  getFollowCounts(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getFollowCounts(id);
+  }
+
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);

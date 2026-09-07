@@ -152,6 +152,11 @@ export type Faq = Prisma.FaqModel
  */
 export type FaqFile = Prisma.FaqFileModel
 /**
+ * Model Follow
+ * 
+ */
+export type Follow = Prisma.FollowModel
+/**
  * Model History
  * 
  */

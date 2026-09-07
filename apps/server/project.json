@@ -15,7 +15,11 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -p apps/server/tsconfig.json"
+        "commands": [
+          "tsc -p apps/server/tsconfig.json",
+          "xcopy apps\\server\\src\\mail\\assets dist\\apps\\server\\apps\\server\\src\\mail\\assets\\ /E /I /Y"
+        ],
+        "parallel": false
       }
     }
   }

@@ -32,64 +32,82 @@
       </div>
     </div>
 
-    <!-- Form -->
-    <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5">
-      <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-tight text-zinc-800 text-center m-0">이메일 찾기</h1>
+    <!-- 입력 폼 -->
+    @if (!foundEmail()) {
+      <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5">
+        <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-tight text-zinc-800 text-center m-0">이메일 찾기</h1>
 
-      <div class="flex flex-col gap-6 w-full">
-        <!-- 이름 -->
-        <div class="flex flex-col gap-2 w-full">
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이름</span>
-            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+        <div class="flex flex-col gap-6 w-full">
+          <!-- 이름 -->
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">이름</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+            </div>
+            <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('name', $event)" />
           </div>
-          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('name', $event)" />
+
+          <!-- 연락처 -->
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">연락처</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+            </div>
+            <div class="flex gap-2 w-full">
+              <button type="button" class="country-select" (click)="toggleCountryDropdown()">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ countryCode() }}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
+                  <path d="M7 10l5 5 5-5z"/>
+                </svg>
+                @if (showCountryDropdown()) {
+                  <div class="country-dropdown">
+                    @for (code of countryCodes; track code) {
+                      <button type="button" class="country-option" (click)="selectCountryCode(code); $event.stopPropagation()">{{ code }}</button>
+                    }
+                  </div>
+                }
+              </button>
+              <input type="tel" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
+            </div>
+          </div>
+
+          <!-- 생년월일 -->
+          <div class="flex flex-col gap-2 w-full">
+            <div class="flex items-center gap-1">
+              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">생년월일</span>
+              <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+            </div>
+            <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
+          </div>
+
+          <!-- 에러 -->
+          @if (findError()) {
+            <div class="flex items-center gap-1 w-full">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#F87171" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171] flex-1">{{ findError() }}</span>
+            </div>
+          }
         </div>
 
-        <!-- 연락처 -->
-        <div class="flex flex-col gap-2 w-full">
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">연락처</span>
-            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
-          </div>
-          <div class="flex gap-2 w-full">
-            <button type="button" class="country-select" (click)="toggleCountryDropdown()">
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ countryCode() }}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
-              @if (showCountryDropdown()) {
-                <div class="country-dropdown">
-                  @for (code of countryCodes; track code) {
-                    <button type="button" class="country-option" (click)="selectCountryCode(code); $event.stopPropagation()">{{ code }}</button>
-                  }
-                </div>
-              }
-            </button>
-            <input type="tel" class="flex-1 h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('phone', $event)" />
-          </div>
-        </div>
-
-        <!-- 생년월일 -->
-        <div class="flex flex-col gap-2 w-full">
-          <div class="flex items-center gap-1">
-            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-800">생년월일</span>
-            <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
-          </div>
-          <input type="text" class="w-full h-12 px-3 py-2 border border-zinc-200 rounded-xl font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 outline-none transition-colors duration-200 placeholder:text-zinc-400 focus:border-accent box-border" placeholder="입력해주세요." (input)="onInput('birthday', $event)" />
-        </div>
-
-        <!-- 에러 메시지 -->
-        @if (findError()) {
-          <div class="flex items-center gap-1 w-full">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#F87171" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171] flex-1">{{ findError() }}</span>
-          </div>
-        }
+        <button type="button" class="w-full h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" (click)="onFindEmail()">이메일 찾기</button>
       </div>
+    }
 
-      <!-- Submit -->
-      <button class="w-full h-12 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" (click)="onFindEmail()">이메일 찾기</button>
-    </div>
+    <!-- 결과 화면 -->
+    @if (foundEmail()) {
+      <div class="flex flex-col items-center gap-6 w-[500px] max-[960px]:w-[90%] max-[960px]:max-w-[500px] max-[960px]:px-5">
+        <h1 class="font-suit font-bold text-[28px] leading-[150%] tracking-[-0.04em] text-[#27272A] text-center m-0">이메일 찾기</h1>
+
+        <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#27272A]">입력하신 정보로 조회된 이메일입니다.</span>
+
+        <div class="flex justify-center items-center px-6 py-6 w-full bg-[#FAFAFA] border border-[#E4E4E7] rounded-xl box-border">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#27272A]">{{ foundEmail() }}</span>
+        </div>
+
+        <button type="button" class="flex justify-center items-center w-full h-12 bg-[#7A48FF] border-none rounded-xl cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6] active:scale-[0.99]" routerLink="/login">
+          <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white">확인</span>
+        </button>
+      </div>
+    }
   </div>
 </main>
