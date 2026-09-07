@@ -42,6 +42,15 @@ export class CoursesController {
     return this.coursesService.deleteCourse(id);
   }
 
+  @Patch('bootcamps/:bootcampId/courses/reorder')
+  @UseGuards(AuthGuard)
+  reorderCourses(
+    @Param('bootcampId', ParseIntPipe) bootcampId: number,
+    @Body() body: { orderedIds: number[] },
+  ) {
+    return this.coursesService.reorderCourses(bootcampId, body.orderedIds);
+  }
+
   // ===== 강의 =====
   @Get('bootcamps/:bootcampId/lecture-categories')
   findLectureCategories(@Param('bootcampId', ParseIntPipe) bootcampId: number) {
@@ -90,6 +99,15 @@ export class CoursesController {
   @UseGuards(AuthGuard)
   deleteLectureFile(@Param('id', ParseIntPipe) id: number) {
     return this.coursesService.deleteLectureFile(id);
+  }
+
+  @Patch('courses/:courseId/lectures/reorder')
+  @UseGuards(AuthGuard)
+  reorderLectures(
+    @Param('courseId', ParseIntPipe) courseId: number,
+    @Body() body: { orderedIds: number[] },
+  ) {
+    return this.coursesService.reorderLectures(courseId, body.orderedIds);
   }
 
   // ===== 과제 =====

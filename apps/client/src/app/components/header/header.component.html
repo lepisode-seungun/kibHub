@@ -550,9 +550,9 @@
       @if (notifications.length > 0) {
         <div class="noti-list">
           @for (noti of notifications; track noti.id) {
-            <div [ngClass]="noti.isRead ? 'noti-item noti-item-read' : 'noti-item'">
+            <div [ngClass]="noti.isRead ? 'noti-item noti-item-read' : 'noti-item'" (click)="onNotiClick(noti)">
               <!-- 체크박스 -->
-              <div class="noti-checkbox-wrap" role="checkbox" [attr.aria-checked]="noti.isChecked" tabindex="0" (click)="toggleNotiCheck(noti)" (keydown.enter)="toggleNotiCheck(noti)">
+              <div class="noti-checkbox-wrap" role="checkbox" [attr.aria-checked]="noti.isChecked" tabindex="0" (click)="toggleNotiCheck(noti); $event.stopPropagation()" (keydown.enter)="toggleNotiCheck(noti)">
                 <div [ngClass]="noti.isChecked ? 'noti-checkbox noti-checkbox-checked' : 'noti-checkbox'">
                   @if (noti.isChecked) {
                     <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
@@ -564,17 +564,19 @@
               <!-- 콘텐츠 -->
               <div class="noti-content">
                 <div class="noti-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
-                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                  </svg>
+                  @if (noti.actorProfileImage) {
+                    <img [src]="noti.actorProfileImage" style="width:20px;height:20px;border-radius:50%;object-fit:cover" alt="" />
+                  } @else {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                  }
                 </div>
                 <div class="noti-text">
                   <div class="noti-text-row">
-                    <span class="noti-label">{{ noti.label }}</span>
-                    <span class="noti-target">{{ noti.target }}</span>
                     <span class="noti-message">{{ noti.message }}</span>
                   </div>
-                  <span class="noti-date">{{ noti.date }}</span>
+                  <span class="noti-date">{{ noti.relativeTime }}</span>
                 </div>
               </div>
               <!-- 화살표 -->

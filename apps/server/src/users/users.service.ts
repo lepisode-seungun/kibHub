@@ -1,5 +1,6 @@
 import { Inject, Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Prisma } from '@prisma/generated';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto, PaginatedResponse } from '@kibhub/shared';
@@ -7,7 +8,10 @@ import { paginate, parsePagination } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private prisma: PrismaService,
+    @Inject(NotificationsService) private notiService: NotificationsService,
+  ) {}
 
   async findAll(query?: { search?: string; status?: string; role?: string; excludeRole?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.UserWhereInput = {};
@@ -202,6 +206,16 @@ export class UsersService {
       return { followed: false };
     } else {
       await this.prisma.follow.create({ data: { followerId, followingId } });
+      // 팔로우 알림
+      try {
+        const follower = await this.prisma.user.findUnique({ where: { id: followerId }, select: { nickname: true } });
+        await this.notiService.create({
+          userId: followingId,
+          type: 'FOLLOW',
+          message: `${follower?.nickname || '사용자'}님이 회원님을 팔로우했습니다.`,
+          actorId: followerId,
+        });
+      } catch { /* 알림 실패해도 팔로우는 정상 */ }
       return { followed: true };
     }
   }

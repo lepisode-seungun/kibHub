@@ -116,6 +116,19 @@ export class CoursePage implements OnInit {
     this.router.navigate(['/bootcamp/home/curriculum', row.id]);
   }
 
+  async onRowReorder(newData: CourseRow[]): Promise<void> {
+    this.data.set(newData);
+    const orderedIds = newData.map(r => r.id);
+    console.log('[onRowReorder] bootcampId:', this.bootcampId, 'orderedIds:', orderedIds);
+    try {
+      const result = await this.api.courses.reorder(this.bootcampId, orderedIds);
+      console.log('[onRowReorder] result:', result);
+    } catch (e) {
+      console.error('[onRowReorder] error:', e);
+      this.toast.error('순서 저장 실패');
+    }
+  }
+
   // ===== 컨텍스트 메뉴 액션 =====
   showDeleteDialog = signal(false);
   deleteTargetRow = signal<CourseRow | null>(null);

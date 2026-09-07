@@ -152,7 +152,8 @@
         [columns]="lectureColumns"
         [data]="lectureData()"
         [showSearch]="false"
-        (rowClick)="onLectureRowClick($event)">
+        (rowClick)="onLectureRowClick($event)"
+        (rowReorder)="onLectureReorder($event)">
       </adm-data-grid>
     }
 

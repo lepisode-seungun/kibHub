@@ -182,6 +182,11 @@ export type Notice = Prisma.NoticeModel
  */
 export type NoticeFile = Prisma.NoticeFileModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model Partner
  * 
  */

@@ -1,0 +1,23 @@
+// ===== 알림 =====
+model Notification {
+  id         Int              @id @default(autoincrement())
+  type       NotificationType
+  message    String
+  isRead     Boolean          @default(false)
+  userId     Int
+  user       User             @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  actorId    Int?
+  actor      User?            @relation("notificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  targetId   Int?
+  targetType String?
+  createdAt  DateTime         @default(now())
+}
+
+enum NotificationType {
+  COMMENT
+  REPLY
+  FOLLOW
+  BOOTCAMP_APPLY
+  BOOTCAMP_ACCEPT
+  BOOTCAMP_REJECT
+}

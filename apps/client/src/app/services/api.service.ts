@@ -29,6 +29,10 @@ export class ApiService {
     return firstValueFrom(this.http.delete<T>(`${BASE}${url}`, { withCredentials: true }));
   }
 
+  private delWithBody<T>(url: string, body: unknown): Promise<T> {
+    return firstValueFrom(this.http.delete<T>(`${BASE}${url}`, { withCredentials: true, body }));
+  }
+
   // ===== Bootcamps =====
   readonly bootcamps = {
     findAll: (): Promise<Bootcamp[]> => this.get<Bootcamp[]>('/bootcamps'),
@@ -221,6 +225,15 @@ export class ApiService {
   readonly search = {
     query: (keyword: string): Promise<{ contents: Content[]; portfolios: Portfolio[] }> =>
       this.get(`/search?q=${encodeURIComponent(keyword)}`),
+  };
+
+  // ===== Notifications =====
+  readonly notifications = {
+    findAll: (): Promise<any[]> => this.get('/notifications'),
+    unreadCount: (): Promise<{ count: number }> => this.get('/notifications/unread-count'),
+    markRead: (ids: number[]): Promise<any> => this.patch('/notifications/read', { ids }),
+    markAllRead: (): Promise<any> => this.patch('/notifications/read-all', {}),
+    deleteMany: (ids: number[]): Promise<any> => this.delWithBody('/notifications', { ids }),
   };
 
   // ===== Upload =====

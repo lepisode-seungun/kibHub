@@ -95,6 +95,7 @@ export class ApiService {
     create: (bootcampId: number, data: Partial<Course>): Promise<Course> => this.post<Course>(`/bootcamps/${bootcampId}/courses`, data),
     update: (id: number, data: Partial<Course>): Promise<Course> => this.patch<Course>(`/courses/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/courses/${id}`),
+    reorder: (bootcampId: number, orderedIds: number[]): Promise<any> => this.patch(`/bootcamps/${bootcampId}/courses/reorder`, { orderedIds }),
   };
 
   // ===== Lectures =====
@@ -104,6 +105,7 @@ export class ApiService {
     create: (courseId: number, data: Partial<Lecture>): Promise<Lecture> => this.post<Lecture>(`/courses/${courseId}/lectures`, data),
     update: (id: number, data: Partial<Lecture>): Promise<Lecture> => this.patch<Lecture>(`/lectures/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/lectures/${id}`),
+    reorder: (courseId: number, orderedIds: number[]): Promise<any> => this.patch(`/courses/${courseId}/lectures/reorder`, { orderedIds }),
   };
 
   // ===== Assignments =====

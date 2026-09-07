@@ -182,6 +182,19 @@ export class CourseDetailPage implements OnInit {
     }
   }
 
+  async onLectureReorder(newData: LectureAssignmentRow[]): Promise<void> {
+    this.lectureData.set(newData);
+    // 강의만 순서 저장
+    const lectureIds = newData.filter(r => r.type === '강의').map(r => r.id);
+    if (lectureIds.length > 0) {
+      try {
+        await this.api.lectures.reorder(this.courseId, lectureIds);
+      } catch {
+        this.toast.error('순서 저장 실패');
+      }
+    }
+  }
+
   private getVideoThumbnail(url: string): string {
     if (!url) return '';
     // YouTube

@@ -35,6 +35,8 @@ model User {
   commentLikes       CommentLike[]
   followers          Follow[]  @relation("followers")
   following          Follow[]  @relation("following")
+  notifications      Notification[] @relation("userNotifications")
+  actedNotifications Notification[] @relation("notificationActor")
 }
 
 enum UserRole {

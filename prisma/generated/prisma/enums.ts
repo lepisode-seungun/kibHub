@@ -100,6 +100,18 @@ export const NoticeType = {
 export type NoticeType = (typeof NoticeType)[keyof typeof NoticeType]
 
 
+export const NotificationType = {
+  COMMENT: 'COMMENT',
+  REPLY: 'REPLY',
+  FOLLOW: 'FOLLOW',
+  BOOTCAMP_APPLY: 'BOOTCAMP_APPLY',
+  BOOTCAMP_ACCEPT: 'BOOTCAMP_ACCEPT',
+  BOOTCAMP_REJECT: 'BOOTCAMP_REJECT'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const UserRole = {
   STUDENT: 'STUDENT',
   INSTRUCTOR: 'INSTRUCTOR',

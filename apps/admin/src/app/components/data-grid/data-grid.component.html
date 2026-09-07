@@ -44,10 +44,18 @@
     <!-- 데이터 행 -->
     @for (row of paginatedData(); track $index) {
       <div class="flex items-center w-full bg-white border-b border-gray-200 hover:bg-zinc-50 transition-colors cursor-pointer"
+           [class.opacity-50]="isDragging() && dragOverIndex() !== $index"
+           [style.border-top]="dragOverIndex() === $index ? '2px solid #3C8EEE' : 'none'"
            tabindex="0"
+           [attr.draggable]="hasDragColumn()"
            (click)="onRowClick(row)"
            (keyup.enter)="onRowClick(row)"
-           (contextmenu)="onRowContextMenu($event, row)">
+           (contextmenu)="onRowContextMenu($event, row)"
+           (dragstart)="onDragStart($event, $index)"
+           (dragover)="onDragOver($event, $index)"
+           (dragleave)="onDragLeave()"
+           (drop)="onDrop($event, $index)"
+           (dragend)="onDragEnd()">
         @if (showCheckbox()) {
           <div class="flex items-center justify-center px-4 py-2" style="width: 40px; flex-shrink: 0;">
             <input type="checkbox" class="w-4 h-4 cursor-pointer accent-[#3C8EEE]" [checked]="isRowSelected(row)" (change)="toggleRow(row)" (click)="$event.stopPropagation()"/>
@@ -76,7 +84,8 @@
                 </svg>
               </button>
             } @else if (col.type === 'drag') {
-              <div class="flex items-center justify-center cursor-grab">
+              <div class="flex items-center justify-center cursor-grab active:cursor-grabbing"
+                   (mousedown)="$event.stopPropagation()">
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
                   <path d="M4 6H18M4 11H18M4 16H18" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>

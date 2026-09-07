@@ -1,13 +1,28 @@
-import { Component, signal, computed, HostListener, inject } from '@angular/core';
+import { Component, signal, computed, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SearchService } from '../../services/search.service';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 interface Language {
   code: string;
   label: string;
+}
+
+interface AppNotification {
+  id: number;
+  type: string;
+  message: string;
+  isRead: boolean;
+  isChecked: boolean;
+  actorNickname: string;
+  actorProfileImage: string | null;
+  targetId: number | null;
+  targetType: string | null;
+  createdAt: string;
+  relativeTime: string;
 }
 
 @Component({
@@ -17,10 +32,11 @@ interface Language {
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   private searchService = inject(SearchService);
   private router = inject(Router);
   readonly authService = inject(AuthService);
+  private api = inject(ApiService);
 
   activeMenu = '명예의전당';
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
@@ -42,6 +58,7 @@ export class HeaderComponent {
 
   private bootcampPrefixes = ['/bootcamp-intro', '/k-digital', '/student-portfolio', '/hall-of-fame', '/bootcamp-detail'];
   private homePrefixes = ['/', '/content'];
+  private notiInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.router.events.pipe(
@@ -56,6 +73,16 @@ export class HeaderComponent {
       );
       this.currentUrl.set(url);
     });
+  }
+
+  ngOnInit(): void {
+    this.loadNotifications();
+    // 60초마다 알림 갱신
+    this.notiInterval = setInterval(() => this.loadNotifications(), 60000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.notiInterval) clearInterval(this.notiInterval);
   }
 
   toggleSidebar(): void {
@@ -188,17 +215,48 @@ export class HeaderComponent {
 
   /* ===== 알림 패널 ===== */
   isNotificationOpen = signal(false);
+  notifications: AppNotification[] = [];
+  unreadCount = signal(0);
 
-  notifications: Notification[] = [
-    { id: 1, label: '부트캠프 지원 완료', target: '네원 부트캠프 13기', message: '부트캠프에 지원이 완료되었습니다.', date: '2024. 01. 01 (월) 13:24', isRead: false, isChecked: false },
-    { id: 2, label: '부트캠프 지원 완료', target: '네원 부트캠프 13기', message: '부트캠프에 지원이 완료되었습니다.', date: '2024. 01. 01 (월) 13:24', isRead: true, isChecked: false },
-    { id: 3, label: '부트캠프 지원 완료', target: '네원 부트캠프 13기', message: '부트캠프에 지원이 완료되었습니다.', date: '2024. 01. 01 (월) 13:24', isRead: false, isChecked: false },
-    { id: 4, label: '부트캠프 지원 완료', target: '네원 부트캠프 13기', message: '부트캠프에 지원이 완료되었습니다.', date: '2024. 01. 01 (월) 13:24', isRead: false, isChecked: false },
-    { id: 5, label: '부트캠프 지원 완료', target: '네원 부트캠프 13기', message: '부트캠프에 지원이 완료되었습니다.', date: '2024. 01. 01 (월) 13:24', isRead: false, isChecked: false },
-  ];
+  private async loadNotifications(): Promise<void> {
+    if (!this.isLoggedIn()) return;
+    try {
+      const [list, countRes] = await Promise.all([
+        this.api.notifications.findAll(),
+        this.api.notifications.unreadCount(),
+      ]);
+      this.notifications = list.map((n: any) => ({
+        id: n.id,
+        type: n.type,
+        message: n.message,
+        isRead: n.isRead,
+        isChecked: false,
+        actorNickname: n.actor?.nickname || '',
+        actorProfileImage: n.actor?.profileImage || null,
+        targetId: n.targetId,
+        targetType: n.targetType,
+        createdAt: n.createdAt,
+        relativeTime: this.getRelativeTime(n.createdAt),
+      }));
+      this.unreadCount.set(countRes.count);
+    } catch { /* 로그인 안 한 상태면 무시 */ }
+  }
 
-  openNotification(): void {
+  private getRelativeTime(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return '방금 전';
+    if (mins < 60) return `${mins}분 전`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}시간 전`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}일 전`;
+    return new Date(dateStr).toLocaleDateString('ko-KR');
+  }
+
+  async openNotification(): Promise<void> {
     this.closeSidebar();
+    await this.loadNotifications();
     this.isNotificationOpen.set(true);
   }
 
@@ -206,7 +264,7 @@ export class HeaderComponent {
     this.isNotificationOpen.set(false);
   }
 
-  toggleNotiCheck(noti: Notification): void {
+  toggleNotiCheck(noti: AppNotification): void {
     noti.isChecked = !noti.isChecked;
   }
 
@@ -215,21 +273,37 @@ export class HeaderComponent {
     this.notifications.forEach(n => n.isChecked = !allChecked);
   }
 
-  onDeleteSelected(): void {
-    this.notifications = this.notifications.filter(n => !n.isChecked);
+  async onDeleteSelected(): Promise<void> {
+    const ids = this.notifications.filter(n => n.isChecked).map(n => n.id);
+    if (ids.length === 0) return;
+    try {
+      await this.api.notifications.deleteMany(ids);
+      this.notifications = this.notifications.filter(n => !n.isChecked);
+      this.unreadCount.set(this.notifications.filter(n => !n.isRead).length);
+    } catch { /* ignore */ }
   }
 
-  onMarkAllRead(): void {
-    this.notifications.forEach(n => n.isRead = true);
+  async onMarkAllRead(): Promise<void> {
+    try {
+      await this.api.notifications.markAllRead();
+      this.notifications.forEach(n => n.isRead = true);
+      this.unreadCount.set(0);
+    } catch { /* ignore */ }
   }
-}
 
-interface Notification {
-  id: number;
-  label: string;
-  target: string;
-  message: string;
-  date: string;
-  isRead: boolean;
-  isChecked: boolean;
+  onNotiClick(noti: AppNotification): void {
+    // 읽음 처리
+    if (!noti.isRead) {
+      noti.isRead = true;
+      this.unreadCount.update(c => Math.max(0, c - 1));
+      this.api.notifications.markRead([noti.id]).catch(() => {});
+    }
+    // 타겟으로 이동
+    if (noti.targetType === 'content' && noti.targetId) {
+      this.closeNotification();
+      this.router.navigate(['/content', noti.targetId]);
+    } else if (noti.type === 'FOLLOW' && noti.actorNickname) {
+      this.closeNotification();
+    }
+  }
 }

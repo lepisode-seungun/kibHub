@@ -79,6 +79,7 @@ export const ModelName = {
   InquiryFile: 'InquiryFile',
   Notice: 'Notice',
   NoticeFile: 'NoticeFile',
+  Notification: 'Notification',
   Partner: 'Partner',
   Portfolio: 'Portfolio',
   PortfolioFile: 'PortfolioFile',
@@ -486,6 +487,21 @@ export const NoticeFileScalarFieldEnum = {
 } as const
 
 export type NoticeFileScalarFieldEnum = (typeof NoticeFileScalarFieldEnum)[keyof typeof NoticeFileScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  message: 'message',
+  isRead: 'isRead',
+  userId: 'userId',
+  actorId: 'actorId',
+  targetId: 'targetId',
+  targetType: 'targetType',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const PartnerScalarFieldEnum = {

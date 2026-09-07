@@ -1,12 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Prisma } from '@prisma/generated';
 import { CreateContentDto, CreateReportDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 
 @Injectable()
 export class ContentsService {
-  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private prisma: PrismaService,
+    @Inject(NotificationsService) private notiService: NotificationsService,
+  ) {}
 
   // ===== 콘텐츠 =====
   async findAll(query?: { search?: string; status?: string; type?: string; showAll?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
@@ -224,8 +228,8 @@ export class ContentsService {
     });
   }
 
-  createComment(contentId: number, data: { body: string; images?: string[]; authorId: number; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) {
-    return this.prisma.comment.create({
+  async createComment(contentId: number, data: { body: string; images?: string[]; authorId: number; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) {
+    const comment = await this.prisma.comment.create({
       data: {
         body: data.body,
         images: data.images || [],
@@ -240,6 +244,37 @@ export class ContentsService {
       },
       include: { author: { select: { id: true, nickname: true, name: true, role: true, profileImage: true } } },
     });
+
+    // 알림: 대댓글이면 부모 댓글 작성자에게, 아니면 콘텐츠 작성자에게
+    try {
+      if (data.parentId) {
+        const parent = await this.prisma.comment.findUnique({ where: { id: data.parentId }, select: { authorId: true } });
+        if (parent) {
+          await this.notiService.create({
+            userId: parent.authorId,
+            type: 'REPLY',
+            message: `${comment.author.nickname}님이 회원님의 댓글에 답글을 남겼습니다.`,
+            actorId: data.authorId,
+            targetId: contentId,
+            targetType: 'content',
+          });
+        }
+      } else {
+        const content = await this.prisma.content.findUnique({ where: { id: contentId }, select: { authorId: true } });
+        if (content) {
+          await this.notiService.create({
+            userId: content.authorId,
+            type: 'COMMENT',
+            message: `${comment.author.nickname}님이 회원님의 콘텐츠에 댓글을 남겼습니다.`,
+            actorId: data.authorId,
+            targetId: contentId,
+            targetType: 'content',
+          });
+        }
+      }
+    } catch { /* 알림 실패해도 댓글은 정상 */ }
+
+    return comment;
   }
 
   async updateComment(id: number, data: { body?: string; status?: string }) {

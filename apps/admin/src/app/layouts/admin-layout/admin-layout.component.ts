@@ -49,7 +49,6 @@ export class AdminLayoutComponent implements OnInit {
       icon: 'school',
       children: [
         { label: '부트캠프 목록', route: '/bootcamp' },
-        { label: '홈 관리', route: '/bootcamp/home', action: 'switchToBootcampHome' },
       ],
     },
     {

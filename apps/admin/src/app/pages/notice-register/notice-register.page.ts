@@ -93,7 +93,7 @@ export class NoticeRegisterPage implements OnInit {
     this.editorHtml.set(html);
   }
 
-  files = signal<{ name: string; size: string; file?: File }[]>([]);
+  files = signal<{ name: string; size: string; file?: File; url?: string }[]>([]);
 
   removeFile(index: number): void {
     this.files.update(list => list.filter((_, i) => i !== index));

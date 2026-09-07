@@ -66,6 +66,22 @@ export class CoursesService {
     });
   }
 
+  async reorderCourses(bootcampId: number, orderedIds: number[]) {
+    console.log('[reorderCourses] bootcampId:', bootcampId, 'orderedIds:', orderedIds);
+    try {
+      await this.prisma.$transaction(
+        orderedIds.map((id, index) =>
+          this.prisma.course.update({ where: { id }, data: { sortOrder: index } })
+        )
+      );
+      console.log('[reorderCourses] success');
+      return { success: true };
+    } catch (e) {
+      console.error('[reorderCourses] error:', e);
+      throw e;
+    }
+  }
+
   // ===== 부트캠프별 강의 카테고리 =====
   async findLectureCategories(bootcampId: number): Promise<string[]> {
     const lectures = await this.prisma.lecture.findMany({
@@ -113,6 +129,15 @@ export class CoursesService {
 
   deleteLectureFile(fileId: number) {
     return this.prisma.lectureFile.delete({ where: { id: fileId } });
+  }
+
+  async reorderLectures(courseId: number, orderedIds: number[]) {
+    await this.prisma.$transaction(
+      orderedIds.map((id, index) =>
+        this.prisma.lecture.update({ where: { id }, data: { sortOrder: index } })
+      )
+    );
+    return { success: true };
   }
 
   // ===== 과제 =====

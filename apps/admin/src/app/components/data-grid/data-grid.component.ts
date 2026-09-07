@@ -74,6 +74,15 @@ export class DataGridComponent {
   /** 체크박스 선택 변경 이벤트 */
   selectionChange = output<any[]>();
 
+  /** 행 순서 변경 이벤트 (드래그앤드롭) */
+  rowReorder = output<any[]>();
+
+  // 드래그 상태
+  private dragIndex = -1;
+  dragOverIndex = signal(-1);
+  isDragging = signal(false);
+  private justDragged = false;
+
   // 내부 상태
   searchQuery = signal('');
   currentPage = signal(1);
@@ -189,6 +198,10 @@ export class DataGridComponent {
   }
 
   onRowClick(row: any): void {
+    if (this.justDragged) {
+      this.justDragged = false;
+      return;
+    }
     this.rowClick.emit(row);
   }
 
@@ -222,6 +235,63 @@ export class DataGridComponent {
   @HostListener('document:click')
   onDocumentClick(): void {
     this.closeContextMenu();
+  }
+
+  // ===== 드래그앤드롭 =====
+  hasDragColumn = computed(() => this.columns().some(col => col.type === 'drag'));
+
+  onDragStart(event: DragEvent, index: number): void {
+    this.dragIndex = index;
+    this.isDragging.set(true);
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', String(index));
+    }
+  }
+
+  onDragOver(event: DragEvent, index: number): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+    this.dragOverIndex.set(index);
+  }
+
+  onDragLeave(): void {
+    this.dragOverIndex.set(-1);
+  }
+
+  onDrop(event: DragEvent, dropIndex: number): void {
+    event.preventDefault();
+    this.dragOverIndex.set(-1);
+
+    if (this.dragIndex === dropIndex || this.dragIndex < 0) {
+      this.isDragging.set(false);
+      this.dragIndex = -1;
+      return;
+    }
+
+    // 전체 데이터 기준으로 정렬 변경
+    const allData = [...this.data()];
+    const pageStart = (this.currentPage() - 1) * this.pageSize();
+    const fromGlobal = pageStart + this.dragIndex;
+    const toGlobal = pageStart + dropIndex;
+
+    const [moved] = allData.splice(fromGlobal, 1);
+    allData.splice(toGlobal, 0, moved);
+
+    this.justDragged = true;
+    setTimeout(() => this.justDragged = false, 200);
+
+    this.rowReorder.emit(allData);
+    this.isDragging.set(false);
+    this.dragIndex = -1;
+  }
+
+  onDragEnd(): void {
+    this.isDragging.set(false);
+    this.dragOverIndex.set(-1);
+    this.dragIndex = -1;
   }
 
   getCellClass(col: GridColumn, value: any): string {

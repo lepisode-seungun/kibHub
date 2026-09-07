@@ -68,6 +68,7 @@ export class SupportNoticesRegisterPage implements OnInit {
           size: f.size < 1024 * 1024
             ? `${(f.size / 1024).toFixed(0)}KB`
             : `${(f.size / (1024 * 1024)).toFixed(1)}MB`,
+          url: f.url || '',
         })));
       }
     } catch (e) {
@@ -93,7 +94,7 @@ export class SupportNoticesRegisterPage implements OnInit {
     this.editorHtml.set(html);
   }
 
-  files = signal<{ name: string; size: string; file?: File }[]>([]);
+  files = signal<{ name: string; size: string; file?: File; url?: string }[]>([]);
 
   removeFile(index: number): void {
     this.files.update(list => list.filter((_, i) => i !== index));
@@ -108,9 +109,14 @@ export class SupportNoticesRegisterPage implements OnInit {
         ? `${(f.size / 1024).toFixed(0)}KB`
         : `${(f.size / (1024 * 1024)).toFixed(1)}MB`,
       file: f,
+      url: this.isImageFile(f.name) ? URL.createObjectURL(f) : '',
     }));
     this.files.update(list => [...list, ...newFiles]);
     input.value = '';
+  }
+
+  private isImageFile(name: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(name);
   }
 
   triggerFileInput(): void {

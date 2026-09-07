@@ -21,6 +21,7 @@ import { PartnersModule } from './partners/partners.module';
 import { AlbumsModule } from './albums/albums.module';
 import { AdminsModule } from './admins/admins.module';
 import { SearchModule } from './search/search.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { SearchModule } from './search/search.module';
     AlbumsModule,
     AdminsModule,
     SearchModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
