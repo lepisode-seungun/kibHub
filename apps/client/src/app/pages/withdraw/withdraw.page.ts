@@ -20,6 +20,7 @@ export class WithdrawPage {
   password = '';
   reason = '';
   errorMessage = signal('');
+  showConfirmModal = signal(false);
 
   toggleAgreed(): void {
     this.agreed.update(v => !v);
@@ -39,6 +40,20 @@ export class WithdrawPage {
 
   async onWithdraw(): Promise<void> {
     if (!this.agreed()) return;
+    if (!this.password) {
+      this.errorMessage.set('비밀번호를 입력해주세요.');
+      return;
+    }
+    this.errorMessage.set('');
+    this.showConfirmModal.set(true);
+  }
+
+  closeConfirmModal(): void {
+    this.showConfirmModal.set(false);
+  }
+
+  async confirmWithdraw(): Promise<void> {
+    this.showConfirmModal.set(false);
     this.errorMessage.set('');
     try {
       await this.api.auth.withdraw({ password: this.password, reason: this.reason });

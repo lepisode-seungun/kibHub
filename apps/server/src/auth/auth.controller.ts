@@ -198,6 +198,28 @@ export class AuthController {
     }
   }
 
+  // ===== 회원 탈퇴 =====
+  @Post('withdraw')
+  async withdraw(@Req() req: Request, @Body() body: { password: string; reason?: string }, @Res() res: Response) {
+    const token = req.cookies?.kiphub_token;
+    if (!token) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '로그인이 필요합니다.' });
+
+    const decoded = this.authService.verifyToken(token);
+    if (!decoded) return res.status(HttpStatus.UNAUTHORIZED).json({ error: '유효하지 않은 토큰입니다.' });
+
+    try {
+      if (!body.password) {
+        return res.status(HttpStatus.BAD_REQUEST).json({ error: '비밀번호를 입력해주세요.' });
+      }
+      await this.authService.withdraw(decoded.userId, body.password);
+      res.clearCookie('kiphub_token', { path: '/' });
+      return res.json({ message: '회원 탈퇴가 완료되었습니다.' });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : '회원 탈퇴 실패';
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: message });
+    }
+  }
+
   // ===== 이메일 템플릿 미리보기 (개발용) =====
   @Get('preview-reset-email')
   previewResetEmail(@Res() res: Response) {

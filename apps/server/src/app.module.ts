@@ -20,6 +20,7 @@ import { HistoriesModule } from './histories/histories.module';
 import { PartnersModule } from './partners/partners.module';
 import { AlbumsModule } from './albums/albums.module';
 import { AdminsModule } from './admins/admins.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { AdminsModule } from './admins/admins.module';
     PartnersModule,
     AlbumsModule,
     AdminsModule,
+    SearchModule,
   ],
 })
 export class AppModule {}

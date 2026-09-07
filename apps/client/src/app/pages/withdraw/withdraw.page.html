@@ -97,6 +97,20 @@
         </div>
       </div>
 
+      <!-- ===== 비밀번호 확인 ===== -->
+      <div class="flex flex-col gap-3 w-full">
+        <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">본인 확인을 위해 비밀번호를 입력해주세요.</span>
+        <input
+          type="password"
+          class="w-full h-12 px-4 bg-zinc-800 border border-zinc-700 rounded-xl font-suit font-medium text-base text-white outline-none transition-colors duration-150 focus:border-zinc-500 box-border"
+          placeholder="비밀번호 입력"
+          (input)="onPasswordInput($event)"
+        />
+        @if (errorMessage()) {
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-red-400">{{ errorMessage() }}</span>
+        }
+      </div>
+
       <!-- ===== 동의 체크박스 ===== -->
       <label class="flex items-center p-5 gap-3 w-full bg-zinc-800 border border-zinc-700 rounded-2xl cursor-pointer transition-colors duration-150 hover:border-zinc-600 box-border">
         <input type="checkbox" [checked]="agreed()" (change)="toggleAgreed()" class="sr-only" aria-label="안내 사항 동의" />
@@ -118,3 +132,30 @@
     </div>
   </div>
 </div>
+
+<!-- ===== 탈퇴 확인 모달 ===== -->
+@if (showConfirmModal()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);">
+  <div class="flex flex-col items-center p-8 gap-6 w-[420px] bg-[#1C1B20] border border-zinc-700 rounded-2xl shadow-2xl" style="animation: modalFadeIn 0.2s ease-out;">
+    <!-- 경고 아이콘 -->
+    <div class="flex items-center justify-center w-16 h-16 rounded-full bg-red-600/20">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="none"/>
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V8h2v6z" fill="#EF4444"/>
+      </svg>
+    </div>
+
+    <!-- 제목 -->
+    <div class="flex flex-col items-center gap-2">
+      <span class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white">정말 탈퇴하시겠습니까?</span>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400 text-center">탈퇴 시 모든 데이터가 삭제되며<br/>이 작업은 되돌릴 수 없습니다.</span>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="flex gap-3 w-full">
+      <button class="flex-1 flex justify-center items-center h-12 bg-zinc-700 border border-white/10 rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-zinc-600" (click)="closeConfirmModal()">취소</button>
+      <button class="flex-1 flex justify-center items-center h-12 bg-red-600 border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-all duration-150 hover:bg-red-500" (click)="confirmWithdraw()">탈퇴하기</button>
+    </div>
+  </div>
+</div>
+}

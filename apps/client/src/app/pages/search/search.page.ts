@@ -1,25 +1,48 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchService } from '../../services/search.service';
 import { ApiService } from '../../services/api.service';
 
-interface SearchResult {
+interface ContentResult {
+  type: 'content';
   id: number;
   userName: string;
+  profileImage: string;
   title: string;
+  thumbnailUrl: string;
   thumbnailGradient: string;
-  rank: number | null;
-  featured: boolean;
-  comment?: string;
-  commenter?: string;
-  commentTime?: string;
+  feedbackCount: number;
 }
+
+interface BootcampResult {
+  type: 'bootcamp';
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  thumbnailUrl: string;
+  thumbnailGradient: string;
+}
+
+interface PortfolioResult {
+  type: 'portfolio';
+  id: number;
+  userName: string;
+  bootcampName: string;
+  workTitle: string;
+  genre: string;
+  thumbnailUrl: string;
+  thumbnailGradient: string;
+  isHallOfFame: boolean;
+}
+
+type AnyResult = ContentResult | BootcampResult | PortfolioResult;
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './search.page.html',
   styleUrl: './search.page.css',
 })
@@ -32,8 +55,24 @@ export class SearchPage implements OnInit {
   searchQuery = signal('');
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
 
-  results = signal<SearchResult[]>([]);
-  resultCount = computed(() => this.results().length);
+  activeTab = signal<'all' | 'content' | 'bootcamp' | 'portfolio' | 'hallOfFame'>('all');
+
+  contentResults = signal<ContentResult[]>([]);
+  bootcampResults = signal<BootcampResult[]>([]);
+  portfolioResults = signal<PortfolioResult[]>([]);
+  hallOfFameResults = signal<PortfolioResult[]>([]);
+
+  filteredResults = computed<AnyResult[]>(() => {
+    const tab = this.activeTab();
+    if (tab === 'content') return this.contentResults();
+    if (tab === 'bootcamp') return this.bootcampResults();
+    if (tab === 'portfolio') return this.portfolioResults();
+    if (tab === 'hallOfFame') return this.hallOfFameResults();
+    return [...this.contentResults(), ...this.bootcampResults(), ...this.portfolioResults(), ...this.hallOfFameResults()];
+  });
+
+  resultCount = computed(() => this.filteredResults().length);
+  totalCount = computed(() => this.contentResults().length + this.bootcampResults().length + this.portfolioResults().length + this.hallOfFameResults().length);
   isLoading = signal(false);
 
   private gradients = [
@@ -57,21 +96,54 @@ export class SearchPage implements OnInit {
   private async doSearch(q: string): Promise<void> {
     this.isLoading.set(true);
     try {
-      const data = await this.api.contents.findAll({ search: q });
-      const items = Array.isArray(data) ? data : [];
-      this.results.set(items.map((c, i: number) => ({
+      const data: any = await this.api.search.query(q);
+
+      this.contentResults.set((data.contents || []).map((c: any, i: number): ContentResult => ({
+        type: 'content',
         id: c.id,
-        userName: 'user',
+        userName: c.author?.nickname || c.author?.name || 'user',
+        profileImage: c.author?.profileImage || '',
         title: c.title || '',
+        thumbnailUrl: c.thumbnail || '',
         thumbnailGradient: this.gradients[i % this.gradients.length],
-        rank: null,
-        featured: false,
+        feedbackCount: 0,
       })));
+
+      this.bootcampResults.set((data.bootcamps || []).map((b: any, i: number): BootcampResult => ({
+        type: 'bootcamp',
+        id: b.id,
+        title: b.name,
+        description: b.description || '',
+        status: b.status === 'RECRUITING' ? '모집중' : b.status === 'OPERATING' ? '운영중' : b.status === 'ENDED' ? '종료' : '준비중',
+        thumbnailUrl: b.thumbnail || '',
+        thumbnailGradient: this.gradients[(i + 2) % this.gradients.length],
+      })));
+
+      const allPortfolios = (data.portfolios || []).map((p: any, i: number): PortfolioResult => ({
+        type: 'portfolio',
+        id: p.id,
+        userName: p.userName,
+        bootcampName: p.bootcampName,
+        workTitle: p.workTitle || '',
+        genre: p.genre || '',
+        thumbnailUrl: p.thumbnail || p.files?.[0]?.url || '',
+        thumbnailGradient: this.gradients[(i + 4) % this.gradients.length],
+        isHallOfFame: p.isHallOfFame,
+      }));
+      this.portfolioResults.set(allPortfolios.filter((p: PortfolioResult) => !p.isHallOfFame));
+      this.hallOfFameResults.set(allPortfolios.filter((p: PortfolioResult) => p.isHallOfFame));
     } catch {
-      this.results.set([]);
+      this.contentResults.set([]);
+      this.bootcampResults.set([]);
+      this.portfolioResults.set([]);
+      this.hallOfFameResults.set([]);
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  setTab(tab: 'all' | 'content' | 'bootcamp' | 'portfolio' | 'hallOfFame'): void {
+    this.activeTab.set(tab);
   }
 
   onSearchInput(event: Event): void {
@@ -92,4 +164,3 @@ export class SearchPage implements OnInit {
     }
   }
 }
-

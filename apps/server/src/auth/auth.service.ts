@@ -34,7 +34,14 @@ export class AuthService {
 
   async register(data: { email: string; password: string; name?: string; nickname: string; phone?: string; birthday?: string; intro?: string }) {
     const existing = await this.prisma.user.findUnique({ where: { email: data.email } });
-    if (existing) throw new Error('이미 존재하는 이메일입니다.');
+    if (existing) {
+      if (existing.status === 'WITHDRAWN') {
+        // 탈퇴 계정 잔여 데이터 전체 정리
+        await this.cleanupUserData(existing.id);
+      } else {
+        throw new Error('이미 존재하는 이메일입니다.');
+      }
+    }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const user = await this.prisma.user.create({
@@ -55,6 +62,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
     if (user.status === 'BLOCKED') throw new Error('차단된 계정입니다. 관리자에게 문의하세요.');
+    if (user.status === 'WITHDRAWN') throw new Error('탈퇴한 계정입니다.');
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
@@ -64,7 +72,8 @@ export class AuthService {
 
   async checkEmail(email: string): Promise<boolean> {
     const existing = await this.prisma.user.findUnique({ where: { email } });
-    return !existing;
+    if (!existing) return true;
+    return existing.status === 'WITHDRAWN';
   }
 
   async findById(id: number) {
@@ -164,6 +173,53 @@ export class AuthService {
     if (!user) throw new Error('사용자를 찾을 수 없습니다.');
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error('비밀번호가 올바르지 않습니다.');
-    await this.prisma.user.update({ where: { id: userId }, data: { status: 'WITHDRAWN' } });
+    await this.cleanupUserData(userId);
+  }
+
+  // ===== 유저 관련 데이터 전체 삭제 =====
+  private async cleanupUserData(userId: number) {
+    await this.prisma.$transaction(async (tx) => {
+      await tx.follow.deleteMany({ where: { OR: [{ followerId: userId }, { followingId: userId }] } });
+      await tx.commentLike.deleteMany({ where: { userId } });
+      await tx.report.deleteMany({ where: { reporterId: userId } });
+      await tx.comment.deleteMany({ where: { authorId: userId } });
+
+      const albums = await tx.album.findMany({ where: { ownerId: userId }, select: { id: true } });
+      if (albums.length > 0) {
+        await tx.albumContent.deleteMany({ where: { albumId: { in: albums.map(a => a.id) } } });
+        await tx.album.deleteMany({ where: { ownerId: userId } });
+      }
+
+      const contents = await tx.content.findMany({ where: { authorId: userId }, select: { id: true } });
+      if (contents.length > 0) {
+        const contentIds = contents.map(c => c.id);
+        const comments = await tx.comment.findMany({ where: { contentId: { in: contentIds } }, select: { id: true } });
+        if (comments.length > 0) {
+          await tx.commentLike.deleteMany({ where: { commentId: { in: comments.map(c => c.id) } } });
+        }
+        await tx.comment.deleteMany({ where: { contentId: { in: contentIds } } });
+        await tx.albumContent.deleteMany({ where: { contentId: { in: contentIds } } });
+        await tx.content.deleteMany({ where: { authorId: userId } });
+      }
+
+      const inquiries = await tx.inquiry.findMany({ where: { authorId: userId }, select: { id: true } });
+      if (inquiries.length > 0) {
+        await tx.inquiryFile.deleteMany({ where: { inquiryId: { in: inquiries.map(i => i.id) } } });
+        await tx.inquiry.deleteMany({ where: { authorId: userId } });
+      }
+
+      await tx.applicant.deleteMany({ where: { userId } });
+      await tx.bootcampInstructor.deleteMany({ where: { userId } });
+      await tx.submissionComment.deleteMany({ where: { authorId: userId } });
+      const submissions = await tx.submission.findMany({ where: { authorId: userId }, select: { id: true } });
+      if (submissions.length > 0) {
+        const subIds = submissions.map(s => s.id);
+        await tx.submissionFile.deleteMany({ where: { submissionId: { in: subIds } } });
+        await tx.submissionComment.deleteMany({ where: { submissionId: { in: subIds } } });
+        await tx.submission.deleteMany({ where: { authorId: userId } });
+      }
+
+      await tx.user.delete({ where: { id: userId } });
+    });
   }
 }

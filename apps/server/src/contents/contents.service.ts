@@ -23,6 +23,8 @@ export class ContentsService {
     if (query?.search) {
       where.OR = [
         { title: { contains: query.search, mode: 'insensitive' } },
+        { author: { nickname: { contains: query.search, mode: 'insensitive' } } },
+        { author: { email: { contains: query.search, mode: 'insensitive' } } },
       ];
     }
 

@@ -1,6 +1,7 @@
 import { Component, signal, computed, OnDestroy, OnInit, inject, NgZone, ApplicationRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { HeroBannerComponent, FloatingCard } from '../../components/hero-banner/hero-banner.component';
 import { ApiService } from '../../services/api.service';
 
@@ -33,6 +34,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
   private ngZone = inject(NgZone);
   private appRef = inject(ApplicationRef);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
   isLoading = signal(false);
   selectedCard = signal<PortfolioCard | null>(null);
 
@@ -74,6 +76,15 @@ export class HallOfFamePage implements OnInit, OnDestroy {
       } finally {
         this.isLoading.set(false);
         this.appRef.tick();
+
+        // 검색에서 ?open=id 로 진입 시 자동으로 모달 열기
+        this.route.queryParams.subscribe(params => {
+          const openId = params['open'];
+          if (openId) {
+            const card = this.cards().find(c => c.id === Number(openId));
+            if (card) this.openCard(card);
+          }
+        });
       }
     });
   }

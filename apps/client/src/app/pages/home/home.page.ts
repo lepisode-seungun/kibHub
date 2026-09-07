@@ -2,7 +2,6 @@ import { Component, ElementRef, ViewChild, signal, inject, computed, AfterViewIn
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
-import { SearchService } from '../../services/search.service';
 import { ApiService } from '../../services/api.service';
 import { Bootcamp, Content, ContentCategory } from '@kibhub/shared';
 
@@ -106,8 +105,7 @@ export class HomePage implements AfterViewInit, OnInit {
     });
   }
 
-  private searchService = inject(SearchService);
-  searchQuery = this.searchService.searchQuery;
+  searchQuery = signal('');
 
   private readonly gradients = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -247,6 +245,15 @@ export class HomePage implements AfterViewInit, OnInit {
   activeSubCategory = signal('');
 
   searchPlaceholder = '질문, 유저명, 댓글까지 자유롭게 검색해보세요.';
+
+  onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
+  }
 
   contentCards = signal<ContentCard[]>([]);
 
