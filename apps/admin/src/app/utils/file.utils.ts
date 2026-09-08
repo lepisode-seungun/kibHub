@@ -41,8 +41,8 @@ export async function downloadFile(url?: string, fileName?: string): Promise<voi
   if (blob) {
     if ('showSaveFilePicker' in window) {
       try {
-        const ext = name.includes('.') ? name.split('.').pop()! : '';
-        const handle = await (window as any).showSaveFilePicker({
+        const ext = name.includes('.') ? (name.split('.').pop() ?? '') : '';
+        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
           suggestedName: name,
           types: ext ? [{
             description: `${ext.toUpperCase()} 파일`,
@@ -53,8 +53,8 @@ export async function downloadFile(url?: string, fileName?: string): Promise<voi
         await writable.write(blob);
         await writable.close();
         return;
-      } catch (pickerErr: any) {
-        if (pickerErr?.name === 'AbortError') return;
+      } catch (pickerErr: unknown) {
+        if (pickerErr instanceof DOMException && pickerErr.name === 'AbortError') return;
         // picker 실패 시 a[download] fallback
       }
     }

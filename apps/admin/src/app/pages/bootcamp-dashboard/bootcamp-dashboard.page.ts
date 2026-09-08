@@ -1,20 +1,49 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, signal, computed, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES, APPLICANT_STATUS_BADGES, BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
-import { Bootcamp, Applicant } from '../../shared/types';
+
 
 interface PersonRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   name: string;
   nickname: string;
   phone: string;
   email: string;
+}
+
+interface UserResponse {
+  id: number;
+  status: string;
+  name: string;
+  nickname: string;
+  phone: string;
+  email: string;
+  role?: string;
+}
+
+interface ApplicantResponse {
+  id: number;
+  status: string;
+  interviewQuestions: Record<string, string> | null;
+  user?: { name: string; phone: string; email: string };
+}
+
+interface BootcampEditPayload {
+  name: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+interface BootcampDetailResponse {
+  startDate?: string;
+  endDate?: string;
 }
 
 const BOOTCAMP_STATUS_MAP: Record<string, string> = {
@@ -88,9 +117,9 @@ export class BootcampDashboardPage implements OnInit {
       const STATUS_MAP: Record<string, string> = {
         ACTIVE: '정상', BLOCKED: '차단', WITHDRAWN: '탈퇴',
       };
-      this.instructorData.set(users.map((u: any) => ({
+      this.instructorData.set(users.map(u => ({
         id: u.id,
-        status: STATUS_MAP[u.status] || u.status,
+        status: STATUS_MAP[u.status || ''] || u.status || '',
         name: u.name || '',
         nickname: u.nickname || '',
         phone: u.phone || '',
@@ -107,8 +136,9 @@ export class BootcampDashboardPage implements OnInit {
       const STATUS_MAP: Record<string, string> = {
         PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
-      const filtered = data.filter((a: any) => a.status !== 'REJECTED');
-      this.studentData.set(filtered.map((a: any) => {
+      const applicants = data as unknown as ApplicantResponse[];
+      const filtered = applicants.filter(a => a.status !== 'REJECTED');
+      this.studentData.set(filtered.map(a => {
         const iq = a.interviewQuestions as Record<string, string> | null;
         return {
           id: a.id,
@@ -158,12 +188,12 @@ export class BootcampDashboardPage implements OnInit {
     this.dropdownOpen.set(false);
     this.statusSubMenuOpen.set(false);
     try {
-      await this.api.bootcamps.update(this.bootcampId, { status } as any);
+      await this.api.bootcamps.update(this.bootcampId, { status } as Record<string, string>);
       this.toast.success('상태가 변경되었습니다.');
       await this.loadBootcamp(this.bootcampId);
       await this.loadApplicants(this.bootcampId);
       await this.loadInstructors(this.bootcampId);
-    } catch (e) {
+    } catch {
       this.toast.error('상태 변경에 실패했습니다.');
     }
   }
@@ -182,9 +212,10 @@ export class BootcampDashboardPage implements OnInit {
     this.editBootcampEndDate.set('');
     this.bootcampEditOpen.set(true);
     // 원본 데이터에서 날짜 로드
-    this.api.bootcamps.findOne(this.bootcampId).then((bk: any) => {
-      if (bk.startDate) this.editBootcampStartDate.set(new Date(bk.startDate).toISOString().substring(0, 10));
-      if (bk.endDate) this.editBootcampEndDate.set(new Date(bk.endDate).toISOString().substring(0, 10));
+    this.api.bootcamps.findOne(this.bootcampId).then((bk: unknown) => {
+      const bc = bk as BootcampDetailResponse;
+      if (bc.startDate) this.editBootcampStartDate.set(new Date(bc.startDate).toISOString().substring(0, 10));
+      if (bc.endDate) this.editBootcampEndDate.set(new Date(bc.endDate).toISOString().substring(0, 10));
     });
   }
 
@@ -194,14 +225,14 @@ export class BootcampDashboardPage implements OnInit {
     const name = this.editBootcampName().trim();
     if (!name) { this.toast.error('부트캠프명을 입력해주세요.'); return; }
     try {
-      const payload: any = { name };
+      const payload: BootcampEditPayload = { name };
       if (this.editBootcampStartDate()) payload.startDate = this.editBootcampStartDate();
       if (this.editBootcampEndDate()) payload.endDate = this.editBootcampEndDate();
       await this.api.bootcamps.update(this.bootcampId, payload);
       this.toast.success('수정 완료 되었습니다.');
       this.bootcampEditOpen.set(false);
       await this.loadBootcamp(this.bootcampId);
-    } catch (e) {
+    } catch {
       this.toast.error('수정에 실패했습니다.');
     }
   }
@@ -218,7 +249,7 @@ export class BootcampDashboardPage implements OnInit {
       this.showBootcampDeleteModal.set(false);
       // 메인 목록으로 이동
       window.history.back();
-    } catch (e) {
+    } catch {
       this.toast.error('삭제에 실패했습니다.');
     }
   }
@@ -244,8 +275,8 @@ export class BootcampDashboardPage implements OnInit {
   showInstructorRemoveDialog = signal(false);
   selectedInstructor = signal<PersonRow | null>(null);
 
-  removeInstructor(event: { key: string; row: PersonRow }): void {
-    this.selectedInstructor.set(event.row);
+  removeInstructor(event: { key: string; row: GridRow }): void {
+    this.selectedInstructor.set(event.row as unknown as PersonRow);
     this.showInstructorRemoveDialog.set(true);
   }
 
@@ -288,8 +319,8 @@ export class BootcampDashboardPage implements OnInit {
   showRemoveDialog = signal(false);
   selectedStudent = signal<PersonRow | null>(null);
 
-  removeStudent(event: { key: string; row: PersonRow }): void {
-    this.selectedStudent.set(event.row);
+  removeStudent(event: { key: string; row: GridRow }): void {
+    this.selectedStudent.set(event.row as unknown as PersonRow);
     this.showRemoveDialog.set(true);
   }
 
@@ -331,7 +362,7 @@ export class BootcampDashboardPage implements OnInit {
   }
 
   // 검색 결과 메시지
-  searchedInstructor = signal<any>(null);
+  searchedInstructor = signal<UserResponse | null>(null);
   searchMessage = signal<{ text: string; type: 'success' | 'error' | 'info' }>({ text: '', type: 'info' });
 
   async searchInstructor(): Promise<void> {
@@ -341,9 +372,9 @@ export class BootcampDashboardPage implements OnInit {
       return;
     }
     try {
-      const users = await this.api.users.findAll({ search: email, role: 'INSTRUCTOR' }) as any;
-      const list = Array.isArray(users) ? users : (users?.data || []);
-      const user = list.find((u: any) => u.email === email);
+      const users = await this.api.users.findAll({ search: email, role: 'INSTRUCTOR' }) as unknown as UserResponse[] | { data: UserResponse[] };
+      const list: UserResponse[] = Array.isArray(users) ? users : (users?.data || []);
+      const user = list.find((u: UserResponse) => u.email === email);
       if (!user) {
         this.searchMessage.set({ text: '해당 이메일의 강사 계정을 찾을 수 없습니다.', type: 'error' });
         this.searchedInstructor.set(null);
@@ -359,7 +390,7 @@ export class BootcampDashboardPage implements OnInit {
       }
       this.instructorInviteForm.update(f => ({ ...f, name: user.name || '', phone: user.phone || '' }));
       this.searchMessage.set({ text: `강사 '${user.name}'을(를) 찾았습니다.`, type: 'success' });
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('강사 검색 실패:', e);
       this.searchMessage.set({ text: '강사 검색에 실패했습니다.', type: 'error' });
     }
@@ -375,16 +406,17 @@ export class BootcampDashboardPage implements OnInit {
       await this.api.bootcamps.addInstructor(this.bootcampId, user.id);
       await this.loadInstructors(this.bootcampId);
       this.closeInstructorDrawer();
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('강사 초대 실패:', e);
-      this.searchMessage.set({ text: e?.message || '강사 초대에 실패했습니다.', type: 'error' });
+      const msg = e instanceof Error ? e.message : '강사 초대에 실패했습니다.';
+      this.searchMessage.set({ text: msg, type: 'error' });
     }
   }
 
   // ===== 수강생 초대 드로어 =====
   studentDrawerOpen = signal(false);
   studentInviteForm = signal({ email: '', role: '', name: '', phone: '' });
-  searchedStudent = signal<any>(null);
+  searchedStudent = signal<UserResponse | null>(null);
   studentSearchMessage = signal<{ text: string; type: 'success' | 'error' | 'info' }>({ text: '', type: 'info' });
 
   openStudentDrawer(): void {
@@ -408,9 +440,9 @@ export class BootcampDashboardPage implements OnInit {
       return;
     }
     try {
-      const users = await this.api.users.findAll({ search: email, role: 'STUDENT' }) as any;
-      const list = Array.isArray(users) ? users : (users?.data || []);
-      const user = list.find((u: any) => u.email === email);
+      const users = await this.api.users.findAll({ search: email, role: 'STUDENT' }) as unknown as UserResponse[] | { data: UserResponse[] };
+      const list: UserResponse[] = Array.isArray(users) ? users : (users?.data || []);
+      const user = list.find((u: UserResponse) => u.email === email);
       if (!user) {
         this.studentSearchMessage.set({ text: '해당 이메일의 수강생 계정을 찾을 수 없습니다.', type: 'error' });
         this.searchedStudent.set(null);
@@ -426,7 +458,7 @@ export class BootcampDashboardPage implements OnInit {
       }
       this.studentInviteForm.update(f => ({ ...f, name: user.name || '', phone: user.phone || '' }));
       this.studentSearchMessage.set({ text: `수강생 '${user.name}'을(를) 찾았습니다.`, type: 'success' });
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('수강생 검색 실패:', e);
       this.studentSearchMessage.set({ text: '수강생 검색에 실패했습니다.', type: 'error' });
     }
@@ -442,9 +474,10 @@ export class BootcampDashboardPage implements OnInit {
       await this.api.applicants.invite(this.bootcampId, user.email);
       await this.loadApplicants(this.bootcampId);
       this.closeStudentDrawer();
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('수강생 초대 실패:', e);
-      this.studentSearchMessage.set({ text: e?.error?.message || '수강생 초대에 실패했습니다.', type: 'error' });
+      const err = e as { error?: { message?: string } };
+      this.studentSearchMessage.set({ text: err?.error?.message || '수강생 초대에 실패했습니다.', type: 'error' });
     }
   }
 }

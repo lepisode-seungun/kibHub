@@ -2,12 +2,13 @@ import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Course, Lecture, Assignment } from '../../shared/types';
 
 interface LectureAssignmentRow {
+  [key: string]: unknown;
   id: number;
   type: string;
   thumbnail: string;
@@ -52,7 +53,7 @@ export class CourseDetailPage implements OnInit {
       const current = this.courseData().status;
       const newStatus = current === '숨김' ? 'VISIBLE' : 'HIDDEN';
       try {
-        await this.api.courses.update(this.courseId, { status: newStatus } as any);
+        await this.api.courses.update(this.courseId, { status: newStatus } as Record<string, string>);
         this.toast.success(current === '숨김' ? '노출 처리 되었습니다.' : '숨김 처리 되었습니다.');
         await this.loadCourse(this.courseId);
       } catch (e) { this.toast.error('상태 변경 실패'); }
@@ -84,7 +85,7 @@ export class CourseDetailPage implements OnInit {
       // 강의 + 과제 합산 목록
       const rows: LectureAssignmentRow[] = [];
       if (c.lectures) {
-        c.lectures.forEach((l: any) => {
+        c.lectures.forEach((l: Lecture) => {
           rows.push({ id: l.id, type: '강의', thumbnail: this.getVideoThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
         });
       }
@@ -120,7 +121,7 @@ export class CourseDetailPage implements OnInit {
     if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
     try {
       const status = STATUS_REVERSE[this.editStatus()] || 'VISIBLE';
-      await this.api.courses.update(this.courseId, { name, status } as any);
+      await this.api.courses.update(this.courseId, { name, status } as Record<string, string>);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadCourse(this.courseId);
@@ -174,18 +175,19 @@ export class CourseDetailPage implements OnInit {
 
   lectureData = signal<LectureAssignmentRow[]>([]);
 
-  onLectureRowClick(row: LectureAssignmentRow): void {
-    if (row.type === '강의') {
-      this.router.navigate(['lecture', row.id], { relativeTo: this.route });
-    } else if (row.type === '과제') {
-      this.router.navigate(['assignment', row.id], { relativeTo: this.route });
+  onLectureRowClick(row: GridRow): void {
+    if (row['type'] === '강의') {
+      this.router.navigate(['lecture', row['id'] as number], { relativeTo: this.route });
+    } else if (row['type'] === '과제') {
+      this.router.navigate(['assignment', row['id'] as number], { relativeTo: this.route });
     }
   }
 
-  async onLectureReorder(newData: LectureAssignmentRow[]): Promise<void> {
-    this.lectureData.set(newData);
+  async onLectureReorder(newData: GridRow[]): Promise<void> {
+    const rows = newData as unknown as LectureAssignmentRow[];
+    this.lectureData.set(rows);
     // 강의만 순서 저장
-    const lectureIds = newData.filter(r => r.type === '강의').map(r => r.id);
+    const lectureIds = rows.filter(r => r.type === '강의').map(r => r.id);
     if (lectureIds.length > 0) {
       try {
         await this.api.lectures.reorder(this.courseId, lectureIds);

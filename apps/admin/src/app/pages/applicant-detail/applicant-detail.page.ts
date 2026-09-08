@@ -5,6 +5,27 @@ import { ActivatedRoute } from '@angular/router';
 import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
 
+interface ApplicantDetail {
+  id: number;
+  status: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  portfolioLink: string;
+  portfolioFile: { name: string; size: string; url: string } | null;
+  portfolioFiles: { url: string; originalName: string; size: number }[];
+  motivation: string;
+  member: string;
+  appliedAt: string;
+  lastUpdate: string;
+}
+
+interface ApplicantRawExtras {
+  interviewQuestions?: Record<string, unknown> | null;
+  appliedAt?: string;
+}
+
 @Component({
   selector: 'adm-applicant-detail',
   standalone: true,
@@ -24,7 +45,7 @@ export class ApplicantDetailPage implements OnInit {
 
   statusBadges = APPLICANT_STATUS_BADGES;
 
-  applicant = signal<any>({});
+  applicant = signal<Partial<ApplicantDetail>>({});
 
   private readonly STATUS_MAP: Record<string, string> = {
     PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
@@ -36,11 +57,12 @@ export class ApplicantDetailPage implements OnInit {
       if (id) {
         try {
           const raw = await this.api.applicants.findOne(Number(id));
-          const iq = (raw as any).interviewQuestions as Record<string, any> | null;
-          const files = iq?.['portfolioFiles'] as { url: string; originalName: string; size: number }[] || [];
+          const rawExtras = raw as typeof raw & ApplicantRawExtras;
+          const iq = rawExtras.interviewQuestions as Record<string, string> | null;
+          const files = (iq?.['portfolioFiles'] ?? []) as unknown as { url: string; originalName: string; size: number }[];
           const firstFile = files.length > 0 ? files[0] : null;
           this.applicant.set({
-            ...raw,
+            id: raw.id,
             status: this.STATUS_MAP[raw.status] || raw.status,
             name: iq?.['applicantName'] || raw.user?.name || '',
             phone: iq?.['phone'] || raw.user?.phone || '',
@@ -51,8 +73,8 @@ export class ApplicantDetailPage implements OnInit {
             portfolioFiles: files,
             motivation: iq?.['motivation'] || '',
             member: raw.user?.name || '',
-            appliedAt: formatDate((raw as any).appliedAt || raw.createdAt),
-            lastUpdate: formatDate((raw as any).appliedAt || raw.createdAt),
+            appliedAt: formatDate(rawExtras.appliedAt || raw.createdAt),
+            lastUpdate: formatDate(rawExtras.appliedAt || raw.createdAt),
           });
 
           // 사전 인터뷰 Q&A 파싱
@@ -69,7 +91,7 @@ export class ApplicantDetailPage implements OnInit {
                   answer: answerLine.replace(/^A\.\s*/, ''),
                 };
               })
-              .filter((qa: any) => qa.question);
+              .filter((qa: { question: string; answer: string }) => qa.question);
             this.interviewQA.set(qaList);
           }
         } catch (err) {
@@ -102,7 +124,7 @@ export class ApplicantDetailPage implements OnInit {
   async changeStatus(status: string): Promise<void> {
     const apiStatus = this.REVERSE_STATUS_MAP[status] || status;
     try {
-      const updated = await this.api.applicants.updateStatus(this.applicant().id, apiStatus);
+      const updated = await this.api.applicants.updateStatus(this.applicant().id ?? 0, apiStatus);
       this.applicant.update(a => ({ ...a, ...updated, status: this.STATUS_MAP[updated.status] || updated.status }));
     } catch (err) {
       console.error('상태 변경 실패:', err);
@@ -128,7 +150,7 @@ export class ApplicantDetailPage implements OnInit {
       // 다른 이름으로 저장 (File System Access API)
       if ('showSaveFilePicker' in window) {
         const ext = filename.includes('.') ? filename.split('.').pop() || '' : '';
-        const handle = await (window as any).showSaveFilePicker({
+        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
           suggestedName: filename,
           types: ext ? [{ description: filename, accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] } }] : [],
         });
@@ -145,8 +167,8 @@ export class ApplicantDetailPage implements OnInit {
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
       }
-    } catch (e: any) {
-      if (e?.name === 'AbortError') return; // 사용자가 취소
+    } catch (e: unknown) {
+      if (e instanceof DOMException && e.name === 'AbortError') return; // 사용자가 취소
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;

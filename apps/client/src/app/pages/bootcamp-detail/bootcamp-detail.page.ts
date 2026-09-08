@@ -122,7 +122,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
       this.recruitIntro.set(bc.recruitIntro || '');
       this.recruitCurriculum.set(bc.recruitCurriculum || '');
       this.recruitReview.set(bc.recruitReview || '');
-      this.recruitReviewVisible.set((bc as any).recruitReviewVisibility === 'show');
+      this.recruitReviewVisible.set((bc as unknown as { recruitReviewVisibility?: string }).recruitReviewVisibility === 'show');
       if (bc.recruitInstructors && Array.isArray(bc.recruitInstructors)) {
         this.instructors.set(bc.recruitInstructors as Instructor[]);
       }
@@ -286,13 +286,13 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
 
   /** 다음 우편번호 서비스 팝업 */
   onSearchAddress(): void {
-    const daum = (window as any).daum;
+    const daum = (window as unknown as { daum?: { Postcode: new (opts: { oncomplete: (data: { roadAddress?: string; jibunAddress?: string }) => void }) => { open: () => void } } }).daum;
     if (!daum?.Postcode) {
       alert('주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     new daum.Postcode({
-      oncomplete: (data: any) => {
+      oncomplete: (data: { roadAddress?: string; jibunAddress?: string }) => {
         const addr = data.roadAddress || data.jibunAddress || '';
         this.form.address = addr;
         this.form.addressDetail = '';

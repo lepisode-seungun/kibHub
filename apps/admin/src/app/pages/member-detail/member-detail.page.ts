@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import {
   APPLICANT_STATUS_BADGES,
   BOOTCAMP_STATUS_BADGES,
@@ -13,7 +13,7 @@ import {
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
-import { User, UserSns, UpdateUserDto, ContentRow, CommentRow } from '../../shared/types';
+import { User, UserSns, UpdateUserDto } from '../../shared/types';
 
 /** 회원 상세 페이지용 표시 데이터 */
 interface MemberDetail {
@@ -51,10 +51,48 @@ function toMemberDetail(u: User): MemberDetail {
 }
 
 interface BootcampHistoryRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   name: string;
   appliedAt: string;
+}
+
+interface JoinedBootcampRow {
+  [key: string]: unknown;
+  id: number;
+  bootcampId: number;
+  status: string;
+  title: string;
+  createdAt: string;
+}
+
+interface ContentHistoryRow {
+  [key: string]: unknown;
+  id: number;
+  contentId: number;
+  status: string;
+  type: string;
+  category: string;
+  title: string;
+  author: string;
+  comments: number;
+  views: number;
+}
+
+interface CommentHistoryRow {
+  [key: string]: unknown;
+  id: number;
+  commentId: number;
+  contentId?: number;
+  status: string;
+  type: string;
+  contentTitle: string;
+  content: string;
+  author: string;
+  reports: number;
+  likes: number;
+  createdAt: string;
 }
 
 @Component({
@@ -105,7 +143,7 @@ export class MemberDetailPage implements OnInit {
       const statusMap: Record<string, string> = {
         PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
-      this.bootcampHistory.set(applications.map((a: any) => ({
+      this.bootcampHistory.set(applications.map((a: { id: number; status: string; bootcamp?: { name: string }; appliedAt?: string }) => ({
         id: a.id,
         status: statusMap[a.status] || a.status,
         name: a.bootcamp?.name || '-',
@@ -123,7 +161,7 @@ export class MemberDetailPage implements OnInit {
       const statusMap: Record<string, string> = {
         PREPARING: '준비', RECRUITING: '모집', OPERATING: '운영', CLOSED: '마감', ENDED: '종료',
       };
-      this.contentHistory.set(bootcamps.map((b: any, i: number) => ({
+      this.contentHistory.set(bootcamps.map((b: { id: number; status: string; name: string; createdAt?: string }, i: number) => ({
         id: i + 1,
         bootcampId: b.id,
         status: statusMap[b.status] || b.status,
@@ -139,7 +177,7 @@ export class MemberDetailPage implements OnInit {
       const contents = await this.api.users.findContents(id);
       const typeMap: Record<string, string> = { WEBTOON: '웹툰', ILLUSTRATION: '일러스트', WRITING: '글' };
       const statusMap: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', DELETED: '삭제' };
-      this.portfolioHistory.set(contents.map((c: any, i: number) => ({
+      this.portfolioHistory.set(contents.map((c: { id: number; status: string; type: string; category?: { name: string }; title: string; viewCount?: number; _count?: { comments: number } }, i: number) => ({
         id: i + 1,
         contentId: c.id,
         status: statusMap[c.status] || c.status,
@@ -159,19 +197,22 @@ export class MemberDetailPage implements OnInit {
       const comments = await this.api.users.findComments(id);
       const statusMap: Record<string, string> = { VISIBLE: '노출', HIDDEN: '숨김', DELETED: '삭제' };
       const typeMap: Record<string, string> = { general: '일반', feedback: '피드백' };
-      this.commentHistory.set(comments.map((c: any, i: number) => ({
+      this.commentHistory.set(comments.map((c, i: number) => {
+        const raw = c as unknown as Record<string, unknown>;
+        const commentType = (raw['type'] as string) || '';
+        return {
         id: i + 1,
         commentId: c.id,
         contentId: c.content?.id,
         status: statusMap[c.status] || c.status,
-        type: typeMap[c.type] || c.type,
+        type: typeMap[commentType] || commentType,
         contentTitle: c.content?.title || '-',
         content: c.body?.substring(0, 50) || '-',
         author: this.member().name || '-',
         reports: c.reportCount || 0,
         likes: c.likeCount || 0,
         createdAt: c.createdAt ? new Date(c.createdAt).toLocaleDateString('ko-KR') : '-',
-      })));
+      }; }));
     } catch (e) {
       console.error('댓글 로드 실패:', e);
     }
@@ -195,7 +236,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  contentHistory = signal<any[]>([]);
+  contentHistory = signal<JoinedBootcampRow[]>([]);
 
   // ===== 콘텐츠 그리드 =====
   portfolioColumns: GridColumn[] = [
@@ -209,7 +250,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'views', label: '조회수', width: '80px' },
   ];
 
-  portfolioHistory = signal<any[]>([]);
+  portfolioHistory = signal<ContentHistoryRow[]>([]);
 
   // ===== 댓글 그리드 =====
   commentColumns: GridColumn[] = [
@@ -224,7 +265,7 @@ export class MemberDetailPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px' },
   ];
 
-  commentHistory = signal<any[]>([]);
+  commentHistory = signal<CommentHistoryRow[]>([]);
 
   // ===== 아코디언 =====
   toggleSection(key: string): void {
@@ -236,20 +277,24 @@ export class MemberDetailPage implements OnInit {
   }
 
   // ===== 행 클릭 핸들러 =====
-  onApplicationClick(row: any): void {
+  onApplicationClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as BootcampHistoryRow;
     this.router.navigate(['/bootcamp/home/applicants', row.id]);
   }
 
-  onJoinedBootcampClick(row: any): void {
+  onJoinedBootcampClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as JoinedBootcampRow;
     this.bootcampCtx.setBootcamp(row.bootcampId, row.title);
     this.router.navigate(['/bootcamp/home/dashboard']);
   }
 
-  onContentClick(row: any): void {
+  onContentClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as ContentHistoryRow;
     this.router.navigate(['/content', row.contentId]);
   }
 
-  onCommentClick(row: any): void {
+  onCommentClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as CommentHistoryRow;
     if (row.contentId) this.router.navigate(['/content', row.contentId]);
   }
 
@@ -369,7 +414,8 @@ export class MemberDetailPage implements OnInit {
       if (this.editEmail()) body.email = this.editEmail();
       if (this.editPassword()) body.password = this.editPassword();
       await this.api.users.update(this.member().id, body);
-      if (body.email) this.member.update(m => ({ ...m, email: body.email! }));
+      const newEmail = body.email;
+      if (newEmail) this.member.update(m => ({ ...m, email: newEmail }));
       this.toast.success('수정 완료 되었습니다.');
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '수정 실패'); }
     this.showEditDrawer.set(false);

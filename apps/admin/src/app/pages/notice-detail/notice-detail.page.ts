@@ -4,6 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
+import { Notice } from '../../shared/types';
 import { isImageFile as _isImageFile, formatFileSize, downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface NoticeFile {
@@ -12,6 +13,10 @@ interface NoticeFile {
   url: string;
   size: number;
   mimeType: string;
+}
+
+interface NoticeWithFiles extends Notice {
+  files?: NoticeFile[];
 }
 
 @Component({
@@ -28,7 +33,7 @@ export class NoticeDetailPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
 
-  // ?�코?�언
+  // 아코디언
   basicInfoOpen = signal(true);
   contentOpen = signal(true);
   attachmentOpen = signal(true);
@@ -37,7 +42,7 @@ export class NoticeDetailPage implements OnInit {
   toggleContent(): void { this.contentOpen.update(v => !v); }
   toggleAttachment(): void { this.attachmentOpen.update(v => !v); }
 
-  // ?�보�?메뉴
+  // 더보기 메뉴
   moreMenuOpen = signal(false);
   toggleMoreMenu(event: Event): void { event.stopPropagation(); this.moreMenuOpen.update(v => !v); }
 
@@ -46,7 +51,7 @@ export class NoticeDetailPage implements OnInit {
 
   // 공지 데이터
   noticeId = 0;
-  notice = signal<any>(null);
+  notice = signal<NoticeWithFiles | null>(null);
   files = signal<NoticeFile[]>([]);
 
   ngOnInit(): void {
@@ -59,10 +64,10 @@ export class NoticeDetailPage implements OnInit {
 
   private async loadNotice(id: number): Promise<void> {
     try {
-      const n = await this.api.notices.findOne(id);
+      const n = await this.api.notices.findOne(id) as NoticeWithFiles;
       this.notice.set(n);
       this.files.set(
-        ((n as any).files || []).map((f: any) => ({
+        (n.files || []).map((f: NoticeFile) => ({
           id: f.id,
           name: f.name,
           url: f.url,
@@ -71,19 +76,19 @@ export class NoticeDetailPage implements OnInit {
         }))
       );
     } catch (e) {
-      console.error('공�? 로드 ?�패:', e);
+      console.error('공지 로드 실패:', e);
     }
   }
 
-  // ?�태 ?�시
+  // 상태 표시
   statusLabel(): string {
     const n = this.notice();
-    return n?.status === 'HIDDEN' ? '?��?' : '?�출';
+    return n?.status === 'HIDDEN' ? '숨김' : '노출';
   }
 
   pinnedLabel(): string {
     const n = this.notice();
-    return n?.pinned ? '고정' : '고정?�제';
+    return n?.pinned ? '고정' : '고정해제';
   }
 
   authorName(): string {
@@ -108,7 +113,7 @@ export class NoticeDetailPage implements OnInit {
     _downloadFile(file.url, file.name);
   }
 
-  // ?�션
+  // 액션
   onEdit(): void {
     this.moreMenuOpen.set(false);
     this.router.navigate([`/bootcamp/home/notices/${this.noticeId}/edit`]);
@@ -121,10 +126,11 @@ export class NoticeDetailPage implements OnInit {
     try {
       const newStatus = n.status === 'HIDDEN' ? 'VISIBLE' : 'HIDDEN';
       await this.api.notices.update(this.noticeId, { status: newStatus });
-      this.toast.success(newStatus === 'HIDDEN' ? '?��? 처리 ?�었?�니??' : '?�출 처리 ?�었?�니??');
+      this.toast.success(newStatus === 'HIDDEN' ? '숨김 처리 되었습니다' : '노출 처리 되었습니다');
       await this.loadNotice(this.noticeId);
-    } catch (e: any) {
-      this.toast.error(e?.error?.message || '처리 ?�패');
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      this.toast.error(err?.error?.message || '처리 실패');
     }
   }
 
@@ -134,14 +140,15 @@ export class NoticeDetailPage implements OnInit {
     if (!n) return;
     try {
       await this.api.notices.update(this.noticeId, { pinned: !n.pinned });
-      this.toast.success(n.pinned ? '고정 ?�제 ?�었?�니??' : '고정 ?�었?�니??');
+      this.toast.success(n.pinned ? '고정 해제 되었습니다' : '고정 되었습니다');
       await this.loadNotice(this.noticeId);
-    } catch (e: any) {
-      this.toast.error(e?.error?.message || '처리 ?�패');
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      this.toast.error(err?.error?.message || '처리 실패');
     }
   }
 
-  // ??��
+  // 삭제
   showDeleteModal = signal(false);
 
   onDelete(): void {
@@ -156,10 +163,11 @@ export class NoticeDetailPage implements OnInit {
   async confirmDelete(): Promise<void> {
     try {
       await this.api.notices.delete(this.noticeId);
-      this.toast.success('??�� ?�료 ?�었?�니??');
+      this.toast.success('삭제 완료 되었습니다');
       this.location.back();
-    } catch (e: any) {
-      this.toast.error(e?.error?.message || '??�� ?�패');
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      this.toast.error(err?.error?.message || '삭제 실패');
     }
     this.showDeleteModal.set(false);
   }

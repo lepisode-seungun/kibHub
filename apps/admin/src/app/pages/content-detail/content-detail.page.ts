@@ -7,6 +7,18 @@ import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Content, Comment, CommentRow, ReportRow } from '../../shared/types';
+import { GridRow } from '../../components/data-grid/data-grid.component';
+
+interface CommentWithExtras extends Comment {
+  replies?: CommentWithExtras[];
+}
+
+interface ReportResponse {
+  id: number;
+  reason?: string;
+  createdAt?: string;
+  reporter?: { nickname?: string; name?: string };
+}
 
 const TYPE_DISPLAY: Record<string, string> = {
   WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글',
@@ -67,9 +79,9 @@ export class ContentDetailPage implements OnInit {
           reports: cm.reportCount || 0,
           likes: cm.likeCount || 0,
           createdAt: formatDate(cm.createdAt),
-          images: (cm as any).images || [],
+          images: (cm as CommentWithExtras).images || [],
         });
-        for (const reply of ((cm as any).replies || [])) {
+        for (const reply of ((cm as CommentWithExtras).replies || [])) {
           rows.push({
             id: reply.id,
             status: reply.status === 'VISIBLE' ? '노출' : reply.status === 'DELETED' ? '삭제' : '숨김',
@@ -87,7 +99,7 @@ export class ContentDetailPage implements OnInit {
 
       // 콘텐츠 신고 내역 로드
       const reports = await this.api.reports.findAll({ type: 'CONTENT', targetId: String(id) });
-      this.reportData.set(reports.map((r: any) => ({
+      this.reportData.set(reports.map((r: ReportResponse) => ({
         id: r.id,
         title: c.title || '-',
         commentContent: '',
@@ -123,7 +135,7 @@ export class ContentDetailPage implements OnInit {
       const newStatus = c.status === 'VISIBLE' ? 'HIDDEN' : 'VISIBLE';
       const label = newStatus === 'HIDDEN' ? '숨김' : '노출';
       try {
-        await this.api.contents.update(c.id, { status: newStatus as any });
+        await this.api.contents.update(c.id, { status: newStatus } as Record<string, string>);
         this.toast.success(`${label} 처리되었습니다.`);
         await this.loadContent(c.id);
       } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
@@ -150,23 +162,24 @@ export class ContentDetailPage implements OnInit {
   commentData = signal<CommentRow[]>([]);
 
   /** 댓글 우클릭 컨텍스트 메뉴 — 상태에 따라 동적 항목 */
-  commentContextMenuFn = (row: any): string[] => {
+  commentContextMenuFn = (row: GridRow): string[] => {
+    const status = row['status'] as string;
     const items: string[] = [];
-    if (row.status !== '노출') items.push('노출');
-    if (row.status !== '숨김') items.push('숨김');
+    if (status !== '노출') items.push('노출');
+    if (status !== '숨김') items.push('숨김');
     items.push('삭제');
     return items;
   };
 
-  async onCommentContextMenu(event: { action: string; row: any }): Promise<void> {
+  async onCommentContextMenu(event: { action: string; row: GridRow }): Promise<void> {
     const { action, row } = event;
-    const id = row.id;
+    const id = row['id'] as number;
     try {
       if (action === '노출') {
-        await this.api.comments.update(id, { status: 'VISIBLE' as any });
+        await this.api.comments.update(id, { status: 'VISIBLE' } as Record<string, string>);
         this.toast.success('댓글이 노출 처리되었습니다.');
       } else if (action === '숨김') {
-        await this.api.comments.update(id, { status: 'HIDDEN' as any });
+        await this.api.comments.update(id, { status: 'HIDDEN' } as Record<string, string>);
         this.toast.success('댓글이 숨김 처리되었습니다.');
       } else if (action === '삭제') {
         await this.api.comments.delete(id);
@@ -175,7 +188,7 @@ export class ContentDetailPage implements OnInit {
       // 데이터 새로고침
       const contentId = this.content()?.id;
       if (contentId) await this.loadContent(contentId);
-    } catch (e) {
+    } catch {
       this.toast.error('처리 실패');
     }
   }
@@ -196,8 +209,8 @@ export class ContentDetailPage implements OnInit {
   showReportDrawer = signal(false);
   selectedReport = signal<ReportRow | null>(null);
 
-  openReportDrawer(report: ReportRow): void {
-    this.selectedReport.set(report);
+  openReportDrawer(gridRow: GridRow): void {
+    this.selectedReport.set(gridRow as unknown as ReportRow);
     this.showReportDrawer.set(true);
   }
 
@@ -219,13 +232,14 @@ export class ContentDetailPage implements OnInit {
 
   drawerReportData = signal<ReportRow[]>([]);
 
-  async openCommentDrawer(comment: CommentRow): Promise<void> {
+  async openCommentDrawer(gridRow: GridRow): Promise<void> {
+    const comment = gridRow as unknown as CommentRow;
     this.selectedComment.set(comment);
     this.showCommentDrawer.set(true);
     // 해당 댓글의 신고 내역 로드
     try {
       const reports = await this.api.reports.findAll({ type: 'COMMENT', targetId: String(comment.id) });
-      this.drawerReportData.set(reports.map((r: any) => ({
+      this.drawerReportData.set(reports.map((r: ReportResponse) => ({
         id: r.id,
         commentContent: comment.content,
         content: r.reason || '',
@@ -251,7 +265,7 @@ export class ContentDetailPage implements OnInit {
     const comment = this.selectedComment();
     if (comment) {
       try {
-        await this.api.comments.update(comment.id, { status: 'HIDDEN' as any });
+        await this.api.comments.update(comment.id, { status: 'HIDDEN' } as Record<string, string>);
         this.toast.success('숨김 되었습니다.');
         const id = Number(this.route.snapshot.paramMap.get('id'));
         if (id) await this.loadContent(id);
@@ -309,9 +323,9 @@ export class ContentDetailPage implements OnInit {
   }
 
   // ===== 신고 삭제 =====
-  async onReportDelete(event: { key: string; row: any }): Promise<void> {
+  async onReportDelete(event: { key: string; row: GridRow }): Promise<void> {
     try {
-      await this.api.reports.delete(event.row.id);
+      await this.api.reports.delete(event.row['id'] as number);
       this.toast.success('신고가 삭제되었습니다.');
       const id = Number(this.route.snapshot.paramMap.get('id'));
       if (id) await this.loadContent(id);
@@ -320,15 +334,15 @@ export class ContentDetailPage implements OnInit {
     }
   }
 
-  async onDrawerReportDelete(event: { key: string; row: any }): Promise<void> {
+  async onDrawerReportDelete(event: { key: string; row: GridRow }): Promise<void> {
     try {
-      await this.api.reports.delete(event.row.id);
+      await this.api.reports.delete(event.row['id'] as number);
       this.toast.success('신고가 삭제되었습니다.');
       // 드로어 신고 내역 새로고침
       const comment = this.selectedComment();
       if (comment) {
         const reports = await this.api.reports.findAll({ type: 'COMMENT', targetId: String(comment.id) });
-        this.drawerReportData.set(reports.map((r: any) => ({
+        this.drawerReportData.set(reports.map((r: ReportResponse) => ({
           id: r.id,
           commentContent: comment.content,
           content: r.reason || '',

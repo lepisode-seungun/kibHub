@@ -26,7 +26,7 @@
           </svg>
         </button>
         @if (dropdownOpen()) {
-          <div class="dropdown-menu" style="width: 88px; padding: 4px 0;" (click)="$event.stopPropagation()">
+          <div class="dropdown-menu" style="width: 88px; padding: 4px 0;" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
             <div style="position: relative;">
               <button class="dropdown-item" style="padding: 4px 2px; gap: 2px;" (click)="onDropdownAction('상태 변경')">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="#9CA3AF"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
@@ -378,8 +378,8 @@
 
 <!-- ===== 강사 내보내기 다이얼로그 ===== -->
 @if (showInstructorRemoveDialog()) {
-  <div class="dialog-overlay" (click)="cancelRemoveInstructor()">
-    <div class="dialog-card" (click)="$event.stopPropagation()">
+  <div class="dialog-overlay" tabindex="0" (click)="cancelRemoveInstructor()" (keydown.enter)="cancelRemoveInstructor()">
+    <div class="dialog-card" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
       <div class="dialog-header">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="14" fill="#EF4444"/>
@@ -413,8 +413,8 @@
 
 <!-- ===== 수강생 내보내기 다이얼로그 ===== -->
 @if (showRemoveDialog()) {
-  <div class="dialog-overlay" (click)="cancelRemoveStudent()">
-    <div class="dialog-card" (click)="$event.stopPropagation()">
+  <div class="dialog-overlay" tabindex="0" (click)="cancelRemoveStudent()" (keydown.enter)="cancelRemoveStudent()">
+    <div class="dialog-card" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
 
       <!-- 아이콘 + 타이틀 -->
       <div class="dialog-header">
@@ -516,8 +516,8 @@
 
 <!-- ===== 부트캠프 삭제 모달 ===== -->
 @if (showBootcampDeleteModal()) {
-  <div class="dialog-overlay" (click)="cancelBootcampDelete()">
-    <div class="dialog-card" (click)="$event.stopPropagation()">
+  <div class="dialog-overlay" tabindex="0" (click)="cancelBootcampDelete()" (keydown.enter)="cancelBootcampDelete()">
+    <div class="dialog-card" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
       <div class="dialog-header">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="14" fill="#EF4444"/>

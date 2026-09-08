@@ -95,7 +95,7 @@ export class AssignmentRegisterPage {
         videoUrl: this.videoUrl(),
         dueDate: this.deadlineStart() || undefined,
         dueDateEnd: this.deadlineEnd() || undefined,
-      } as any);
+      } as Record<string, string>);
       this.toast.success('등록 완료 되었습니다.');
       this.location.back();
     } catch (err) {

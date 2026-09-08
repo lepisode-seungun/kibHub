@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/generated';
+import { Prisma, ContentStatus } from '@prisma/generated';
 import { CreatePortfolioDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 
@@ -11,7 +11,7 @@ export class PortfoliosService {
   async findAll(query?: { search?: string; isHallOfFame?: boolean; status?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.PortfolioWhereInput = {};
     if (query?.isHallOfFame !== undefined) where.isHallOfFame = query.isHallOfFame;
-    if (query?.status) where.status = query.status as any;
+    if (query?.status) where.status = query.status as ContentStatus;
     if (query?.search) {
       where.OR = [
         { userName: { contains: query.search, mode: 'insensitive' } },

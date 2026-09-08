@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { BOOTCAMP_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -62,7 +62,8 @@ export class BootcampPage implements OnInit {
   }
 
   /** 부트캠프명 클릭 → 홈 관리 진입 */
-  onBootcampRowClick(row: BootcampRow): void {
+  onBootcampRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as BootcampRow;
     this.bootcampCtx.setBootcamp(row.id, row.bootcampName);
     this.router.navigate(['/bootcamp/home/dashboard']);
   }
@@ -72,16 +73,17 @@ export class BootcampPage implements OnInit {
   deleteTargetRow = signal<BootcampRow | null>(null);
   deleteChildCounts = signal<{ courses: number; lectures: number; assignments: number; applicants: number; notices: number } | null>(null);
 
-  async onContextMenuAction(event: { action: string; row: BootcampRow }): Promise<void> {
+  async onContextMenuAction(event: { action: string; row: GridRow }): Promise<void> {
+    const row = event.row as unknown as BootcampRow;
     if (event.action === '수정') {
-      await this.openEditDrawer(event.row.id);
+      await this.openEditDrawer(row.id);
     } else if (event.action === '삭제') {
-      this.deleteTargetRow.set(event.row);
+      this.deleteTargetRow.set(row);
       this.deleteChildCounts.set(null);
       this.showDeleteDialog.set(true);
       // 하위 데이터 건수 비동기 로드
       try {
-        const counts = await this.api.bootcamps.getChildCounts(event.row.id);
+        const counts = await this.api.bootcamps.getChildCounts(row.id);
         this.deleteChildCounts.set(counts);
       } catch (e) { console.error('하위 데이터 카운트 실패:', e); }
     }
@@ -150,7 +152,7 @@ export class BootcampPage implements OnInit {
       this.existingThumbnail.set(bc.thumbnail || null);
       this.thumbnailUploadRef?.reset();
       this.drawerOpen.set(true);
-    } catch (e) {
+    } catch {
       this.toast.error('부트캠프 데이터 로드에 실패했습니다.');
     }
   }
@@ -177,7 +179,14 @@ export class BootcampPage implements OnInit {
         thumbnailUrl = result.url;
       }
 
-      const payload: any = {
+      const payload: {
+        name: string;
+        instructorName: string;
+        description: string;
+        startDate?: Date;
+        endDate?: Date;
+        thumbnail?: string;
+      } = {
         name: form.bootcampName,
         instructorName: form.name,
         description: form.workIntro,

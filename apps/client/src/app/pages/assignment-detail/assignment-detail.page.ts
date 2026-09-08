@@ -20,6 +20,31 @@ interface Submission {
   commentCount: number;
   isReply: boolean;
   isInstructor: boolean;
+  parentId: number | null;
+  createdAt: string;
+}
+
+interface AssignmentResponse {
+  id: number;
+  title: string;
+  content: string;
+  body?: string;
+  videoUrl: string;
+  dueDate: string | null;
+  dueDateEnd: string | null;
+  course?: { id: number; name: string; title?: string };
+  files?: { id: number; name: string; url: string; size: number; mimeType: string }[];
+}
+
+interface SubmissionResponse {
+  id: number;
+  title: string;
+  type: string;
+  parentId: number | null;
+  createdAt: string;
+  author?: { name: string; nickname: string; role: string };
+  files?: { name: string; url: string }[];
+  _count?: { comments: number };
 }
 
 @Component({
@@ -97,7 +122,7 @@ export class AssignmentDetailPage implements OnInit {
 
   private async loadAssignment(id: number): Promise<void> {
     try {
-      const assignment: any = await this.api.assignments.findOne(id);
+      const assignment = await this.api.assignments.findOne(id) as AssignmentResponse;
       this.assignmentTitle.set(assignment.title || '');
       this.description.set(assignment.content || assignment.body || '');
       this.videoUrl.set(assignment.videoUrl || '');
@@ -115,7 +140,7 @@ export class AssignmentDetailPage implements OnInit {
         this.courseLabel.set(assignment.course.name || assignment.course.title || '');
       }
       if (assignment.files && assignment.files.length > 0) {
-        this.learningFiles.set(assignment.files.map((f: any) => ({ name: f.name, url: f.url })));
+        this.learningFiles.set(assignment.files.map((f: { name: string; url: string }) => ({ name: f.name, url: f.url })));
       } else {
         this.learningFiles.set([]);
       }
@@ -127,9 +152,9 @@ export class AssignmentDetailPage implements OnInit {
 
   private async loadSubmissions(assignmentId: number): Promise<void> {
     try {
-      const list: any[] = await this.api.submissions.findByAssignment(assignmentId);
+      const list = await this.api.submissions.findByAssignment(assignmentId) as SubmissionResponse[];
 
-      const toItem = (s: any) => ({
+      const toItem = (s: SubmissionResponse): Submission => ({
         id: s.id,
         title: s.title,
         badge: s.type === 'FEEDBACK' ? '피드백' as const : '과제제출' as const,
@@ -145,19 +170,19 @@ export class AssignmentDetailPage implements OnInit {
 
       // parent(과제제출)와 children(피드백)을 그룹핑
       const parents = list.filter(s => !s.parentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      const childrenMap = new Map<number, any[]>();
+      const childrenMap = new Map<number, SubmissionResponse[]>();
       list.filter(s => s.parentId).forEach(s => {
-        const arr = childrenMap.get(s.parentId) || [];
+        const arr = childrenMap.get(s.parentId as number) || [];
         arr.push(s);
-        childrenMap.set(s.parentId, arr);
+        childrenMap.set(s.parentId as number, arr);
       });
 
       // parent → 해당 feedback 순서로 정렬
-      const grouped: any[] = [];
+      const grouped: Submission[] = [];
       for (const parent of parents) {
         grouped.push(toItem(parent));
         const children = (childrenMap.get(parent.id) || [])
-          .sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         for (const child of children) {
           grouped.push(toItem(child));
         }

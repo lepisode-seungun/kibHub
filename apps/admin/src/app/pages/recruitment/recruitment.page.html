@@ -135,7 +135,7 @@
       [data]="instructorData()"
       [showSearch]="false"
       [contextMenuItems]="['수정', '삭제']"
-      (rowClick)="editInstructor(instructorData().indexOf($event))"
+      (rowClick)="onInstructorRowClick($event)"
       (contextMenuSelect)="onInstructorContextMenu($event)">
     </adm-data-grid>
   }

@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
@@ -75,12 +75,14 @@ export class ContentPage implements OnInit {
     }
   }
 
-  onRowClick(row: ContentRow): void {
+  onRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as ContentRow;
     this.router.navigate(['/content', row.id]);
   }
 
   // ===== 우클릭 컨텍스트 메뉴 =====
-  gridContextMenuFn = (row: ContentRow): string[] => {
+  gridContextMenuFn = (gridRow: GridRow): string[] => {
+    const row = gridRow as unknown as ContentRow;
     return [row.status === '숨김' ? '노출' : '숨김', '삭제'];
   };
 
@@ -88,8 +90,9 @@ export class ContentPage implements OnInit {
   showDeleteDialog = signal(false);
   deleteTargetRow = signal<ContentRow | null>(null);
 
-  async onContextMenuSelect(event: { action: string; row: ContentRow }): Promise<void> {
-    const { action, row } = event;
+  async onContextMenuSelect(event: { action: string; row: GridRow }): Promise<void> {
+    const { action } = event;
+    const row = event.row as unknown as ContentRow;
     if (action === '숨김') {
       try {
         await this.api.contents.update(row.id, { status: 'HIDDEN' });

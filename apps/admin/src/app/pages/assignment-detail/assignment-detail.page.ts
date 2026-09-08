@@ -4,10 +4,50 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ROLE_BADGES } from '../../shared/badge-styles';
 
+interface AssignmentResponse {
+  id: number;
+  title?: string;
+  category?: string;
+  createdAt?: string;
+  dueDate?: string | null;
+  dueDateEnd?: string | null;
+  content?: string;
+  body?: string;
+  videoUrl?: string;
+  files?: { id: number; name: string; url: string; size: number; mimeType: string }[];
+  course?: { id: number; name?: string; title?: string; status?: string; createdAt?: string };
+}
+
+interface AssignmentInfo {
+  id: number;
+  name: string;
+  category: string;
+  createdAt: string;
+  deadlineStart: string;
+  deadlineEnd: string;
+  deadlineStartRaw: string;
+  deadlineEndRaw: string;
+  content: string;
+  videoUrl: string;
+  materials: { id: number; name: string; url: string; size: number; mimeType: string }[];
+}
+
+interface SubmissionResponse {
+  id: number;
+  type?: string;
+  title: string;
+  content?: string;
+  createdAt?: string;
+  files?: { name: string; size?: number }[];
+  _count?: { comments?: number };
+  author?: { name?: string; nickname?: string; role?: string };
+}
+
 interface BoardRow {
+  [key: string]: unknown;
   id: number;
   type: string;
   title: string;
@@ -77,8 +117,8 @@ export class AssignmentDetailPage implements OnInit {
     this.showDeleteModal.set(false);
   }
 
-  courseData = signal<any>({});
-  assignmentData = signal<any>({});
+  courseData = signal<{ id: number; name: string; status: string; createdAt: string }>({ id: 0, name: '', status: '', createdAt: '' });
+  assignmentData = signal<AssignmentInfo>({ id: 0, name: '', category: '', createdAt: '', deadlineStart: '', deadlineEnd: '', deadlineStartRaw: '', deadlineEndRaw: '', content: '', videoUrl: '', materials: [] });
 
   ngOnInit(): void {
     const assignmentId = this.route.snapshot.paramMap.get('assignmentId')
@@ -91,7 +131,7 @@ export class AssignmentDetailPage implements OnInit {
 
   private async loadAssignment(id: number): Promise<void> {
     try {
-      const assignment: any = await this.api.assignments.findOne(id);
+      const assignment: AssignmentResponse = await this.api.assignments.findOne(id);
       this.assignmentData.set({
         id: assignment.id,
         name: assignment.title || '',
@@ -110,7 +150,7 @@ export class AssignmentDetailPage implements OnInit {
         this.courseData.set({
           id: assignment.course.id,
           name: assignment.course.name || assignment.course.title || '',
-          status: SM[assignment.course.status] || assignment.course.status || '',
+          status: SM[assignment.course.status || ''] || assignment.course.status || '',
           createdAt: assignment.course.createdAt ? formatDate(assignment.course.createdAt) : '',
         });
       }
@@ -134,15 +174,15 @@ export class AssignmentDetailPage implements OnInit {
 
   private async loadBoardData(assignmentId: number): Promise<void> {
     try {
-      const list: any[] = await this.api.submissions.findByAssignment(assignmentId);
-      this.boardData = list.map((s: any) => {
+      const list: SubmissionResponse[] = await this.api.submissions.findByAssignment(assignmentId);
+      this.boardData = list.map((s: SubmissionResponse) => {
         const roleMap: Record<string, string> = { ADMIN: '관리자', INSTRUCTOR: '강사', STUDENT: '일반' };
         return {
           id: s.id,
           type: s.type === 'FEEDBACK' ? '피드백' : '제출',
           title: s.title,
           comments: s._count?.comments || 0,
-          permission: roleMap[s.author?.role] || '일반',
+          permission: roleMap[s.author?.role || ''] || '일반',
           author: s.author?.name || s.author?.nickname || '',
           createdAt: formatDate(s.createdAt),
         };
@@ -156,9 +196,9 @@ export class AssignmentDetailPage implements OnInit {
   showBoardDeleteModal = signal(false);
   boardDeleteRow = signal<BoardRow | null>(null);
 
-  onBoardContextMenu(event: { action: string; row: BoardRow }): void {
+  onBoardContextMenu(event: { action: string; row: GridRow }): void {
     if (event.action === '삭제') {
-      this.boardDeleteRow.set(event.row);
+      this.boardDeleteRow.set(event.row as unknown as BoardRow);
       this.showBoardDeleteModal.set(true);
     }
   }
@@ -187,14 +227,15 @@ export class AssignmentDetailPage implements OnInit {
   submissionDrawerOpen = signal(false);
   selectedSubmission = signal<SubmissionDetail | null>(null);
 
-  async openSubmissionDrawer(row: BoardRow): Promise<void> {
+  async openSubmissionDrawer(gridRow: GridRow): Promise<void> {
+    const row = gridRow as unknown as BoardRow;
     try {
-      const detail: any = await this.api.submissions.findOne(row.id);
+      const detail: SubmissionResponse = await this.api.submissions.findOne(row.id);
       const roleMap: Record<string, string> = { ADMIN: '관리자', INSTRUCTOR: '강사', STUDENT: '일반' };
       this.selectedSubmission.set({
         ...row,
         content: detail.content || '',
-        files: (detail.files || []).map((f: any) => ({
+        files: (detail.files || []).map((f: { name: string; size?: number }) => ({
           name: f.name,
           size: f.size ? `${(f.size / 1024).toFixed(1)}KB` : '',
         })),
@@ -245,9 +286,9 @@ export class AssignmentDetailPage implements OnInit {
     }
     try {
       const assignmentId = this.assignmentData().id;
-      const payload: any = { title, category: this.editCategory(), content: this.editContent(), videoUrl: this.editVideoUrl() };
-      if (this.editDueDate()) payload.dueDate = this.editDueDate();
-      if (this.editDueDateEnd()) payload.dueDateEnd = this.editDueDateEnd();
+      const payload: Record<string, string | undefined> = { title, category: this.editCategory(), content: this.editContent(), videoUrl: this.editVideoUrl() };
+      if (this.editDueDate()) payload['dueDate'] = this.editDueDate();
+      if (this.editDueDateEnd()) payload['dueDateEnd'] = this.editDueDateEnd();
       await this.api.assignments.update(assignmentId, payload);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
@@ -285,7 +326,7 @@ export class AssignmentDetailPage implements OnInit {
       await this.api.assignments.update(id, {
         content: this.editContentValue(),
         videoUrl: this.contentEditVideoUrl(),
-      } as any);
+      } as Record<string, string>);
       this.toast.success('수정 완료 되었습니다.');
       this.contentEditMode.set(false);
       await this.loadAssignment(id);
@@ -332,14 +373,14 @@ export class AssignmentDetailPage implements OnInit {
     }
   }
 
-  async downloadMaterial(mat: any): Promise<void> {
+  async downloadMaterial(mat: { name?: string; url?: string }): Promise<void> {
     if (!mat.url) { this.toast.error('다운로드 URL이 없습니다.'); return; }
     try {
       const res = await fetch(mat.url);
       const blob = await res.blob();
       if ('showSaveFilePicker' in window) {
         const ext = mat.name?.split('.').pop() || '';
-        const handle = await (window as any).showSaveFilePicker({
+        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
           suggestedName: mat.name || 'file',
           types: ext ? [{ description: ext.toUpperCase(), accept: { 'application/octet-stream': [`.${ext}`] } }] : [],
         });
@@ -352,8 +393,8 @@ export class AssignmentDetailPage implements OnInit {
         a.href = url; a.download = mat.name || 'file'; a.click();
         URL.revokeObjectURL(url);
       }
-    } catch (e: any) {
-      if (e?.name !== 'AbortError') this.toast.error('다운로드에 실패했습니다.');
+    } catch (e: unknown) {
+      if (!(e instanceof DOMException && e.name === 'AbortError')) this.toast.error('다운로드에 실패했습니다.');
     }
   }
 

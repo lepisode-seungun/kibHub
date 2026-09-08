@@ -7,6 +7,27 @@ import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
+interface NoticeFileResponse {
+  id: number;
+  name: string;
+  url: string;
+  size: number;
+  mimeType: string;
+}
+
+interface UploadResponse {
+  url: string;
+}
+
+interface NoticeSubmitBody {
+  title: string;
+  body: string;
+  pinned: boolean;
+  status: string;
+  type?: string;
+  files?: { name: string; url: string; size: number; mimeType: string }[];
+}
+
 @Component({
   selector: 'adm-notice-register',
   standalone: true,
@@ -62,8 +83,9 @@ export class NoticeRegisterPage implements OnInit {
       this.title.set(notice.title);
       this.content.set(notice.body || '');
       // 기존 첨부파일 로드
-      if ((notice as any).files && (notice as any).files.length > 0) {
-        this.files.set((notice as any).files.map((f: any) => ({
+      const noticeWithFiles = notice as typeof notice & { files?: NoticeFileResponse[] };
+      if (noticeWithFiles.files && noticeWithFiles.files.length > 0) {
+        this.files.set(noticeWithFiles.files.map((f: NoticeFileResponse) => ({
           name: f.name,
           size: f.size < 1024 * 1024
             ? `${(f.size / 1024).toFixed(0)}KB`
@@ -127,17 +149,19 @@ export class NoticeRegisterPage implements OnInit {
 
     const results: { name: string; url: string; size: number; mimeType: string }[] = [];
     for (const f of filesToUpload) {
+      const file = f.file;
+      if (!file) continue;
       const formData = new FormData();
-      formData.append('file', f.file!);
+      formData.append('file', file);
       formData.append('folder', 'notices');
-      const res: any = await firstValueFrom(
-        this.http.post('/api/upload', formData, { withCredentials: true })
+      const res = await firstValueFrom(
+        this.http.post<UploadResponse>('/api/upload', formData, { withCredentials: true })
       );
       results.push({
-        name: f.file!.name,
-        url: res.url,
-        size: f.file!.size,
-        mimeType: f.file!.type || '',
+        name: file.name,
+        url: res?.url || '',
+        size: file.size,
+        mimeType: file.type || '',
       });
     }
     return results;
@@ -152,7 +176,7 @@ export class NoticeRegisterPage implements OnInit {
     try {
       const uploadedFiles = await this.uploadFiles();
 
-      const body: any = {
+      const body: NoticeSubmitBody = {
         title: this.title(),
         body: this.editorHtml() || this.content(),
         pinned: this.pinned() === '고정',
@@ -169,16 +193,17 @@ export class NoticeRegisterPage implements OnInit {
       }
 
       if (this.isEditMode()) {
-        await this.api.notices.update(this.editId()!, body);
+        await this.api.notices.update(this.editId() ?? 0, body);
         this.toast.success('수정 완료 되었습니다.');
       } else {
-        await this.api.notices.create(body);
+        await this.api.notices.create({ ...body, type: body.type || 'BOOTCAMP' });
         this.toast.success('등록 완료 되었습니다.');
       }
       this.location.back();
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('공지사항 처리 실패:', e);
-      const detail = typeof e?.error === 'string' ? e.error : (e?.error?.message || e?.statusText || e?.message || '');
+      const err = e as { error?: string | { message?: string }; statusText?: string; message?: string };
+      const detail = typeof err?.error === 'string' ? err.error : ((err?.error as { message?: string })?.message || err?.statusText || err?.message || '');
       this.toast.error(`처리 실패: ${detail || '알 수 없는 오류'}`);
     }
   }

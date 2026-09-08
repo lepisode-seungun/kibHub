@@ -3,12 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
-interface UploadedFile {
-  name: string;
-  extension: string;
-  size: string;
-  status: 'uploading' | 'done';
-}
 
 @Component({
   selector: 'app-feedback-register',
@@ -115,7 +109,7 @@ export class FeedbackRegisterPage implements OnInit, OnDestroy {
     try {
       const files = this.uploadedFiles()
         .filter(f => f.status === 'done')
-        .map(f => ({ url: f.url!, name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
+        .map(f => ({ url: f.url ?? '', name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
       const parentId = Number(this.submissionId || this.feedbackId);
       await this.api.submissions.createFeedback(parentId, {
         title: this.title,

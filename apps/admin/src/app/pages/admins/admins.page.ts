@@ -3,13 +3,22 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ADMIN_STATUS_BADGES, ADMIN_ROLE_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
-import { ApiService } from '../../services/api.service';
-import { User, AdminRow } from '../../shared/types';
+import { ApiService, AdminResponse } from '../../services/api.service';
+import { AdminRow } from '../../shared/types';
 
-function toAdminRow(a: any): AdminRow {
+
+
+interface AdminUpdatePayload {
+  name: string;
+  role: string;
+  currentPassword?: string;
+  password?: string;
+}
+
+function toAdminRow(a: AdminResponse): AdminRow {
   return {
     id: a.id,
     email: '',
@@ -71,8 +80,8 @@ export class AdminsPage implements OnInit {
   blockModalOpen = signal(false);
   blockTarget = signal<AdminRow | null>(null);
 
-  getContextMenuItems = (row: AdminRow): string[] => {
-    const blockLabel = row.status === '정상' ? '차단' : '차단해제';
+  getContextMenuItems = (row: GridRow): string[] => {
+    const blockLabel = row['status'] === '정상' ? '차단' : '차단해제';
     return ['수정', '삭제', blockLabel];
   };
 
@@ -98,10 +107,9 @@ export class AdminsPage implements OnInit {
 
   closeDrawer(): void { this.drawerOpen.set(false); }
 
-  onRowClick(_row: AdminRow): void {}
-
-  onContextMenu(event: { action: string; row: AdminRow }): void {
-    const { action, row } = event;
+  onContextMenu(event: { action: string; row: GridRow }): void {
+    const action = event.action;
+    const row = event.row as unknown as AdminRow;
     switch (action) {
       case '수정': this.openEditDrawer(row); break;
       case '삭제':
@@ -166,8 +174,8 @@ export class AdminsPage implements OnInit {
 
     try {
       if (this.drawerMode() === 'edit') {
-        const editId = this.editingAdminId()!;
-        const payload: any = {
+        const editId = this.editingAdminId() ?? 0;
+        const payload: AdminUpdatePayload = {
           name: form.name,
           role: form.role === '최고 관리자' ? 'SUPER' : 'NORMAL',
         };
@@ -199,8 +207,9 @@ export class AdminsPage implements OnInit {
       }
       this.drawerOpen.set(false);
       await this.loadAdmins();
-    } catch (e: any) {
-      const msg = e?.error?.message || e?.message || '처리 중 오류가 발생했습니다.';
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string }; message?: string };
+      const msg = err?.error?.message || err?.message || '처리 중 오류가 발생했습니다.';
       this.toast.error(msg);
     }
   }

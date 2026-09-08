@@ -5,6 +5,37 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
+interface CourseInfo {
+  id: number;
+  name: string;
+  status: string;
+  createdAt: string;
+}
+
+interface LectureInfo {
+  id: number;
+  category: string;
+  name: string;
+  createdAt: string;
+  videoUrl: string;
+  videoDuration: string;
+  content: string;
+  materials: { id: number; name: string; url: string; size: number; mimeType: string }[];
+}
+
+interface LectureResponse {
+  id: number;
+  title?: string;
+  category?: string;
+  createdAt?: string;
+  videoUrl?: string;
+  duration?: string;
+  content?: string;
+  body?: string;
+  files?: { id: number; name: string; url: string; size: number; mimeType: string }[];
+  course?: { id: number; name?: string; title?: string; status?: string; createdAt?: string };
+}
+
 @Component({
   selector: 'adm-lecture-detail',
   standalone: true,
@@ -51,8 +82,8 @@ export class LectureDetailPage implements OnInit {
   cancelDelete(): void { this.showDeleteModal.set(false); }
 
   // ===== 데이터 =====
-  courseData = signal<any>({});
-  lectureData = signal<any>({});
+  courseData = signal<CourseInfo>({ id: 0, name: '', status: '', createdAt: '' });
+  lectureData = signal<LectureInfo>({ id: 0, category: '', name: '', createdAt: '', videoUrl: '', videoDuration: '', content: '', materials: [] });
 
   ngOnInit(): void {
     const lectureId = this.route.snapshot.paramMap.get('lectureId')
@@ -62,7 +93,7 @@ export class LectureDetailPage implements OnInit {
 
   private async loadLecture(id: number): Promise<void> {
     try {
-      const lecture: any = await this.api.lectures.findOne(id);
+      const lecture: LectureResponse = await this.api.lectures.findOne(id);
       this.lectureData.set({
         id: lecture.id, category: lecture.category || '',
         name: lecture.title || '', createdAt: lecture.createdAt ? formatDate(lecture.createdAt) : '',
@@ -74,7 +105,7 @@ export class LectureDetailPage implements OnInit {
         this.courseData.set({
           id: lecture.course.id,
           name: lecture.course.name || lecture.course.title || '',
-          status: SM[lecture.course.status] || lecture.course.status || '',
+          status: SM[lecture.course.status || ''] || lecture.course.status || '',
           createdAt: lecture.course.createdAt ? formatDate(lecture.course.createdAt) : '',
         });
       }
@@ -100,11 +131,11 @@ export class LectureDetailPage implements OnInit {
     const title = this.editTitle().trim();
     if (!title) { this.toast.error('강의명을 입력해주세요.'); return; }
     try {
-      await this.api.lectures.update(this.lectureData().id, { title, category: this.editCategory(), content: this.editContent() } as any);
+      await this.api.lectures.update(this.lectureData().id, { title, category: this.editCategory(), content: this.editContent() } as Record<string, string>);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadLecture(this.lectureData().id);
-    } catch (e) { this.toast.error('수정에 실패했습니다.'); }
+    } catch { this.toast.error('수정에 실패했습니다.'); }
   }
 
   // ===== 상세내용 인라인 편집 =====
@@ -123,7 +154,7 @@ export class LectureDetailPage implements OnInit {
   getYoutubeThumbnail(url: string): string {
     if (!url) return '';
     // youtube.com/watch?v=ID
-    let match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
     if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
     return '';
   }
@@ -138,11 +169,11 @@ export class LectureDetailPage implements OnInit {
       await this.api.lectures.update(this.lectureData().id, {
         videoUrl: this.contentEditVideoUrl(),
         content: this.contentEditContent(),
-      } as any);
+      } as Record<string, string>);
       this.toast.success('수정 완료 되었습니다.');
       this.contentEditMode.set(false);
       await this.loadLecture(this.lectureData().id);
-    } catch (e) { this.toast.error('수정에 실패했습니다.'); }
+    } catch { this.toast.error('수정에 실패했습니다.'); }
   }
 
   cancelContentEdit(): void { this.contentEditMode.set(false); }
@@ -167,7 +198,7 @@ export class LectureDetailPage implements OnInit {
       }
       this.toast.success(`${files.length}개 파일 업로드 완료`);
       await this.loadLecture(this.lectureData().id);
-    } catch (e) {
+    } catch {
       this.toast.error('파일 업로드에 실패했습니다.');
     } finally {
       this.isUploading.set(false);
@@ -180,19 +211,19 @@ export class LectureDetailPage implements OnInit {
       await this.api.lectureFiles.delete(fileId);
       this.toast.success('파일이 삭제되었습니다.');
       await this.loadLecture(this.lectureData().id);
-    } catch (e) {
+    } catch {
       this.toast.error('파일 삭제에 실패했습니다.');
     }
   }
 
-  async downloadMaterial(mat: any): Promise<void> {
+  async downloadMaterial(mat: { name?: string; url?: string }): Promise<void> {
     if (!mat.url) { this.toast.error('다운로드 URL이 없습니다.'); return; }
     try {
       const res = await fetch(mat.url);
       const blob = await res.blob();
       if ('showSaveFilePicker' in window) {
         const ext = mat.name?.split('.').pop() || '';
-        const handle = await (window as any).showSaveFilePicker({
+        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
           suggestedName: mat.name || 'file',
           types: ext ? [{ description: ext.toUpperCase(), accept: { 'application/octet-stream': [`.${ext}`] } }] : [],
         });
@@ -205,8 +236,8 @@ export class LectureDetailPage implements OnInit {
         a.href = url; a.download = mat.name || 'file'; a.click();
         URL.revokeObjectURL(url);
       }
-    } catch (e: any) {
-      if (e?.name !== 'AbortError') this.toast.error('다운로드에 실패했습니다.');
+    } catch (e: unknown) {
+      if (!(e instanceof DOMException && e.name === 'AbortError')) this.toast.error('다운로드에 실패했습니다.');
     }
   }
 

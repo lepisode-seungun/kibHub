@@ -1,12 +1,20 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ConfirmDialogComponent, DialogDetailRow } from '../../components/confirm-dialog/confirm-dialog.component';
 import { INQUIRY_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Inquiry, InquiryRow } from '../../shared/types';
+
+interface InquiryFileEntry {
+  id: number;
+  name: string;
+  url: string;
+  size?: number;
+  mimeType?: string;
+}
 
 function toInquiryRow(i: Inquiry): InquiryRow {
   return {
@@ -17,7 +25,7 @@ function toInquiryRow(i: Inquiry): InquiryRow {
     author: i.author?.nickname || i.author?.name || '',
     createdAt: formatDate(i.createdAt),
     reply: i.reply || '',
-    files: ((i as any).files || []).map((f: any) => ({
+    files: ((i as unknown as { files?: InquiryFileEntry[] }).files || []).map((f: InquiryFileEntry) => ({
       id: f.id,
       name: f.name,
       url: f.url,
@@ -69,16 +77,17 @@ export class SupportInquiriesPage implements OnInit {
     }
   }
 
-  getContextMenuItems = (_row: InquiryRow): string[] => ['답변', '삭제'];
+  getContextMenuItems = (_row: GridRow): string[] => ['답변', '삭제'];
 
-  onRowClick(row: InquiryRow): void {
+  onRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as InquiryRow;
     this.openReplyDrawer(row);
   }
 
-  onContextMenu(event: { action: string; row: InquiryRow }): void {
-    const { action, row } = event;
-    if (action === '답변') this.openReplyDrawer(row);
-    else if (action === '삭제') this.openDeleteDialog(row);
+  onContextMenu(event: { action: string; row: GridRow }): void {
+    const row = event.row as unknown as InquiryRow;
+    if (event.action === '답변') this.openReplyDrawer(row);
+    else if (event.action === '삭제') this.openDeleteDialog(row);
   }
 
   private openReplyDrawer(row: InquiryRow): void {
@@ -143,7 +152,7 @@ export class SupportInquiriesPage implements OnInit {
       const blob = await response.blob();
       if ('showSaveFilePicker' in window) {
         const ext = file.name.includes('.') ? file.name.split('.').pop() || '' : '';
-        const handle = await (window as any).showSaveFilePicker({
+        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
           suggestedName: file.name,
           types: ext ? [{ description: file.name, accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] } }] : [],
         });
@@ -159,8 +168,8 @@ export class SupportInquiriesPage implements OnInit {
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
       }
-    } catch (e: any) {
-      if (e?.name === 'AbortError') return;
+    } catch (e: unknown) {
+      if (e instanceof DOMException && e.name === 'AbortError') return;
       const a = document.createElement('a');
       a.href = file.url;
       a.download = file.name;

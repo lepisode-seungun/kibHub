@@ -2,13 +2,14 @@ import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { Course } from '../../shared/types';
 
 interface CourseRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   name: string;
@@ -71,7 +72,8 @@ export class CoursePage implements OnInit {
   data = signal<CourseRow[]>([]);
   bootcampId = 0;
 
-  contextMenuItemsFn = (row: CourseRow) => {
+  contextMenuItemsFn = (gridRow: GridRow) => {
+    const row = gridRow as unknown as CourseRow;
     const toggleLabel = row.status === '숨김' ? '노출' : '숨김';
     return [toggleLabel, '수정', '삭제'];
   };
@@ -103,7 +105,7 @@ export class CoursePage implements OnInit {
     if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
     try {
       const status = this.courseCategory() || 'VISIBLE';
-      await this.api.courses.create(this.bootcampId, { name, status } as any);
+      await this.api.courses.create(this.bootcampId, { name, status } as Record<string, string>);
       this.toast.success('등록 완료 되었습니다.');
       this.drawerOpen.set(false);
       await this.loadCourses();
@@ -112,13 +114,15 @@ export class CoursePage implements OnInit {
     }
   }
 
-  onRowClick(row: CourseRow): void {
+  onRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as CourseRow;
     this.router.navigate(['/bootcamp/home/curriculum', row.id]);
   }
 
-  async onRowReorder(newData: CourseRow[]): Promise<void> {
-    this.data.set(newData);
-    const orderedIds = newData.map(r => r.id);
+  async onRowReorder(newData: GridRow[]): Promise<void> {
+    const rows = newData as unknown as CourseRow[];
+    this.data.set(rows);
+    const orderedIds = rows.map(r => r.id);
     console.log('[onRowReorder] bootcampId:', this.bootcampId, 'orderedIds:', orderedIds);
     try {
       const result = await this.api.courses.reorder(this.bootcampId, orderedIds);
@@ -138,21 +142,22 @@ export class CoursePage implements OnInit {
   editCourseStatus = signal('');
   private editingCourseId: number | null = null;
 
-  async onContextMenuAction(event: { action: string; row: CourseRow }): Promise<void> {
+  async onContextMenuAction(event: { action: string; row: GridRow }): Promise<void> {
+    const row = event.row as unknown as CourseRow;
     if (event.action === '숨김' || event.action === '노출') {
       const newStatus = event.action === '숨김' ? 'HIDDEN' : 'VISIBLE';
       try {
-        await this.api.courses.update(event.row.id, { status: newStatus } as any);
+        await this.api.courses.update(row.id, { status: newStatus } as Record<string, string>);
         this.toast.success(`${event.action} 처리 되었습니다.`);
         await this.loadCourses();
       } catch (e) { this.toast.error(`${event.action} 처리 실패`); }
     } else if (event.action === '수정') {
-      this.editingCourseId = event.row.id;
-      this.editCourseName.set(event.row.name);
-      this.editCourseStatus.set(event.row.status);
+      this.editingCourseId = row.id;
+      this.editCourseName.set(row.name);
+      this.editCourseStatus.set(row.status);
       this.editDrawerOpen.set(true);
     } else if (event.action === '삭제') {
-      this.deleteTargetRow.set(event.row);
+      this.deleteTargetRow.set(row);
       this.showDeleteDialog.set(true);
     }
   }
@@ -183,7 +188,7 @@ export class CoursePage implements OnInit {
     if (!name) { this.toast.error('과정명을 입력해주세요.'); return; }
     try {
       const status = REVERSE_STATUS_MAP[this.editCourseStatus()] || 'VISIBLE';
-      await this.api.courses.update(this.editingCourseId, { name, status } as any);
+      await this.api.courses.update(this.editingCourseId, { name, status } as Record<string, string>);
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadCourses();

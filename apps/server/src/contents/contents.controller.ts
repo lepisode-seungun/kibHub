@@ -86,7 +86,9 @@ export class ContentsController {
         const decoded = jwt.verify(token, process.env['JWT_SECRET'] || 'kiphub-jwt-secret-key-2026') as { userId: number };
         userId = decoded.userId;
       }
-    } catch {}
+    } catch {
+      // 인증 없이도 조회 가능 — 토큰 파싱 실패 시 무시
+    }
     return this.contentsService.findComments(contentId, userId, showAll === 'true');
   }
 

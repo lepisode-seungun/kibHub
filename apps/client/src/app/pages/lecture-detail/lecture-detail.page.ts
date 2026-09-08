@@ -10,6 +10,17 @@ interface LearningFile {
   url?: string;
 }
 
+interface LectureDetail {
+  title?: string;
+  content?: string;
+  body?: string;
+  duration?: string;
+  category?: string;
+  videoUrl?: string;
+  course?: { name?: string; title?: string };
+  files?: { name: string; url: string }[];
+}
+
 @Component({
   selector: 'app-lecture-detail',
   standalone: true,
@@ -58,7 +69,7 @@ export class LectureDetailPage implements OnInit {
 
   private async loadLecture(id: number): Promise<void> {
     try {
-      const lecture: any = await this.api.lectures.findOne(id);
+      const lecture: LectureDetail = await this.api.lectures.findOne(id);
       this.lectureTitle.set(lecture.title || '');
       this.description.set(lecture.content || lecture.body || '');
       this.duration.set(lecture.duration || '');
@@ -68,7 +79,7 @@ export class LectureDetailPage implements OnInit {
         this.courseLabel.set(lecture.course.name || lecture.course.title || '');
       }
       if (lecture.files && lecture.files.length > 0) {
-        this.learningFiles.set(lecture.files.map((f: any) => ({ name: f.name, url: f.url })));
+        this.learningFiles.set(lecture.files.map((f: { name: string; url: string }) => ({ name: f.name, url: f.url })));
       } else {
         this.learningFiles.set([]);
       }

@@ -69,8 +69,9 @@ export class ResetPasswordPage implements OnInit {
         newPassword: this.newPassword,
       });
       this.successMessage.set(result.message || '비밀번호가 성공적으로 변경되었습니다.');
-    } catch (e: any) {
-      const msg = e?.error?.error || '비밀번호 재설정에 실패했습니다. 링크가 만료되었을 수 있습니다.';
+    } catch (e: unknown) {
+      const err = e as { error?: { error?: string } };
+      const msg = err?.error?.error || '비밀번호 재설정에 실패했습니다. 링크가 만료되었을 수 있습니다.';
       this.errorMessage.set(msg);
     }
 

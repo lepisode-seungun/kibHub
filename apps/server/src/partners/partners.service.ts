@@ -25,12 +25,7 @@ export class PartnersService {
   }
 
   update(id: number, data: { name?: string; logoUrl?: string; link?: string; displayOrder?: number }) {
-    const updateData: Record<string, any> = {};
-    if (data.name !== undefined) updateData.name = data.name;
-    if (data.logoUrl !== undefined) updateData.logoUrl = data.logoUrl;
-    if (data.link !== undefined) updateData.link = data.link;
-    if (data.displayOrder !== undefined) updateData.displayOrder = data.displayOrder;
-    return this.prisma.partner.update({ where: { id }, data: updateData });
+    return this.prisma.partner.update({ where: { id }, data });
   }
 
   delete(id: number) {

@@ -106,8 +106,6 @@ export class MyBootcampPage implements OnInit {
         const fmt = (d: string) => d ? d.substring(0, 10) : '';
         const mappedStatus = this.STATUS_MAP[a.status] || '신청 완료';
         const bcStatus = bc.status || '';
-        const bootcampClosed = bcStatus === 'CLOSED' || bcStatus === 'ENDED';
-        // 종료된 부트캠프만 목록에서 숨기기
         if (bcStatus === 'ENDED') continue;
         items.push({
           id: a.id,

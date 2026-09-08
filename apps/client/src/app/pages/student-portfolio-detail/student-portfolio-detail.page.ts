@@ -5,6 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
 import { ApiService } from '../../services/api.service';
 
+
+interface PortfolioFileResponse {
+  name: string;
+  url: string;
+  size: number;
+  mimeType: string;
+  episode: number | null;
+}
+
 @Component({
   selector: 'app-student-portfolio-detail',
   standalone: true,
@@ -43,15 +52,15 @@ export class StudentPortfolioDetailPage implements OnInit, OnDestroy {
 
           // 파일 분리: 기획서(episode없음) vs 원고(episode있음)
           if (p.files?.length) {
-            const plan = p.files.find((f: any) => !f.episode);
+            const plan = p.files.find((f: PortfolioFileResponse) => !f.episode);
             if (plan) this.planFileUrl.set(plan.url);
 
             const manuscripts = p.files
-              .filter((f: any) => f.episode)
-              .sort((a: any, b: any) => a.episode - b.episode);
+              .filter((f: PortfolioFileResponse) => f.episode)
+              .sort((a: PortfolioFileResponse, b: PortfolioFileResponse) => (a.episode ?? 0) - (b.episode ?? 0));
             if (manuscripts.length > 0) {
-              this.manuscriptImages = manuscripts.map((f: any) => ({
-                id: f.episode,
+              this.manuscriptImages = manuscripts.map((f: PortfolioFileResponse) => ({
+                id: f.episode ?? 0,
                 url: f.url,
                 gradient: '',
               }));

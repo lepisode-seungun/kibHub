@@ -17,7 +17,7 @@
          (mousedown)="onCardsMouseDown($event)"
          (mouseleave)="onCardsMouseUp()">
       @for (card of bootcampCards(); track card.id) {
-        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]" (click)="onCardClick($event, card.id)">
+        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]" (click)="onCardClick($event)">
           <!-- 썸네일 -->
           @if (card.thumbnailUrl) {
             <div class="card-thumbnail">

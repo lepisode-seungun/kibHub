@@ -144,7 +144,8 @@ export class AdminLayoutComponent implements OnInit {
     if (match) {
       this.currentMenuTitle = match.label;
       if (match.parent) {
-        this.expandedMenus.update(set => { const s = new Set(set); s.add(match.parent!); return s; });
+        const parent = match.parent;
+        this.expandedMenus.update(set => { const s = new Set(set); s.add(parent); return s; });
       }
     }
   }

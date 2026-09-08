@@ -174,14 +174,14 @@
           </div>
           <!-- 알림 아이콘 -->
           <div class="relative">
-            <div class="flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer hover:bg-zinc-50 transition-colors" (click)="toggleProfileDropdown()">
+            <button type="button" class="relative flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer hover:bg-zinc-50 transition-colors border-none p-0" (click)="toggleProfileDropdown()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
               </svg>
               <div class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[15px] h-[15px] px-1 bg-[#3C8EEE] rounded-full">
                 <span class="font-suit font-medium text-xs text-white leading-none">3</span>
               </div>
-            </div>
+            </button>
             @if (profileDropdownOpen()) {
               <div class="absolute right-0 top-12 w-40 bg-white rounded-lg shadow-lg border border-zinc-100 z-50 overflow-hidden">
                 <button class="flex items-center gap-2 w-full px-4 py-3 border-none bg-white hover:bg-zinc-50 cursor-pointer transition-colors font-suit font-medium text-sm text-zinc-600" (click)="logout()">

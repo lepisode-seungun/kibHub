@@ -9,7 +9,7 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './text-editor.component.html',
   styleUrl: './text-editor.component.css',
 })
-export class TextEditorComponent implements AfterViewInit, OnChanges {
+export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   private api = inject(ApiService);
   placeholder = input<string>('내용을 입력하세요.');
   minHeight = input<string>('280px');
@@ -121,7 +121,10 @@ export class TextEditorComponent implements AfterViewInit, OnChanges {
         range.insertNode(span);
         // 커서를 span 안으로 이동
         const newRange = document.createRange();
-        newRange.setStart(span.firstChild!, 1);
+        const textNode = span.firstChild;
+        if (textNode) {
+          newRange.setStart(textNode, 1);
+        }
         newRange.collapse(true);
         sel.removeAllRanges();
         sel.addRange(newRange);

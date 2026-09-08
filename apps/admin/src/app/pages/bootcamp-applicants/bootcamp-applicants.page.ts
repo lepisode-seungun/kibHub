@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
@@ -10,6 +10,7 @@ import { BootcampContextService } from '../../services/bootcamp-context.service'
 import { Applicant } from '../../shared/types';
 
 interface ApplicantRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   name: string;
@@ -22,15 +23,24 @@ const STATUS_MAP: Record<string, string> = {
   PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격', CANCELLED: '취소',
 };
 
-function toApplicantRow(a: Applicant): ApplicantRow {
-  const iq = (a as any).interviewQuestions as Record<string, string> | null;
+interface ApplicantWithExtras extends Applicant {
+  interviewQuestions?: Record<string, string> | null;
+  appliedAt?: string;
+}
+
+interface InterviewQuestion {
+  text: string;
+}
+
+function toApplicantRow(a: ApplicantWithExtras): ApplicantRow {
+  const iq = a.interviewQuestions ?? null;
   return {
     id: a.id,
     status: STATUS_MAP[a.status] || a.status,
     name: iq?.['applicantName'] || a.user?.name || '',
     phone: iq?.['phone'] || a.user?.phone || '',
     email: iq?.['email'] || a.user?.email || '',
-    appliedAt: formatDate((a as any).appliedAt || a.createdAt),
+    appliedAt: formatDate(a.appliedAt || a.createdAt),
   };
 }
 
@@ -90,12 +100,12 @@ export class BootcampApplicantsPage implements OnInit {
     return `${list[0].name} 외 ${list.length - 1}명`;
   });
 
-  onSelectionChange(selected: ApplicantRow[]): void {
-    this.selectedApplicants.set(selected);
+  onSelectionChange(selected: GridRow[]): void {
+    this.selectedApplicants.set(selected as unknown as ApplicantRow[]);
   }
 
-  onRowClick(row: ApplicantRow): void {
-    this.router.navigate(['/bootcamp/home/applicants', row.id]);
+  onRowClick(row: GridRow): void {
+    this.router.navigate(['/bootcamp/home/applicants', row['id'] as number]);
   }
 
   toggleStatusDropdown(): void { this.statusDropdownOpen.update(v => !v); }
@@ -158,7 +168,7 @@ export class BootcampApplicantsPage implements OnInit {
     try {
       const existing = await this.api.bootcamps.getInterviewSettings(this.bootcampId);
       this.drawerQuestions.set(
-        existing.map((q: any) => ({ text: q.text || '', editing: false }))
+        existing.map((q: InterviewQuestion) => ({ text: q.text || '', editing: false }))
       );
     } catch {
       this.drawerQuestions.set([]);
@@ -215,9 +225,10 @@ export class BootcampApplicantsPage implements OnInit {
       const result = await this.api.bootcamps.updateInterviewSettings(this.bootcampId, questions);
       console.log('[인터뷰설정] 저장 성공:', result);
       this.toast.success('사전인터뷰 설정이 저장되었습니다.');
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('[인터뷰설정] 저장 실패:', e);
-      this.toast.error('저장 실패: ' + (e?.error?.message || e?.message || '알 수 없는 오류'));
+      const err = e as { error?: { message?: string }; message?: string };
+      this.toast.error('저장 실패: ' + (err?.error?.message || err?.message || '알 수 없는 오류'));
     }
     this.interviewDrawerOpen.set(false);
   }

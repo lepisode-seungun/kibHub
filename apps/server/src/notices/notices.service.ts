@@ -4,6 +4,14 @@ import { Prisma } from '@prisma/generated';
 import { CreateNoticeDto, PaginatedResponse } from '@kibhub/shared';
 import { paginate, parsePagination } from '../common/pagination';
 
+
+interface NoticeFileInput {
+  name: string;
+  url: string;
+  size?: number;
+  mimeType?: string;
+}
+
 @Injectable()
 export class NoticesService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
@@ -42,22 +50,22 @@ export class NoticesService {
     });
   }
 
-  create(data: CreateNoticeDto & { type?: string; bootcampId?: number; authorId?: number; files?: { name: string; url: string; size: number; mimeType: string }[] }) {
-    const { files, ...rest } = data as any;
-    const createData: any = {
+  create(data: CreateNoticeDto & { type?: string; bootcampId?: number; authorId?: number; files?: NoticeFileInput[] }) {
+    const { files, ...rest } = data;
+    const createData: Prisma.NoticeUncheckedCreateInput & { files?: { create: { name: string; url: string; size: number; mimeType: string }[] } } = {
       title: rest.title,
       body: rest.body || '',
       pinned: rest.pinned ?? false,
-      status: rest.status || 'VISIBLE',
-      type: rest.type || 'BOOTCAMP',
-      authorId: rest.authorId,
+      status: (rest.status || 'VISIBLE') as Prisma.NoticeUncheckedCreateInput['status'],
+      type: (rest.type || 'BOOTCAMP') as Prisma.NoticeUncheckedCreateInput['type'],
+      authorId: rest.authorId ?? 0,
     };
     if (rest.bootcampId) {
       createData.bootcampId = rest.bootcampId;
     }
     if (files && files.length > 0) {
       createData.files = {
-        create: files.map((f: any) => ({
+        create: files.map((f: NoticeFileInput) => ({
           name: f.name,
           url: f.url,
           size: f.size || 0,
@@ -65,25 +73,25 @@ export class NoticesService {
         })),
       };
     }
-    return this.prisma.notice.create({ data: createData, include: { files: true } });
+    return this.prisma.notice.create({ data: createData as Prisma.NoticeUncheckedCreateInput, include: { files: true } });
   }
 
-  async update(id: number, data: Partial<CreateNoticeDto> & { files?: any[] }) {
-    const { files, type, title, body, pinned, status } = data as any;
-    const updateData: any = {};
+  async update(id: number, data: Partial<CreateNoticeDto> & { files?: NoticeFileInput[] }) {
+    const { files, type, title, body, pinned, status } = data;
+    const updateData: Prisma.NoticeUpdateInput & { files?: { create: { name: string; url: string; size: number; mimeType: string }[] } } = {};
 
     // 허용 필드만 명시적으로 설정
     if (title !== undefined) updateData.title = title;
     if (body !== undefined) updateData.body = body;
     if (pinned !== undefined) updateData.pinned = pinned;
-    if (status !== undefined) updateData.status = status;
-    if (type !== undefined) updateData.type = type;
+    if (status !== undefined) updateData.status = status as Prisma.NoticeUpdateInput['status'];
+    if (type !== undefined) updateData.type = type as Prisma.NoticeUpdateInput['type'];
 
     // files가 전달되면 기존 파일 삭제 후 새로 생성
     if (files && files.length > 0) {
       await this.prisma.noticeFile.deleteMany({ where: { noticeId: id } });
       updateData.files = {
-        create: files.map((f: any) => ({
+        create: files.map((f: NoticeFileInput) => ({
           name: f.name,
           url: f.url,
           size: f.size || 0,

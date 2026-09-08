@@ -39,6 +39,38 @@ interface PortfolioResult {
 
 type AnyResult = ContentResult | BootcampResult | PortfolioResult;
 
+interface SearchContent {
+  id: number;
+  title: string;
+  thumbnail: string | null;
+  author?: { nickname?: string; name?: string; profileImage?: string | null };
+}
+
+interface SearchBootcamp {
+  id: number;
+  name: string;
+  description: string;
+  status: string;
+  thumbnail: string | null;
+}
+
+interface SearchPortfolio {
+  id: number;
+  userName: string;
+  bootcampName: string;
+  workTitle: string;
+  genre: string;
+  thumbnail: string | null;
+  isHallOfFame: boolean;
+  files?: { url: string }[];
+}
+
+interface SearchResponse {
+  contents?: SearchContent[];
+  bootcamps?: SearchBootcamp[];
+  portfolios?: SearchPortfolio[];
+}
+
 @Component({
   selector: 'app-search',
   standalone: true,
@@ -96,9 +128,9 @@ export class SearchPage implements OnInit {
   private async doSearch(q: string): Promise<void> {
     this.isLoading.set(true);
     try {
-      const data: any = await this.api.search.query(q);
+      const data: SearchResponse = await this.api.search.query(q);
 
-      this.contentResults.set((data.contents || []).map((c: any, i: number): ContentResult => ({
+      this.contentResults.set((data.contents || []).map((c: SearchContent, i: number): ContentResult => ({
         type: 'content',
         id: c.id,
         userName: c.author?.nickname || c.author?.name || 'user',
@@ -109,7 +141,7 @@ export class SearchPage implements OnInit {
         feedbackCount: 0,
       })));
 
-      this.bootcampResults.set((data.bootcamps || []).map((b: any, i: number): BootcampResult => ({
+      this.bootcampResults.set((data.bootcamps || []).map((b: SearchBootcamp, i: number): BootcampResult => ({
         type: 'bootcamp',
         id: b.id,
         title: b.name,
@@ -119,7 +151,7 @@ export class SearchPage implements OnInit {
         thumbnailGradient: this.gradients[(i + 2) % this.gradients.length],
       })));
 
-      const allPortfolios = (data.portfolios || []).map((p: any, i: number): PortfolioResult => ({
+      const allPortfolios = (data.portfolios || []).map((p: SearchPortfolio, i: number): PortfolioResult => ({
         type: 'portfolio',
         id: p.id,
         userName: p.userName,

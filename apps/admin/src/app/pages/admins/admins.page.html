@@ -3,8 +3,7 @@
   [data]="admins()"
   searchPlaceholder="검색어를 입력하세요"
   [contextMenuItemsFn]="getContextMenuItems"
-  (contextMenuSelect)="onContextMenu($event)"
-  (rowClick)="onRowClick($event)">
+  (contextMenuSelect)="onContextMenu($event)">
   <button gridActions
           class="flex items-center justify-center gap-2.5 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
           (click)="onRegister()">

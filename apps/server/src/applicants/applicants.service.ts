@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/generated';
 
 @Injectable()
 export class ApplicantsService {
@@ -131,7 +132,7 @@ export class ApplicantsService {
           applicantName: user.name || '',
           phone: user.phone || '',
           email: user.email,
-        } as any,
+        } as Prisma.InputJsonValue,
       },
       include: { user: { select: { id: true, name: true, email: true, phone: true, role: true } } },
     });

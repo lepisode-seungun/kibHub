@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -54,7 +54,7 @@ export class InquiryDetailPage implements OnInit {
         title: q.title,
         content: q.body,
         date: new Date(q.createdAt).toLocaleDateString('ko-KR'),
-        attachments: ((q as any).files || []).map((f: any) => ({
+        attachments: (((q as unknown as Record<string, unknown>)['files'] as { name?: string; originalName?: string; url?: string }[]) || []).map(f => ({
           name: f.name || f.originalName || '첨부파일',
           url: f.url || '',
         })),

@@ -4,12 +4,30 @@ import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
-import { Report, ReportRow } from '../../shared/types';
+import { Report } from '../../shared/types';
 
 const CONTENT_AUTO_HIDE_KEY = 'autoHideContentReportCount';
 const COMMENT_AUTO_HIDE_KEY = 'autoHideCommentReportCount';
 
-function toContentReportRow(r: any): any {
+interface ContentReportRow {
+  [key: string]: unknown;
+  id: number;
+  contentTitle: string;
+  reason: string;
+  reporter: string;
+  reportedAt: string;
+}
+
+interface CommentReportRow {
+  [key: string]: unknown;
+  id: number;
+  commentContent: string;
+  content: string;
+  reporter: string;
+  reportedAt: string;
+}
+
+function toContentReportRow(r: Report): ContentReportRow {
   return {
     id: r.id,
     contentTitle: r.targetTitle || '-',
@@ -19,7 +37,7 @@ function toContentReportRow(r: any): any {
   };
 }
 
-function toCommentReportRow(r: any): any {
+function toCommentReportRow(r: Report): CommentReportRow {
   return {
     id: r.id,
     commentContent: r.targetBody || '-',
@@ -52,10 +70,10 @@ export class ReportsPage implements OnInit {
   async loadReports(): Promise<void> {
     try {
       const raw = await this.api.reports.findAll();
-      const data: any[] = Array.isArray(raw) ? raw : (raw as any).data || [];
-      const contentReports: any[] = [];
-      const commentReports: any[] = [];
-      data.forEach((r: any) => {
+      const data: Report[] = Array.isArray(raw) ? raw : ((raw as { data?: Report[] }).data || []);
+      const contentReports: ContentReportRow[] = [];
+      const commentReports: CommentReportRow[] = [];
+      data.forEach((r: Report) => {
         if (r.type === 'CONTENT') contentReports.push(toContentReportRow(r));
         else commentReports.push(toCommentReportRow(r));
       });
@@ -74,7 +92,7 @@ export class ReportsPage implements OnInit {
     { key: 'reportedAt', label: '신고일시', width: '160px' },
   ];
 
-  contentReportData = signal<any[]>([]);
+  contentReportData = signal<ContentReportRow[]>([]);
 
   commentReportColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
@@ -84,7 +102,7 @@ export class ReportsPage implements OnInit {
     { key: 'reportedAt', label: '신고일시', width: '160px' },
   ];
 
-  commentReportData = signal<any[]>([]);
+  commentReportData = signal<CommentReportRow[]>([]);
 
   // ===== 자동 숨김 설정 드로어 =====
   showAutoHideDrawer = signal(false);

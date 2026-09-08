@@ -41,6 +41,7 @@ export type {
 
 /** 회원 목록 그리드 행 */
 export interface MemberRow {
+  [key: string]: unknown;
   id: number;
   email: string;
   name: string;
@@ -60,6 +61,7 @@ export interface AdminRow extends MemberRow {
 
 /** 부트캠프 목록 행 */
 export interface BootcampRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   bootcampName: string;
@@ -68,6 +70,7 @@ export interface BootcampRow {
 
 /** 콘텐츠 목록 행 */
 export interface ContentRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   type: string;
@@ -81,6 +84,7 @@ export interface ContentRow {
 
 /** 댓글 행 */
 export interface CommentRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   type: string;
@@ -95,6 +99,7 @@ export interface CommentRow {
 
 /** 신고 목록 행 */
 export interface ReportRow {
+  [key: string]: unknown;
   id: number;
   title?: string;
   commentContent: string;
@@ -105,6 +110,7 @@ export interface ReportRow {
 
 /** 포트폴리오 행 */
 export interface PortfolioRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   thumbnail: string;
@@ -121,6 +127,7 @@ export interface PortfolioRow {
 
 /** 공지사항 행 */
 export interface NoticeRow {
+  [key: string]: unknown;
   id: number;
   pinned: string;
   status: string;
@@ -131,6 +138,7 @@ export interface NoticeRow {
 
 /** FAQ 행 */
 export interface FaqRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   question: string;
@@ -141,6 +149,7 @@ export interface FaqRow {
 
 /** 문의 행 */
 export interface InquiryRow {
+  [key: string]: unknown;
   id: number;
   status: string;
   title: string;

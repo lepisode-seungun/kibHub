@@ -1,5 +1,5 @@
-import { Component, ViewChild, ElementRef, OnDestroy, OnInit, AfterViewInit, inject, signal, computed } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Component, ViewChild, ElementRef, OnDestroy, OnInit, inject, signal, computed } from '@angular/core';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
@@ -14,6 +14,31 @@ export interface BootcampCard {
   deadline: string | null;
   thumbnailGradient: string;
   thumbnailUrl: string | null;
+}
+
+interface PosterResponse {
+  id: number;
+  imageUrl: string;
+  displayOrder: number;
+}
+
+interface HistoryItem {
+  id: number;
+  title: string;
+  description: string | null;
+  period: string;
+}
+
+interface HistoryGroup {
+  year: string;
+  items: HistoryItem[];
+}
+
+interface PartnerResponse {
+  id: number;
+  name: string;
+  logoUrl: string;
+  link: string;
 }
 
 @Component({
@@ -36,7 +61,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
 
   academyIntroHtml = signal<SafeHtml | null>(null);
-  videoEmbedUrl = signal<any>(null);
+  videoEmbedUrl = signal<SafeResourceUrl | null>(null);
 
   ngOnInit(): void {
     this.loadBootcamps();
@@ -189,7 +214,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     document.removeEventListener('mouseup', this.boundCardsMouseUp);
   }
 
-  onCardClick(event: MouseEvent, cardId: number): void {
+  onCardClick(event: MouseEvent): void {
     if (this.hasDragged) {
       event.preventDefault();
       event.stopPropagation();
@@ -256,7 +281,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     try {
       const data = await this.api.posters.findAll();
       if (data.length > 0) {
-        this.showcaseImages = data.map((p: any) => p.imageUrl);
+        this.showcaseImages = data.map((p: PosterResponse) => p.imageUrl);
         this.showcaseIndex = 0;
       }
     } catch (e) {
@@ -264,7 +289,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     }
   }
 
-  historyGroups = signal<{ year: string; items: any[] }[]>([]);
+  historyGroups = signal<HistoryGroup[]>([]);
 
   private async loadHistories(): Promise<void> {
     try {
@@ -278,7 +303,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   }
 
   // ===== 파트너 로고 =====
-  private allPartners = signal<any[]>([]);
+  private allPartners = signal<PartnerResponse[]>([]);
 
   partnerLogosRow1 = computed(() => this.allPartners());
   partnerLogosRow2 = computed(() => this.allPartners());

@@ -7,6 +7,46 @@ import { DataGridComponent, GridColumn } from '../../components/data-grid/data-g
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
+import { CreateBannerDto } from '../../shared/types';
+import { GridRow } from '../../components/data-grid/data-grid.component';
+
+interface BannerGridRow {
+  [key: string]: unknown;
+  id: number;
+  status: string;
+  image: string;
+  header: string;
+  content: string;
+  link: string;
+  createdAt: string;
+  _raw: { id: number; status: string; header: string; content: string; link?: string | null; vimeoLink?: string | null; pcImage?: string | null };
+}
+
+interface PosterGridRow {
+  [key: string]: unknown;
+  id: number;
+  image: string;
+  createdAt: string;
+  _raw: { id: number };
+}
+
+interface PartnerGridRow {
+  [key: string]: unknown;
+  id: number;
+  logo: string;
+  name: string;
+  link: string;
+  createdAt: string;
+  _raw: { id: number };
+}
+
+interface HistoryItem {
+  id: number;
+  title: string;
+  description?: string;
+  period: string;
+  displayOrder?: number;
+}
 
 @Component({
   selector: 'adm-bootcamp-intro',
@@ -84,7 +124,7 @@ export class BootcampIntroPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '150px', headerColor: 'text-gray-600' },
   ];
 
-  bannerData = signal<any[]>([]);
+  bannerData = signal<BannerGridRow[]>([]);
 
   async loadBanners(): Promise<void> {
     try {
@@ -168,7 +208,7 @@ export class BootcampIntroPage implements OnInit {
     { key: 'createdAt', label: '등록일시', headerColor: 'text-gray-600' },
   ];
 
-  posterData = signal<any[]>([]);
+  posterData = signal<PosterGridRow[]>([]);
 
   async loadPosters(): Promise<void> {
     try {
@@ -193,7 +233,7 @@ export class BootcampIntroPage implements OnInit {
     { key: 'createdAt', label: '등록일시', headerColor: 'text-gray-600' },
   ];
 
-  partnerData = signal<any[]>([]);
+  partnerData = signal<PartnerGridRow[]>([]);
 
   async loadPartners(): Promise<void> {
     try {
@@ -217,7 +257,7 @@ export class BootcampIntroPage implements OnInit {
   posterImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
   private editingPosterId: number | null = null;
 
-  openPosterDrawer(mode: 'add' | 'edit', row?: any): void {
+  openPosterDrawer(mode: 'add' | 'edit', row?: PosterGridRow): void {
     this.posterDrawerMode.set(mode);
     this.editingPosterId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.posterImage.set(null);
@@ -263,9 +303,9 @@ export class BootcampIntroPage implements OnInit {
     }
   }
 
-  async onPosterContextMenu(event: { action: string; row: any }): Promise<void> {
+  async onPosterContextMenu(event: { action: string; row: GridRow }): Promise<void> {
     if (event.action === '삭제') {
-      const id = event.row._raw?.id || event.row.id;
+      const id = (event.row['_raw'] as { id: number })?.id || (event.row['id'] as number);
       if (!confirm('포스터를 삭제하시겠습니까?')) return;
       try {
         await this.api.posters.delete(id);
@@ -284,7 +324,7 @@ export class BootcampIntroPage implements OnInit {
   partnerImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
   private editingPartnerId: number | null = null;
 
-  openPartnerDrawer(mode: 'add' | 'edit', row?: any): void {
+  openPartnerDrawer(mode: 'add' | 'edit', row?: PartnerGridRow): void {
     this.partnerDrawerMode.set(mode);
     this.editingPartnerId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.partnerForm.set({
@@ -337,11 +377,11 @@ export class BootcampIntroPage implements OnInit {
         }
         await this.api.partners.create({ name: form.name, logoUrl, link: form.link });
       } else if (this.editingPartnerId) {
-        const updateData: any = { name: form.name, link: form.link };
+        const updateData: Record<string, string> = { name: form.name, link: form.link };
         const img = this.partnerImage();
         if (img?.file) {
           const uploaded = await this.api.upload.single(img.file, 'partners');
-          updateData.logoUrl = uploaded.url;
+          updateData['logoUrl'] = uploaded.url;
         }
         await this.api.partners.update(this.editingPartnerId, updateData);
       }
@@ -353,11 +393,11 @@ export class BootcampIntroPage implements OnInit {
     }
   }
 
-  async onPartnerContextMenu(event: { action: string; row: any }): Promise<void> {
+  async onPartnerContextMenu(event: { action: string; row: GridRow }): Promise<void> {
     if (event.action === '수정') {
-      this.openPartnerDrawer('edit', event.row);
+      this.openPartnerDrawer('edit', event.row as unknown as PartnerGridRow);
     } else if (event.action === '삭제') {
-      const id = event.row._raw?.id || event.row.id;
+      const id = (event.row['_raw'] as { id: number })?.id || (event.row['id'] as number);
       if (!confirm('파트너를 삭제하시겠습니까?')) return;
       try {
         await this.api.partners.delete(id);
@@ -473,7 +513,7 @@ export class BootcampIntroPage implements OnInit {
     }
   }
 
-  async onHistoryItemAction(year: string, item: any, action: string): Promise<void> {
+  async onHistoryItemAction(year: string, item: HistoryItem, action: string): Promise<void> {
     this.activeHistoryItemMenu.set(null);
     if (action === '수정') {
       this.openHistoryItemDrawer('edit', item, year);
@@ -495,7 +535,7 @@ export class BootcampIntroPage implements OnInit {
   historyItemForm = signal({ title: '', content: '', date: '', year: '' });
   private editingHistoryItemId: number | null = null;
 
-  openHistoryItemDrawer(mode: 'add' | 'edit', item?: any, year?: string): void {
+  openHistoryItemDrawer(mode: 'add' | 'edit', item?: HistoryItem | null, year?: string): void {
     this.historyItemMode.set(mode);
     this.editingHistoryItemId = mode === 'edit' && item ? item.id : null;
     this.historyItemForm.set({
@@ -545,7 +585,7 @@ export class BootcampIntroPage implements OnInit {
     }
   }
 
-  historyData = signal<{ year: string; items: any[] }[]>([]);
+  historyData = signal<{ year: string; items: HistoryItem[] }[]>([]);
 
   async loadHistories(): Promise<void> {
     try {
@@ -608,7 +648,7 @@ export class BootcampIntroPage implements OnInit {
     this.dragItemIndex = null;
   }
 
-  private async updateHistorySortOrder(items: any[]): Promise<void> {
+  private async updateHistorySortOrder(items: HistoryItem[]): Promise<void> {
     try {
       for (let i = 0; i < items.length; i++) {
         if (items[i].id) {
@@ -622,7 +662,7 @@ export class BootcampIntroPage implements OnInit {
 
   // ===== 메인배너 수정 드로어 =====
   showBannerDrawer = signal(false);
-  bannerDrawerRow = signal<{ id: number; status: string; link: string } | null>(null);
+  bannerDrawerRow = signal<{ id: number; status: string; link?: string | null } | null>(null);
   bannerForm = signal({
     status: '',
     vimeoLink: '',
@@ -631,20 +671,20 @@ export class BootcampIntroPage implements OnInit {
     link: '',
   });
 
-  bannerContextMenuFn = (row: any): string[] => {
-    const isVisible = row.status === '노출';
+  bannerContextMenuFn = (row: GridRow): string[] => {
+    const isVisible = row['status'] === '노출';
     return [isVisible ? '숨김' : '노출', '수정', '삭제'];
   };
 
-  onBannerContextMenu(event: { action: string; row: any }): void {
+  onBannerContextMenu(event: { action: string; row: GridRow }): void {
     if (event.action === '수정') {
-      this.openBannerDrawer(event.row);
+      this.openBannerDrawer(event.row as unknown as BannerGridRow);
     } else if (event.action === '삭제') {
-      this.deleteBanner(event.row._raw?.id || event.row.id);
+      this.deleteBanner((event.row['_raw'] as { id: number })?.id || (event.row['id'] as number));
     } else if (event.action === '숨김') {
-      this.toggleBannerStatus(event.row._raw?.id || event.row.id, 'HIDDEN');
+      this.toggleBannerStatus((event.row['_raw'] as { id: number })?.id || (event.row['id'] as number), 'HIDDEN');
     } else if (event.action === '노출') {
-      this.toggleBannerStatus(event.row._raw?.id || event.row.id, 'VISIBLE');
+      this.toggleBannerStatus((event.row['_raw'] as { id: number })?.id || (event.row['id'] as number), 'VISIBLE');
     }
   }
 
@@ -666,7 +706,7 @@ export class BootcampIntroPage implements OnInit {
     }
   }
 
-  openBannerDrawer(row?: any): void {
+  openBannerDrawer(row?: BannerGridRow): void {
     if (row) {
       const raw = row._raw;
       this.bannerDrawerRow.set(raw || row);
@@ -734,15 +774,15 @@ export class BootcampIntroPage implements OnInit {
         mobileImageUrl = result.url;
       }
 
-      const bannerData: any = {
+      const bannerData: CreateBannerDto = {
         status,
         header: form.header,
         content: form.content,
         link: form.link || undefined,
         vimeoLink: form.vimeoLink || undefined,
       };
-      if (pcImageUrl) bannerData.pcImage = pcImageUrl;
-      if (mobileImageUrl) bannerData.mobileImage = mobileImageUrl;
+      if (pcImageUrl) bannerData['pcImage'] = pcImageUrl;
+      if (mobileImageUrl) bannerData['mobileImage'] = mobileImageUrl;
 
       if (editRow) {
         await this.api.banners.update(editRow.id, bannerData);

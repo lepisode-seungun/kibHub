@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { MEMBER_STATUS_BADGES, ROLE_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
 import { User, MemberRow } from '../../shared/types';
@@ -65,7 +65,8 @@ export class MembersPage implements OnInit {
     }
   }
 
-  onRowClick(row: MemberRow): void {
+  onRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as MemberRow;
     this.router.navigate(['/members', row.id]);
   }
 }

@@ -1,11 +1,26 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, signal, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Portfolio, PortfolioRow } from '../../shared/types';
+
+
+interface PortfolioPayload {
+  userName: string;
+  bootcampName: string;
+  workTitle?: string;
+  authorName?: string;
+  genre?: string;
+  workIntro?: string;
+  launchPlatform?: string;
+  launchUrl?: string;
+  thumbnail?: string;
+  isHallOfFame?: boolean;
+  files?: { name: string; url: string; size: number; mimeType: string; episode?: number }[];
+}
 
 function toPortfolioRow(p: Portfolio): PortfolioRow {
   return {
@@ -75,7 +90,8 @@ export class PortfolioPage implements OnInit {
     this.viewMode.set('form');
   }
 
-  async openDetail(item: PortfolioRow): Promise<void> {
+  async openDetail(gridRow: GridRow): Promise<void> {
+    const item = gridRow as unknown as PortfolioRow;
     this.detailData.set(item);
     history.pushState({ view: 'detail' }, '');
     this.viewMode.set('detail');
@@ -83,12 +99,12 @@ export class PortfolioPage implements OnInit {
     try {
       const p = await this.api.portfolios.findOne(item.id);
       if (p.files?.length) {
-        const plan = p.files.find((f: any) => !f.episode);
+        const plan = p.files.find(f => !f.episode);
         const manuscripts = p.files
-          .filter((f: any) => f.episode)
-          .sort((a: any, b: any) => a.episode - b.episode);
+          .filter(f => f.episode)
+          .sort((a, b) => (a.episode ?? 0) - (b.episode ?? 0));
         this.detailPlanUrl.set(plan?.url || '');
-        this.detailManuscripts.set(manuscripts.map((f: any) => ({ episode: f.episode, url: f.url, name: f.name })));
+        this.detailManuscripts.set(manuscripts.map(f => ({ episode: f.episode ?? 0, url: f.url, name: f.name })));
       } else {
         this.detailPlanUrl.set('');
         this.detailManuscripts.set([]);
@@ -126,7 +142,7 @@ export class PortfolioPage implements OnInit {
       const isHidden = detail.status === '숨김';
       const newStatus = isHidden ? 'VISIBLE' : 'HIDDEN';
       try {
-        await this.api.portfolios.update(detail.id, { status: newStatus } as any);
+        await this.api.portfolios.update(detail.id, { status: newStatus } as Record<string, string>);
         this.detailData.set({ ...detail, status: isHidden ? '노출' : '숨김' });
         this.toast.success(isHidden ? '노출 처리 되었습니다.' : '숨김 처리 되었습니다.');
         await this.loadPortfolios();
@@ -168,10 +184,11 @@ export class PortfolioPage implements OnInit {
   // ===== 컨텍스트 메뉴 핸들러 =====
   editingId = signal<number | null>(null);
 
-  async onContextMenuSelect(event: { action: string; row: PortfolioRow }): Promise<void> {
+  async onContextMenuSelect(event: { action: string; row: GridRow }): Promise<void> {
+    const row = event.row as unknown as PortfolioRow;
     if (event.action === '삭제') {
       try {
-        await this.api.portfolios.delete(event.row.id);
+        await this.api.portfolios.delete(row.id);
         this.toast.success('삭제가 완료 되었습니다.');
         await this.loadPortfolios();
         await this.loadHallOfFame();
@@ -180,9 +197,9 @@ export class PortfolioPage implements OnInit {
       }
     } else if (event.action === '수정') {
       if (this.activeTab() === 'hallOfFame') {
-        await this.openHofEditDrawer(event.row.id);
+        await this.openHofEditDrawer(row.id);
       } else {
-        await this.openEditForm(event.row);
+        await this.openEditForm(row);
       }
     }
   }
@@ -206,7 +223,7 @@ export class PortfolioPage implements OnInit {
       }
       // 기획서 로드
       if (p.files?.length) {
-        const plan = p.files.find((f: any) => !f.episode);
+        const plan = p.files.find(f => !f.episode);
         if (plan) {
           this.planFile.set({ name: plan.name || '기존 기획서', size: '', preview: plan.url });
         } else {
@@ -214,10 +231,10 @@ export class PortfolioPage implements OnInit {
         }
         // 원고 로드
         const manuscripts = p.files
-          .filter((f: any) => f.episode)
-          .sort((a: any, b: any) => a.episode - b.episode);
-        this.manuscriptFiles.set(manuscripts.map((f: any) => ({
-          episode: f.episode,
+          .filter(f => f.episode)
+          .sort((a, b) => (a.episode ?? 0) - (b.episode ?? 0));
+        this.manuscriptFiles.set(manuscripts.map(f => ({
+          episode: f.episode ?? 0,
           name: f.name || `${f.episode}회 원고`,
           size: '',
           preview: f.url,
@@ -314,7 +331,7 @@ export class PortfolioPage implements OnInit {
         thumbnailUrl = thumb.preview;
       }
 
-      const payload: any = {
+      const payload: PortfolioPayload = {
         userName: form.name,
         bootcampName: form.bootcampName,
         workTitle: form.workTitle,
@@ -376,15 +393,15 @@ export class PortfolioPage implements OnInit {
 
       // 원고 업로드
       for (const ms of this.manuscriptFiles()) {
-        if ((ms as any).rawFile) {
-          const uploadRes = await this.api.upload.single((ms as any).rawFile, 'portfolios');
-          files.push({ name: ms.name, url: uploadRes.url, size: (ms as any).rawFile.size, mimeType: (ms as any).rawFile.type, episode: ms.episode });
-        } else if ((ms as any).url) {
-          files.push({ name: ms.name, url: (ms as any).url, size: 0, mimeType: '', episode: ms.episode });
+        if (ms.rawFile) {
+          const uploadRes = await this.api.upload.single(ms.rawFile, 'portfolios');
+          files.push({ name: ms.name, url: uploadRes.url, size: ms.rawFile.size, mimeType: ms.rawFile.type, episode: ms.episode });
+        } else if (ms.url) {
+          files.push({ name: ms.name, url: ms.url, size: 0, mimeType: '', episode: ms.episode });
         }
       }
 
-      const payload: any = {
+      const payload: PortfolioPayload = {
         userName: form.name,
         bootcampName: form.bootcampName,
         workTitle: form.workTitle,
@@ -456,7 +473,7 @@ export class PortfolioPage implements OnInit {
   fileUploadExpanded = signal(true);
   manuscriptExpanded = signal(true);
 
-  manuscriptFiles = signal<{ episode: number; name: string; size: string; preview: string; rawFile?: File }[]>([]);
+  manuscriptFiles = signal<{ episode: number; name: string; size: string; preview: string; rawFile?: File; url?: string }[]>([]);
 
   onManuscriptUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -464,7 +481,7 @@ export class PortfolioPage implements OnInit {
     if (!files || files.length === 0) return;
 
     const current = this.manuscriptFiles();
-    let startEpisode = current.length + 1;
+    const startEpisode = current.length + 1;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];

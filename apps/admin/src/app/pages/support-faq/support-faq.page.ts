@@ -1,7 +1,7 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ConfirmDialogComponent, DialogDetailRow } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -62,12 +62,13 @@ export class SupportFaqPage implements OnInit {
     }
   }
 
-  getContextMenuItems = (row: FaqRow): string[] => {
+  getContextMenuItems = (gridRow: GridRow): string[] => {
+    const row = gridRow as unknown as FaqRow;
     const statusLabel = row.status === '노출' ? '숨김' : '노출';
     return [statusLabel, '수정', '삭제'];
   };
 
-  onRowClick(_row: FaqRow): void {}
+  onRowClick(_row: GridRow): void {}
 
   onRegister(): void {
     this.drawerMode.set('create');
@@ -78,8 +79,9 @@ export class SupportFaqPage implements OnInit {
 
   closeDrawer(): void { this.drawerOpen.set(false); }
 
-  async onContextMenu(event: { action: string; row: FaqRow }): Promise<void> {
-    const { action, row } = event;
+  async onContextMenu(event: { action: string; row: GridRow }): Promise<void> {
+    const row = event.row as unknown as FaqRow;
+    const { action } = event;
     switch (action) {
       case '숨김':
       case '노출':

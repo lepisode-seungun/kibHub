@@ -4,7 +4,6 @@ import {
   output,
   signal,
   computed,
-  EventEmitter,
   HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,7 +18,8 @@ export interface GridColumn {
   type?: 'text' | 'image' | 'action' | 'drag'; // 셀 렌더링 타입 (기본: text)
 }
 
-export type RowIdFn = (row: any) => any;
+export type GridRow = Record<string, unknown>;
+export type RowIdFn = (row: GridRow) => unknown;
 
 @Component({
   selector: 'adm-data-grid',
@@ -33,7 +33,7 @@ export class DataGridComponent {
   columns = input.required<GridColumn[]>();
 
   /** 전체 데이터 */
-  data = input.required<any[]>();
+  data = input.required<GridRow[]>();
 
   /** 검색 플레이스홀더 */
   searchPlaceholder = input<string>('검색어를 입력하세요');
@@ -48,34 +48,34 @@ export class DataGridComponent {
   contextMenuItems = input<string[]>([]);
 
   /** 컨텍스트 메뉴 항목 (동적 — 행 데이터 기반) */
-  contextMenuItemsFn = input<((row: any) => string[]) | null>(null);
+  contextMenuItemsFn = input<((row: GridRow) => string[]) | null>(null);
 
   /** 체크박스 표시 여부 */
   showCheckbox = input<boolean>(false);
 
   /** 행 고유 ID 함수 (기본: row.id) */
-  rowIdFn = input<RowIdFn>((row: any) => row.id);
+  rowIdFn = input<RowIdFn>((row: GridRow) => row['id']);
 
   /** 행 클릭 이벤트 */
-  rowClick = output<any>();
+  rowClick = output<GridRow>();
 
   /** 행 우클릭 이벤트 */
-  rowContextMenu = output<{ row: any; x: number; y: number }>();
+  rowContextMenu = output<{ row: GridRow; x: number; y: number }>();
 
   /** 컨텍스트 메뉴 선택 이벤트 */
-  contextMenuSelect = output<{ action: string; row: any }>();
+  contextMenuSelect = output<{ action: string; row: GridRow }>();
 
   /** 액션 컬럼 클릭 이벤트 */
-  actionClick = output<{ key: string; row: any }>();
+  actionClick = output<{ key: string; row: GridRow }>();
 
   /** 검색어 변경 이벤트 */
   searchChange = output<string>();
 
   /** 체크박스 선택 변경 이벤트 */
-  selectionChange = output<any[]>();
+  selectionChange = output<GridRow[]>();
 
   /** 행 순서 변경 이벤트 (드래그앤드롭) */
-  rowReorder = output<any[]>();
+  rowReorder = output<GridRow[]>();
 
   // 드래그 상태
   private dragIndex = -1;
@@ -88,7 +88,7 @@ export class DataGridComponent {
   currentPage = signal(1);
   pageSize = signal(10);
   showPageSizeDropdown = signal(false);
-  selectedIds = signal<Set<any>>(new Set());
+  selectedIds = signal<Set<unknown>>(new Set());
 
   // 체크박스 계산
   isAllSelected = computed(() => {
@@ -98,7 +98,7 @@ export class DataGridComponent {
     return data.every(row => ids.has(this.rowIdFn()(row)));
   });
 
-  isRowSelected(row: any): boolean {
+  isRowSelected(row: GridRow): boolean {
     return this.selectedIds().has(this.rowIdFn()(row));
   }
 
@@ -114,7 +114,7 @@ export class DataGridComponent {
     this.emitSelection();
   }
 
-  toggleRow(row: any): void {
+  toggleRow(row: GridRow): void {
     const ids = new Set(this.selectedIds());
     const id = this.rowIdFn()(row);
     if (ids.has(id)) {
@@ -136,7 +136,7 @@ export class DataGridComponent {
   ctxMenuVisible = signal(false);
   ctxMenuX = signal(0);
   ctxMenuY = signal(0);
-  ctxMenuRow = signal<any>(null);
+  ctxMenuRow = signal<GridRow | null>(null);
   ctxMenuHover = signal(-1);
   ctxMenuDynamicItems = signal<string[]>([]);
 
@@ -197,7 +197,7 @@ export class DataGridComponent {
     this.showPageSizeDropdown.update(v => !v);
   }
 
-  onRowClick(row: any): void {
+  onRowClick(row: GridRow): void {
     if (this.justDragged) {
       this.justDragged = false;
       return;
@@ -205,7 +205,7 @@ export class DataGridComponent {
     this.rowClick.emit(row);
   }
 
-  onRowContextMenu(event: MouseEvent, row: any): void {
+  onRowContextMenu(event: MouseEvent, row: GridRow): void {
     event.preventDefault();
     this.rowContextMenu.emit({ row, x: event.clientX, y: event.clientY });
 
@@ -228,7 +228,10 @@ export class DataGridComponent {
   }
 
   onCtxMenuSelect(action: string): void {
-    this.contextMenuSelect.emit({ action, row: this.ctxMenuRow() });
+    const row = this.ctxMenuRow();
+    if (row) {
+      this.contextMenuSelect.emit({ action, row });
+    }
     this.closeContextMenu();
   }
 
@@ -294,9 +297,10 @@ export class DataGridComponent {
     this.dragIndex = -1;
   }
 
-  getCellClass(col: GridColumn, value: any): string {
-    if (col.badge && col.badgeStyles && col.badgeStyles[value]) {
-      return col.badgeStyles[value];
+  getCellClass(col: GridColumn, value: unknown): string {
+    const strValue = String(value);
+    if (col.badge && col.badgeStyles && col.badgeStyles[strValue]) {
+      return col.badgeStyles[strValue];
     }
     return '';
   }
@@ -306,5 +310,10 @@ export class DataGridComponent {
       return { width: col.width, 'flex-shrink': '0' };
     }
     return { flex: '1' };
+  }
+
+  truncateCell(value: unknown, maxLen = 50): string {
+    const str = String(value ?? '');
+    return str.length > maxLen ? str.slice(0, maxLen) + '...' : str;
   }
 }

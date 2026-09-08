@@ -14,6 +14,63 @@ interface LectureCard {
   thumbnail: string;
 }
 
+interface LectureTabCard {
+  id: number;
+  title: string;
+  category: string;
+  duration: string;
+  status: string;
+  hasImage: boolean;
+  thumbnail: string;
+}
+
+interface AssignmentTabCard {
+  id: number;
+  title: string;
+  course: string;
+  dateRange: string;
+  submitted: boolean;
+  thumbnail: string;
+}
+
+interface BootcampDetail {
+  name: string;
+  startDate: string | null;
+  endDate: string | null;
+  status: string;
+}
+
+interface CourseResponse {
+  id: number;
+  name?: string;
+  title?: string;
+  _count?: { lectures: number; assignments: number };
+}
+
+interface LectureResponse {
+  id: number;
+  title?: string;
+  category?: string;
+  duration?: string;
+  videoUrl?: string;
+}
+
+interface AssignmentResponse {
+  id: number;
+  title?: string;
+  dueDate: string | null;
+  dueDateEnd: string | null;
+  videoUrl?: string;
+}
+
+interface NoticeResponse {
+  id: number;
+  title?: string;
+  body?: string;
+  createdAt: string;
+  pinned?: boolean;
+}
+
 interface CourseSection {
   id: number;
   number: string;
@@ -65,7 +122,7 @@ export class MyBootcampDetailPage implements OnInit {
     this.isSortDropdownOpen.set(false);
   }
 
-  lectureCards = signal<any[]>([]);
+  lectureCards = signal<LectureTabCard[]>([]);
 
   get filteredLectures() {
     const filter = this.activeLectureFilter();
@@ -93,7 +150,7 @@ export class MyBootcampDetailPage implements OnInit {
   activeAssignmentFilter = signal('전체');
   assignmentSearchText = '';
 
-  assignmentCards = signal<any[]>([]);
+  assignmentCards = signal<AssignmentTabCard[]>([]);
 
   get filteredAssignments() {
     const filter = this.activeAssignmentFilter();
@@ -150,7 +207,7 @@ export class MyBootcampDetailPage implements OnInit {
 
   private async loadBootcampData(bootcampId: number): Promise<void> {
     try {
-      const bootcamp: any = await this.api.bootcamps.findOne(bootcampId);
+      const bootcamp: BootcampDetail = await this.api.bootcamps.findOne(bootcampId);
       this.bootcampTitle.set(bootcamp.name || '');
 
       // 날짜 포맷
@@ -172,7 +229,7 @@ export class MyBootcampDetailPage implements OnInit {
         } else {
           try {
             const applicants = await this.api.applicants.findByUser(user.id);
-            const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
+            const myApp = applicants.find((a: { bootcampId: number; status: string }) => a.bootcampId === bootcampId);
             // 수강중(ACCEPTED)이 아닌 상태는 접근 차단
             if (!myApp || myApp.status !== 'ACCEPTED') {
               this.router.navigate(['/my-bootcamp']);
@@ -194,8 +251,8 @@ export class MyBootcampDetailPage implements OnInit {
         this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
       }
 
-      const courses: any[] = await this.api.courses.findByBootcamp(bootcampId);
-      const sections: CourseSection[] = courses.map((c: any, idx: number) => ({
+      const courses: CourseResponse[] = await this.api.courses.findByBootcamp(bootcampId);
+      const sections: CourseSection[] = courses.map((c: CourseResponse, idx: number) => ({
         id: c.id,
         number: `과정${idx + 1}.`,
         title: c.name || c.title || '',
@@ -207,21 +264,21 @@ export class MyBootcampDetailPage implements OnInit {
       this.courseSections.set(sections);
 
       // 모든 과정의 강의/과제 카드 로드
-      const allLectures: any[] = [];
-      const allAssignments: any[] = [];
+      const allLectures: LectureTabCard[] = [];
+      const allAssignments: AssignmentTabCard[] = [];
       for (const section of sections) {
         await this.loadCourseCards(section);
         // 강의/과제 탭 데이터 수집
-        const [lectures, assignments]: [any[], any[]] = await Promise.all([
+        const [lectures, assignments]: [LectureResponse[], AssignmentResponse[]] = await Promise.all([
           this.api.lectures.findByCourse(section.id),
           this.api.assignments.findByCourse(section.id),
         ]).catch(() => [[], []]);
-        allLectures.push(...lectures.map((l: any) => ({
+        allLectures.push(...lectures.map((l: LectureResponse) => ({
           id: l.id, title: l.title || '', category: l.category || '',
           duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
           thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
         })));
-        allAssignments.push(...assignments.map((a: any) => ({
+        allAssignments.push(...assignments.map((a: AssignmentResponse) => ({
           id: a.id, title: a.title || '', course: section.title,
           dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
           submitted: false,
@@ -238,7 +295,7 @@ export class MyBootcampDetailPage implements OnInit {
         this.lectureFilterChips.set(['전체', ...categories]);
       } catch {
         // fallback: 로드된 강의 데이터에서 추출
-        const cats = [...new Set(allLectures.map((l: any) => l.category).filter((c: string) => c))];
+        const cats = [...new Set(allLectures.map((l: LectureTabCard) => l.category).filter((c: string) => c))];
         this.lectureFilterChips.set(['전체', ...cats]);
       }
 
@@ -248,8 +305,8 @@ export class MyBootcampDetailPage implements OnInit {
 
       // 공지사항 로드
       try {
-        const noticeList: any[] = await this.api.notices.findByBootcamp(bootcampId);
-        this.notices.set(noticeList.map((n: any) => ({
+        const noticeList: NoticeResponse[] = await this.api.notices.findByBootcamp(bootcampId);
+        this.notices.set(noticeList.map((n: NoticeResponse) => ({
           id: n.id,
           title: n.title || '',
           description: n.body || '',
@@ -267,28 +324,28 @@ export class MyBootcampDetailPage implements OnInit {
   private async loadCourseCards(section: CourseSection): Promise<void> {
     if (section.cards.length > 0) return;
     try {
-      const [lectures, assignments]: [any[], any[]] = await Promise.all([
+      const [lectures, assignments]: [LectureResponse[], AssignmentResponse[]] = await Promise.all([
         this.api.lectures.findByCourse(section.id),
         this.api.assignments.findByCourse(section.id),
       ]);
       const cards: LectureCard[] = [
-        ...lectures.map((l: any) => ({
+        ...lectures.map((l: LectureResponse) => ({
           id: l.id, type: '강의' as const, category: l.category || '', title: l.title || '',
           duration: l.duration || '', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
         })),
-        ...assignments.map((a: any) => ({
+        ...assignments.map((a: AssignmentResponse) => ({
           id: a.id, type: '과제' as const, category: '', title: a.title || '',
           dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
           thumbnail: this.getYoutubeThumbnail(a.videoUrl || ''),
         })),
       ];
       section.cards = cards;
-      this.lectureCards.set(lectures.map((l: any) => ({
+      this.lectureCards.set(lectures.map((l: LectureResponse) => ({
         id: l.id, title: l.title || '', category: l.category || '',
         duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
         thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
       })));
-      this.assignmentCards.set(assignments.map((a: any) => ({
+      this.assignmentCards.set(assignments.map((a: AssignmentResponse) => ({
         id: a.id, title: a.title || '', course: section.title,
         dateRange: this.formatDueRange(a.dueDate, a.dueDateEnd),
         submitted: false,
@@ -363,7 +420,7 @@ export class MyBootcampDetailPage implements OnInit {
     return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
   }
 
-  private formatDueRange(dueDate?: string, dueDateEnd?: string): string {
+  private formatDueRange(dueDate?: string | null, dueDateEnd?: string | null): string {
     if (!dueDate) return '';
     const fmt = (d: string) => {
       const dt = new Date(d);

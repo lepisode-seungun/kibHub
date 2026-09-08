@@ -22,6 +22,19 @@ interface PortfolioCard {
   description?: string;
 }
 
+interface PortfolioResponse {
+  id: number;
+  thumbnail: string | null;
+  genre: string;
+  userName: string;
+  workTitle: string;
+  bootcampName: string;
+  workIntro: string;
+  launchUrl: string | null;
+  authorName: string;
+  launchPlatform: string | null;
+}
+
 @Component({
   selector: 'app-hall-of-fame-page',
   standalone: true,
@@ -50,7 +63,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
       try {
         const data = await this.api.portfolios.findHallOfFame();
         console.log('[HallOfFame] API 응답:', data?.length, '개', data);
-        this.cards.set(data.map((p: any, i: number) => {
+        this.cards.set(data.map((p: PortfolioResponse, i: number) => {
           const bgStyle = p.thumbnail
             ? `url('${p.thumbnail}') center/cover no-repeat`
             : this.gradients[i % this.gradients.length];

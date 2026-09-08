@@ -1,12 +1,22 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
 import { RecruitInstructor } from '../../shared/types';
 import { ToastService } from '../../shared/toast/toast.service';
+
+interface InstructorRow {
+  [key: string]: unknown;
+  id: number;
+  name: string;
+  summary: string;
+  photo: string;
+  badge: string;
+  work: string;
+}
 
 @Component({
   selector: 'adm-recruitment',
@@ -41,9 +51,9 @@ export class RecruitmentPage implements OnInit {
         this.introContent.set(bc.recruitIntro || '');
         this.curriculumContent.set(bc.recruitCurriculum || '');
         this.reviewContent.set(bc.recruitReview || '');
-        this.reviewVisibility.set((bc as any).recruitReviewVisibility || '');
+        this.reviewVisibility.set((((bc as unknown as Record<string, string>)['recruitReviewVisibility']) || '') as '' | 'show' | 'hide');
         if (bc.recruitInstructors && Array.isArray(bc.recruitInstructors)) {
-          this.loadInstructors(bc.recruitInstructors as any[]);
+          this.loadInstructors(bc.recruitInstructors as RecruitInstructor[]);
         }
       } catch (e) {
         console.error('모집페이지 데이터 로드 실패:', e);
@@ -75,14 +85,14 @@ export class RecruitmentPage implements OnInit {
     this.isSaving.set(true);
     try {
       const tab = this.activeTab();
-      let data: any = {};
+      let data: Record<string, string> = {};
       if (tab === 'intro') data = { recruitIntro: this.introContent() };
       else if (tab === 'curriculum') data = { recruitCurriculum: this.curriculumContent() };
       else if (tab === 'review') data = { recruitReview: this.reviewContent(), recruitReviewVisibility: this.reviewVisibility() };
       await this.api.bootcamps.update(id, data);
       this.toast.success('저장 완료 되었습니다.');
-    } catch (e: any) {
-      const msg = e?.error?.message || e?.message || '저장 실패';
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : '저장 실패';
       this.toast.error(msg);
       console.error('저장 실패:', e);
     } finally {
@@ -100,7 +110,7 @@ export class RecruitmentPage implements OnInit {
     { key: 'menu', label: '', width: '50px', type: 'drag' },
   ];
 
-  instructorData = signal<any[]>([]);
+  instructorData = signal<InstructorRow[]>([]);
 
   // ===== 강사 등록/수정 드로어 =====
   instructorDrawerOpen = signal(false);
@@ -125,6 +135,12 @@ export class RecruitmentPage implements OnInit {
   }
 
   /** 수정 드로어 열기 (기존 데이터 프리필) */
+  onInstructorRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as InstructorRow;
+    const index = this.instructorData().findIndex(r => r.id === row.id);
+    if (index >= 0) this.editInstructor(index);
+  }
+
   editInstructor(index: number): void {
     const inst = this.instructorData()[index];
     if (!inst) return;
@@ -176,7 +192,7 @@ export class RecruitmentPage implements OnInit {
     };
 
     const current = this.instructorData();
-    let updated: any[];
+    let updated: InstructorRow[];
     const editIdx = this.editingInstructorIndex();
 
     if (editIdx !== null) {
@@ -190,11 +206,11 @@ export class RecruitmentPage implements OnInit {
     }
 
     try {
-      await this.api.bootcamps.update(id, { recruitInstructors: updated.map(({ id: _id, ...rest }) => rest) } as any);
+      await this.api.bootcamps.update(id, { recruitInstructors: updated.map(({ name, summary, photo, badge, work }) => ({ name, summary, photo, badge, work })) } as Record<string, unknown>);
       this.instructorData.set(updated);
       this.instructorDrawerOpen.set(false);
       this.toast.success(editIdx !== null ? '수정 완료 되었습니다.' : '등록 완료 되었습니다.');
-    } catch (e: any) {
+    } catch (e: unknown) {
       this.toast.error('저장에 실패했습니다.');
       console.error(e);
     }
@@ -209,7 +225,7 @@ export class RecruitmentPage implements OnInit {
       .map((item, i) => ({ ...item, id: i + 1 }));
 
     try {
-      await this.api.bootcamps.update(id, { recruitInstructors: updated.map(({ id: _id, ...rest }) => rest) } as any);
+      await this.api.bootcamps.update(id, { recruitInstructors: updated.map(({ name, summary, photo, badge, work }) => ({ name, summary, photo, badge, work })) } as Record<string, unknown>);
       this.instructorData.set(updated);
       this.toast.success('삭제 완료 되었습니다.');
     } catch (e) {
@@ -218,14 +234,14 @@ export class RecruitmentPage implements OnInit {
     }
   }
 
-  private loadInstructors(data: any[]): void {
+  private loadInstructors(data: RecruitInstructor[]): void {
     this.instructorData.set(
-      data.map((item: any, i: number) => ({ ...item, id: i + 1 }))
+      data.map((item: RecruitInstructor, i: number) => ({ ...item, id: i + 1 }))
     );
   }
 
-  onInstructorContextMenu(event: { action: string; row: any }): void {
-    const index = this.instructorData().indexOf(event.row);
+  onInstructorContextMenu(event: { action: string; row: GridRow }): void {
+    const index = this.instructorData().findIndex(d => d.id === (event.row['id'] as number));
     if (index === -1) return;
     if (event.action === '수정') {
       this.editInstructor(index);

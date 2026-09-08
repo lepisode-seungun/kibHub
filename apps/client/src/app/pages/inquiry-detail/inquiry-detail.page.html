@@ -52,7 +52,7 @@
         @if (inquiry().attachments.length > 0) {
           <div class="inq-attach-files flex flex-wrap items-start gap-6 w-full">
             @for (file of inquiry().attachments; track $index) {
-              <div class="flex items-center px-3 py-2 gap-2 border border-zinc-800 rounded-full cursor-pointer transition-colors duration-150 hover:border-zinc-600" (click)="downloadFile(file)">
+              <div class="flex items-center px-3 py-2 gap-2 border border-zinc-800 rounded-full cursor-pointer transition-colors duration-150 hover:border-zinc-600" role="button" tabindex="0" (click)="downloadFile(file)" (keydown.enter)="downloadFile(file)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA">
                   <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V10l-6-5zm4 16H8V7h6.5v4.5H19v9.5z"/>
                 </svg>

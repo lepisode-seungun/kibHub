@@ -92,7 +92,7 @@ export class LectureRegisterPage {
         title: this.lectureName(),
         category: this.category(),
         content: this.editorContent(),
-      } as any);
+      } as Record<string, string>);
       this.toast.success('등록 완료 되었습니다.');
       this.location.back();
     } catch (err) {

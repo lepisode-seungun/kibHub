@@ -89,7 +89,7 @@
             <div class="ad-ls-materials-body">
               <div class="ad-ls-files-grid">
                 @for (file of learningFiles(); track file.name) {
-                  <div class="ad-ls-file-chip" (click)="downloadFile(file)" style="cursor: pointer;">
+                  <div class="ad-ls-file-chip" role="button" tabindex="0" (click)="downloadFile(file)" (keydown.enter)="downloadFile(file)" style="cursor: pointer;">
                     <span class="ad-ls-file-name">{{ file.name }}</span>
                     <button class="ad-ls-file-download" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

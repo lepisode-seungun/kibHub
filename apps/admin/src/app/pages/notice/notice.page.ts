@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ConfirmDialogComponent, DialogDetailRow } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -64,20 +64,22 @@ export class NoticePage implements OnInit {
     }
   }
 
-  onRowClick(_row: NoticeRow): void {}
+  onRowClick(_row: GridRow): void {}
 
   onRegister(): void {
     this.router.navigate(['/bootcamp/home/notices/new']);
   }
 
-  getContextMenuItems = (row: NoticeRow): string[] => {
+  getContextMenuItems = (gridRow: GridRow): string[] => {
+    const row = gridRow as unknown as NoticeRow;
     const statusLabel = row.status === '노출' ? '숨김' : '노출';
     const pinnedLabel = row.pinned ? '고정해제' : '고정';
     return [statusLabel, pinnedLabel, '수정', '삭제'];
   };
 
-  async onContextMenu(event: { action: string; row: NoticeRow }): Promise<void> {
-    const { action, row } = event;
+  async onContextMenu(event: { action: string; row: GridRow }): Promise<void> {
+    const row = event.row as unknown as NoticeRow;
+    const { action } = event;
     switch (action) {
       case '숨김':
       case '노출':

@@ -38,7 +38,7 @@ export class ContentsService {
       _count: { select: { comments: true } },
     };
 
-    const addFeedbackCount = async (contents: any[]) => {
+    const addFeedbackCount = async <T extends { id: number }>(contents: T[]) => {
       const ids = contents.map(c => c.id);
       if (ids.length === 0) return contents;
       const counts = await this.prisma.comment.groupBy({
@@ -100,10 +100,10 @@ export class ContentsService {
     if (!content) return null;
 
     // 조회수 증가 (비동기, 응답 차단 안 함)
-    this.prisma.content.update({
+    void this.prisma.content.update({
       where: { id },
       data: { viewCount: { increment: 1 } },
-    }).catch(() => {});
+    }).catch(() => { /* 조회수 증가 실패 무시 */ });
 
     // 북마크 카운트: BOOKMARK 타입 앨범에 속한 AlbumContent 수
     const bookmarkCount = await this.prisma.albumContent.count({
@@ -185,8 +185,9 @@ export class ContentsService {
       orderBy: { createdAt: 'desc' as const },
     });
 
-    // 실시간 신고 카운트 계산
-    const commentIds = comments.flatMap(c => [c.id, ...((c as any).replies || []).map((r: any) => r.id)]);
+    type CommentWithReplies = typeof comments[number] & { replies?: { id: number }[]; reportCount?: number };
+    const typedComments = comments as CommentWithReplies[];
+    const commentIds = typedComments.flatMap(c => [c.id, ...(c.replies || []).map(r => r.id)]);
     if (commentIds.length > 0) {
       const reportCounts = await this.prisma.report.groupBy({
         by: ['targetId'],
@@ -194,10 +195,10 @@ export class ContentsService {
         _count: { id: true },
       });
       const countMap = new Map(reportCounts.map(r => [r.targetId, r._count.id]));
-      for (const cm of comments) {
-        (cm as any).reportCount = countMap.get(cm.id) || 0;
-        for (const reply of ((cm as any).replies || [])) {
-          reply.reportCount = countMap.get(reply.id) || 0;
+      for (const cm of typedComments) {
+        cm.reportCount = countMap.get(cm.id) || 0;
+        for (const reply of (cm.replies || [])) {
+          (reply as CommentWithReplies).reportCount = countMap.get(reply.id) || 0;
         }
       }
     }
@@ -284,7 +285,7 @@ export class ContentsService {
     if (data.status) {
       await this.prisma.comment.updateMany({
         where: { parentId: id },
-        data: { status: data.status as any },
+        data: { status: data.status as Prisma.CommentUncheckedUpdateManyInput['status'] },
       });
     }
 
@@ -324,12 +325,12 @@ export class ContentsService {
 
     if (existing) {
       await this.prisma.commentLike.delete({ where: { id: existing.id } });
-      await this.prisma.comment.update({ where: { id: commentId }, data: { likeCount: { decrement: 1 } } });
-      return { liked: false, likeCount: (await this.prisma.comment.findUnique({ where: { id: commentId } }))!.likeCount };
+      const updated = await this.prisma.comment.update({ where: { id: commentId }, data: { likeCount: { decrement: 1 } } });
+      return { liked: false, likeCount: updated.likeCount };
     } else {
       await this.prisma.commentLike.create({ data: { commentId, userId } });
-      await this.prisma.comment.update({ where: { id: commentId }, data: { likeCount: { increment: 1 } } });
-      return { liked: true, likeCount: (await this.prisma.comment.findUnique({ where: { id: commentId } }))!.likeCount };
+      const updated = await this.prisma.comment.update({ where: { id: commentId }, data: { likeCount: { increment: 1 } } });
+      return { liked: true, likeCount: updated.likeCount };
     }
   }
 
@@ -398,10 +399,14 @@ export class ContentsService {
 
     // 댓글 신고 시 해당 댓글의 reportCount 증가
     if (data.type === 'COMMENT') {
-      await this.prisma.comment.update({
-        where: { id: data.targetId },
-        data: { reportCount: { increment: 1 } },
-      }).catch(() => {});
+      try {
+        await this.prisma.comment.update({
+          where: { id: data.targetId },
+          data: { reportCount: { increment: 1 } },
+        });
+      } catch {
+        // 댓글이 이미 삭제된 경우 무시
+      }
     }
 
     // 자동 숨김 처리: 누적 신고 횟수가 설정값 이상이면 해당 콘텐츠/댓글 숨김
@@ -419,12 +424,12 @@ export class ContentsService {
               await this.prisma.content.update({
                 where: { id: data.targetId },
                 data: { status: 'HIDDEN' },
-              }).catch(() => {});
+              });
             } else if (data.type === 'COMMENT') {
               await this.prisma.comment.update({
                 where: { id: data.targetId },
                 data: { status: 'HIDDEN' },
-              }).catch(() => {});
+              });
             }
           }
         }
@@ -439,10 +444,14 @@ export class ContentsService {
   async deleteReport(id: number) {
     const report = await this.prisma.report.findUnique({ where: { id } });
     if (report && report.type === 'COMMENT') {
-      await this.prisma.comment.update({
-        where: { id: report.targetId },
-        data: { reportCount: { decrement: 1 } },
-      }).catch(() => {});
+      try {
+        await this.prisma.comment.update({
+          where: { id: report.targetId },
+          data: { reportCount: { decrement: 1 } },
+        });
+      } catch {
+        // 댓글이 이미 삭제된 경우 무시
+      }
     }
     return this.prisma.report.delete({ where: { id } });
   }
