@@ -60,7 +60,7 @@
                       <img [src]="$any(item).profileImage" alt="" class="card-avatar" />
                     } @else {
                       <div class="card-avatar-placeholder">
-                        <span>{{ $any(item).userName?.charAt(0) }}</span>
+                        <span>{{ $any(item).initial || $any(item).userName?.charAt(0) }}</span>
                       </div>
                     }
                     <span class="card-username">{{ $any(item).userName }}</span>

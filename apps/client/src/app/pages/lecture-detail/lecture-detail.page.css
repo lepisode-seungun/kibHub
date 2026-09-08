@@ -312,6 +312,7 @@
   border: 1px solid #F3F4F6;
   border-radius: 999px;
   transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 0;
 }
 .ls-file-chip:hover { border-color: #D4D4D8; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06); }
 

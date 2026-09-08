@@ -101,7 +101,7 @@ export class LectureDetailPage implements OnInit {
         content: lecture.content || lecture.body || '', materials: lecture.files || [],
       });
       if (lecture.course) {
-        const SM: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료' };
+        const SM: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료', VISIBLE: '노출', HIDDEN: '숨김' };
         this.courseData.set({
           id: lecture.course.id,
           name: lecture.course.name || lecture.course.title || '',
@@ -221,23 +221,16 @@ export class LectureDetailPage implements OnInit {
     try {
       const res = await fetch(mat.url);
       const blob = await res.blob();
-      if ('showSaveFilePicker' in window) {
-        const ext = mat.name?.split('.').pop() || '';
-        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
-          suggestedName: mat.name || 'file',
-          types: ext ? [{ description: ext.toUpperCase(), accept: { 'application/octet-stream': [`.${ext}`] } }] : [],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = mat.name || 'file'; a.click();
-        URL.revokeObjectURL(url);
-      }
-    } catch (e: unknown) {
-      if (!(e instanceof DOMException && e.name === 'AbortError')) this.toast.error('다운로드에 실패했습니다.');
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = mat.name || 'file';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      this.toast.error('다운로드에 실패했습니다.');
     }
   }
 

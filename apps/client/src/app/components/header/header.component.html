@@ -503,7 +503,7 @@
 
 <!-- ===== 알림 모달 ===== -->
 @if (isNotificationOpen()) {
-  <div class="noti-overlay" (click)="closeNotification()" (keydown.enter)="closeNotification()" role="button" tabindex="-1"></div>
+  <div class="noti-overlay" (click)="closeNotification()" tabindex="-1"></div>
   <div class="noti-modal">
     <!-- 모바일 상단 바 (close) -->
     <div class="noti-mobile-topbar">

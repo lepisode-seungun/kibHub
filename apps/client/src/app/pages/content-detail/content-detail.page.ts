@@ -28,6 +28,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   authorName = '';
   authorRole = '';
   authorProfileImage = '';
+  authorInitial = '';
   authorId = 0;
   title = '';
   description = '';
@@ -194,6 +195,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.authorName = content.author?.nickname || content.author?.name || '작성자';
         this.authorRole = (content.author as any)?.role || '';
         this.authorProfileImage = (content.author as any)?.profileImage || '';
+        this.authorInitial = (content.author as any)?.initial || (this.authorName || 'U').charAt(0).toUpperCase();
         this.authorId = (content.author as any)?.id || 0;
         if (this.currentUserId() && this.authorId) {
           this.isOwnContent.set(this.currentUserId() === this.authorId);
@@ -231,6 +233,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.comments = serverComments.map((c: any) => {
           return {
             id: c.id,
+            authorId: c.author?.id || 0,
             userName: c.author?.nickname || c.author?.name || '익명',
             avatar: (c.author?.nickname || c.author?.name || 'U').charAt(0),
             profileImage: c.author?.profileImage || '',
@@ -246,6 +249,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
             replyCount: c.replies?.length || 0,
             replies: (c.replies || []).map((r: any) => ({
               id: r.id,
+              authorId: r.author?.id || 0,
               userName: r.author?.nickname || r.author?.name || '익명',
               avatar: (r.author?.nickname || r.author?.name || 'U').charAt(0),
               profileImage: r.author?.profileImage || '',
@@ -560,32 +564,47 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     // 최상위 댓글에서 찾기
     let target = this.comments.find(c => c.markerNum === rank);
     let scrollTargetId = target ? `comment-${target.id}` : '';
+    let isReply = false;
 
     // 대댓글에서 찾기
     if (!target) {
       for (const c of this.comments) {
         const reply = (c.replies || []).find((r: any) => r.markerNum === rank);
         if (reply) {
-          target = c; // 부모 댓글 활성화
-          scrollTargetId = `comment-${reply.id}`; // 대댓글로 스크롤
+          scrollTargetId = `comment-${reply.id}`;
+          isReply = true;
           break;
         }
       }
+      // 대댓글 추적 시 모든 댓글 호버링 해제
+      if (isReply) {
+        this.comments.forEach(c => c.isActive = false);
+      }
     }
 
-    if (!target) return;
+    if (!scrollTargetId) return;
 
-    if (target.isActive && scrollTargetId === `comment-${target.id}`) {
-      // 이미 활성 → 비활성화 (토글 해제)
-      target.isActive = false;
+    if (!isReply && target) {
+      // 최상위 댓글 토글
+      if (target.isActive && scrollTargetId === `comment-${target.id}`) {
+        target.isActive = false;
+      } else {
+        this.comments.forEach(c => c.isActive = false);
+        target.isActive = true;
+        setTimeout(() => {
+          const el = document.getElementById(scrollTargetId);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
     } else {
-      // 모든 댓글 비활성화 후 해당 마커 댓글 활성화
-      this.comments.forEach(c => c.isActive = false);
-      target.isActive = true;
-      // 해당 댓글/대댓글로 스크롤
+      // 대댓글: 스크롤 + flash highlight
       setTimeout(() => {
         const el = document.getElementById(scrollTargetId);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('marker-flash');
+          setTimeout(() => el.classList.remove('marker-flash'), 1500);
+        }
       }, 100);
     }
   }
@@ -595,6 +614,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   reportType = signal<'content' | 'comment'>('content');
   reportTargetId = signal<number>(0);
   reportText = '';
+  reportSuccess = signal(false);
 
   /* 로그인 필요 모달 */
   isLoginRequiredModalOpen = signal(false);
@@ -638,6 +658,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         reason: this.reportText.trim(),
       } as any);
       this.closeReportModal();
+      this.reportSuccess.set(true);
     } catch (e) {
       console.error('신고 실패:', e);
     }
@@ -933,8 +954,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   isBookmarkModalOpen = signal(false);
   bookmarkSaved = signal(false);
   selectedEditIds = signal<Set<number>>(new Set());
-  bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnail: string}[]>([]);
-  hasSelectedCategories = computed(() => this.bookmarkCategories().some(c => c.selected));
+  bookmarkCategories = signal<{id: number; name: string; count: number; selected: boolean; visibility: 'public' | 'private'; thumbnails: string[]}[]>([]);
+  hasSelectedCategories = computed(() => this.selectedEditIds().size > 0);
   newCategoryName = '';
   /** 현재 콘텐츠가 속한 앨범 ID 목록 (책갈피 해제용) */
   private bookmarkedAlbumIds: number[] = [];
@@ -947,19 +968,22 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       const albums = await this.api.albums.findAll('BOOKMARK');
       const contentId = Number(this.contentId);
       
-      this.bookmarkCategories.set(albums.map((a: any) => {
+      const cats = albums.map((a: any) => {
         const contents = a.albumContents || [];
         const isInAlbum = contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId);
-        const firstThumb = contents[0]?.content?.thumbnail;
+        const thumbs = contents.slice(0, 4).map((ac: any) => ac.content?.thumbnail).filter(Boolean);
         return {
           id: a.id,
           name: a.name,
           count: a._count?.albumContents ?? contents.length,
           selected: isInAlbum,
           visibility: 'public' as const,
-          thumbnail: firstThumb ? `url(${firstThumb}) center/cover no-repeat` : 'linear-gradient(135deg, #3F3F46, #52525B)',
+          thumbnails: thumbs,
         };
-      }));
+      });
+      this.bookmarkCategories.set(cats);
+      // 이미 북마크된 앨범을 선택 상태로 설정
+      this.selectedEditIds.set(new Set(cats.filter(c => c.selected).map(c => c.id)));
     } catch (e) {
       console.error('앨범 목록 로드 실패:', e);
     }
@@ -1031,8 +1055,14 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       const created = await this.api.albums.create({ name, type: 'BOOKMARK' });
       this.bookmarkCategories.update(cats => [
         ...cats,
-        { id: created.id, name: created.name, count: 0, selected: true, visibility: 'public' as const, thumbnail: 'linear-gradient(135deg, #3F3F46, #52525B)' }
+        { id: created.id, name: created.name, count: 0, selected: true, visibility: 'public' as const, thumbnails: [] }
       ]);
+      // 자동 선택 상태로 추가
+      this.selectedEditIds.update(ids => {
+        const next = new Set(ids);
+        next.add(created.id);
+        return next;
+      });
     } catch (e) {
       console.error('카테고리 생성 실패:', e);
     }
@@ -1078,8 +1108,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   async confirmBookmark(): Promise<void> {
     const contentId = Number(this.contentId);
     const categories = this.bookmarkCategories();
-    const selected = categories.filter(c => c.selected);
-    const unselected = categories.filter(c => !c.selected);
+    const editIds = this.selectedEditIds();
+    const selected = categories.filter(c => editIds.has(c.id));
+    const unselected = categories.filter(c => !editIds.has(c.id));
 
     try {
       // 선택된 앨범에 콘텐츠 추가

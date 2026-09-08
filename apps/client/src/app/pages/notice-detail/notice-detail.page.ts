@@ -57,13 +57,19 @@ export class NoticeDetailPage implements OnInit {
       this.noticeContent.set(this.sanitizer.bypassSecurityTrustHtml(notice.body || ''));
       this.noticeDate.set(new Date(notice.createdAt).toLocaleDateString('ko-KR'));
       this.isPinned.set(notice.pinned);
+      type NoticeWithRelations = typeof notice & {
+        author?: { nickname?: string; name?: string };
+        files?: { id: number; name: string; url: string; size?: number; mimeType?: string }[];
+      };
+      const typedNotice = notice as NoticeWithRelations;
+
       this.noticeAuthor.set(
-        (notice as any).author?.nickname || (notice as any).author?.name || ''
+        typedNotice.author?.nickname || typedNotice.author?.name || ''
       );
       // 첨부파일
-      const files = (notice as any).files || [];
+      const files = typedNotice.files || [];
       this.attachFiles.set(
-        files.map((f: any) => ({
+        files.map(f => ({
           id: f.id,
           name: f.name,
           url: f.url,

@@ -103,6 +103,7 @@ export type NoticeType = (typeof NoticeType)[keyof typeof NoticeType]
 export const NotificationType = {
   COMMENT: 'COMMENT',
   REPLY: 'REPLY',
+  COMMENT_LIKE: 'COMMENT_LIKE',
   FOLLOW: 'FOLLOW',
   BOOTCAMP_APPLY: 'BOOTCAMP_APPLY',
   BOOTCAMP_ACCEPT: 'BOOTCAMP_ACCEPT',

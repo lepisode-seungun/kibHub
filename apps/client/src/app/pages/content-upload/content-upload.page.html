@@ -515,11 +515,20 @@
               tabindex="0"
               (click)="selectAlbum(album.id)"
               (keydown.enter)="selectAlbum(album.id)">
-              <div class="am-item-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
-                  <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-12.5 4.5l2.5-3.01L12.5 17l4.5 6H5l3.5-4.5zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/>
-                </svg>
-              </div>
+              @if (album.thumbnails.length > 0) {
+                <div class="am-item-grid">
+                  @for (thumb of album.thumbnails; track thumb; let i = $index) {
+                    <img [src]="thumb" alt="" class="am-item-grid-img" />
+                  }
+                  @for (empty of [].constructor(4 - album.thumbnails.length); track $index) {
+                    <div class="am-item-grid-empty"></div>
+                  }
+                </div>
+              } @else {
+                <div class="am-item-icon">
+                  <img src="/icons/empty-content.svg" alt="" width="16" height="16" />
+                </div>
+              }
               <div class="flex flex-col justify-center gap-2.5 flex-1 min-w-0">
                 <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ album.name }}</span>
                 <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ album.count }}개</span>

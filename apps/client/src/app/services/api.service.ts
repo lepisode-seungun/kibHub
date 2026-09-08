@@ -151,7 +151,7 @@ export class ApiService {
   // ===== Upload =====
   async uploadFile(file: File, folder = 'inquiries'): Promise<{ url: string; originalName: string; size: number; mimeType: string }> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file, encodeURIComponent(file.name));
     formData.append('folder', folder);
     return firstValueFrom(this.http.post<any>(`${BASE}/upload`, formData, { withCredentials: true }));
   }
@@ -241,7 +241,7 @@ export class ApiService {
     /** 단일 파일 업로드 */
     single: (file: File, folder = 'general'): Promise<{ url: string; path: string; originalName: string; size: number; mimeType: string }> => {
       const fd = new FormData();
-      fd.append('file', file);
+      fd.append('file', file, encodeURIComponent(file.name));
       fd.append('folder', folder);
       return firstValueFrom(this.http.post<{ url: string; path: string; originalName: string; size: number; mimeType: string }>(
         `${BASE}/upload`, fd, { withCredentials: true },
@@ -250,7 +250,7 @@ export class ApiService {
     /** 다중 파일 업로드 */
     multiple: (files: File[], folder = 'general'): Promise<{ url: string; path: string; originalName: string; size: number; mimeType: string }[]> => {
       const fd = new FormData();
-      files.forEach(f => fd.append('files', f));
+      files.forEach(f => fd.append('files', f, encodeURIComponent(f.name)));
       fd.append('folder', folder);
       return firstValueFrom(this.http.post<{ url: string; path: string; originalName: string; size: number; mimeType: string }[]>(
         `${BASE}/upload/multiple`, fd, { withCredentials: true },

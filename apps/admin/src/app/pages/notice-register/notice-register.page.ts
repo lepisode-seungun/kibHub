@@ -90,6 +90,7 @@ export class NoticeRegisterPage implements OnInit {
           size: f.size < 1024 * 1024
             ? `${(f.size / 1024).toFixed(0)}KB`
             : `${(f.size / (1024 * 1024)).toFixed(1)}MB`,
+          url: f.url,
         })));
       }
     } catch (e) {
@@ -121,17 +122,32 @@ export class NoticeRegisterPage implements OnInit {
     this.files.update(list => list.filter((_, i) => i !== index));
   }
 
+  private isImageFile(file: File): boolean {
+    return file.type.startsWith('image/');
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
-    const newFiles = Array.from(input.files).map(f => ({
-      name: f.name,
-      size: f.size < 1024 * 1024
-        ? `${(f.size / 1024).toFixed(0)}KB`
-        : `${(f.size / (1024 * 1024)).toFixed(1)}MB`,
-      file: f,
-    }));
-    this.files.update(list => [...list, ...newFiles]);
+    const selected = Array.from(input.files);
+    for (const f of selected) {
+      const entry: { name: string; size: string; file: File; url?: string } = {
+        name: f.name,
+        size: f.size < 1024 * 1024
+          ? `${(f.size / 1024).toFixed(0)}KB`
+          : `${(f.size / (1024 * 1024)).toFixed(1)}MB`,
+        file: f,
+      };
+      if (this.isImageFile(f)) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          entry.url = reader.result as string;
+          this.files.update(list => [...list]);
+        };
+        reader.readAsDataURL(f);
+      }
+      this.files.update(list => [...list, entry]);
+    }
     input.value = '';
   }
 
@@ -152,7 +168,7 @@ export class NoticeRegisterPage implements OnInit {
       const file = f.file;
       if (!file) continue;
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', file, encodeURIComponent(file.name));
       formData.append('folder', 'notices');
       const res = await firstValueFrom(
         this.http.post<UploadResponse>('/api/upload', formData, { withCredentials: true })

@@ -7,6 +7,7 @@ import { INQUIRY_STATUS_BADGES } from '../../shared/badge-styles';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Inquiry, InquiryRow } from '../../shared/types';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface InquiryFileEntry {
   id: number;
@@ -146,34 +147,6 @@ export class SupportInquiriesPage implements OnInit {
   }
 
   async downloadFile(file: { name: string; url: string }): Promise<void> {
-    if (!file.url) return;
-    try {
-      const response = await fetch(file.url);
-      const blob = await response.blob();
-      if ('showSaveFilePicker' in window) {
-        const ext = file.name.includes('.') ? file.name.split('.').pop() || '' : '';
-        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
-          suggestedName: file.name,
-          types: ext ? [{ description: file.name, accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] } }] : [],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } else {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-      }
-    } catch (e: unknown) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
-      const a = document.createElement('a');
-      a.href = file.url;
-      a.download = file.name;
-      a.click();
-    }
+    _downloadFile(file.url, file.name);
   }
 }

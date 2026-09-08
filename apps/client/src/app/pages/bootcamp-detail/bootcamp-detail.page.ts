@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export interface Instructor {
@@ -31,6 +32,7 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private api = inject(ApiService);
+  private auth = inject(AuthService);
   private zone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
   private appRef = inject(ApplicationRef);
@@ -160,7 +162,13 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  isLoginRequiredModalOpen = signal(false);
+
   onApply(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
     this.isModalOpen.set(true);
     document.body.style.overflow = 'hidden';
   }

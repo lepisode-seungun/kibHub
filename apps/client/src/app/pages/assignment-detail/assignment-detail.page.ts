@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface LearningFile {
@@ -60,6 +61,9 @@ export class AssignmentDetailPage implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
+  private authService = inject(AuthService);
+
+  readonly isInstructor = computed(() => this.authService.currentUser()?.role === 'INSTRUCTOR');
 
   assignmentId = '';
   bootcampId = '';
@@ -126,6 +130,7 @@ export class AssignmentDetailPage implements OnInit {
       this.assignmentTitle.set(assignment.title || '');
       this.description.set(assignment.content || assignment.body || '');
       this.videoUrl.set(assignment.videoUrl || '');
+      this.updateYoutubeEmbed();
       if (assignment.dueDate) {
         const fmt = (d: string) => {
           const dt = new Date(d);
@@ -194,11 +199,13 @@ export class AssignmentDetailPage implements OnInit {
     }
   }
 
-  get youtubeEmbedUrl(): SafeResourceUrl | null {
+  youtubeEmbedUrl: SafeResourceUrl | null = null;
+
+  private updateYoutubeEmbed(): void {
     const url = this.videoUrl();
-    if (!url) return null;
+    if (!url) { this.youtubeEmbedUrl = null; return; }
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    return match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
+    this.youtubeEmbedUrl = match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
   }
 
   get youtubeThumbnail(): string {

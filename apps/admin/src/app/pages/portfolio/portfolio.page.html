@@ -63,12 +63,6 @@
         (rowClick)="openDetail($event)"
         (contextMenuSelect)="onContextMenuSelect($event)">
         <button gridActions
-                class="flex items-center justify-center px-3 py-2 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#ECF4FE] transition-colors whitespace-nowrap"
-                style="min-width: 95px;"
-                (click)="openManagerDrawer()">
-          담당자 설정
-        </button>
-        <button gridActions
                 class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
                 (click)="openHofDrawer()">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -690,8 +684,7 @@
       <button class="flex items-center justify-center p-1.5 rounded-md cursor-pointer bg-transparent border-none hover:bg-gray-100 transition-colors self-start"
               (click)="closeManagerDrawer()">
         <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
-          <path d="M7.33 0.94L12.39 6H0.5V8H12.39L7.33 13.06L8.5 14.23L15.73 7L8.5 -0.23L7.33 0.94Z" fill="#374151"/>
-          <path d="M16.5 0H18.5V14H16.5V0Z" fill="#374151"/>
+          <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
@@ -705,42 +698,56 @@
           @if (!mgr.editing) {
             <!-- 읽기 모드 -->
             <div class="flex items-center py-3 border-b border-gray-200" style="border-top: 1px solid #E5E7EB;">
-              <div class="flex-1 flex items-start py-3 px-4 gap-2.5">
-                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ mgr.name }}</span>
-                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ mgr.email }}</span>
+              <div class="flex-1 flex items-center py-3 px-4 gap-2.5 min-w-0">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 shrink-0">{{ mgr.name }}</span>
+                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 truncate min-w-0">{{ mgr.email }}</span>
               </div>
-              <button class="flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded bg-transparent border-none" style="width: 50px;" (click)="editManager(i)">
-                <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
-                  <path d="M0 13.0647V16.5022H3.4375L13.5758 6.36391L10.1383 2.92641L0 13.0647ZM16.2342 2.41307L14.0892 0.268074C14.0044 0.183095 13.9036 0.115677 13.7927 0.0696771C13.6818 0.0236775 13.563 0 13.4429 0C13.3229 0 13.204 0.0236775 13.0931 0.0696771C12.9822 0.115677 12.8815 0.183095 12.7967 0.268074L11.1192 1.94557L14.5567 5.38307L16.2342 3.70557C16.3191 3.62077 16.3866 3.52004 16.4326 3.40915C16.4786 3.29825 16.5022 3.17938 16.5022 3.05932C16.5022 2.93927 16.4786 2.82039 16.4326 2.7095C16.3866 2.59861 16.3191 2.49788 16.2342 2.41307Z" fill="#6B7280"/>
-                </svg>
-              </button>
+              <div class="flex items-center">
+                <button class="flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded bg-transparent border-none" style="width: 40px;" (click)="editManager(i)">
+                  <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+                    <path d="M0 13.0647V16.5022H3.4375L13.5758 6.36391L10.1383 2.92641L0 13.0647ZM16.2342 2.41307L14.0892 0.268074C14.0044 0.183095 13.9036 0.115677 13.7927 0.0696771C13.6818 0.0236775 13.563 0 13.4429 0C13.3229 0 13.204 0.0236775 13.0931 0.0696771C12.9822 0.115677 12.8815 0.183095 12.7967 0.268074L11.1192 1.94557L14.5567 5.38307L16.2342 3.70557C16.3191 3.62077 16.3866 3.52004 16.4326 3.40915C16.4786 3.29825 16.5022 3.17938 16.5022 3.05932C16.5022 2.93927 16.4786 2.82039 16.4326 2.7095C16.3866 2.59861 16.3191 2.49788 16.2342 2.41307Z" fill="#6B7280"/>
+                  </svg>
+                </button>
+                <button class="flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded bg-transparent border-none" style="width: 40px;" (click)="deleteManager(i)">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M1 1l12 12M13 1L1 13" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           } @else {
             <!-- 편집 모드 -->
-            <div class="flex items-center py-4 border-b border-gray-200 gap-3">
-              <div class="flex items-center gap-3 flex-1">
-                <input type="text"
-                       class="h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
-                       style="width: 120px;"
-                       placeholder="이름"
-                       [value]="mgr.name"
-                       (input)="updateManager(i, 'name', $event)"/>
-                <input type="text"
-                       class="flex-1 h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
-                       placeholder="이메일"
-                       [value]="mgr.email"
-                       (input)="updateManager(i, 'email', $event)"/>
+            <div class="flex flex-col py-4 border-b border-gray-200 gap-2">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 flex-1">
+                  <input type="text"
+                         class="h-10 px-4 bg-white border-2 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                         [ngClass]="managerError()?.index === i && !mgr.name.trim() ? 'border-red-400' : 'border-gray-300'"
+                         style="width: 120px;"
+                         placeholder="이름"
+                         [value]="mgr.name"
+                         (input)="updateManager(i, 'name', $event)"/>
+                  <input type="text"
+                         class="flex-1 h-10 px-4 bg-white border-2 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+                         [ngClass]="managerError()?.index === i && !mgr.email.trim() ? 'border-red-400' : 'border-gray-300'"
+                         placeholder="이메일"
+                         [value]="mgr.email"
+                         (input)="updateManager(i, 'email', $event)"/>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                          (click)="saveManager(i)">
+                    저장
+                  </button>
+                  <button class="flex items-center justify-center px-3 h-[37px] bg-white border border-gray-300 rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 hover:bg-gray-50 transition-colors"
+                          (click)="cancelEditManager(i)">
+                    취소
+                  </button>
+                </div>
               </div>
-              <div class="flex items-center gap-1">
-                <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
-                        (click)="saveManager(i)">
-                  저장
-                </button>
-                <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
-                        (click)="deleteManager(i)">
-                  취소
-                </button>
-              </div>
+              @if (managerError()?.index === i) {
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 px-1">{{ managerError()!.message }}</span>
+              }
             </div>
           }
         }

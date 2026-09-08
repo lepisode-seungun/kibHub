@@ -19,6 +19,7 @@ interface ContentCard {
   authorName: string;
   commentCount: number;
   feedbackCount: number;
+  createdAt: string;
   firstComment?: { body: string; authorName: string };
 }
 
@@ -89,6 +90,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
   filteredContents = computed(() => {
     const albumId = this.selectedAlbumId();
     const query = this.searchQuery().toLowerCase().trim();
+    const sort = this.selectedSort();
     let result = this.contents();
     if (albumId) {
       const album = this.albums().find(a => a.id === albumId);
@@ -97,12 +99,18 @@ export class UserProfilePage implements OnInit, OnDestroy {
     if (query) {
       result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
     }
+    result = [...result].sort((a, b) => {
+      const da = new Date(a.createdAt).getTime();
+      const db = new Date(b.createdAt).getTime();
+      return sort === 'latest' ? db - da : da - db;
+    });
     return result;
   });
 
   filteredBookmarkContents = computed(() => {
     const catId = this.selectedCategoryId();
     const query = this.searchQuery().toLowerCase().trim();
+    const sort = this.selectedSort();
     let result = this.bookmarkContents();
     if (catId) {
       const cat = this.categories().find(c => c.id === catId);
@@ -111,6 +119,11 @@ export class UserProfilePage implements OnInit, OnDestroy {
     if (query) {
       result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
     }
+    result = [...result].sort((a, b) => {
+      const da = new Date(a.createdAt).getTime();
+      const db = new Date(b.createdAt).getTime();
+      return sort === 'latest' ? db - da : da - db;
+    });
     return result;
   });
 
@@ -167,7 +180,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
         this.currentUserId = me.id;
         if (me.id === id) {
           this.isOwnProfile.set(true);
-          this.router.navigate(['/profile']);
+          this.router.navigate(['/profile'], { replaceUrl: true });
           return;
         }
         const status = await this.api.users.followStatus(id, me.id);
@@ -209,6 +222,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
               authorName: c.author?.nickname || c.author?.name || '',
               commentCount: c._count?.comments || 0,
               feedbackCount: c._count?.comments || 0,
+              createdAt: c.createdAt || '',
               firstComment: c.comments?.[0] ? {
                 body: c.comments[0].body,
                 authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
@@ -252,6 +266,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
               authorName: c.author?.nickname || c.author?.name || '',
               commentCount: c._count?.comments || 0,
               feedbackCount: c._count?.comments || 0,
+              createdAt: c.createdAt || '',
               firstComment: c.comments?.[0] ? {
                 body: c.comments[0].body,
                 authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',

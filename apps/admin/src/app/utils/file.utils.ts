@@ -16,50 +16,38 @@ export function isImageFile(file: { name?: string; mimeType?: string }): boolean
 }
 
 /**
- * 파일을 실제 다운로드 — "다른 이름으로 저장" 다이얼로그 표시
- * showSaveFilePicker 지원 시 저장 경로 선택 가능 (Chrome/Edge)
- * 미지원 시 fetch+blob 방식으로 fallback
+ * 파일을 실제 다운로드 — blob 변환 후 a[download]로 Chrome 다운로드 트리거
+ * 서버 프록시를 통해 CORS 우회
  */
 export async function downloadFile(url?: string, fileName?: string): Promise<void> {
   if (!url) return;
 
   const name = fileName || url.split('/').pop()?.split('?')[0] || 'download';
 
-  let blob: Blob | null = null;
-
-  // 1) fetch로 blob 가져오기
+  // 1) 서버 프록시를 통해 blob 가져오기
   try {
-    const res = await fetch(url);
+    const proxyUrl = `/api/upload/proxy?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl);
     if (res.ok) {
-      blob = await res.blob();
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+      return;
     }
   } catch {
-    // CORS 등 fetch 실패 → fallback
+    // 프록시 실패 → 직접 fetch 시도
   }
 
-  // 2) blob 성공 시 showSaveFilePicker 시도
-  if (blob) {
-    if ('showSaveFilePicker' in window) {
-      try {
-        const ext = name.includes('.') ? (name.split('.').pop() ?? '') : '';
-        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
-          suggestedName: name,
-          types: ext ? [{
-            description: `${ext.toUpperCase()} 파일`,
-            accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] },
-          }] : [],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-        return;
-      } catch (pickerErr: unknown) {
-        if (pickerErr instanceof DOMException && pickerErr.name === 'AbortError') return;
-        // picker 실패 시 a[download] fallback
-      }
-    }
-
-    // 3) a[download] fallback
+  // 2) 직접 fetch fallback
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = blobUrl;
@@ -68,11 +56,10 @@ export async function downloadFile(url?: string, fileName?: string): Promise<voi
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
-    return;
+  } catch {
+    // 최종 fallback: 새 탭으로 열기
+    window.open(url, '_blank');
   }
-
-  // 4) fetch 자체가 실패한 경우 → 새 탭 열기
-  window.open(url, '_blank');
 }
 
 /**

@@ -152,7 +152,7 @@ export class InquiryFormPage implements OnInit {
       .filter(f => f.status === 'done' && f.url)
       .map(f => ({
         name: f.name,
-        url: f.url!,
+        url: f.url ?? '',
         size: f.sizeBytes,
         mimeType: f.mimeType,
       }));

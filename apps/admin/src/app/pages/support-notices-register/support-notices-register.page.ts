@@ -160,7 +160,7 @@ export class SupportNoticesRegisterPage implements OnInit {
       const fileToUpload = f.file;
       if (!fileToUpload) continue;
       const formData = new FormData();
-      formData.append('file', fileToUpload);
+      formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
       formData.append('folder', 'notices');
       const res = await firstValueFrom(
         this.http.post<UploadResponse>('/api/upload', formData, { withCredentials: true })

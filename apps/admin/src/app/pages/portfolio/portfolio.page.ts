@@ -436,30 +436,79 @@ export class PortfolioPage implements OnInit {
 
   // ===== 담당자 설정 드로어 =====
   managerDrawerOpen = signal(false);
-  managers = signal<{ name: string; email: string; editing: boolean }[]>([
-    { name: '고식혜', email: 'yelim@lepisode.team', editing: false },
-    { name: '고식혜', email: 'yelim@lepisode.team', editing: true },
-    { name: '고식혜', email: 'yelim@lepisode.team', editing: false },
-    { name: '고식혜', email: 'yelim@lepisode.team', editing: false },
-  ]);
+  managers = signal<{ name: string; email: string; editing: boolean }[]>([]);
+  private managersLoaded = false;
 
-  openManagerDrawer(): void { this.managerDrawerOpen.set(true); }
+  async openManagerDrawer(): Promise<void> {
+    this.managerDrawerOpen.set(true);
+    if (!this.managersLoaded) {
+      await this.loadManagers();
+      this.managersLoaded = true;
+    }
+  }
   closeManagerDrawer(): void { this.managerDrawerOpen.set(false); }
+
+  private async loadManagers(): Promise<void> {
+    try {
+      const res = await this.api.siteSettings.get('portfolio_managers');
+      if (res.value) {
+        const parsed = JSON.parse(res.value) as { name: string; email: string }[];
+        this.managers.set(parsed.map(m => ({ ...m, editing: false })));
+      }
+    } catch {
+      // 키가 없으면 빈 배열
+      this.managers.set([]);
+    }
+  }
+
+  async saveManagers(): Promise<void> {
+    try {
+      const data = this.managers().map(m => ({ name: m.name, email: m.email }));
+      await this.api.siteSettings.set('portfolio_managers', JSON.stringify(data));
+      this.toast.success('담당자 설정이 저장되었습니다.');
+      // 모든 항목 편집 모드 해제
+      this.managers.update(m => m.map(item => ({ ...item, editing: false })));
+    } catch {
+      this.toast.error('담당자 설정 저장에 실패했습니다.');
+    }
+  }
 
   addManager(): void {
     this.managers.update(m => [...m, { name: '', email: '', editing: true }]);
   }
 
-  saveManager(index: number): void {
+  managerError = signal<{ index: number; message: string } | null>(null);
+
+  async saveManager(index: number): Promise<void> {
+    const mgr = this.managers()[index];
+    if (!mgr.name.trim() || !mgr.email.trim()) {
+      this.managerError.set({ index, message: '이름과 이메일을 모두 입력해주세요.' });
+      return;
+    }
+    this.managerError.set(null);
     this.managers.update(m => m.map((item, i) => i === index ? { ...item, editing: false } : item));
+    await this.saveManagers();
   }
 
   editManager(index: number): void {
+    this.managerError.set(null);
     this.managers.update(m => m.map((item, i) => i === index ? { ...item, editing: true } : item));
   }
 
-  deleteManager(index: number): void {
+  cancelEditManager(index: number): void {
+    this.managerError.set(null);
+    const mgr = this.managers()[index];
+    // 새로 추가된 빈 항목이면 제거
+    if (!mgr.name.trim() && !mgr.email.trim()) {
+      this.managers.update(m => m.filter((_, i) => i !== index));
+    } else {
+      this.managers.update(m => m.map((item, i) => i === index ? { ...item, editing: false } : item));
+    }
+  }
+
+  async deleteManager(index: number): Promise<void> {
     this.managers.update(m => m.filter((_, i) => i !== index));
+    await this.saveManagers();
   }
 
   updateManager(index: number, field: 'name' | 'email', event: Event): void {

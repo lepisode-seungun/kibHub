@@ -123,7 +123,9 @@
             <h2 class="as-title">과제 제출</h2>
             <span class="as-count">({{ submissions().length }})</span>
           </div>
-          <button class="as-submit-btn" (click)="navigateToSubmit()">과제 제출</button>
+          @if (!isInstructor()) {
+            <button class="as-submit-btn" (click)="navigateToSubmit()">과제 제출</button>
+          }
         </div>
 
         <!-- 필터 바 -->

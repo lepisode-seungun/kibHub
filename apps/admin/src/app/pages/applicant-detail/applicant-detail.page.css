@@ -79,6 +79,7 @@
   padding: 6px 0;
   gap: 8px;
   flex: 1;
+  min-width: 0;
 }
 
 .field-label {
@@ -123,6 +124,11 @@
   letter-spacing: -0.04em;
   color: #215693;
   text-decoration: underline;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ===== 파일 첨부 ===== */

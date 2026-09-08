@@ -62,7 +62,24 @@ export class AlbumsService {
   }
 
   async delete(id: number) {
-    return this.prisma.album.delete({ where: { id } });
+    // 앨범에 속한 콘텐츠 ID 조회
+    const albumContents = await this.prisma.albumContent.findMany({
+      where: { albumId: id },
+      select: { contentId: true },
+    });
+    const contentIds = albumContents.map(ac => ac.contentId);
+
+    // 트랜잭션으로 앨범 + 하위 콘텐츠 일괄 삭제
+    return this.prisma.$transaction(async (tx) => {
+      // 1) 조인 테이블 삭제
+      await tx.albumContent.deleteMany({ where: { albumId: id } });
+      // 2) 콘텐츠 삭제
+      if (contentIds.length > 0) {
+        await tx.content.deleteMany({ where: { id: { in: contentIds } } });
+      }
+      // 3) 앨범 삭제
+      return tx.album.delete({ where: { id } });
+    });
   }
 
   async addContent(albumId: number, contentId: number) {

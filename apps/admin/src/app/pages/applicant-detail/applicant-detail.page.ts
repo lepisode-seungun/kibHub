@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { APPLICANT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface ApplicantDetail {
   id: number;
@@ -143,37 +144,7 @@ export class ApplicantDetailPage implements OnInit {
   }
 
   async downloadFile(url: string, filename: string): Promise<void> {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-
-      // 다른 이름으로 저장 (File System Access API)
-      if ('showSaveFilePicker' in window) {
-        const ext = filename.includes('.') ? filename.split('.').pop() || '' : '';
-        const handle = await (window as unknown as { showSaveFilePicker: (opts: { suggestedName: string; types: { description: string; accept: Record<string, string[]> }[] }) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
-          suggestedName: filename,
-          types: ext ? [{ description: filename, accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] } }] : [],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } else {
-        // fallback
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-      }
-    } catch (e: unknown) {
-      if (e instanceof DOMException && e.name === 'AbortError') return; // 사용자가 취소
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-    }
+    _downloadFile(url, filename);
   }
 
   // ===== 사전인터뷰 설정 드로어 =====

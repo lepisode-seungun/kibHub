@@ -24,12 +24,14 @@ export async function downloadFile(url?: string, fileName?: string): Promise<voi
   if (!url) return;
 
   const name = fileName || url.split('/').pop()?.split('?')[0] || 'download';
+  const downloadUrl = `${url}${url.includes('?') ? '&' : '?'}download=${encodeURIComponent(name)}`;
 
   let blob: Blob | null = null;
 
-  // 1) fetch로 blob 가져오기
+  // 1) fetch로 blob 가져오기 (CORS 우회를 위해 proxy 사용)
   try {
-    const res = await fetch(url);
+    const proxyUrl = `/api/upload/proxy?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl);
     if (res.ok) {
       blob = await res.blob();
     }
@@ -71,8 +73,14 @@ export async function downloadFile(url?: string, fileName?: string): Promise<voi
     return;
   }
 
-  // 4) fetch 자체가 실패한 경우 → 새 탭 열기
-  window.open(url, '_blank');
+  // 4) fetch 자체가 실패한 경우 → a 태그로 fallback
+  const a = document.createElement('a');
+  a.href = downloadUrl;
+  a.download = name;
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 /**

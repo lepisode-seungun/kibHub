@@ -75,6 +75,7 @@ export class LectureDetailPage implements OnInit {
       this.duration.set(lecture.duration || '');
       this.category.set(lecture.category || '');
       this.videoUrl.set(lecture.videoUrl || '');
+      this.updateYoutubeEmbed();
       if (lecture.course) {
         this.courseLabel.set(lecture.course.name || lecture.course.title || '');
       }
@@ -89,11 +90,13 @@ export class LectureDetailPage implements OnInit {
     }
   }
 
-  get youtubeEmbedUrl(): SafeResourceUrl | null {
+  youtubeEmbedUrl: SafeResourceUrl | null = null;
+
+  private updateYoutubeEmbed(): void {
     const url = this.videoUrl();
-    if (!url) return null;
+    if (!url) { this.youtubeEmbedUrl = null; return; }
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    return match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
+    this.youtubeEmbedUrl = match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
   }
 
   returnTab = '';

@@ -65,15 +65,15 @@
       @if (attachFiles().length > 0) {
         <div class="nd-attach-files flex flex-wrap items-start gap-6 w-full max-w-[1400px]">
           @for (file of attachFiles(); track file.id) {
-            <div class="flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full transition-colors duration-150 hover:border-zinc-300 box-border cursor-pointer" (click)="onDownloadFile(file)">
+            <button type="button" class="flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full transition-colors duration-150 hover:border-zinc-300 box-border cursor-pointer text-left" (click)="onDownloadFile(file)">
               <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>
-              <button type="button" class="flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 shrink-0 transition-transform duration-150 hover:translate-y-0.5" aria-label="다운로드" (click)="$event.stopPropagation(); onDownloadFile(file)">
+              <span class="flex items-center justify-center w-5 h-5 bg-transparent shrink-0 transition-transform duration-150 hover:translate-y-0.5" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M12 4v12M12 16l-4-4M12 16l4-4" stroke="#7A48FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M5 20h14" stroke="#7A48FF" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-              </button>
-            </div>
+              </span>
+            </button>
           }
         </div>
       }

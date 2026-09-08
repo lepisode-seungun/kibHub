@@ -238,13 +238,11 @@
     <!-- 앨범 카드 슬라이더 (앨범 탭) -->
     @if (activeTab() === 'all' && albums().length > 0) {
     <div class="pf-album-slider-wrap">
-      <!-- 좌측 화살표 -->
-      <button class="pf-slider-arrow pf-slider-arrow-left" aria-label="이전" (click)="scrollSlider('left')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
-          <path d="M14 6l1.41 1.41L10.83 12l4.58 4.59L14 18l-6-6z"/>
-        </svg>
-      </button>
-      <div class="pf-album-slider" #albumSlider>
+      <div class="pf-album-slider" #albumSlider
+        (mousedown)="onSliderMouseDown($event)"
+        (mousemove)="onSliderMouseMove($event)"
+        (mouseup)="onSliderMouseUp()"
+        (mouseleave)="onSliderMouseUp()">
         @for (album of albums(); track album.id) {
           <div
             class="pf-album-card"
@@ -253,6 +251,7 @@
             tabindex="0"
             (click)="selectAlbum(album.id)"
             (keydown.enter)="selectAlbum(album.id)">
+            @if (album.thumbnails.length > 0) {
             <div class="pf-album-grid">
               <div class="pf-album-grid-row">
                 <div class="pf-album-thumb" [style.background]="album.thumbnails[0] ? 'url(' + album.thumbnails[0] + ') center/cover no-repeat' : ''"></div>
@@ -264,6 +263,11 @@
               </div>
               <div class="pf-album-grid-gradient"></div>
             </div>
+            } @else {
+            <div class="pf-album-grid pf-album-grid-empty">
+              <img src="/icons/empty-content.svg" alt="" width="24" height="24" />
+            </div>
+            }
             <div class="pf-album-info">
               <span class="pf-album-name">
                 @for (line of splitAlbumName(album.name); track line) {
@@ -312,25 +316,17 @@
           </div>
         }
       </div>
-      <div class="pf-album-slider-fade"></div>
-      <!-- 우측 화살표 -->
-      <button class="pf-slider-arrow pf-slider-arrow-right" aria-label="다음" (click)="scrollSlider('right')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-      </button>
     </div>
     }
 
     <!-- 카테고리 카드 슬라이더 (책갈피 탭) -->
     @if (activeTab() === 'album' && categories().length > 0) {
     <div class="pf-album-slider-wrap">
-      <button class="pf-slider-arrow pf-slider-arrow-left" aria-label="이전" (click)="scrollSlider('left')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
-          <path d="M14 6l1.41 1.41L10.83 12l4.58 4.59L14 18l-6-6z"/>
-        </svg>
-      </button>
-      <div class="pf-album-slider" #albumSlider>
+      <div class="pf-album-slider" #albumSlider
+        (mousedown)="onSliderMouseDown($event)"
+        (mousemove)="onSliderMouseMove($event)"
+        (mouseup)="onSliderMouseUp()"
+        (mouseleave)="onSliderMouseUp()">
         @for (cat of categories(); track cat.id) {
           <div
             class="pf-album-card"
@@ -339,6 +335,7 @@
             tabindex="0"
             (click)="selectCategory(cat.id)"
             (keydown.enter)="selectCategory(cat.id)">
+            @if (cat.thumbnails.length > 0) {
             <div class="pf-album-grid">
               <div class="pf-album-grid-row">
                 <div class="pf-album-thumb" [style.background]="cat.thumbnails[0] ? 'url(' + cat.thumbnails[0] + ') center/cover no-repeat' : ''"></div>
@@ -350,6 +347,11 @@
               </div>
               <div class="pf-album-grid-gradient"></div>
             </div>
+            } @else {
+            <div class="pf-album-grid pf-album-grid-empty">
+              <img src="/icons/empty-content.svg" alt="" width="24" height="24" />
+            </div>
+            }
             <div class="pf-album-info">
               <span class="pf-album-name">
                 @for (line of splitAlbumName(cat.name); track line) {
@@ -397,12 +399,6 @@
           </div>
         }
       </div>
-      <div class="pf-album-slider-fade"></div>
-      <button class="pf-slider-arrow pf-slider-arrow-right" aria-label="다음" (click)="scrollSlider('right')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-      </button>
     </div>
     }
 
@@ -461,25 +457,32 @@
       </div>
 
       <div class="pf-content-grid">
-        @for (item of (activeTab() === 'album' ? filteredBookmarkContents() : filteredContents()); track item.id) {
-          <a class="pf-card" [routerLink]="['/content', item.id]" style="text-decoration:none;color:inherit">
-            <div class="pf-card-image" [style.background]="item.imageUrl ? 'url(' + item.imageUrl + ') center/cover no-repeat' : ''">
-              <div class="pf-card-top">
-                <div class="pf-card-user"></div>
-                <div class="relative flex items-start justify-center w-[30px] h-[42px]">
-                    <img class="w-[30px] h-[42px]" src="/icons/marker-active.svg" alt="" />
-                    <span class="absolute top-0 left-0 w-[25px] h-[25px] flex items-center justify-center font-suit font-semibold text-sm leading-6 tracking-tight text-white pointer-events-none">{{ item.feedbackCount }}</span>
-                  </div>
-              </div>
-              @if (item.firstComment) {
-                <div class="pf-card-comment">
-                  <span class="pf-card-comment-author">"{{ item.firstComment.authorName }}"</span>
-                  <span class="pf-card-comment-body">{{ item.firstComment.body }}</span>
+        @if ((activeTab() === 'album' ? filteredBookmarkContents() : filteredContents()).length === 0) {
+          <div class="pf-content-empty">
+            <img src="/icons/empty-content.svg" alt="" width="24" height="24" />
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">등록된 작업물이 없어요.</span>
+          </div>
+        } @else {
+          @for (item of (activeTab() === 'album' ? filteredBookmarkContents() : filteredContents()); track item.id) {
+            <a class="pf-card" [routerLink]="['/content', item.id]" style="text-decoration:none;color:inherit">
+              <div class="pf-card-image" [style.background]="item.imageUrl ? 'url(' + item.imageUrl + ') center/cover no-repeat' : ''">
+                <div class="pf-card-top">
+                  <div class="pf-card-user"></div>
+                  <div class="relative flex items-start justify-center w-[30px] h-[42px]">
+                      <img class="w-[30px] h-[42px]" src="/icons/marker-active.svg" alt="" />
+                      <span class="absolute top-0 left-0 w-[25px] h-[25px] flex items-center justify-center font-suit font-semibold text-sm leading-6 tracking-tight text-white pointer-events-none">{{ item.feedbackCount }}</span>
+                    </div>
                 </div>
-              }
-            </div>
-            <span class="pf-card-title">{{ item.title }}</span>
-          </a>
+                @if (item.firstComment) {
+                  <div class="pf-card-comment">
+                    <span class="pf-card-comment-author">"{{ item.firstComment.authorName }}"</span>
+                    <span class="pf-card-comment-body">{{ item.firstComment.body }}</span>
+                  </div>
+                }
+              </div>
+              <span class="pf-card-title">{{ item.title }}</span>
+            </a>
+          }
         }
       </div>
     </div>

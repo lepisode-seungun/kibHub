@@ -451,4 +451,33 @@
     </section>
   }
 
+  <!-- ===== 로그인 필요 모달 ===== -->
+  @if (isLoginRequiredModalOpen()) {
+    <div class="login-req-overlay" tabindex="-1" (click)="isLoginRequiredModalOpen.set(false)" (keydown.escape)="isLoginRequiredModalOpen.set(false)">
+      <div class="login-req-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="isLoginRequiredModalOpen.set(false)">
+        <!-- 헤더 -->
+        <div class="login-req-header">
+          <button class="login-req-close" (click)="isLoginRequiredModalOpen.set(false)" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 본문 -->
+        <div class="login-req-body">
+          <h3 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-zinc-100 text-center m-0">로그인이 필요합니다</h3>
+          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center m-0">해당 서비스는 로그인 후 이용 가능한 서비스 입니다.</p>
+        </div>
+
+        <!-- 푸터 -->
+        <div class="login-req-footer">
+          <div class="login-req-actions">
+            <button class="login-req-btn-cancel" (click)="isLoginRequiredModalOpen.set(false)">취소</button>
+            <a class="login-req-btn-login" routerLink="/login" [queryParams]="{returnUrl: '/k-digital/' + bootcampId}">로그인하기</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </main>

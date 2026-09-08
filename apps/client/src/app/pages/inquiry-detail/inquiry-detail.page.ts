@@ -2,6 +2,7 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { downloadFile as _downloadFile } from '../../utils/file.utils';
 
 interface InquiryDetail {
   id: number;
@@ -101,13 +102,6 @@ export class InquiryDetailPage implements OnInit {
   }
 
   downloadFile(file: { name: string; url: string }): void {
-    if (!file.url) return;
-    const a = document.createElement('a');
-    a.href = file.url;
-    a.download = file.name;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    _downloadFile(file.url, file.name);
   }
 }

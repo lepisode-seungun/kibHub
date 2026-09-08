@@ -12,6 +12,19 @@ export class ContentsService {
     @Inject(NotificationsService) private notiService: NotificationsService,
   ) {}
 
+  /** author 객체에 initial 필드 추가 */
+  private withAuthorInitial<T extends { author?: { nickname?: string; name?: string } | null }>(item: T): T & { author?: T['author'] & { initial?: string } } {
+    if (item.author) {
+      (item.author as any).initial = ((item.author as any).nickname || (item.author as any).name || 'U').charAt(0).toUpperCase();
+    }
+    return item as any;
+  }
+
+  /** 배열의 각 항목에 author initial 추가 */
+  private withAuthorInitials<T extends { author?: { nickname?: string; name?: string } | null }>(items: T[]): T[] {
+    return items.map(item => this.withAuthorInitial(item));
+  }
+
   // ===== 콘텐츠 =====
   async findAll(query?: { search?: string; status?: string; type?: string; showAll?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.ContentWhereInput = {};
@@ -75,11 +88,11 @@ export class ContentsService {
         this.prisma.content.findMany({ where, include, orderBy: { createdAt: 'desc' }, skip, take: limit }),
         this.prisma.content.count({ where }),
       ]);
-      return paginate(await addFeedbackCount(data), total, page, limit);
+      return paginate(this.withAuthorInitials(await addFeedbackCount(data)), total, page, limit);
     }
 
     const data = await this.prisma.content.findMany({ where, include, orderBy: { createdAt: 'desc' } });
-    return addFeedbackCount(data);
+    return this.withAuthorInitials(await addFeedbackCount(data));
   }
 
 
@@ -113,7 +126,7 @@ export class ContentsService {
       },
     });
 
-    return { ...content, bookmarkCount };
+    return this.withAuthorInitial({ ...content, bookmarkCount });
   }
 
   create(data: CreateContentDto & { authorId: number }) {
@@ -206,8 +219,8 @@ export class ContentsService {
     return comments;
   }
 
-  findRecentComments(take = 10) {
-    return this.prisma.comment.findMany({
+  async findRecentComments(take = 10) {
+    const comments = await this.prisma.comment.findMany({
       take,
       orderBy: { createdAt: 'desc' },
       include: {
@@ -215,10 +228,11 @@ export class ContentsService {
         content: { select: { id: true, title: true, thumbnail: true } },
       },
     });
+    return this.withAuthorInitials(comments);
   }
 
-  findBestComments(take = 10) {
-    return this.prisma.comment.findMany({
+  async findBestComments(take = 10) {
+    const comments = await this.prisma.comment.findMany({
       take,
       where: { status: 'VISIBLE', likeCount: { gt: 0 } },
       orderBy: { likeCount: 'desc' },
@@ -227,6 +241,7 @@ export class ContentsService {
         content: { select: { id: true, title: true, thumbnail: true } },
       },
     });
+    return this.withAuthorInitials(comments);
   }
 
   async createComment(contentId: number, data: { body: string; images?: string[]; authorId: number; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) {
@@ -330,6 +345,29 @@ export class ContentsService {
     } else {
       await this.prisma.commentLike.create({ data: { commentId, userId } });
       const updated = await this.prisma.comment.update({ where: { id: commentId }, data: { likeCount: { increment: 1 } } });
+
+      // 알림: 댓글 작성자에게 좋아요 알림 (본인 제외)
+      try {
+        const comment = await this.prisma.comment.findUnique({
+          where: { id: commentId },
+          select: { authorId: true, contentId: true },
+        });
+        if (comment && comment.authorId !== userId) {
+          const liker = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { nickname: true },
+          });
+          await this.notiService.create({
+            userId: comment.authorId,
+            type: 'COMMENT_LIKE',
+            message: `${liker?.nickname || '누군가'}님이 회원님의 댓글을 좋아합니다.`,
+            actorId: userId,
+            targetId: comment.contentId,
+            targetType: 'content',
+          });
+        }
+      } catch { /* 알림 실패해도 좋아요는 정상 */ }
+
       return { liked: true, likeCount: updated.likeCount };
     }
   }

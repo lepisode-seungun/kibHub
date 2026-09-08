@@ -33,8 +33,9 @@ export class FindPasswordPage {
     try {
       const result = await this.api.auth.resetPassword({ email: this.email });
       this.successMessage.set(result.message || '임시 비밀번호가 이메일로 발송되었습니다.');
-    } catch (e: any) {
-      const msg = e?.error?.error || e?.error?.message || '등록되지 않은 이메일입니다.';
+    } catch (e: unknown) {
+      const err = e as { error?: { error?: string; message?: string } };
+      const msg = err?.error?.error || err?.error?.message || '등록되지 않은 이메일입니다.';
       this.errorMessage.set(msg);
     }
 

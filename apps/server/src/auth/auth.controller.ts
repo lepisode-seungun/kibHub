@@ -35,7 +35,7 @@ export class AuthController {
       const token = this.authService.generateToken(user.id);
       res.cookie('kiphub_token', token, COOKIE_OPTIONS);
       return res.status(HttpStatus.CREATED).json({
-        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N', profileImage: user.profileImage || null, role: user.role },
+        user: { id: user.id, email: user.email, nickname: user.nickname, initial: (user.nickname || user.name || 'U').charAt(0).toUpperCase(), profileImage: user.profileImage || null, role: user.role },
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '회원가입 실패';
@@ -53,7 +53,7 @@ export class AuthController {
       const token = this.authService.generateToken(user.id);
       res.cookie('kiphub_token', token, COOKIE_OPTIONS);
       return res.json({
-        user: { id: user.id, email: user.email, nickname: user.nickname, initial: 'N', profileImage: user.profileImage || null, role: user.role },
+        user: { id: user.id, email: user.email, nickname: user.nickname, initial: (user.nickname || user.name || 'U').charAt(0).toUpperCase(), profileImage: user.profileImage || null, role: user.role },
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '로그인 실패';
@@ -95,7 +95,7 @@ export class AuthController {
     const user = await this.authService.findById(decoded.userId);
     if (!user) return res.status(HttpStatus.NOT_FOUND).json({ error: '유저를 찾을 수 없습니다.' });
 
-    return res.json({ user: { ...user, initial: 'N' } });
+    return res.json({ user: { ...user, initial: ((user as any).nickname || (user as any).name || 'U').charAt(0).toUpperCase() } });
   }
 
   @Post('logout')

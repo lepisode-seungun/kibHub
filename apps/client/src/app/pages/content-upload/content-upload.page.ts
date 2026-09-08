@@ -97,7 +97,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   // 앨범 모달
   isAlbumModalOpen = signal(false);
-  albums = signal<{ id: number; name: string; count: number }[]>([]);
+  albums = signal<{ id: number; name: string; count: number; thumbnails: string[] }[]>([]);
   selectedAlbumId = signal<number | null>(null);
   selectedAlbumName = signal<string>('');
 
@@ -178,11 +178,18 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   async onFileSelect(): Promise<void> {
     try {
       const serverAlbums = await this.api.albums.findAll('ALBUM');
-      this.albums.set(serverAlbums.map((a: any) => ({
-        id: a.id,
-        name: a.name,
-        count: a._count?.albumContents || 0,
-      })));
+      this.albums.set(serverAlbums.map((a: any) => {
+        const thumbnails = (a.albumContents || [])
+          .slice(0, 4)
+          .map((ac: any) => ac.content?.thumbnail)
+          .filter((t: string | undefined): t is string => !!t);
+        return {
+          id: a.id,
+          name: a.name,
+          count: a._count?.albumContents || 0,
+          thumbnails,
+        };
+      }));
     } catch (e) {
       console.error('앨범 로드 실패:', e);
     }
@@ -488,7 +495,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       const created = await this.api.albums.create({ name });
       this.albums.update(list => [
         ...list,
-        { id: created.id, name: created.name, count: 0 },
+        { id: created.id, name: created.name, count: 0, thumbnails: [] },
       ]);
       this.selectedAlbumId.set(created.id);
     } catch (e) {

@@ -16,6 +16,7 @@ model Notification {
 enum NotificationType {
   COMMENT
   REPLY
+  COMMENT_LIKE
   FOLLOW
   BOOTCAMP_APPLY
   BOOTCAMP_ACCEPT

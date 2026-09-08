@@ -20,6 +20,7 @@ interface ContentCard {
   authorName: string;
   commentCount: number;
   feedbackCount: number;
+  createdAt: string;
   firstComment?: { body: string; authorName: string };
 }
 
@@ -40,8 +41,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   userNickname = signal('닉네임');
   userEmail = signal('');
   userBio = signal('');
-  userProfileImage = signal<string | null>(null);
-  userInitial = signal('');
+  userProfileImage = computed(() => this.auth.currentUser()?.profileImage ?? null);
+  userInitial = computed(() => this.auth.currentUser()?.initial ?? '');
   userSns = signal<{ type: string; url: string }[]>([]);
   userRole = signal('');
   userId = signal<number>(0);
@@ -69,8 +70,8 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.userNickname.set(user.nickname || user.name);
       this.userEmail.set(user.email);
       this.userBio.set(user.intro || '');
-      this.userProfileImage.set(user.profileImage || null);
-      this.userInitial.set((user.nickname || user.name || 'U').charAt(0).toUpperCase());
+      // authService도 갱신하여 헤더와 동기화
+      await this.auth.refreshUser();
 
       // 커버 이미지 로드
       if ((user as any).coverImage) {
@@ -120,6 +121,7 @@ export class ProfilePage implements OnInit, OnDestroy {
               authorName: c.author?.nickname || c.author?.name || '',
               commentCount: c._count?.comments || 0,
               feedbackCount: c._count?.comments || 0,
+              createdAt: c.createdAt || '',
               firstComment: c.comments?.[0] ? {
                 body: c.comments[0].body,
                 authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
@@ -137,30 +139,23 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   private async loadContents(): Promise<void> {
     try {
-      // ALBUM 타입 앨범에 속한 콘텐츠만 수집 (중복 제거)
-      const serverAlbums = await this.api.albums.findAll('ALBUM');
-      const contentMap = new Map<number, any>();
-      for (const a of serverAlbums) {
-        for (const ac of (a.albumContents || [])) {
-          const c = ac.content;
-          if (c && !contentMap.has(c.id)) {
-            contentMap.set(c.id, {
-              id: c.id,
-              title: c.title,
-              imageUrl: c.thumbnail || '',
-              authorName: c.author?.nickname || c.author?.name || '',
-              commentCount: c._count?.comments || 0,
-              feedbackCount: c._count?.comments || 0,
-              firstComment: c.comments?.[0] ? {
-                body: c.comments[0].body,
-                authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
-              } : undefined,
-            });
-          }
-        }
-      }
-      this.contents.set(Array.from(contentMap.values()));
-      this.allCount.set(contentMap.size);
+      const uid = this.userId();
+      if (!uid) return;
+      const serverContents: any[] = await this.api.users.contents(uid);
+      this.contents.set(serverContents.map((c: any) => ({
+        id: c.id,
+        title: c.title,
+        imageUrl: c.thumbnail || '',
+        authorName: c.author?.nickname || c.author?.name || '',
+        commentCount: c._count?.comments || 0,
+        feedbackCount: c._count?.comments || 0,
+        createdAt: c.createdAt || '',
+        firstComment: c.comments?.[0] ? {
+          body: c.comments[0].body,
+          authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
+        } : undefined,
+      })));
+      this.allCount.set(serverContents.length);
     } catch (e) {
       console.error('콘텐츠 로드 실패:', e);
     }
@@ -322,10 +317,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   albumCount = signal(0);
   searchQuery = signal('');
 
-  /** 앨범 선택 + 검색어에 따른 필터링된 콘텐츠 */
+  /** 앨범 선택 + 검색어 + 정렬에 따른 필터링된 콘텐츠 */
   filteredContents = computed(() => {
     const albumId = this.selectedAlbumId();
     const query = this.searchQuery().toLowerCase().trim();
+    const sort = this.selectedSort();
     let result = this.contents();
     if (albumId) {
       const album = this.albums().find(a => a.id === albumId);
@@ -334,6 +330,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     if (query) {
       result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
     }
+    result = [...result].sort((a, b) => {
+      const da = new Date(a.createdAt).getTime();
+      const db = new Date(b.createdAt).getTime();
+      return sort === 'latest' ? db - da : da - db;
+    });
     return result;
   });
 
@@ -342,10 +343,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   bookmarkCount = signal(0);
   selectedCategoryId = signal<number | null>(null);
 
-  /** 카테고리 선택 + 검색어에 따른 필터링된 북마크 콘텐츠 */
+  /** 카테고리 선택 + 검색어 + 정렬에 따른 필터링된 북마크 콘텐츠 */
   filteredBookmarkContents = computed(() => {
     const catId = this.selectedCategoryId();
     const query = this.searchQuery().toLowerCase().trim();
+    const sort = this.selectedSort();
     let result = this.bookmarkContents();
     if (catId) {
       const cat = this.categories().find(c => c.id === catId);
@@ -354,6 +356,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     if (query) {
       result = result.filter(c => c.title.toLowerCase().includes(query) || c.authorName.toLowerCase().includes(query));
     }
+    result = [...result].sort((a, b) => {
+      const da = new Date(a.createdAt).getTime();
+      const db = new Date(b.createdAt).getTime();
+      return sort === 'latest' ? db - da : da - db;
+    });
     return result;
   });
 
@@ -427,6 +434,36 @@ export class ProfilePage implements OnInit, OnDestroy {
       left: direction === 'right' ? scrollAmount : -scrollAmount,
       behavior: 'smooth',
     });
+  }
+
+  /* ===== 드래그 스크롤 ===== */
+  private isDragging = false;
+  private dragStartX = 0;
+  private dragScrollLeft = 0;
+
+  onSliderMouseDown(event: MouseEvent): void {
+    const el = this.albumSlider?.nativeElement;
+    if (!el) return;
+    this.isDragging = true;
+    this.dragStartX = event.pageX - el.offsetLeft;
+    this.dragScrollLeft = el.scrollLeft;
+    el.style.cursor = 'grabbing';
+  }
+
+  onSliderMouseMove(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    event.preventDefault();
+    const el = this.albumSlider?.nativeElement;
+    if (!el) return;
+    const x = event.pageX - el.offsetLeft;
+    const walk = (x - this.dragStartX) * 1.5;
+    el.scrollLeft = this.dragScrollLeft - walk;
+  }
+
+  onSliderMouseUp(): void {
+    this.isDragging = false;
+    const el = this.albumSlider?.nativeElement;
+    if (el) el.style.cursor = 'grab';
   }
 
   openNewAlbumModal(): void {

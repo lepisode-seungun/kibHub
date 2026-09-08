@@ -137,7 +137,7 @@ export class BootcampDashboardPage implements OnInit {
         PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
       const applicants = data as unknown as ApplicantResponse[];
-      const filtered = applicants.filter(a => a.status !== 'REJECTED');
+      const filtered = applicants.filter(a => a.status === 'ACCEPTED');
       this.studentData.set(filtered.map(a => {
         const iq = a.interviewQuestions as Record<string, string> | null;
         return {

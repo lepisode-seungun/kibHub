@@ -1047,10 +1047,23 @@
 
 .noti-item:hover {
   background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
 }
 
 .noti-item-read {
   background: rgba(255, 255, 255, 0.04);
+}
+
+.noti-item-read .noti-message {
+  color: #71717A;
+}
+
+.noti-item-read .noti-date {
+  color: #3F3F46;
+}
+
+.noti-item-read .noti-icon {
+  opacity: 0.5;
 }
 
 /* 체크박스 */
@@ -1140,7 +1153,7 @@
   font-size: 16px;
   line-height: 150%;
   letter-spacing: -0.04em;
-  color: #A1A1AA;
+  color: #FFFFFF;
 }
 
 .noti-date {

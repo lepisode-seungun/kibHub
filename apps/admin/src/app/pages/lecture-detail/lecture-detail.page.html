@@ -46,7 +46,7 @@
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center justify-between pb-4 border-b border-gray-200">
       <div class="flex items-center gap-3 cursor-pointer" tabindex="0" (click)="toggleLectureInfo()" (keyup.enter)="toggleLectureInfo()">
-        <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">강의 기본 정보</span>
+        <span class="font-suit font-bold text-xl leading-none tracking-[-0.04em] text-gray-700">강의 기본 정보</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200"
              [ngClass]="lectureInfoOpen() ? '' : 'rotate-180'">
@@ -62,16 +62,16 @@
           <span class="block w-[4px] h-[4px] rounded-full bg-[#1F2937]"></span>
         </button>
         @if (lectureInfoMenuOpen()) {
-          <div class="absolute top-full right-0 mt-1 flex flex-col py-1 bg-white rounded-lg z-50"
+          <div class="absolute top-full left-1/2 -translate-x-1/2 mt-1 flex flex-col py-1 bg-white rounded-lg z-50"
                style="width: 72px; border: 1px solid #F9FAFB; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);"
                tabindex="0"
                (click)="$event.stopPropagation()"
                (keyup.enter)="$event.stopPropagation()">
-            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
-                    style="height: 32px; width: 100%;"
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-none tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 32px; width: 100%; box-sizing: border-box;"
                     (click)="onLectureInfoMenuAction('edit')">수정</button>
-            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
-                    style="height: 32px; width: 100%;"
+            <button class="flex items-center justify-center px-3 border-none cursor-pointer font-suit font-medium text-sm leading-none tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
+                    style="height: 32px; width: 100%; box-sizing: border-box;"
                     (click)="onLectureInfoMenuAction('delete')">삭제</button>
           </div>
         }
@@ -159,20 +159,34 @@
                        (input)="contentEditVideoUrl.set($any($event.target).value)"
                        placeholder="https://www.youtube.com/watch?v=..." />
               } @else {
-                <div class="flex items-start gap-2.5 px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="shrink-0">
-                    <path d="M23.5 6.19c-.28-1.04-1.1-1.87-2.14-2.14C19.43 3.5 12 3.5 12 3.5s-7.43 0-9.36.55C1.6 4.32.78 5.15.5 6.19 0 8.13 0 12 0 12s0 3.87.5 5.81c.28 1.04 1.1 1.87 2.14 2.14C4.57 20.5 12 20.5 12 20.5s7.43 0 9.36-.55c1.04-.27 1.86-1.1 2.14-2.14.5-1.94.5-5.81.5-5.81s0-3.87-.5-5.81z" fill="#FF0000"/>
-                    <path d="M9.75 15.02l6.19-3.02L9.75 8.98v6.04z" fill="white"/>
-                  </svg>
-                  <div class="flex items-center gap-2">
-                    @if (lectureData().videoUrl) {
-                      <a class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700 underline"
-                         [href]="lectureData().videoUrl" target="_blank">{{ lectureData().videoUrl }}</a>
-                    } @else {
+                @if (lectureData().videoUrl) {
+                  <a class="flex items-center justify-between px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+                     style="box-sizing: border-box; text-decoration: none;"
+                     [href]="lectureData().videoUrl" target="_blank" title="영상 보기">
+                    <div class="flex items-center gap-2.5">
+                      <div class="flex items-center justify-center bg-transparent border-none p-1 rounded-md shrink-0">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                          <path d="M23.5 6.19c-.28-1.04-1.1-1.87-2.14-2.14C19.43 3.5 12 3.5 12 3.5s-7.43 0-9.36.55C1.6 4.32.78 5.15.5 6.19 0 8.13 0 12 0 12s0 3.87.5 5.81c.28 1.04 1.1 1.87 2.14 2.14C4.57 20.5 12 20.5 12 20.5s7.43 0 9.36-.55c1.04-.27 1.86-1.1 2.14-2.14.5-1.94.5-5.81.5-5.81s0-3.87-.5-5.81z" fill="#FF0000"/>
+                          <path d="M9.75 15.02l6.19-3.02L9.75 8.98v6.04z" fill="white"/>
+                        </svg>
+                      </div>
+                      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700"
+                            style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ lectureData().videoUrl }}</span>
+                    </div>
+                  </a>
+                } @else {
+                  <div class="flex items-center justify-between px-3 py-2.5 bg-white border border-[#E2E8F0] rounded-md" style="box-sizing: border-box;">
+                    <div class="flex items-center gap-2.5">
+                      <div class="flex items-center justify-center p-1 shrink-0">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                          <path d="M23.5 6.19c-.28-1.04-1.1-1.87-2.14-2.14C19.43 3.5 12 3.5 12 3.5s-7.43 0-9.36.55C1.6 4.32.78 5.15.5 6.19 0 8.13 0 12 0 12s0 3.87.5 5.81c.28 1.04 1.1 1.87 2.14 2.14C4.57 20.5 12 20.5 12 20.5s7.43 0 9.36-.55c1.04-.27 1.86-1.1 2.14-2.14.5-1.94.5-5.81.5-5.81s0-3.87-.5-5.81z" fill="#D1D5DB"/>
+                          <path d="M9.75 15.02l6.19-3.02L9.75 8.98v6.04z" fill="white"/>
+                        </svg>
+                      </div>
                       <span class="font-suit font-medium text-sm text-gray-400">영상 링크 없음</span>
-                    }
+                    </div>
                   </div>
-                </div>
+                }
               }
             </div>
 

@@ -1,30 +1,19 @@
 <div class="flex flex-col p-6 gap-4 flex-1">
-  <!-- 검색바 + 추가 버튼 -->
-  <div class="flex items-center justify-between">
-    <div class="relative flex items-center">
-      <svg class="absolute left-3" width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M7.333 12.667A5.333 5.333 0 107.333 2a5.333 5.333 0 000 10.667zM14 14l-2.9-2.9" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <input type="text"
-             class="pl-9 pr-4 py-2 w-[280px] h-10 bg-white border border-gray-300 rounded-md font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors"
-             placeholder="검색어를 입력하세요" />
-    </div>
-    <button class="flex items-center justify-center gap-1 px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+  <adm-data-grid
+    [columns]="columns"
+    [data]="data()"
+    searchPlaceholder="검색어를 입력하세요"
+    [contextMenuItemsFn]="contextMenuItemsFn"
+    (contextMenuSelect)="onContextMenuAction($event)"
+    (rowClick)="onRowClick($event)"
+    (rowReorder)="onRowReorder($event)">
+    <button gridActions
+            class="flex items-center justify-center gap-1 px-3 py-2 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
             style="height: 40px;"
             (click)="openDrawer()">
       <span>+</span>
       <span>추가</span>
     </button>
-  </div>
-
-  <adm-data-grid
-    [columns]="columns"
-    [data]="data()"
-    [showSearch]="false"
-    [contextMenuItemsFn]="contextMenuItemsFn"
-    (contextMenuSelect)="onContextMenuAction($event)"
-    (rowClick)="onRowClick($event)"
-    (rowReorder)="onRowReorder($event)">
   </adm-data-grid>
 </div>
 

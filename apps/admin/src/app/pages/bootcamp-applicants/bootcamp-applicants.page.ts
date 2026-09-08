@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
@@ -56,6 +56,8 @@ export class BootcampApplicantsPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
   private bootcampCtx = inject(BootcampContextService);
+
+  grid = viewChild(DataGridComponent);
 
   selectedApplicants = signal<ApplicantRow[]>([]);
   statusDropdownOpen = signal(false);
@@ -118,10 +120,17 @@ export class BootcampApplicantsPage implements OnInit {
 
   async confirmPass(): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
+    if (ids.length === 0) {
+      this.toast.error('지원자를 선택해주세요.');
+      this.showPassDialog.set(false);
+      return;
+    }
     try {
       await this.api.applicants.bulkUpdateStatus(ids, 'ACCEPTED');
       this.toast.success('합격 처리 되었습니다.');
       await this.loadApplicants();
+      this.selectedApplicants.set([]);
+      this.grid()?.selectedIds.set(new Set());
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.showPassDialog.set(false);
   }
@@ -138,10 +147,17 @@ export class BootcampApplicantsPage implements OnInit {
 
   async confirmFail(): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
+    if (ids.length === 0) {
+      this.toast.error('지원자를 선택해주세요.');
+      this.showFailDialog.set(false);
+      return;
+    }
     try {
       await this.api.applicants.bulkUpdateStatus(ids, 'REJECTED');
       this.toast.success('불합격 처리 되었습니다.');
       await this.loadApplicants();
+      this.selectedApplicants.set([]);
+      this.grid()?.selectedIds.set(new Set());
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
     this.showFailDialog.set(false);
   }
@@ -150,13 +166,19 @@ export class BootcampApplicantsPage implements OnInit {
 
   async changeStatus(status: string): Promise<void> {
     const ids = this.selectedApplicants().map(a => a.id);
+    this.statusDropdownOpen.set(false);
+    if (ids.length === 0) {
+      this.toast.error('지원자를 선택해주세요.');
+      return;
+    }
     const statusMap: Record<string, string> = { '합격': 'ACCEPTED', '불합격': 'REJECTED', '대기': 'PENDING', '수강대기': 'WAITING', '수료': 'COMPLETED' };
     try {
       await this.api.applicants.bulkUpdateStatus(ids, statusMap[status] || status);
       this.toast.success('상태 변경 완료');
       await this.loadApplicants();
+      this.selectedApplicants.set([]);
+      this.grid()?.selectedIds.set(new Set());
     } catch (e: unknown) { this.toast.error(e instanceof Error ? e.message : '처리 실패'); }
-    this.statusDropdownOpen.set(false);
   }
 
   // ===== 사전인터뷰 설정 드로어 =====

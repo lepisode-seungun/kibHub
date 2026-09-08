@@ -1,36 +1,22 @@
 <div class="flex flex-col p-6 gap-3 w-full">
   <div class="flex flex-col gap-6 bg-white w-full">
 
-    <!-- 상단: 검색 + 등록 버튼 -->
-    <div class="flex items-center justify-between w-full">
-      <!-- 검색 입력 -->
-      <div class="flex items-center px-4 gap-2 bg-white border-2 border-gray-300 rounded-md" style="width: 298px; height: 40px; box-sizing: border-box;">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="shrink-0">
-          <path d="M14.354 13.646l-3.536-3.536A5.5 5.5 0 1 0 9.5 11a5.48 5.48 0 0 0 1.318-1.182l3.536 3.536a.5.5 0 0 0 .708-.708zM2 6.5a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z" fill="#9CA3AF"/>
-        </svg>
-        <input type="text"
-               class="w-full border-none outline-none bg-transparent font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800"
-               placeholder="검색어를 입력하세요"
-               (input)="onSearchInput($event)"/>
-      </div>
+    <adm-data-grid
+      [columns]="columns"
+      [data]="notices()"
+      searchPlaceholder="검색어를 입력하세요"
+      [contextMenuItemsFn]="getContextMenuItems"
+      (contextMenuSelect)="onContextMenu($event)"
+      (rowClick)="onRowClick($event)">
       <!-- 등록 버튼 -->
-      <button class="flex items-center justify-center gap-2.5 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
+      <button gridActions
+              class="flex items-center justify-center gap-2.5 px-3 h-9 bg-[#3C8EEE] rounded-md border-none cursor-pointer hover:bg-blue-600 transition-colors"
               (click)="onRegister()">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M8 3.333v9.334M3.333 8h9.334" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span class="font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white">등록</span>
       </button>
-    </div>
-
-    <!-- 데이터 그리드 (검색바 숨김) -->
-    <adm-data-grid
-      [columns]="columns"
-      [data]="notices()"
-      [showSearch]="false"
-      [contextMenuItemsFn]="getContextMenuItems"
-      (contextMenuSelect)="onContextMenu($event)"
-      (rowClick)="onRowClick($event)">
     </adm-data-grid>
 
   </div>

@@ -170,6 +170,13 @@ export class BootcampPage implements OnInit {
 
   async submitDrawer(): Promise<void> {
     const form = this.drawerForm();
+
+    // 날짜 정합성 검증: 시작일시가 종료일시보다 후일인 경우 차단
+    if (form.startDate && form.endDate && form.startDate > form.endDate) {
+      this.toast.error('시작일시는 종료일시보다 이후일 수 없습니다.');
+      return;
+    }
+
     try {
       // 썸네일 업로드
       let thumbnailUrl: string | undefined;

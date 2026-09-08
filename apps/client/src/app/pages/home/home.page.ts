@@ -9,6 +9,7 @@ interface CommentCard {
   id: number;
   userName: string;
   profileImage?: string;
+  initial?: string;
   commentLikes: string;
   comment: string;
   postTitle: string;
@@ -27,6 +28,7 @@ interface ContentCard {
   id: number;
   userName: string;
   profileImage?: string;
+  initial?: string;
   title: string;
   type: string;
   categoryName: string;
@@ -44,6 +46,7 @@ interface MentorCard {
   id: number;
   userName: string;
   profileImage?: string;
+  initial?: string;
   comment: string;
   contentTitle: string;
   contentId: number;
@@ -84,6 +87,20 @@ export class HomePage implements AfterViewInit, OnInit {
 
   ngAfterViewInit(): void {
     this.ngZone.runOutsideAngular(() => {
+      // 초기 overflow 체크
+      setTimeout(() => {
+        if (this.track?.nativeElement) {
+          const el = this.track.nativeElement;
+          const hasOverflow = el.scrollWidth > el.clientWidth + 1;
+          this.ngZone.run(() => this.showCommentRightFade.set(hasOverflow));
+        }
+        if (this.mentorTrack?.nativeElement) {
+          const el = this.mentorTrack.nativeElement;
+          const hasOverflow = el.scrollWidth > el.clientWidth + 1;
+          this.ngZone.run(() => this.showMentorRightFade.set(hasOverflow));
+        }
+      });
+
       this.track?.nativeElement.addEventListener('scroll', () => {
         const el = this.track.nativeElement;
         const scrolled = el.scrollLeft > 1;
@@ -119,7 +136,20 @@ export class HomePage implements AfterViewInit, OnInit {
   ngOnInit(): void {
     Promise.all([this.loadBootcamps(), this.loadContents(), this.loadSubCategories(), this.loadRecentComments(), this.loadBestMentors()]).finally(() => {
       this.isLoading.set(false);
+      // 데이터 로드 후 carousel overflow 재체크
+      setTimeout(() => this.recheckCarouselOverflow());
     });
+  }
+
+  private recheckCarouselOverflow(): void {
+    if (this.track?.nativeElement) {
+      const el = this.track.nativeElement;
+      this.showCommentRightFade.set(el.scrollWidth > el.clientWidth + 1);
+    }
+    if (this.mentorTrack?.nativeElement) {
+      const el = this.mentorTrack.nativeElement;
+      this.showMentorRightFade.set(el.scrollWidth > el.clientWidth + 1);
+    }
   }
 
   private async loadBootcamps(): Promise<void> {
@@ -145,6 +175,7 @@ export class HomePage implements AfterViewInit, OnInit {
         id: c.id,
         userName: c.author?.nickname || c.author?.name || 'user',
         profileImage: (c.author as any)?.profileImage || '',
+        initial: (c.author as any)?.initial || '',
         title: c.title,
         type: c.type,
         categoryName: c.category?.name || '',
@@ -178,6 +209,7 @@ export class HomePage implements AfterViewInit, OnInit {
         contentId: c.content?.id || c.contentId,
         userName: c.author?.nickname || c.author?.name || '익명',
         profileImage: c.author?.profileImage || '',
+        initial: (c as any).author?.initial || '',
         commentLikes: String(c.likeCount || 0),
         comment: c.body,
         postTitle: c.content?.title || '',
@@ -263,7 +295,11 @@ export class HomePage implements AfterViewInit, OnInit {
   }
 
   selectSubCategory(id: string): void {
-    this.activeSubCategory.set(this.activeSubCategory() === id ? '' : id);
+    if (!id) {
+      this.activeSubCategory.set('');
+    } else {
+      this.activeSubCategory.set(this.activeSubCategory() === id ? '' : id);
+    }
   }
 
   private typeMap: Record<string, string> = {
@@ -304,15 +340,12 @@ export class HomePage implements AfterViewInit, OnInit {
 
   private async loadBestMentors(): Promise<void> {
     try {
-      let comments = await this.api.comments.findBest(10);
-      // 좋아요 있는 댓글이 없으면 최신 댓글로 폴백
-      if (comments.length === 0) {
-        comments = await this.api.comments.findRecent(10);
-      }
+      const comments = await this.api.comments.findBest(10);
       this.mentorCards.set(comments.map((c: any) => ({
         id: c.id,
         userName: c.author?.nickname || c.author?.name || '익명',
         profileImage: c.author?.profileImage || undefined,
+        initial: c.author?.initial || '',
         comment: c.body,
         contentTitle: c.content?.title || '',
         contentId: c.content?.id || 0,

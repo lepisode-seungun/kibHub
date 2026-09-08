@@ -1,14 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
-interface UploadedFile {
-  name: string;
-  extension: string;
-  size: string;
-  status: 'uploading' | 'done';
-}
+
 
 @Component({
   selector: 'app-assignment-submit',
@@ -55,6 +50,128 @@ export class AssignmentSubmitPage {
     this.uploadedFiles.update(files => files.filter((_, i) => i !== index));
   }
 
+  /* ===== 텍스트 에디터 명령 ===== */
+  @ViewChild('editorArea') editorArea!: ElementRef<HTMLDivElement>;
+
+  execCmd(command: string, value?: string): void {
+    document.execCommand(command, false, value);
+    this.editorArea?.nativeElement?.focus();
+  }
+
+  /* 글 색상 팔레트 */
+  isColorOpen = signal(false);
+  readonly colorOptions = [
+    '#000000', '#434343', '#666666', '#999999', '#CCCCCC',
+    '#EF4444', '#F97316', '#EAB308', '#22C55E', '#14B8A6',
+    '#3B82F6', '#6366F1', '#8B5CF6', '#A855F7', '#EC4899',
+    '#991B1B', '#9A3412', '#854D0E', '#166534', '#115E59',
+    '#1E3A8A', '#3730A3', '#5B21B6', '#7E22CE', '#9D174D',
+  ];
+
+  toggleColorPalette(): void {
+    this.isColorOpen.update(v => !v);
+    this.isFontSizeOpen.set(false);
+  }
+
+  applyColor(color: string): void {
+    document.execCommand('foreColor', false, color);
+    this.isColorOpen.set(false);
+    this.editorArea?.nativeElement?.focus();
+  }
+
+  /* 글씨 크기 드롭다운 */
+  isFontSizeOpen = signal(false);
+  readonly fontSizeOptions = [
+    { label: '10', value: '1' },
+    { label: '13', value: '2' },
+    { label: '16', value: '3' },
+    { label: '18', value: '4' },
+    { label: '24', value: '5' },
+    { label: '32', value: '6' },
+    { label: '48', value: '7' },
+  ];
+
+  toggleFontSizeDropdown(): void {
+    this.isFontSizeOpen.update(v => !v);
+    this.isColorOpen.set(false);
+  }
+
+  applyFontSize(value: string): void {
+    document.execCommand('fontSize', false, value);
+    this.isFontSizeOpen.set(false);
+    this.editorArea?.nativeElement?.focus();
+  }
+
+  insertLink(): void {
+    const url = prompt('링크 URL을 입력하세요:', 'https://');
+    if (url) {
+      document.execCommand('createLink', false, url);
+    }
+  }
+
+  insertImage(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.addEventListener('change', async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const result = await this.api.upload.single(file, 'editor');
+        if (result?.url) {
+          const img = document.createElement('img');
+          img.src = result.url;
+          img.alt = file.name;
+          img.style.maxWidth = '360px';
+          img.style.maxHeight = '300px';
+          img.style.height = 'auto';
+          img.style.width = 'auto';
+          img.style.borderRadius = '8px';
+          img.style.margin = '8px 0';
+          img.style.display = 'block';
+
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(img);
+            // 커서를 이미지 뒤로
+            const newRange = document.createRange();
+            newRange.setStartAfter(img);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+          } else {
+            this.editorArea?.nativeElement?.appendChild(img);
+          }
+          this.content = this.editorArea?.nativeElement?.innerHTML || '';
+        }
+      } catch (err) {
+        console.error('이미지 업로드 실패:', err);
+      }
+      this.editorArea?.nativeElement?.focus();
+    });
+    input.click();
+  }
+
+  onEditorInput(event: Event): void {
+    this.content = (event.target as HTMLElement).innerHTML;
+  }
+
+  onEditorFocus(event: FocusEvent): void {
+    const el = event.target as HTMLElement;
+    const placeholder = el.querySelector('.editor-placeholder');
+    if (placeholder) placeholder.remove();
+  }
+
+  onEditorBlur(event: FocusEvent): void {
+    const el = event.target as HTMLElement;
+    if (!el.textContent?.trim() && !el.querySelector('img')) {
+      el.innerHTML = '<span class="text-zinc-500 pointer-events-none editor-placeholder">입력해주세요.</span>';
+      this.content = '';
+    }
+  }
+
   async onFileSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
@@ -97,8 +214,8 @@ export class AssignmentSubmitPage {
     this.isSubmitting.set(true);
     try {
       const files = this.uploadedFiles()
-        .filter(f => f.status === 'done')
-        .map(f => ({ url: f.url!, name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
+        .filter(f => f.status === 'done' && f.url)
+        .map(f => ({ url: f.url ?? '', name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
       await this.api.submissions.create(Number(this.assignmentId), {
         title: this.title,
         content: this.content,

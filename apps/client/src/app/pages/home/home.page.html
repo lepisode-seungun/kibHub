@@ -22,8 +22,8 @@
                   @if (card.profileImage) {
                     <img [src]="card.profileImage" alt="프로필" class="w-[42px] h-[42px] rounded-full border border-white/25 shrink-0 object-cover" />
                   } @else {
-                    <div class="w-[42px] h-[42px] rounded-full border border-white/25 bg-gradient-to-br from-[#A148FF] to-[#6C2BD9] flex items-center justify-center shrink-0">
-                      <span class="font-suit font-semibold text-base text-white">{{ card.userName.charAt(0) }}</span>
+                    <div class="w-[42px] h-[42px] rounded-full border border-[#52525B] bg-[#3F3F46] flex items-center justify-center shrink-0">
+                      <span class="font-suit font-bold text-base text-white">{{ card.initial }}</span>
                     </div>
                   }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
@@ -99,9 +99,12 @@
         <div class="w-px h-[46px] bg-white/25 shrink-0"></div>
 
         <!-- All Category Button -->
-        <button class="all-category-btn">
-          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800">All category</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="#A1A1AA">
+        <button
+          [ngClass]="activeSubCategory() ? 'all-category-btn all-category-btn--inactive' : 'all-category-btn'"
+          (click)="selectSubCategory('')">
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight"
+                [ngClass]="activeSubCategory() ? 'text-zinc-500' : 'text-zinc-800'">All category</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" [attr.fill]="activeSubCategory() ? '#71717A' : '#A1A1AA'">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
           </svg>
         </button>
@@ -154,7 +157,9 @@
                   @if (card.profileImage) {
                     <img [src]="card.profileImage" alt="프로필" class="w-6 h-6 rounded-xl shrink-0 object-cover" />
                   } @else {
-                    <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                    <div class="w-6 h-6 rounded-xl bg-[#3F3F46] border border-[#52525B] flex items-center justify-center shrink-0">
+                      <span class="font-suit font-bold text-[10px] text-white">{{ card.initial }}</span>
+                    </div>
                   }
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
                 </div>
@@ -220,8 +225,8 @@
               @if (mentor.profileImage) {
                 <img [src]="mentor.profileImage" alt="프로필" class="w-12 h-12 rounded-3xl border-[1.43px] border-white object-cover" />
               } @else {
-                <div class="w-12 h-12 rounded-3xl bg-gradient-to-br from-[#A148FF] to-[#6C2BD9] border-[1.43px] border-white flex items-center justify-center">
-                  <span class="font-suit font-bold text-lg text-white">{{ mentor.userName.charAt(0) }}</span>
+                <div class="w-12 h-12 rounded-3xl bg-[#3F3F46] border-[1.43px] border-[#52525B] flex items-center justify-center">
+                  <span class="font-suit font-bold text-lg text-white">{{ mentor.initial }}</span>
                 </div>
               }
               <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ mentor.userName }}</span>
@@ -296,7 +301,9 @@
                 @if (card.profileImage) {
                   <img [src]="card.profileImage" alt="프로필" class="w-6 h-6 rounded-xl shrink-0 object-cover" />
                 } @else {
-                  <div class="w-6 h-6 rounded-xl bg-[#413145] shrink-0"></div>
+                  <div class="w-6 h-6 rounded-xl bg-[#3F3F46] border border-[#52525B] flex items-center justify-center shrink-0">
+                    <span class="font-suit font-bold text-[10px] text-white">{{ card.initial }}</span>
+                  </div>
                 }
                 <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ card.userName }}</span>
               </div>

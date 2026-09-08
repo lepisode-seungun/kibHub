@@ -258,10 +258,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.closeSidebar();
     await this.loadNotifications();
     this.isNotificationOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   closeNotification(): void {
     this.isNotificationOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   toggleNotiCheck(noti: AppNotification): void {

@@ -18,7 +18,9 @@
             @if (authorProfileImage) {
               <img [src]="authorProfileImage" alt="프로필" class="detail-avatar" style="object-fit: cover;" />
             } @else {
-              <div class="detail-avatar"></div>
+              <div class="detail-avatar" style="display:flex;align-items:center;justify-content:center">
+                <span class="font-suit font-bold text-lg text-white">{{ authorInitial }}</span>
+              </div>
             }
             <div class="flex flex-col justify-center gap-3 flex-1">
               <h1 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ title }}</h1>
@@ -395,11 +397,15 @@
               <div class="comment-item-header">
                 <div class="flex items-center gap-2">
                   @if (comment.profileImage) {
-                    <img class="comment-item-avatar" [src]="comment.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                    <a [routerLink]="['/user', comment.authorId]" style="text-decoration:none">
+                      <img class="comment-item-avatar" [src]="comment.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover;cursor:pointer" />
+                    </a>
                   } @else {
-                    <div class="comment-item-avatar">{{ comment.avatar }}</div>
+                    <a [routerLink]="['/user', comment.authorId]" style="text-decoration:none">
+                      <div class="comment-item-avatar" style="cursor:pointer">{{ comment.avatar }}</div>
+                    </a>
                   }
-                  <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ comment.userName }}</span>
+                  <a [routerLink]="['/user', comment.authorId]" class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200 hover:text-white" style="text-decoration:none;cursor:pointer">{{ comment.userName }}</a>
                   @if (comment.isMe) {
                     <span class="comment-me-badge">나</span>
                   }
@@ -492,11 +498,15 @@
                 <div class="comment-item-header">
                   <div class="flex items-center gap-2">
                     @if (reply.profileImage) {
-                      <img class="comment-item-avatar" [src]="reply.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                      <a [routerLink]="['/user', reply.authorId]" style="text-decoration:none">
+                        <img class="comment-item-avatar" [src]="reply.profileImage" alt="프로필" style="width:32px;height:32px;border-radius:50%;object-fit:cover;cursor:pointer" />
+                      </a>
                     } @else {
-                      <div class="comment-item-avatar">{{ reply.avatar }}</div>
+                      <a [routerLink]="['/user', reply.authorId]" style="text-decoration:none">
+                        <div class="comment-item-avatar" style="cursor:pointer">{{ reply.avatar }}</div>
+                      </a>
                     }
-                    <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200">{{ reply.userName }}</span>
+                    <a [routerLink]="['/user', reply.authorId]" class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-200 hover:text-white" style="text-decoration:none;cursor:pointer">{{ reply.userName }}</a>
                     @if (reply.isMe) {
                       <span class="comment-me-badge">나</span>
                     }
@@ -672,6 +682,28 @@
     </div>
   }
 
+  <!-- 신고 성공 모달 -->
+  @if (reportSuccess()) {
+    <div class="del-overlay" tabindex="-1" (click)="reportSuccess.set(false)">
+      <div class="del-modal" tabindex="-1" (click)="$event.stopPropagation()" style="max-width: 400px;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 32px 32px;background:#18181B;border-radius:16px 16px 0 0;">
+          <div style="width:56px;height:56px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;animation:reportSuccessPop 0.3s ease-out">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-100">신고가 접수되었습니다</span>
+          <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">검토 후 처리하겠습니다. 감사합니다.</span>
+        </div>
+        <div class="del-footer" style="border-radius: 0 0 16px 16px;">
+          <div class="del-footer-actions">
+            <button class="del-btn-cancel" (click)="reportSuccess.set(false)" style="background:#7A48FF;border-color:transparent;">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- ===== 원고 뷰어 (공통 컴포넌트) ===== -->
   <app-image-viewer
     [images]="manuscriptImages"
@@ -721,44 +753,6 @@
           <div class="del-footer-actions">
             <button class="del-btn-cancel" (click)="closeDeleteModal()">취소</button>
             <button class="del-btn-delete" (click)="confirmDelete()">삭제</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- ===== 신고 모달 ===== -->
-  @if (isReportModalOpen()) {
-    <div class="del-overlay" tabindex="-1" (click)="closeReportModal()" (keydown.escape)="closeReportModal()">
-      <div class="del-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeReportModal()" style="max-width: 440px;">
-        <!-- 헤더 -->
-        <div class="del-header">
-          <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-100">{{ reportType() === 'comment' ? '댓글 신고' : '콘텐츠 신고' }}</span>
-          <button class="del-close-btn" (click)="closeReportModal()" aria-label="닫기">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </div>
-
-        <!-- 본문 -->
-        <div class="del-body" style="gap: 16px;">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 text-center m-0">
-            신고 사유를 입력해주세요.
-          </p>
-          <textarea
-            class="w-full min-h-[120px] p-3 rounded-lg border border-zinc-700 bg-zinc-800 text-zinc-200 font-suit font-medium text-sm leading-[150%] tracking-tight resize-none outline-none"
-            style="box-sizing: border-box;"
-            placeholder="신고 사유를 작성해주세요..."
-            [value]="reportText"
-            (input)="onReportInput($event)"></textarea>
-        </div>
-
-        <!-- 푸터 -->
-        <div class="del-footer">
-          <div class="del-footer-actions">
-            <button class="del-btn-cancel" (click)="closeReportModal()">취소</button>
-            <button class="del-btn-delete" (click)="submitReport()" style="background: #EF4444;">신고</button>
           </div>
         </div>
       </div>
@@ -934,8 +928,19 @@
               : 'box-border flex flex-row items-center p-5 gap-3 w-full h-[100px] bg-zinc-800 border border-zinc-700 rounded-xl shrink-0 cursor-pointer transition-all duration-150 hover:bg-[rgba(122,72,255,0.06)] hover:border-[#956DFF]'"
             (click)="toggleRowEdit(cat.id)" role="button" tabindex="0" (keydown.enter)="toggleRowEdit(cat.id)"
           >
-            <!-- 썸네일 -->
-            <div class="flex justify-center items-center w-[60px] h-[60px] rounded shrink-0" [style.background]="cat.thumbnail"></div>
+            <!-- 썸네일 2x2 그리드 -->
+            @if (cat.thumbnails.length > 0) {
+              <div class="grid grid-cols-2 grid-rows-2 w-[60px] h-[60px] rounded shrink-0 overflow-hidden gap-[1px]">
+                <div class="w-full h-full bg-zinc-700" [style.background]="cat.thumbnails[0] ? 'url(' + cat.thumbnails[0] + ') center/cover no-repeat' : ''"></div>
+                <div class="w-full h-full bg-zinc-700" [style.background]="cat.thumbnails[1] ? 'url(' + cat.thumbnails[1] + ') center/cover no-repeat' : ''"></div>
+                <div class="w-full h-full bg-zinc-700" [style.background]="cat.thumbnails[2] ? 'url(' + cat.thumbnails[2] + ') center/cover no-repeat' : ''"></div>
+                <div class="w-full h-full bg-zinc-700" [style.background]="cat.thumbnails[3] ? 'url(' + cat.thumbnails[3] + ') center/cover no-repeat' : ''"></div>
+              </div>
+            } @else {
+              <div class="flex justify-center items-center w-[60px] h-[60px] rounded shrink-0" style="background: linear-gradient(135deg, #3F3F46, #52525B);">
+                <img src="/icons/empty-content.svg" alt="" width="24" height="24" style="opacity: 0.5;" />
+              </div>
+            }
 
             <!-- 카테고리 정보 -->
             <div class="flex flex-col justify-center items-start gap-2 flex-1 min-w-0">

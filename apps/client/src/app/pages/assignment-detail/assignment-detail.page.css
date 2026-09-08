@@ -671,10 +671,12 @@
   align-items: center;
   padding: 8px 12px;
   gap: 12px;
+  max-width: 100%;
   background: #FFFFFF;
   border: 1px solid #F3F4F6;
   border-radius: 999px;
   transition: border-color 0.15s;
+  min-width: 0;
 }
 
 .ad-ls-file-chip:hover {

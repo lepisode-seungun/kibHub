@@ -411,14 +411,14 @@ export class ApiService {
   // ===== Upload =====
   uploadFile(file: File, folder = 'general'): Promise<{ url: string; name: string; size: number; mimeType: string }> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file, encodeURIComponent(file.name));
     formData.append('folder', folder);
     return firstValueFrom(this.http.post<{ url: string; name: string; size: number; mimeType: string }>(`${BASE}/upload`, formData, { withCredentials: true }));
   }
 
   uploadFiles(files: File[], folder = 'general'): Promise<{ url: string; name: string; size: number; mimeType: string }[]> {
     const formData = new FormData();
-    files.forEach(f => formData.append('files', f));
+    files.forEach(f => formData.append('files', f, encodeURIComponent(f.name)));
     formData.append('folder', folder);
     return firstValueFrom(this.http.post<{ url: string; name: string; size: number; mimeType: string }[]>(`${BASE}/upload/multiple`, formData, { withCredentials: true }));
   }
