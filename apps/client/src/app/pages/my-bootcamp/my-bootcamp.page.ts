@@ -99,8 +99,8 @@ export class MyBootcampPage implements OnInit {
     try {
       const applicants = await this.api.applicants.findByUser(user.id);
       for (const a of applicants) {
-        const bc = a.bootcamp || {};
-        const bootcampId = bc.id || a.bootcampId;
+        const bc = a.bootcamp || {} as Partial<typeof a.bootcamp & { id: number; name: string; status: string; startDate: string; endDate: string }>;
+        const bootcampId = ('id' in bc ? bc.id : undefined) || a.bootcampId;
         // 강사인 부트캠프의 수강생 데이터는 무시
         if (instructorBootcampIds.has(bootcampId)) continue;
         const fmt = (d: string) => d ? d.substring(0, 10) : '';

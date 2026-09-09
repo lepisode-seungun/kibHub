@@ -3,7 +3,19 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeBannerComponent } from '../../components/home-banner/home-banner.component';
 import { ApiService } from '../../services/api.service';
-import { Bootcamp, Content, ContentCategory } from '@kibhub/shared';
+import { Content, Comment } from '@kibhub/shared';
+
+/** 서버가 feedbackCount, topComment를 추가한 Content 확장 응답 */
+interface TopComment {
+  body: string;
+  createdAt: string;
+  author?: { nickname?: string; name?: string };
+}
+
+interface ContentWithExtras extends Content {
+  feedbackCount?: number;
+  topComment?: TopComment | null;
+}
 
 interface CommentCard {
   id: number;
@@ -170,12 +182,12 @@ export class HomePage implements AfterViewInit, OnInit {
 
   private async loadContents(): Promise<void> {
     try {
-      const contents = await this.api.contents.findAll();
-      const mapCard = (c: Content, i: number): ContentCard => ({
+      const contents = await this.api.contents.findAll() as ContentWithExtras[];
+      const mapCard = (c: ContentWithExtras, i: number): ContentCard => ({
         id: c.id,
         userName: c.author?.nickname || c.author?.name || 'user',
-        profileImage: (c.author as any)?.profileImage || '',
-        initial: (c.author as any)?.initial || '',
+        profileImage: c.author?.profileImage || '',
+        initial: (c.author?.nickname || c.author?.name || 'U').charAt(0).toUpperCase(),
         title: c.title,
         type: c.type,
         categoryName: c.category?.name || '',
@@ -183,10 +195,10 @@ export class HomePage implements AfterViewInit, OnInit {
         thumbnailGradient: this.gradients[i % this.gradients.length],
         rank: null,
         featured: false,
-        feedbackCount: (c as any).feedbackCount || 0,
-        comment: (c as any).topComment?.body || '',
-        commenter: (c as any).topComment?.author?.nickname || (c as any).topComment?.author?.name || '',
-        commentTime: (c as any).topComment?.createdAt ? this.getRelativeTime((c as any).topComment.createdAt) : '',
+        feedbackCount: c.feedbackCount || 0,
+        comment: c.topComment?.body || '',
+        commenter: c.topComment?.author?.nickname || c.topComment?.author?.name || '',
+        commentTime: c.topComment?.createdAt ? this.getRelativeTime(c.topComment.createdAt) : '',
       });
       // 첫 12개는 갤러리
       this.contentCards.set(contents.slice(0, 12).map((c, i) => ({
@@ -203,13 +215,13 @@ export class HomePage implements AfterViewInit, OnInit {
 
   private async loadRecentComments(): Promise<void> {
     try {
-      const comments = await this.api.comments.findRecent(10);
-      this.commentCards.set(comments.map((c: any, i: number) => ({
+      const comments = await this.api.comments.findRecent(10) as Comment[];
+      this.commentCards.set(comments.map((c: Comment, i: number) => ({
         id: c.id,
         contentId: c.content?.id || c.contentId,
         userName: c.author?.nickname || c.author?.name || '익명',
         profileImage: c.author?.profileImage || '',
-        initial: (c as any).author?.initial || '',
+        initial: (c.author?.nickname || c.author?.name || 'U').charAt(0).toUpperCase(),
         commentLikes: String(c.likeCount || 0),
         comment: c.body,
         postTitle: c.content?.title || '',
@@ -341,11 +353,11 @@ export class HomePage implements AfterViewInit, OnInit {
   private async loadBestMentors(): Promise<void> {
     try {
       const comments = await this.api.comments.findBest(10);
-      this.mentorCards.set(comments.map((c: any) => ({
+      this.mentorCards.set(comments.map((c) => ({
         id: c.id,
         userName: c.author?.nickname || c.author?.name || '익명',
-        profileImage: c.author?.profileImage || undefined,
-        initial: c.author?.initial || '',
+        profileImage: c.author?.profileImage ?? undefined,
+        initial: (c.author?.nickname || c.author?.name || 'U').charAt(0).toUpperCase(),
         comment: c.body,
         contentTitle: c.content?.title || '',
         contentId: c.content?.id || 0,

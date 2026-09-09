@@ -23,7 +23,7 @@ export class PostersService {
   }
 
   update(id: number, data: { imageUrl?: string; displayOrder?: number }) {
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, string | number> = {};
     if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
     if (data.displayOrder !== undefined) updateData.displayOrder = data.displayOrder;
     return this.prisma.poster.update({ where: { id }, data: updateData });

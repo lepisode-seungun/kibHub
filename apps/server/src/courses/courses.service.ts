@@ -9,7 +9,7 @@ export class CoursesService {
 
   // ===== 과정 =====
   findAllByBootcamp(bootcampId: number, excludeHidden = false) {
-    const where: any = { bootcampId };
+    const where: Prisma.CourseWhereInput = { bootcampId };
     if (excludeHidden) {
       where.status = { not: 'HIDDEN' };
     }
@@ -158,16 +158,16 @@ export class CoursesService {
 
 
   createAssignment(courseId: number, data: CreateAssignmentDto) {
-    const mapped: any = { ...data, courseId };
-    if (mapped.dueDate) mapped.dueDate = new Date(mapped.dueDate);
-    if (mapped.dueDateEnd) mapped.dueDateEnd = new Date(mapped.dueDateEnd);
+    const mapped: Record<string, unknown> = { ...data, courseId };
+    if (mapped['dueDate']) mapped['dueDate'] = new Date(mapped['dueDate'] as string);
+    if (mapped['dueDateEnd']) mapped['dueDateEnd'] = new Date(mapped['dueDateEnd'] as string);
     return this.prisma.assignment.create({ data: mapped as Prisma.AssignmentUncheckedCreateInput });
   }
 
   updateAssignment(id: number, data: Partial<CreateAssignmentDto>) {
-    const mapped: any = { ...data };
-    if (mapped.dueDate) mapped.dueDate = new Date(mapped.dueDate);
-    if (mapped.dueDateEnd) mapped.dueDateEnd = new Date(mapped.dueDateEnd);
+    const mapped: Record<string, unknown> = { ...data };
+    if (mapped['dueDate']) mapped['dueDate'] = new Date(mapped['dueDate'] as string);
+    if (mapped['dueDateEnd']) mapped['dueDateEnd'] = new Date(mapped['dueDateEnd'] as string);
     return this.prisma.assignment.update({ where: { id }, data: mapped as Prisma.AssignmentUpdateInput });
   }
 

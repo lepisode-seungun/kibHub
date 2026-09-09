@@ -42,7 +42,7 @@
       @if (attachFiles().length > 0) {
       <div class="ccnd-attach-files flex flex-row flex-wrap items-start gap-6 w-full">
         @for (file of attachFiles(); track file.id) {
-          <div class="flex items-center px-3 py-2 gap-2 border border-[#27272A] rounded-full box-border cursor-pointer transition-colors duration-150 hover:border-zinc-500" (click)="onDownloadFile(file)">
+          <div class="flex items-center px-3 py-2 gap-2 border border-[#27272A] rounded-full box-border cursor-pointer transition-colors duration-150 hover:border-zinc-500" role="button" tabindex="0" (click)="onDownloadFile(file)" (keydown.enter)="onDownloadFile(file)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zm4 16H8V7h6.5v4.5H19V21z" fill="#A1A1AA"/>
             </svg>

@@ -36,7 +36,7 @@ export class AdminsService {
   }
 
   async update(id: number, data: { name?: string; role?: string; password?: string; currentPassword?: string }) {
-    const updateData: any = {
+    const updateData: Record<string, string> = {
       ...(data.name && { name: data.name }),
       ...(data.role && { role: data.role === 'SUPER' ? 'SUPER' : 'NORMAL' }),
     };

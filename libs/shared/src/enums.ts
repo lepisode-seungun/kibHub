@@ -5,7 +5,7 @@ export type AdminRole = 'SUPER' | 'NORMAL';
 
 // ===== Bootcamp 관련 Enum =====
 export type BootcampStatus = 'PREPARING' | 'RECRUITING' | 'CLOSED' | 'OPERATING' | 'ENDED';
-export type ApplicantStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+export type ApplicantStatus = 'PENDING' | 'ACCEPTED' | 'WAITING' | 'COMPLETED' | 'REJECTED';
 
 // ===== Content 관련 Enum =====
 export type ContentType = 'WEBTOON' | 'ILLUSTRATION' | 'WRITING';

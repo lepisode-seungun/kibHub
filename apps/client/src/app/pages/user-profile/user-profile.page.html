@@ -37,12 +37,12 @@
     <!-- 팔로잉/팔로워 -->
     <div class="pf-follow-stats">
       <div class="pf-follow-row">
-        <div class="pf-follow-item">
+        <div class="pf-follow-item cursor-pointer" role="button" tabindex="0" (click)="openFollowModal('following')" (keydown.enter)="openFollowModal('following')">
           <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ followingCount() }}</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">팔로잉</span>
         </div>
         <span class="pf-follow-divider"></span>
-        <div class="pf-follow-item">
+        <div class="pf-follow-item cursor-pointer" role="button" tabindex="0" (click)="openFollowModal('followers')" (keydown.enter)="openFollowModal('followers')">
           <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white">{{ followerCount() }}</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">팔로워</span>
         </div>
@@ -306,3 +306,102 @@
     </div>
   </div>
 </div>
+
+<!-- ===== 팔로잉/팔로워 모달 ===== -->
+@if (isFollowModalOpen()) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeFollowModal()" (keydown.escape)="closeFollowModal()" role="dialog" aria-modal="true">
+    <div class="modal-shell" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <!-- 헤더 -->
+      <div class="modal-header">
+        <div class="modal-header-row">
+          <div class="modal-title-wrap">
+            <span class="modal-title">{{ followModalTab() === 'following' ? '팔로잉' : '팔로워' }}</span>
+          </div>
+          <button class="modal-close-btn" (click)="closeFollowModal()" aria-label="닫기">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M18.3 5.71a1 1 0 00-1.41 0L12 10.59 7.11 5.7A1 1 0 105.7 7.11L10.59 12 5.7 16.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4z" fill="#71717A"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 본문 -->
+      <div class="follow-modal-body flex flex-col items-center p-8 gap-6 w-full min-h-[300px] max-h-[600px] bg-[#18181B] overflow-y-auto box-border" style="scrollbar-width:thin;scrollbar-color:#3F3F46 transparent;">
+        <!-- 모바일 전용 타이틀 -->
+        <div class="follow-modal-mobile-title">
+          <span>{{ followModalTab() === 'following' ? '팔로잉' : '팔로워' }} ({{ followModalList().length }})</span>
+        </div>
+        @if (followModalList().length === 0) {
+          <div class="flex items-center justify-center w-full min-h-[200px]">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-500">
+              {{ followModalTab() === 'following' ? '팔로잉하는 사용자가 없습니다.' : '팔로워가 없습니다.' }}
+            </span>
+          </div>
+        } @else {
+          <div class="flex flex-col w-full">
+            @for (user of followModalList(); track user.id) {
+              <div class="flex items-center py-3 gap-6 w-full">
+                <a class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer no-underline" [routerLink]="['/user', user.id]" (click)="closeFollowModal()">
+                  @if (user.profileImage) {
+                    <img [src]="user.profileImage" alt="" class="w-12 h-12 rounded-full object-cover border border-zinc-600 shrink-0" />
+                  } @else {
+                    <div class="flex justify-center items-center w-12 h-12 bg-zinc-700 border border-zinc-600 rounded-full shrink-0">
+                      <span class="text-[13px] leading-4 text-zinc-200" style="font-family:Pretendard,sans-serif;font-weight:500;">{{ getInitial(user.nickname) }}</span>
+                    </div>
+                  }
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ user.nickname }}</span>
+                </a>
+                @if (user.id !== currentUserId) {
+                <button
+                  [ngClass]="user.isFollowing ? 'detail-follow-btn detail-following-btn fm-btn' : 'detail-follow-btn fm-btn'"
+                  (click)="user.isFollowing ? openUnfollowSheet(user.id) : toggleFollowInModal(user.id)">
+                  @if (user.isFollowing) {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#FFFFFF"/>
+                    </svg>
+                    <span class="follow-default">팔로잉</span>
+                    <span class="follow-hover">팔로우 취소</span>
+                  } @else {
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="#FFFFFF"/>
+                    </svg>
+                    <span>팔로우</span>
+                  }
+                </button>
+                }
+              </div>
+              <div class="w-full border-b border-zinc-800"></div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 모바일 팔로우 취소 바텀시트 ===== -->
+@if (unfollowSheetOpen()) {
+  <div class="unfollow-sheet-overlay fixed inset-0 z-[10000] flex items-end justify-center bg-black/50"
+       (click)="closeUnfollowSheet()" (keydown.escape)="closeUnfollowSheet()" role="dialog" aria-modal="true" tabindex="-1"
+       style="animation: sheetFadeIn 0.2s ease-out;">
+    <div class="flex flex-col items-start w-full rounded-t-xl overflow-hidden" tabindex="-1"
+         (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
+         style="animation: sheetSlideUp 0.25s ease-out;">
+      <div class="flex items-center justify-between w-full h-14 px-4 gap-2.5 bg-zinc-900 rounded-t-2xl box-border">
+        <div class="w-6 h-6 opacity-0"></div>
+        <span></span>
+        <button class="flex items-center justify-center w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
+                (click)="closeUnfollowSheet()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18.3 5.71a1 1 0 00-1.41 0L12 10.59 7.11 5.7A1 1 0 105.7 7.11L10.59 12 5.7 16.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4z" fill="#71717A"/>
+          </svg>
+        </button>
+      </div>
+      <button class="flex items-center w-full h-12 px-4 gap-2 bg-zinc-900 border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 box-border active:bg-zinc-800"
+              style="padding-bottom: env(safe-area-inset-bottom, 0);"
+              (click)="confirmUnfollow()">
+        팔로우 취소
+      </button>
+    </div>
+  </div>
+}

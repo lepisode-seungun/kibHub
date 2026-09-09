@@ -8,7 +8,9 @@
   <!-- ===== 1. 과정 정보 아코디언 ===== -->
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
-         (click)="toggleCourseInfo()">
+         tabindex="0" role="button"
+         (click)="toggleCourseInfo()"
+         (keydown.enter)="toggleCourseInfo()">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">과정 정보</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"
@@ -43,7 +45,7 @@
   <!-- ===== 2. 과제 기본 정보 아코디언 ===== -->
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center justify-between pb-4 border-b border-gray-200">
-      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleAssignmentInfo()">
+      <div class="flex items-center gap-3 cursor-pointer" tabindex="0" role="button" (click)="toggleAssignmentInfo()" (keydown.enter)="toggleAssignmentInfo()">
         <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">과제 기본 정보</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200"
@@ -62,7 +64,9 @@
         @if (assignmentInfoMenuOpen()) {
           <div class="absolute top-full left-1/2 -translate-x-1/2 mt-1 flex flex-col py-1 bg-white rounded-lg z-50"
                style="width: 72px; border: 1px solid #F9FAFB; box-shadow: 0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06);"
-               (click)="$event.stopPropagation()">
+               tabindex="-1"
+               (click)="$event.stopPropagation()"
+               (keydown)="$event.stopPropagation()">
             <button class="flex items-center justify-center px-1 border-none cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-[#4B5563] bg-white hover:bg-[#F9FAFB] transition-colors"
                     style="height: 32px; width: 100%;"
                     (click)="onAssignmentInfoMenuAction('edit')">수정</button>
@@ -98,7 +102,7 @@
   <!-- ===== 3. 과제 상세 내용 아코디언 ===== -->
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center justify-between pb-4 border-b border-gray-200">
-      <div class="flex items-center gap-3 cursor-pointer" (click)="toggleAssignmentContent()">
+      <div class="flex items-center gap-3 cursor-pointer" tabindex="0" role="button" (click)="toggleAssignmentContent()" (keydown.enter)="toggleAssignmentContent()">
         <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">과제 상세 내용</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
              class="transition-transform duration-200"
@@ -244,7 +248,9 @@
   <!-- ===== 4. 제출 과제 목록 아코디언 ===== -->
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
-         (click)="toggleBoard()">
+         tabindex="0" role="button"
+         (click)="toggleBoard()"
+         (keydown.enter)="toggleBoard()">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">제출 과제 목록</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"

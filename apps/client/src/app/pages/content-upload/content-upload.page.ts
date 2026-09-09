@@ -26,6 +26,13 @@ interface ThumbCandidate {
   dataUrl: string;
 }
 
+interface ServerAlbumResponse {
+  id: number;
+  name: string;
+  _count?: { albumContents?: number };
+  albumContents?: { content?: { thumbnail?: string } }[];
+}
+
 @Component({
   selector: 'app-content-upload',
   standalone: true,
@@ -106,6 +113,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   @ViewChild('cropImage') cropImageRef!: ElementRef<HTMLImageElement>;
   @ViewChild('thumbFileInput') thumbFileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('titleInput') titleInputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('newAlbumInput') newAlbumInputRef?: ElementRef<HTMLInputElement>;
 
   private readonly TYPE_MAP: Record<string, string> = {
     webtoon: '웹툰',
@@ -178,11 +186,11 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   async onFileSelect(): Promise<void> {
     try {
       const serverAlbums = await this.api.albums.findAll('ALBUM');
-      this.albums.set(serverAlbums.map((a: any) => {
+      this.albums.set(serverAlbums.map((a: ServerAlbumResponse) => {
         const thumbnails = (a.albumContents || [])
           .slice(0, 4)
-          .map((ac: any) => ac.content?.thumbnail)
-          .filter((t: string | undefined): t is string => !!t);
+          .map((ac) => ac.content?.thumbnail)
+          .filter((t): t is string => !!t);
         return {
           id: a.id,
           name: a.name,
@@ -477,6 +485,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   startAddAlbum(): void {
     this.newAlbumInputName.set('');
     this.isAddingAlbum.set(true);
+    setTimeout(() => this.newAlbumInputRef?.nativeElement.focus());
   }
 
   cancelAddAlbum(): void {
@@ -603,10 +612,11 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
       // 6. 성공 → 홈으로 이동
       this.router.navigate(['/']);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('콘텐츠 업로드 실패:', e);
-      if (e?.status) console.error('HTTP Status:', e.status);
-      if (e?.error) console.error('Server Error:', e.error);
+      const err = e as Record<string, unknown>;
+      if (err['status']) console.error('HTTP Status:', err['status']);
+      if (err['error']) console.error('Server Error:', err['error']);
       this.formError.set('업로드에 실패했습니다. 다시 시도해주세요.');
     } finally {
       this.isSubmitting.set(false);

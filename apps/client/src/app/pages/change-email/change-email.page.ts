@@ -72,9 +72,10 @@ export class ChangeEmailPage {
       await this.api.auth.sendVerification({ email });
       console.log('[checkEmail] 인증번호 발송 성공');
       this.codeSent.set(true);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('[checkEmail] 에러:', e);
-      this.emailError.set(e?.error?.error || '인증번호 발송에 실패했습니다.');
+      const err = e as { error?: { error?: string } };
+      this.emailError.set(err?.error?.error || '인증번호 발송에 실패했습니다.');
     }
 
     this.isChecking.set(false);

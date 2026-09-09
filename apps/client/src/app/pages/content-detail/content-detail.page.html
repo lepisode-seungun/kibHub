@@ -178,7 +178,7 @@
             <!-- 영구 마커들 -->
             @if (markersVisible()) {
               @for (m of img.markers; track m.rank) {
-                <div class="saved-marker" [class.marker-hovered]="hoveredCommentId() === m.commentId" [style.top.%]="m.top" [style.left.%]="m.left" (click)="activateMarkerComment(m.rank, $event)" (mouseenter)="hoveredCommentId.set(m.commentId ?? null)">
+                <div class="saved-marker" [class.marker-hovered]="hoveredCommentId() === m.commentId" [style.top.%]="m.top" [style.left.%]="m.left" (click)="activateMarkerComment(m.rank, $event)" (keydown.enter)="activateMarkerComment(m.rank, $event)" tabindex="0" role="button" (mouseenter)="hoveredCommentId.set(m.commentId ?? null)">
                   <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
                   <span class="marker-num">{{ m.rank }}</span>
                 </div>
@@ -444,10 +444,10 @@
                 <!-- 일반 모드 -->
                 <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ comment.content }}</p>
                 <!-- 댓글 이미지 -->
-                @if (comment.imageUrls?.length) {
+                @if (comment.imageUrls.length) {
                   <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
                     @for (imgUrl of comment.imageUrls; track $index) {
-                      <img [src]="imgUrl" alt="댓글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(comment.imageUrls!, $index)" />
+                      <img [src]="imgUrl" alt="댓글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(comment.imageUrls!, $index)" (keydown.enter)="openCommentImageViewer(comment.imageUrls!, $index)" tabindex="0" role="button" />
                     }
                   </div>
                 }
@@ -543,10 +543,10 @@
                 } @else {
                   <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ reply.content }}</p>
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ reply.time }}</span>
-                  @if (reply.imageUrls?.length) {
+                  @if (reply.imageUrls.length) {
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
                       @for (imgUrl of reply.imageUrls; track $index) {
-                        <img [src]="imgUrl" alt="답글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(reply.imageUrls!, $index)" />
+                        <img [src]="imgUrl" alt="답글 이미지" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #3F3F46;" (click)="openCommentImageViewer(reply.imageUrls!, $index)" (keydown.enter)="openCommentImageViewer(reply.imageUrls!, $index)" tabindex="0" role="button" />
                       }
                     </div>
                   }
@@ -686,8 +686,8 @@
 
   <!-- 신고 성공 모달 -->
   @if (reportSuccess()) {
-    <div class="del-overlay" tabindex="-1" (click)="reportSuccess.set(false)">
-      <div class="del-modal" tabindex="-1" (click)="$event.stopPropagation()" style="max-width: 400px;">
+    <div class="del-overlay" tabindex="-1" (click)="reportSuccess.set(false)" (keydown.escape)="reportSuccess.set(false)">
+      <div class="del-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" style="max-width: 400px;">
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 32px 32px;background:#18181B;border-radius:16px 16px 0 0;">
           <div style="width:56px;height:56px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;animation:reportSuccessPop 0.3s ease-out">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -948,15 +948,15 @@
             <div class="flex flex-col justify-center items-start gap-2 flex-1 min-w-0">
               @if (editingCategoryId() === cat.id) {
                 <!-- 이름 편집 모드 -->
-                <div class="flex flex-row items-center gap-2 w-full" (click)="$event.stopPropagation()">
+                <div class="flex flex-row items-center gap-2 w-full" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
                   <input
+                    #renameCategoryInput
                     type="text"
                     class="flex-1 h-9 px-3 bg-zinc-900 border border-accent rounded-lg font-suit text-sm text-white outline-none"
                     [value]="editingCategoryName()"
                     (input)="onEditCategoryNameInput($event)"
                     (keydown.enter)="confirmRenameCategory()"
                     (keydown.escape)="cancelRenameCategory()"
-                    autofocus
                   />
                   <button class="flex items-center justify-center w-8 h-8 rounded-md bg-accent hover:bg-accent-hover border-none cursor-pointer transition-colors" (click)="confirmRenameCategory()" aria-label="확인">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -1001,6 +1001,7 @@
             </div>
             <div class="flex flex-row items-center gap-2 flex-1 min-w-0">
               <input
+                #newCategoryInput
                 type="text"
                 class="flex-1 h-9 px-3 bg-zinc-900 border border-accent rounded-lg font-suit text-sm text-white outline-none"
                 placeholder="카테고리 이름을 입력하세요"
@@ -1008,7 +1009,6 @@
                 (input)="onNewCategoryInput($event)"
                 (keydown.enter)="confirmAddCategory()"
                 (keydown.escape)="cancelAddCategory()"
-                autofocus
               />
               <button class="flex items-center justify-center w-8 h-8 rounded-md bg-accent hover:bg-accent-hover border-none cursor-pointer transition-colors" (click)="confirmAddCategory()" aria-label="확인">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>

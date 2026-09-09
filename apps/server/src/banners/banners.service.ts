@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBannerDto } from '@kibhub/shared';
 
+
 @Injectable()
 export class BannersService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
@@ -24,7 +25,7 @@ export class BannersService {
   create(data: CreateBannerDto) {
     return this.prisma.banner.create({
       data: {
-        status: (data.status as any) || 'VISIBLE',
+        status: (data.status as 'VISIBLE' | 'HIDDEN' | 'DELETED') || 'VISIBLE',
         header: data.header,
         content: data.content || '',
         link: data.link || null,
@@ -37,7 +38,7 @@ export class BannersService {
   }
 
   update(id: number, data: Partial<CreateBannerDto>) {
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, string | number | null> = {};
     if (data.status !== undefined) updateData.status = data.status;
     if (data.header !== undefined) updateData.header = data.header;
     if (data.content !== undefined) updateData.content = data.content;

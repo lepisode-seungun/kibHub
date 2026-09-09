@@ -67,7 +67,8 @@ export class SupportNoticesPage implements OnInit {
     return [statusLabel, pinnedLabel, '수정', '삭제'];
   };
 
-  onRowClick(_row: GridRow): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onRowClick(_row: GridRow): void { /* no-op */ }
 
   onRegister(): void {
     this.router.navigate(['/support/notices/new']);

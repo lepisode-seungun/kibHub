@@ -281,7 +281,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     try {
       const data = await this.api.posters.findAll();
       if (data.length > 0) {
-        this.showcaseImages = data.map((p: PosterResponse) => p.imageUrl);
+        this.showcaseImages = data.map((p) => p.imageUrl || '').filter(Boolean);
         this.showcaseIndex = 0;
       }
     } catch (e) {

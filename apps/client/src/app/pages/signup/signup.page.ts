@@ -102,8 +102,9 @@ export class SignupPage {
       // 중복확인 성공 → 바로 인증번호 발송
       await this.api.auth.sendVerification({ email: this.email });
       this.codeSent.set(true);
-    } catch (e: any) {
-      this.emailCheckError.set(e?.error?.error || '인증번호 발송에 실패했습니다.');
+    } catch (e: unknown) {
+      const err = e as Record<string, Record<string, string>>;
+      this.emailCheckError.set(err['error']?.['error'] || '인증번호 발송에 실패했습니다.');
     }
 
     this.isCheckingEmail.set(false);

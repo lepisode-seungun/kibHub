@@ -8,8 +8,9 @@ import { paginate, parsePagination } from '../common/pagination';
 export class InquiriesService {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
-  async findAll(query?: { search?: string; status?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
+  async findAll(query?: { search?: string; status?: string; authorId?: string; page?: string | number; limit?: string | number }): Promise<PaginatedResponse<unknown> | unknown[]> {
     const where: Prisma.InquiryWhereInput = {};
+    if (query?.authorId) where.authorId = Number(query.authorId);
     if (query?.status) where.status = query.status as Prisma.InquiryWhereInput['status'];
     if (query?.search) {
       where.OR = [
@@ -60,7 +61,7 @@ export class InquiriesService {
             })),
           },
         } : {}),
-      } as any,
+      } as Prisma.InquiryUncheckedCreateInput,
       include: { files: true },
     });
   }

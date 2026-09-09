@@ -1,8 +1,9 @@
-﻿import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FaqsService } from './faqs.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateFaqDto } from '@kibhub/shared';
+import { Request } from 'express';
 
 @ApiTags('faqs')
 @Controller('faqs')
@@ -21,8 +22,8 @@ export class FaqsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() data: CreateFaqDto) {
-    return this.faqsService.create(data);
+  create(@Body() data: CreateFaqDto, @Req() req: Request & { userId: number }) {
+    return this.faqsService.create({ ...data, authorId: req.userId });
   }
 
   @Patch(':id')

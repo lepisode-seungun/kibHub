@@ -1,10 +1,41 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
 import { ApiService } from '../../services/api.service';
+import { Comment } from '@kibhub/shared';
+
+interface ReplyEntry {
+  id: number;
+  authorId: number;
+  userName: string;
+  avatar: string;
+  profileImage: string;
+  markerNum: number | null;
+  markerTop: number | null;
+  markerLeft: number | null;
+  markerImageIndex?: number;
+  isMe: boolean;
+  type: 'feedback' | 'general';
+  content: string;
+  time: string;
+  likes: number;
+  liked: boolean;
+  imageUrls: string[];
+}
+
+interface CommentEntry extends ReplyEntry {
+  isActive: boolean;
+  replyCount: number;
+  replies: ReplyEntry[];
+}
+
+interface AlbumContent {
+  contentId?: number;
+  content?: { id?: number; thumbnail?: string };
+}
 
 @Component({
   selector: 'app-content-detail',
@@ -17,6 +48,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
+  @ViewChild('renameCategoryInput') renameCategoryInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('newCategoryInput') newCategoryInputRef?: ElementRef<HTMLInputElement>;
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -142,7 +175,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   images: { gradient: string; markers: { rank: number; top: number; left: number; commentId?: number }[] }[] = [];
 
-  comments: any[] = [];
+  comments: CommentEntry[] = [];
 
   get filteredComments() {
     const tab = this.activeCommentTab();
@@ -193,21 +226,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.title = content.title;
         this.description = content.body || '';
         this.authorName = content.author?.nickname || content.author?.name || '작성자';
-        this.authorRole = (content.author as any)?.role || '';
-        this.authorProfileImage = (content.author as any)?.profileImage || '';
-        this.authorInitial = (content.author as any)?.initial || (this.authorName || 'U').charAt(0).toUpperCase();
-        this.authorId = (content.author as any)?.id || 0;
+        this.authorRole = content.author?.role || '';
+        this.authorProfileImage = content.author?.profileImage || '';
+        this.authorInitial = (content.author?.nickname || content.author?.name || 'U').charAt(0).toUpperCase();
+        this.authorId = content.author?.id || 0;
         if (this.currentUserId() && this.authorId) {
           this.isOwnContent.set(this.currentUserId() === this.authorId);
           if (!this.isOwnContent()) {
             this.api.users.followStatus(this.authorId, this.currentUserId()).then(res => {
               this.isFollowing.set(res.isFollowing);
-            }).catch(() => {});
+            }).catch(() => { /* 팔로우 상태 확인 실패 무시 */ });
           }
         }
         this.category = content.category?.name || '미분류';
         this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
-        this.commentCount = (content as any)._count?.comments || (content as any).comments?.length || 0;
+        this.commentCount = content._count?.comments || 0;
 
         const imageList: typeof this.images = [];
         if (content.thumbnail) {
@@ -230,7 +263,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       // 댓글
       if (commentsResult.status === 'fulfilled') {
         const serverComments = commentsResult.value;
-        this.comments = serverComments.map((c: any) => {
+        this.comments = serverComments.map((c: Comment & { replies?: Comment[]; likes?: unknown[]; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) => {
           return {
             id: c.id,
             authorId: c.author?.id || 0,
@@ -247,7 +280,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
             time: this.timeAgo(new Date(c.createdAt)),
             likes: c.likeCount || 0, liked: (c.likes?.length || 0) > 0,
             replyCount: c.replies?.length || 0,
-            replies: (c.replies || []).map((r: any) => ({
+            replies: (c.replies || []).map((r: Comment & { likes?: unknown[]; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }) => ({
               id: r.id,
               authorId: r.author?.id || 0,
               userName: r.author?.nickname || r.author?.name || '익명',
@@ -274,11 +307,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           for (const img of this.images) {
             img.markers = [];
           }
-          const addMarker = (c: any) => {
+          const addMarker = (c: CommentEntry | ReplyEntry) => {
             if (c.markerNum && c.markerTop != null) {
               const idx = c.markerImageIndex ?? 0;
               if (idx < this.images.length) {
-                this.images[idx].markers.push({ rank: c.markerNum, top: c.markerTop, left: c.markerLeft, commentId: c.id });
+                this.images[idx].markers.push({ rank: c.markerNum, top: c.markerTop ?? 0, left: c.markerLeft ?? 0, commentId: c.id });
               }
             }
           };
@@ -302,7 +335,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           const ids: number[] = [];
           for (const a of albums) {
             const contents = a.albumContents || [];
-            if (contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId)) {
+            if (contents.some((ac: AlbumContent) => ac.contentId === contentId || ac.content?.id === contentId)) {
               ids.push(a.id);
             }
           }
@@ -389,7 +422,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.attachedImages.set([]);
   }
 
-  async toggleLike(target: any): Promise<void> {
+  async toggleLike(target: CommentEntry | ReplyEntry): Promise<void> {
     if (!this.isLoggedIn()) return;
     // 낙관적 업데이트: 즉시 UI 반영
     const prevLiked = target.liked;
@@ -562,14 +595,14 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     event.stopPropagation();
 
     // 최상위 댓글에서 찾기
-    let target = this.comments.find(c => c.markerNum === rank);
+    const target = this.comments.find(c => c.markerNum === rank);
     let scrollTargetId = target ? `comment-${target.id}` : '';
     let isReply = false;
 
     // 대댓글에서 찾기
     if (!target) {
       for (const c of this.comments) {
-        const reply = (c.replies || []).find((r: any) => r.markerNum === rank);
+        const reply = (c.replies || []).find((r: ReplyEntry) => r.markerNum === rank);
         if (reply) {
           scrollTargetId = `comment-${reply.id}`;
           isReply = true;
@@ -656,7 +689,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         type: this.reportType() === 'comment' ? 'COMMENT' : 'CONTENT',
         targetId: this.reportTargetId(),
         reason: this.reportText.trim(),
-      } as any);
+      });
       this.closeReportModal();
       this.reportSuccess.set(true);
     } catch (e) {
@@ -753,15 +786,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         ...(serverImageUrls.length > 0 ? { images: serverImageUrls } : {}),
         ...(replyTarget ? { parentId: replyTarget.id } : {}),
         type: isFeedback ? 'feedback' : 'general',
-        ...(isFeedback && pm ? { markerNum: currentMarkerNum!, markerTop: pm.top, markerLeft: pm.left, markerImageIndex: pm.imageIndex } : {}),
+        ...(isFeedback && pm ? { markerNum: currentMarkerNum ?? 0, markerTop: pm.top, markerLeft: pm.left, markerImageIndex: pm.imageIndex } : {}),
       });
       
-      const newEntry: any = {
+      const newEntry: ReplyEntry = {
         id: created.id,
+        authorId: this.currentUserId(),
         userName: this.currentUserName() || '나',
         avatar: this.currentUserAvatar() || 'N',
         profileImage: this.currentUserProfileImage() || '',
+        markerNum: null,
+        markerTop: null,
+        markerLeft: null,
         isMe: true,
+        type: (isFeedback ? 'feedback' : 'general') as 'feedback' | 'general',
         content: created.body,
         time: '방금 전',
         likes: 0,
@@ -771,7 +809,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
       if (replyTarget) {
         // 답글 모드: 해당 댓글의 replies에 추가
-        newEntry.type = (isFeedback ? 'feedback' : 'general') as 'feedback' | 'general';
         newEntry.markerNum = currentMarkerNum;
 
         // 대댓글 피드백 마커 위치 저장
@@ -783,7 +820,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
           if (idx < this.images.length) {
             this.images[idx] = {
               ...this.images[idx],
-              markers: [...this.images[idx].markers, { rank: currentMarkerNum!, top: pm.top, left: pm.left, commentId: created.id }]
+              markers: [...this.images[idx].markers, { rank: currentMarkerNum ?? 0, top: pm.top, left: pm.left, commentId: created.id }]
             };
             this.images = [...this.images];
           }
@@ -796,30 +833,32 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         }
         this.replyingTo.set(null);
       } else {
-        // 일반 댓글
-        newEntry.markerNum = currentMarkerNum;
-        newEntry.isActive = false;
-        newEntry.type = (isFeedback ? 'feedback' : 'general') as 'feedback' | 'general';
-        newEntry.replyCount = 0;
-        newEntry.replies = [];
+        // 일반 댓글 → CommentEntry로 확장
+        const commentEntry: CommentEntry = {
+          ...newEntry,
+          markerNum: currentMarkerNum,
+          isActive: false,
+          replyCount: 0,
+          replies: [],
+        };
 
         // 피드백 마커 위치 저장
         if (isFeedback && pm) {
-          newEntry.markerTop = pm.top;
-          newEntry.markerLeft = pm.left;
-          newEntry.markerImageIndex = pm.imageIndex;
+          commentEntry.markerTop = pm.top;
+          commentEntry.markerLeft = pm.left;
+          commentEntry.markerImageIndex = pm.imageIndex;
           // 이미지에 영구 마커 추가 (immutable update로 Angular 감지)
           const idx = pm.imageIndex;
           if (idx < this.images.length) {
             this.images[idx] = {
               ...this.images[idx],
-              markers: [...this.images[idx].markers, { rank: currentMarkerNum!, top: pm.top, left: pm.left, commentId: created.id }]
+              markers: [...this.images[idx].markers, { rank: currentMarkerNum ?? 0, top: pm.top, left: pm.left, commentId: created.id }]
             };
             this.images = [...this.images];
           }
         }
 
-        this.comments = [newEntry, ...this.comments];
+        this.comments = [commentEntry, ...this.comments];
       }
 
       this.commentCount = this.comments.length;
@@ -869,8 +908,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         } else {
           // 대댓글 삭제: 부모 댓글에서 제거
           for (const comment of this.comments) {
-            if (comment.replies?.some((r: any) => r.id === target.id)) {
-              comment.replies = comment.replies.filter((r: any) => r.id !== target.id);
+            if (comment.replies?.some((r: ReplyEntry) => r.id === target.id)) {
+              comment.replies = comment.replies.filter((r: ReplyEntry) => r.id !== target.id);
               comment.replyCount = Math.max(0, (comment.replyCount || 0) - 1);
               break;
             }
@@ -912,7 +951,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         } else {
           // 대댓글 수정
           for (const comment of this.comments) {
-            const reply = comment.replies?.find((r: any) => r.id === commentId);
+            const reply = comment.replies?.find((r: ReplyEntry) => r.id === commentId);
             if (reply) {
               reply.content = newText;
               break;
@@ -972,10 +1011,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       const albums = await this.api.albums.findAll('BOOKMARK');
       const contentId = Number(this.contentId);
       
-      const cats = albums.map((a: any) => {
+      const cats = albums.map((a: { id: number; name: string; albumContents?: AlbumContent[]; _count?: { albumContents?: number } }) => {
         const contents = a.albumContents || [];
-        const isInAlbum = contents.some((ac: any) => ac.contentId === contentId || ac.content?.id === contentId);
-        const thumbs = contents.slice(0, 4).map((ac: any) => ac.content?.thumbnail).filter(Boolean);
+        const isInAlbum = contents.some((ac: AlbumContent) => ac.contentId === contentId || ac.content?.id === contentId);
+        const thumbs = contents.slice(0, 4).map((ac: AlbumContent) => ac.content?.thumbnail).filter((t): t is string => !!t);
         return {
           id: a.id,
           name: a.name,
@@ -1045,6 +1084,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   startAddCategory(): void {
     this.newCategoryName = '';
     this.isAddingNewCategory.set(true);
+    setTimeout(() => this.newCategoryInputRef?.nativeElement.focus());
   }
 
   cancelAddCategory(): void {
@@ -1083,6 +1123,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (!cat) return;
     this.editingCategoryId.set(id);
     this.editingCategoryName.set(cat.name);
+    setTimeout(() => this.renameCategoryInputRef?.nativeElement.focus());
   }
 
   onEditCategoryNameInput(event: Event): void {

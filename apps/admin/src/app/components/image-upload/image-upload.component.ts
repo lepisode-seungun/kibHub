@@ -43,7 +43,9 @@ let nextId = 0;
       <!-- 이미지 프리뷰 (새 파일 또는 기존 URL) -->
       @if (currentPreview()) {
         <div class="relative w-full rounded-lg overflow-hidden cursor-pointer group"
-             (click)="triggerInput()">
+             tabindex="0" role="button"
+             (click)="triggerInput()"
+             (keydown.enter)="triggerInput()">
           <img [src]="currentPreview()" alt="" class="w-full h-[120px] object-cover rounded-lg" />
           <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -62,7 +64,9 @@ let nextId = 0;
         <!-- 드래그 앤 드롭 영역 -->
         <div class="flex flex-col items-center justify-center px-4 py-4 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
              style="min-height: 84px;"
-             (click)="triggerInput()">
+             tabindex="0" role="button"
+             (click)="triggerInput()"
+             (keydown.enter)="triggerInput()">
           <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
             <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
           </svg>

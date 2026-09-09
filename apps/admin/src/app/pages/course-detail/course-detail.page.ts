@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
-import { Course, Lecture, Assignment } from '../../shared/types';
+import { Lecture, Assignment } from '../../shared/types';
 
 interface LectureAssignmentRow {
   [key: string]: unknown;
@@ -56,7 +56,7 @@ export class CourseDetailPage implements OnInit {
         await this.api.courses.update(this.courseId, { status: newStatus } as Record<string, string>);
         this.toast.success(current === '숨김' ? '노출 처리 되었습니다.' : '숨김 처리 되었습니다.');
         await this.loadCourse(this.courseId);
-      } catch (e) { this.toast.error('상태 변경 실패'); }
+      } catch { this.toast.error('상태 변경 실패'); }
     } else if (action === 'edit') {
       this.openEditDrawer();
     } else if (action === 'delete') {
@@ -125,7 +125,7 @@ export class CourseDetailPage implements OnInit {
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadCourse(this.courseId);
-    } catch (e) {
+    } catch {
       this.toast.error('수정에 실패했습니다.');
     }
   }
@@ -139,7 +139,7 @@ export class CourseDetailPage implements OnInit {
       this.toast.success('삭제 완료 되었습니다.');
       this.showDeleteModal.set(false);
       this.location.back();
-    } catch (e) {
+    } catch {
       this.toast.error('삭제에 실패했습니다.');
     }
   }

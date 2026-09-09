@@ -78,6 +78,7 @@ export class SupportInquiriesPage implements OnInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getContextMenuItems = (_row: GridRow): string[] => ['답변', '삭제'];
 
   onRowClick(gridRow: GridRow): void {
@@ -103,11 +104,12 @@ export class SupportInquiriesPage implements OnInit {
 
   async submitReply(): Promise<void> {
     const target = this.drawerTarget();
+    if (!target) return;
     const reply = this.drawerReply();
     if (!reply.trim()) { this.toast.error('답변을 입력해주세요.'); return; }
 
     try {
-      await this.api.inquiries.reply(target!.id, { reply });
+      await this.api.inquiries.reply(target.id, { reply });
       this.toast.success('답변이 등록되었습니다.');
       this.drawerOpen.set(false);
       await this.loadInquiries();

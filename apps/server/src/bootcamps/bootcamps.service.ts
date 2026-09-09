@@ -40,9 +40,9 @@ export class BootcampsService {
   async update(id: number, data: Partial<CreateBootcampDto>) {
     const updated = await this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
 
-    // 부트캠프 상태 변경 시 수강생 상태 자동 전환
-    if ((data as any).status) {
-      const newStatus = (data as any).status;
+    const dataRecord = data as Record<string, unknown>;
+    if (dataRecord['status']) {
+      const newStatus = dataRecord['status'] as string;
 
       if (newStatus === 'ENDED') {
         // 종료 → 합격(ACCEPTED)만 수료(COMPLETED)로 자동 전환
@@ -127,13 +127,13 @@ export class BootcampsService {
       where: { id },
       select: { interviewSettings: true },
     });
-    return (bootcamp?.interviewSettings as any[]) || [];
+    return (bootcamp?.interviewSettings as { text: string }[]) || [];
   }
 
   updateInterviewSettings(id: number, questions: { text: string }[]) {
     return this.prisma.bootcamp.update({
       where: { id },
-      data: { interviewSettings: questions as any },
+      data: { interviewSettings: questions as unknown as Prisma.InputJsonValue },
       select: { id: true, interviewSettings: true },
     });
   }

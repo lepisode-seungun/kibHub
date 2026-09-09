@@ -40,7 +40,7 @@ export class FaqsService {
     });
   }
 
-  create(data: CreateFaqDto) {
+  create(data: CreateFaqDto & { authorId: number }) {
     return this.prisma.faq.create({ data: data as Prisma.FaqUncheckedCreateInput });
   }
 

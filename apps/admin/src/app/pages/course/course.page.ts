@@ -150,7 +150,7 @@ export class CoursePage implements OnInit {
         await this.api.courses.update(row.id, { status: newStatus } as Record<string, string>);
         this.toast.success(`${event.action} 처리 되었습니다.`);
         await this.loadCourses();
-      } catch (e) { this.toast.error(`${event.action} 처리 실패`); }
+      } catch { this.toast.error(`${event.action} 처리 실패`); }
     } else if (event.action === '수정') {
       this.editingCourseId = row.id;
       this.editCourseName.set(row.name);
@@ -192,6 +192,6 @@ export class CoursePage implements OnInit {
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadCourses();
-    } catch (e: unknown) { this.toast.error('수정에 실패했습니다.'); }
+    } catch { this.toast.error('수정에 실패했습니다.'); }
   }
 }

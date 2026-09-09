@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, inject, signal, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -21,7 +21,7 @@ export interface BootcampCard {
   templateUrl: './k-digital.page.html',
   styleUrls: ['./k-digital.page.css'],
 })
-export class KDigitalPage implements OnInit, OnDestroy {
+export class KDigitalPage implements OnInit, OnDestroy, AfterViewInit {
   private api = inject(ApiService);
 
   heroTitle = '부트캠프';

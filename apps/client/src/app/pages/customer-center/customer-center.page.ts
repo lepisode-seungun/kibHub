@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface CcItem {
   id: number;
@@ -28,6 +29,7 @@ interface CcItem {
 export class CustomerCenterPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private api = inject(ApiService);
+  private auth = inject(AuthService);
 
   ngOnInit(): void {
     document.body.classList.add('page-customer-center');
@@ -54,7 +56,7 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
       const [notices, faqs, inquiries] = await Promise.all([
         this.api.notices.findAll({ type: 'SUPPORT' }),
         this.api.faqs.findAll(),
-        this.api.inquiries.findAll(),
+        this.api.inquiries.findAll({ authorId: this.auth.currentUser()?.id }),
       ]);
 
       this.allItems.set([
@@ -62,7 +64,7 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
           id: n.id,
           category: '공지사항',
           title: n.title,
-          content: (n.body || '').replace(/<[^>]*>/g, ''),
+          content: this.stripHtml(n.body || ''),
           date: new Date(n.createdAt).toLocaleDateString('ko-KR'),
           author: n.author?.nickname || '관리자',
           pinned: n.pinned || false,
@@ -74,7 +76,7 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
           content: q.body || '',
           date: new Date(q.createdAt).toLocaleDateString('ko-KR'),
           author: q.author?.nickname || q.author?.name || 'user',
-          status: (q.status === 'ANSWERED' ? '완료' : '대기') as '대기' | '완료',
+          status: (q.status === 'COMPLETED' ? '완료' : '대기') as '대기' | '완료',
         })),
         ...faqs.map(f => ({
           id: f.id,
@@ -151,5 +153,10 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
 
   onSearchInput(value: string): void {
     this.searchQuery.set(value);
+  }
+
+  private stripHtml(html: string): string {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
   }
 }

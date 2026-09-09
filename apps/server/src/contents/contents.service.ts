@@ -15,9 +15,10 @@ export class ContentsService {
   /** author 객체에 initial 필드 추가 */
   private withAuthorInitial<T extends { author?: { nickname?: string; name?: string } | null }>(item: T): T & { author?: T['author'] & { initial?: string } } {
     if (item.author) {
-      (item.author as any).initial = ((item.author as any).nickname || (item.author as any).name || 'U').charAt(0).toUpperCase();
+      const author = item.author as Record<string, unknown>;
+      author['initial'] = ((item.author.nickname || item.author.name || 'U') as string).charAt(0).toUpperCase();
     }
-    return item as any;
+    return item as T & { author?: T['author'] & { initial?: string } };
   }
 
   /** 배열의 각 항목에 author initial 추가 */
@@ -360,7 +361,7 @@ export class ContentsService {
           });
           await this.notiService.create({
             userId: comment.authorId,
-            type: 'COMMENT_LIKE',
+            type: 'COMMENT',
             message: `${liker?.nickname || '누군가'}님이 회원님의 댓글을 좋아합니다.`,
             actorId: userId,
             targetId: comment.contentId,

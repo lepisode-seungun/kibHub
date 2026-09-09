@@ -319,7 +319,11 @@
           <div class="marquee-set">
             @if (partnerLogosRow1().length > 0) {
               @for (logo of partnerLogosRow1(); track logo.id) {
-                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                @if (logo.link) {
+                  <a class="partner-logo-item partner-logo-link" [href]="logo.link" target="_blank" rel="noopener noreferrer"><img [src]="logo.logoUrl" [alt]="logo.name" /></a>
+                } @else {
+                  <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                }
               }
             } @else {
               <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
@@ -332,7 +336,11 @@
           <div class="marquee-set">
             @if (partnerLogosRow1().length > 0) {
               @for (logo of partnerLogosRow1(); track $index) {
-                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                @if (logo.link) {
+                  <a class="partner-logo-item partner-logo-link" [href]="logo.link" target="_blank" rel="noopener noreferrer"><img [src]="logo.logoUrl" [alt]="logo.name" /></a>
+                } @else {
+                  <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                }
               }
             } @else {
               <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 1" /></div>
@@ -350,7 +358,11 @@
           <div class="marquee-set">
             @if (partnerLogosRow2().length > 0) {
               @for (logo of partnerLogosRow2(); track logo.id) {
-                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                @if (logo.link) {
+                  <a class="partner-logo-item partner-logo-link" [href]="logo.link" target="_blank" rel="noopener noreferrer"><img [src]="logo.logoUrl" [alt]="logo.name" /></a>
+                } @else {
+                  <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                }
               }
             } @else {
               <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>
@@ -363,7 +375,11 @@
           <div class="marquee-set">
             @if (partnerLogosRow2().length > 0) {
               @for (logo of partnerLogosRow2(); track $index) {
-                <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                @if (logo.link) {
+                  <a class="partner-logo-item partner-logo-link" [href]="logo.link" target="_blank" rel="noopener noreferrer"><img [src]="logo.logoUrl" [alt]="logo.name" /></a>
+                } @else {
+                  <div class="partner-logo-item"><img [src]="logo.logoUrl" [alt]="logo.name" /></div>
+                }
               }
             } @else {
               <div class="partner-logo-item"><img src="/icons/kiphub-logo.svg" alt="Partner 6" /></div>

@@ -231,7 +231,6 @@ export class AssignmentDetailPage implements OnInit {
     const row = gridRow as unknown as BoardRow;
     try {
       const detail: SubmissionResponse = await this.api.submissions.findOne(row.id);
-      const roleMap: Record<string, string> = { ADMIN: '관리자', INSTRUCTOR: '강사', STUDENT: '일반' };
       this.selectedSubmission.set({
         ...row,
         content: detail.content || '',
@@ -293,7 +292,7 @@ export class AssignmentDetailPage implements OnInit {
       this.toast.success('수정 완료 되었습니다.');
       this.editDrawerOpen.set(false);
       await this.loadAssignment(assignmentId);
-    } catch (e) {
+    } catch {
       this.toast.error('수정에 실패했습니다.');
     }
   }
@@ -330,7 +329,7 @@ export class AssignmentDetailPage implements OnInit {
       this.toast.success('수정 완료 되었습니다.');
       this.contentEditMode.set(false);
       await this.loadAssignment(id);
-    } catch (e) {
+    } catch {
       this.toast.error('수정에 실패했습니다.');
     }
   }
@@ -355,7 +354,7 @@ export class AssignmentDetailPage implements OnInit {
       }
       this.toast.success(`${files.length}개 파일 업로드 완료`);
       await this.loadAssignment(this.assignmentData().id);
-    } catch (e) {
+    } catch {
       this.toast.error('파일 업로드에 실패했습니다.');
     } finally {
       this.isUploading.set(false);
@@ -368,7 +367,7 @@ export class AssignmentDetailPage implements OnInit {
       await this.api.assignmentFiles.delete(fileId);
       this.toast.success('파일이 삭제되었습니다.');
       await this.loadAssignment(this.assignmentData().id);
-    } catch (e) {
+    } catch {
       this.toast.error('파일 삭제에 실패했습니다.');
     }
   }

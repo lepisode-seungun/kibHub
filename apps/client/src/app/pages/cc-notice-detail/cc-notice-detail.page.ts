@@ -47,13 +47,12 @@ export class CcNoticeDetailPage implements OnInit {
           this.noticeContent.set(this.sanitizer.bypassSecurityTrustHtml(notice.body || ''));
           this.isPinned.set(notice.pinned || false);
           // 이미지 로드
-          const images = (notice as any).images || [];
-          this.noticeImages.set(images.filter((img: string) => !!img));
+          const ext = notice as unknown as { images?: string[]; files?: AttachFile[] };
+          this.noticeImages.set((ext.images || []).filter((img) => !!img));
           // 첨부파일 로드
-          const files = (notice as any).files || [];
-          this.attachFiles.set(files.map((f: any) => ({
+          this.attachFiles.set((ext.files || []).map((f) => ({
             id: f.id,
-            name: f.name || f,
+            name: f.name || '',
             url: f.url || '',
             size: f.size || 0,
             mimeType: f.mimeType || '',

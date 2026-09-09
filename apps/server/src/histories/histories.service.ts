@@ -14,7 +14,7 @@ export class HistoriesService {
     const map = new Map<string, typeof items>();
     for (const item of items) {
       if (!map.has(item.year)) map.set(item.year, []);
-      map.get(item.year)!.push(item);
+      map.get(item.year)?.push(item);
     }
     for (const [year, yearItems] of map) {
       groups.push({ year, items: yearItems });
@@ -45,7 +45,7 @@ export class HistoriesService {
   }
 
   update(id: number, data: { year?: string; title?: string; description?: string; period?: string; displayOrder?: number }) {
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, string | number | null> = {};
     if (data.year !== undefined) updateData.year = data.year;
     if (data.title !== undefined) updateData.title = data.title;
     if (data.description !== undefined) updateData.description = data.description || null;

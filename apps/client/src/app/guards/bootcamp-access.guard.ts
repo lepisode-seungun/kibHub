@@ -31,7 +31,7 @@ export const bootcampAccessGuard: CanActivateFn = async (route) => {
 
   // 부트캠프 마감/종료 상태면 모든 사용자 진입 차단
   try {
-    const bootcamp: any = await api.bootcamps.findOne(bootcampId);
+    const bootcamp = await api.bootcamps.findOne(bootcampId);
     if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
       router.navigate(['/my-bootcamp']);
       return false;
@@ -45,7 +45,7 @@ export const bootcampAccessGuard: CanActivateFn = async (route) => {
 
   try {
     const applicants = await api.applicants.findByUser(user.id);
-    const myApp = applicants.find((a: any) => a.bootcampId === bootcampId);
+    const myApp = applicants.find((a) => a.bootcampId === bootcampId);
     // ACCEPTED 상태만 진입 허용
     if (!myApp || myApp.status !== 'ACCEPTED') {
       router.navigate(['/my-bootcamp']);

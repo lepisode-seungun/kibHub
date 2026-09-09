@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, signal, inject, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -35,7 +35,7 @@ export class LectureDetailPage implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private cdr = inject(ChangeDetectorRef);
   private ngZone = inject(NgZone);
-  private ytPlayer: any = null;
+  private ytPlayer: { destroy(): void } | null = null;
 
   lectureId = '';
   bootcampId = '';
@@ -120,10 +120,10 @@ export class LectureDetailPage implements OnInit, OnDestroy {
       container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
       document.body.appendChild(container);
 
-      this.ytPlayer = new (window as any).YT.Player('yt-duration-player', {
+      this.ytPlayer = new (window as unknown as { YT: { Player: new (id: string, opts: Record<string, unknown>) => { destroy(): void } } }).YT.Player('yt-duration-player', {
         videoId,
         events: {
-          onReady: (event: any) => {
+          onReady: (event: { target: { getDuration(): number; destroy(): void } }) => {
             const sec = event.target.getDuration();
             if (sec > 0) {
               const min = Math.floor(sec / 60);
@@ -144,7 +144,7 @@ export class LectureDetailPage implements OnInit, OnDestroy {
     };
 
     const waitForYT = (callback: () => void) => {
-      if ((window as any).YT && (window as any).YT.Player) {
+      if ((window as unknown as Record<string, Record<string, unknown>>)['YT']?.['Player']) {
         callback();
         return;
       }
@@ -155,7 +155,7 @@ export class LectureDetailPage implements OnInit, OnDestroy {
         document.head.appendChild(tag);
       }
       const interval = setInterval(() => {
-        if ((window as any).YT && (window as any).YT.Player) {
+        if ((window as unknown as Record<string, Record<string, unknown>>)['YT']?.['Player']) {
           clearInterval(interval);
           callback();
         }

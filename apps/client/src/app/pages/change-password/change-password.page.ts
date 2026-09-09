@@ -75,8 +75,9 @@ export class ChangePasswordPage {
       });
       this.successMessage.set('비밀번호가 변경되었습니다.');
       setTimeout(() => this.router.navigate(['/profile']), 1500);
-    } catch (e: any) {
-      const msg = e?.error?.error || e?.error?.message || '비밀번호 변경에 실패했습니다.';
+    } catch (e: unknown) {
+      const err = e as Record<string, Record<string, string>>;
+      const msg = err['error']?.['error'] || err['error']?.['message'] || '비밀번호 변경에 실패했습니다.';
       this.passwordError.set(msg);
     }
   }

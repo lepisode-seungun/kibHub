@@ -2,6 +2,7 @@ import { Component, signal, computed, ViewChild, ElementRef, inject, OnInit, OnD
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { User, UserSns } from '@kibhub/shared';
 
 interface Album {
   id: number;
@@ -21,6 +22,32 @@ interface ContentCard {
   feedbackCount: number;
   createdAt: string;
   firstComment?: { body: string; authorName: string };
+}
+
+interface ServerComment {
+  body: string;
+  author?: { nickname?: string; name?: string };
+}
+
+interface ServerContent {
+  id: number;
+  title: string;
+  thumbnail?: string;
+  author?: { nickname?: string; name?: string };
+  _count?: { comments?: number };
+  comments?: ServerComment[];
+  createdAt?: string;
+}
+
+interface ServerAlbumContent {
+  content?: ServerContent;
+}
+
+interface ServerAlbum {
+  id: number;
+  name: string;
+  _count?: { albumContents?: number };
+  albumContents?: ServerAlbumContent[];
 }
 
 @Component({
@@ -145,22 +172,22 @@ export class UserProfilePage implements OnInit, OnDestroy {
   private async loadUserProfile(id: number): Promise<void> {
     try {
       const [user, stats, followCounts] = await Promise.all([
-        this.api.users.findOne(id),
+        this.api.users.findOne(id) as Promise<User>,
         this.api.users.commentStats(id),
         this.api.users.followCounts(id),
       ]);
 
-      this.userName.set((user as any).name || '');
-      this.userNickname.set((user as any).nickname || (user as any).name || '사용자');
-      this.userBio.set((user as any).intro || '');
-      this.userProfileImage.set((user as any).profileImage || null);
-      this.userInitial.set(((user as any).nickname || (user as any).name || 'U').charAt(0).toUpperCase());
-      this.userRole.set((user as any).role || '');
-      if ((user as any).coverImage) {
-        this.bannerBackground.set(`url('${(user as any).coverImage}') center center / cover no-repeat`);
+      this.userName.set(user.name || '');
+      this.userNickname.set(user.nickname || user.name || '사용자');
+      this.userBio.set(user.intro || '');
+      this.userProfileImage.set(user.profileImage || null);
+      this.userInitial.set((user.nickname || user.name || 'U').charAt(0).toUpperCase());
+      this.userRole.set(user.role || '');
+      if (user.coverImage) {
+        this.bannerBackground.set(`url('${user.coverImage}') center center / cover no-repeat`);
       }
-      if ((user as any).sns?.length > 0) {
-        this.userSns.set((user as any).sns.map((s: any) => ({ type: s.type, url: s.url })));
+      if (user.sns && user.sns.length > 0) {
+        this.userSns.set(user.sns.map((s: UserSns) => ({ type: s.type, url: s.url })));
       }
 
       this.followerCount.set(followCounts.followerCount);
@@ -195,22 +222,22 @@ export class UserProfilePage implements OnInit, OnDestroy {
 
   private async loadAlbumsAndContents(userId: number): Promise<void> {
     try {
-      const serverAlbums = await this.api.users.albums(userId, 'ALBUM') as any[];
-      const mapped: Album[] = serverAlbums.map((a: any) => {
-        const acs = a.albumContents || [];
+      const serverAlbums = await this.api.users.albums(userId, 'ALBUM') as ServerAlbum[];
+      const mapped: Album[] = serverAlbums.map((a: ServerAlbum) => {
+        const acs: ServerAlbumContent[] = a.albumContents || [];
         return {
           id: a.id,
           name: a.name,
           contentCount: a._count?.albumContents || acs.length,
-          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
-          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          thumbnails: acs.slice(0, 4).map((ac: ServerAlbumContent) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac: ServerAlbumContent) => ac.content?.id).filter((id): id is number => !!id),
           isActive: false,
         };
       });
       this.albums.set(mapped);
 
       // 앨범에 속한 콘텐츠 수집
-      const contentMap = new Map<number, any>();
+      const contentMap = new Map<number, ContentCard>();
       for (const a of serverAlbums) {
         for (const ac of (a.albumContents || [])) {
           const c = ac.content;
@@ -240,21 +267,21 @@ export class UserProfilePage implements OnInit, OnDestroy {
 
   private async loadBookmarks(userId: number): Promise<void> {
     try {
-      const serverAlbums = await this.api.users.albums(userId, 'BOOKMARK') as any[];
-      const mapped: Album[] = serverAlbums.map((a: any) => {
-        const acs = a.albumContents || [];
+      const serverAlbums = await this.api.users.albums(userId, 'BOOKMARK') as ServerAlbum[];
+      const mapped: Album[] = serverAlbums.map((a: ServerAlbum) => {
+        const acs: ServerAlbumContent[] = a.albumContents || [];
         return {
           id: a.id,
           name: a.name,
           contentCount: a._count?.albumContents || acs.length,
-          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
-          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          thumbnails: acs.slice(0, 4).map((ac: ServerAlbumContent) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac: ServerAlbumContent) => ac.content?.id).filter((id): id is number => !!id),
           isActive: false,
         };
       });
       this.categories.set(mapped);
 
-      const contentMap = new Map<number, any>();
+      const contentMap = new Map<number, ContentCard>();
       for (const a of serverAlbums) {
         for (const ac of (a.albumContents || [])) {
           const c = ac.content;
@@ -365,5 +392,108 @@ export class UserProfilePage implements OnInit, OnDestroy {
 
   goToContentDetail(contentId: number): void {
     this.router.navigate(['/content', contentId]);
+  }
+
+  // ===== 팔로잉/팔로워 모달 =====
+  isFollowModalOpen = signal(false);
+  followModalTab = signal<'following' | 'followers'>('following');
+  followModalList = signal<{ id: number; nickname: string; profileImage: string | null; isFollowing: boolean }[]>([]);
+
+  async openFollowModal(tab: 'following' | 'followers'): Promise<void> {
+    this.followModalTab.set(tab);
+    this.isFollowModalOpen.set(true);
+    await this.loadFollowList(tab);
+  }
+
+  closeFollowModal(): void {
+    this.isFollowModalOpen.set(false);
+    this.followModalList.set([]);
+  }
+
+  private async loadFollowList(tab: 'following' | 'followers'): Promise<void> {
+    const uid = this.targetUserId;
+    if (!uid) return;
+    try {
+      const list = tab === 'following'
+        ? await this.api.users.following(uid)
+        : await this.api.users.followers(uid);
+
+      const enriched = await Promise.all(
+        list.map(async (u) => {
+          let isFollowingUser = false;
+          if (this.currentUserId) {
+            if (tab === 'followers') {
+              try {
+                const status = await this.api.users.followStatus(u.id, this.currentUserId);
+                isFollowingUser = status.isFollowing;
+              } catch { /* ignore */ }
+            } else {
+              // 팔로잉 탭: 해당 유저가 나인지 아닌지에 따라 달리 처리
+              if (u.id === this.currentUserId) {
+                isFollowingUser = true;
+              } else {
+                try {
+                  const status = await this.api.users.followStatus(u.id, this.currentUserId);
+                  isFollowingUser = status.isFollowing;
+                } catch { /* ignore */ }
+              }
+            }
+          }
+          return { ...u, isFollowing: isFollowingUser };
+        }),
+      );
+      this.followModalList.set(enriched);
+    } catch {
+      this.followModalList.set([]);
+    }
+  }
+
+  async toggleFollowInModal(targetId: number): Promise<void> {
+    if (!this.currentUserId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    try {
+      const result = await this.api.users.toggleFollow(targetId, this.currentUserId);
+
+      // 타인 프로필이므로 목록에서 제거하지 않고 상태만 업데이트 (인스타 방식)
+      this.followModalList.set(
+        this.followModalList().map(u =>
+          u.id === targetId ? { ...u, isFollowing: result.followed } : u
+        )
+      );
+
+      // 카운트 갱신
+      const counts = await this.api.users.followCounts(this.targetUserId);
+      this.followerCount.set(counts.followerCount);
+      this.followingCount.set(counts.followingCount);
+    } catch {
+      console.error('팔로우 토글 실패');
+    }
+  }
+
+  getInitial(nickname: string): string {
+    return nickname ? nickname.charAt(0).toUpperCase() : '?';
+  }
+
+  // ===== 모바일 팔로우 취소 바텀시트 =====
+  unfollowSheetOpen = signal(false);
+  unfollowSheetTargetId = signal<number | null>(null);
+
+  openUnfollowSheet(userId: number): void {
+    this.unfollowSheetTargetId.set(userId);
+    this.unfollowSheetOpen.set(true);
+  }
+
+  closeUnfollowSheet(): void {
+    this.unfollowSheetOpen.set(false);
+    this.unfollowSheetTargetId.set(null);
+  }
+
+  async confirmUnfollow(): Promise<void> {
+    const targetId = this.unfollowSheetTargetId();
+    if (!targetId) return;
+    this.closeUnfollowSheet();
+    await this.toggleFollowInModal(targetId);
   }
 }

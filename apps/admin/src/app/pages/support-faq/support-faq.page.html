@@ -29,10 +29,12 @@
 
 <!-- ===== FAQ 등록/수정 드로어 ===== -->
 @if (drawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end" (click)="closeDrawer()">
+  <div class="fixed inset-0 z-50 flex justify-end" tabindex="-1" (click)="closeDrawer()" (keydown.escape)="closeDrawer()">
     <div class="flex flex-col items-start p-6 gap-6 bg-white drawer-slide-in"
          style="width: 522px; border-radius: 6px 0 0 6px;"
-         (click)="$event.stopPropagation()">
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
 
       <!-- 닫기 버튼 -->
       <div class="flex items-start w-full">

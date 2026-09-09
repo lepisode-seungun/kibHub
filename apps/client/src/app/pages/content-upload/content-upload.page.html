@@ -551,6 +551,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#956DFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
               </div>
               <input
+                #newAlbumInput
                 type="text"
                 class="flex-1 h-9 px-3 bg-zinc-900 border border-[#956DFF] rounded-lg font-suit text-sm text-white outline-none"
                 placeholder="앨범 이름을 입력하세요"
@@ -558,7 +559,6 @@
                 (input)="onNewAlbumInput($event)"
                 (keydown.enter)="confirmAddAlbum()"
                 (keydown.escape)="cancelAddAlbum()"
-                autofocus
               />
               <button class="flex items-center justify-center w-8 h-8 rounded-md bg-[#956DFF] hover:bg-[#7c5ce0] border-none cursor-pointer transition-colors shrink-0" (click)="confirmAddAlbum()" aria-label="확인">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>

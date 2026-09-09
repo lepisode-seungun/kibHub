@@ -68,7 +68,8 @@ export class SupportFaqPage implements OnInit {
     return [statusLabel, '수정', '삭제'];
   };
 
-  onRowClick(_row: GridRow): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onRowClick(_row: GridRow): void { /* no-op */ }
 
   onRegister(): void {
     this.drawerMode.set('create');
@@ -117,7 +118,9 @@ export class SupportFaqPage implements OnInit {
         await this.api.faqs.create({ question: form.question, answer: form.answer });
         this.toast.success('등록 완료 되었습니다.');
       } else {
-        await this.api.faqs.update(this.editingFaqId()!, { question: form.question, answer: form.answer });
+        const faqId = this.editingFaqId();
+        if (!faqId) return;
+        await this.api.faqs.update(faqId, { question: form.question, answer: form.answer });
         this.toast.success('수정 완료 되었습니다.');
       }
       this.drawerOpen.set(false);

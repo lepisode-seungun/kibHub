@@ -313,7 +313,7 @@ export class MyBootcampDetailPage implements OnInit {
         this.notices.set(noticeList.map((n: NoticeResponse) => ({
           id: n.id,
           title: n.title || '',
-          description: n.body || '',
+          description: this.stripHtml(n.body || ''),
           date: new Date(n.createdAt).toLocaleDateString('ko-KR'),
           isPinned: !!n.pinned,
         })));
@@ -461,10 +461,10 @@ export class MyBootcampDetailPage implements OnInit {
         container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
         document.body.appendChild(container);
 
-        new (window as any).YT.Player(`yt-dur-${card.id}`, {
+        new (window as unknown as { YT: { Player: new (id: string, opts: Record<string, unknown>) => { destroy(): void } } }).YT.Player(`yt-dur-${card.id}`, {
           videoId,
           events: {
-            onReady: (event: any) => {
+            onReady: (event: { target: { getDuration(): number; destroy(): void } }) => {
               const sec = event.target.getDuration();
               console.log('[YT onReady] card:', card.id, 'duration sec:', sec);
               if (sec > 0) {
@@ -492,7 +492,7 @@ export class MyBootcampDetailPage implements OnInit {
     };
 
     const waitForYT = (callback: () => void) => {
-      if ((window as any).YT && (window as any).YT.Player) {
+      if ((window as unknown as Record<string, Record<string, unknown>>)['YT']?.['Player']) {
         callback();
         return;
       }
@@ -505,7 +505,7 @@ export class MyBootcampDetailPage implements OnInit {
       }
       // YT.Player 준비될 때까지 폴링
       const interval = setInterval(() => {
-        if ((window as any).YT && (window as any).YT.Player) {
+        if ((window as unknown as Record<string, Record<string, unknown>>)['YT']?.['Player']) {
           clearInterval(interval);
           callback();
         }
@@ -514,6 +514,12 @@ export class MyBootcampDetailPage implements OnInit {
     };
 
     waitForYT(() => processBatch());
+  }
+
+  /** HTML 태그 제거 및 엔티티 디코딩 */
+  private stripHtml(html: string): string {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
   }
 }
 

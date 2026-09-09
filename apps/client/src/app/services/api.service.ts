@@ -7,6 +7,79 @@ import {
   CreateContentDto, CreateReportDto, UpdateUserDto,
 } from '@kibhub/shared';
 
+interface Submission {
+  id: number;
+  title?: string;
+  content?: string;
+  type?: string;
+  createdAt?: string;
+  authorId?: number;
+  author?: { name?: string; nickname?: string; role?: string; profileImage?: string };
+  files?: { id?: number; name: string; url: string; size?: number; mimeType?: string }[];
+  assignment?: { id: number; course?: { name?: string } };
+  _count?: { comments?: number };
+}
+
+interface SubmissionComment {
+  id: number;
+  body: string;
+  createdAt: string;
+  author?: { name?: string; nickname?: string; role?: string; profileImage?: string };
+}
+
+interface ServerNotification {
+  id: number;
+  type?: string;
+  title?: string;
+  body?: string;
+  read?: boolean;
+  createdAt?: string;
+}
+
+interface Poster {
+  id: number;
+  title?: string;
+  imageUrl?: string;
+  order?: number;
+}
+
+interface HistoryItem {
+  id: number;
+  title: string;
+  description: string | null;
+  period: string;
+  date?: string;
+}
+
+interface Partner {
+  id: number;
+  name: string;
+  logoUrl: string;
+  link: string;
+  order?: number;
+}
+
+interface Album {
+  id: number;
+  name: string;
+  type?: 'ALBUM' | 'BOOKMARK';
+  contents?: Content[];
+  albumContents?: {
+    id: number;
+    contentId: number;
+    content?: {
+      id: number;
+      title?: string;
+      thumbnail?: string;
+      createdAt?: string;
+      author?: { nickname?: string; name?: string };
+      _count?: { comments?: number };
+      comments?: { body: string; author?: { nickname?: string; name?: string } }[];
+    };
+  }[];
+  _count?: { contents?: number; albumContents?: number };
+}
+
 const BASE = '/api';
 
 @Injectable({ providedIn: 'root' })
@@ -64,21 +137,21 @@ export class ApiService {
 
   // ===== Submissions =====
   readonly submissions = {
-    findByAssignment: (assignmentId: number): Promise<any[]> => this.get(`/assignments/${assignmentId}/submissions`),
-    findOne: (id: number): Promise<any> => this.get(`/submissions/${id}`),
-    create: (assignmentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
-      this.post(`/assignments/${assignmentId}/submissions`, data),
-    createFeedback: (parentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<any> =>
-      this.post(`/submissions/${parentId}/feedback`, data),
-    update: (id: number, data: { title?: string; content?: string }): Promise<any> => this.patch(`/submissions/${id}`, data),
-    delete: (id: number): Promise<any> => this.del(`/submissions/${id}`),
+    findByAssignment: (assignmentId: number): Promise<Submission[]> => this.get<Submission[]>(`/assignments/${assignmentId}/submissions`),
+    findOne: (id: number): Promise<Submission> => this.get<Submission>(`/submissions/${id}`),
+    create: (assignmentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<Submission> =>
+      this.post<Submission>(`/assignments/${assignmentId}/submissions`, data),
+    createFeedback: (parentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<Submission> =>
+      this.post<Submission>(`/submissions/${parentId}/feedback`, data),
+    update: (id: number, data: { title?: string; content?: string }): Promise<Submission> => this.patch<Submission>(`/submissions/${id}`, data),
+    delete: (id: number): Promise<void> => this.del<void>(`/submissions/${id}`),
   };
 
   // ===== Submission Comments =====
   readonly submissionComments = {
-    findBySubmission: (submissionId: number): Promise<any[]> => this.get(`/submissions/${submissionId}/comments`),
-    create: (submissionId: number, data: { body: string }): Promise<any> => this.post(`/submissions/${submissionId}/comments`, data),
-    delete: (id: number): Promise<any> => this.del(`/submission-comments/${id}`),
+    findBySubmission: (submissionId: number): Promise<SubmissionComment[]> => this.get<SubmissionComment[]>(`/submissions/${submissionId}/comments`),
+    create: (submissionId: number, data: { body: string }): Promise<SubmissionComment> => this.post<SubmissionComment>(`/submissions/${submissionId}/comments`, data),
+    delete: (id: number): Promise<void> => this.del<void>(`/submission-comments/${id}`),
   };
 
   // ===== Applicants =====
@@ -92,7 +165,7 @@ export class ApiService {
       portfolioFiles?: { url: string; originalName: string; size: number }[];
       motivation?: string;
     }): Promise<Applicant> => this.post<Applicant>(`/bootcamps/${bootcampId}/applicants`, data),
-    findByUser: (userId: number): Promise<any[]> => this.get<any[]>(`/users/${userId}/applicants`),
+    findByUser: (userId: number): Promise<Applicant[]> => this.get<Applicant[]>(`/users/${userId}/applicants`),
   };
 
   // ===== Contents =====
@@ -132,7 +205,7 @@ export class ApiService {
       const qs = '?' + new URLSearchParams(params).toString();
       return this.get<Notice[]>(`/notices${qs}`);
     },
-    findByBootcamp: (bootcampId: number): Promise<any[]> => this.get<any[]>(`/bootcamps/${bootcampId}/notices?excludeHidden=true`),
+    findByBootcamp: (bootcampId: number): Promise<Notice[]> => this.get<Notice[]>(`/bootcamps/${bootcampId}/notices?excludeHidden=true`),
     findOne: (id: number): Promise<Notice> => this.get<Notice>(`/notices/${id}`),
   };
 
@@ -143,7 +216,10 @@ export class ApiService {
 
   // ===== Inquiries =====
   readonly inquiries = {
-    findAll: (): Promise<Inquiry[]> => this.get<Inquiry[]>('/inquiries'),
+    findAll: (query?: { authorId?: number }): Promise<Inquiry[]> => {
+      const params = query?.authorId ? `?authorId=${query.authorId}` : '';
+      return this.get<Inquiry[]>(`/inquiries${params}`);
+    },
     findOne: (id: number): Promise<Inquiry> => this.get<Inquiry>(`/inquiries/${id}`),
     create: (data: { title: string; body: string; files?: { name: string; url: string; size: number; mimeType: string }[] }): Promise<Inquiry> => this.post<Inquiry>('/inquiries', data),
   };
@@ -153,7 +229,7 @@ export class ApiService {
     const formData = new FormData();
     formData.append('file', file, encodeURIComponent(file.name));
     formData.append('folder', folder);
-    return firstValueFrom(this.http.post<any>(`${BASE}/upload`, formData, { withCredentials: true }));
+    return firstValueFrom(this.http.post<{ url: string; originalName: string; size: number; mimeType: string }>(`${BASE}/upload`, formData, { withCredentials: true }));
   }
 
   // ===== Users (profile) =====
@@ -184,11 +260,11 @@ export class ApiService {
   // ===== Comments =====
   readonly comments = {
     findByContent: (contentId: number): Promise<Comment[]> => this.get<Comment[]>(`/contents/${contentId}/comments`),
-    findRecent: (take = 10): Promise<any[]> => this.get<any[]>(`/comments/recent?take=${take}`),
-    findBest: (take = 10): Promise<any[]> => this.get<any[]>(`/comments/best?take=${take}`),
+    findRecent: (take = 10): Promise<Comment[]> => this.get<Comment[]>(`/comments/recent?take=${take}`),
+    findBest: (take = 10): Promise<Comment[]> => this.get<Comment[]>(`/comments/best?take=${take}`),
     create: (contentId: number, data: { body: string; images?: string[]; parentId?: number; type?: string; markerNum?: number; markerTop?: number; markerLeft?: number; markerImageIndex?: number }): Promise<Comment> => this.post<Comment>(`/contents/${contentId}/comments`, data),
     update: (id: number, data: { body?: string }): Promise<Comment> => this.patch<Comment>(`/comments/${id}`, data),
-    delete: (id: number): Promise<any> => this.del(`/comments/${id}`),
+    delete: (id: number): Promise<void> => this.del<void>(`/comments/${id}`),
     toggleLike: (id: number): Promise<{ liked: boolean; likeCount: number }> => this.post(`/comments/${id}/like`, {}),
   };
 
@@ -233,11 +309,11 @@ export class ApiService {
 
   // ===== Notifications =====
   readonly notifications = {
-    findAll: (): Promise<any[]> => this.get('/notifications'),
+    findAll: (): Promise<ServerNotification[]> => this.get<ServerNotification[]>('/notifications'),
     unreadCount: (): Promise<{ count: number }> => this.get('/notifications/unread-count'),
-    markRead: (ids: number[]): Promise<any> => this.patch('/notifications/read', { ids }),
-    markAllRead: (): Promise<any> => this.patch('/notifications/read-all', {}),
-    deleteMany: (ids: number[]): Promise<any> => this.delWithBody('/notifications', { ids }),
+    markRead: (ids: number[]): Promise<void> => this.patch<void>('/notifications/read', { ids }),
+    markAllRead: (): Promise<void> => this.patch<void>('/notifications/read-all', {}),
+    deleteMany: (ids: number[]): Promise<void> => this.delWithBody<void>('/notifications', { ids }),
   };
 
   // ===== Upload =====
@@ -272,27 +348,27 @@ export class ApiService {
 
   // ===== Posters =====
   readonly posters = {
-    findAll: (): Promise<any[]> => this.get('/posters'),
+    findAll: (): Promise<Poster[]> => this.get<Poster[]>('/posters'),
   };
 
   // ===== Histories =====
   readonly histories = {
-    findAll: (): Promise<{ year: string; items: any[] }[]> => this.get('/histories'),
+    findAll: (): Promise<{ year: string; items: HistoryItem[] }[]> => this.get('/histories'),
   };
 
   // ===== Partners =====
   readonly partners = {
-    findAll: (): Promise<any[]> => this.get('/partners'),
+    findAll: (): Promise<Partner[]> => this.get<Partner[]>('/partners'),
   };
 
   // ===== Albums =====
   readonly albums = {
-    findAll: (type?: 'ALBUM' | 'BOOKMARK'): Promise<any[]> => this.get(`/albums${type ? `?type=${type}` : ''}`),
-    findOne: (id: number): Promise<any> => this.get(`/albums/${id}`),
-    create: (data: { name: string; type?: 'ALBUM' | 'BOOKMARK' }): Promise<any> => this.post('/albums', data),
-    update: (id: number, data: { name: string }): Promise<any> => this.patch(`/albums/${id}`, data),
-    delete: (id: number): Promise<any> => this.del(`/albums/${id}`),
-    addContent: (albumId: number, contentId: number): Promise<any> => this.post(`/albums/${albumId}/contents/${contentId}`, {}),
-    removeContent: (albumId: number, contentId: number): Promise<any> => this.del(`/albums/${albumId}/contents/${contentId}`),
+    findAll: (type?: 'ALBUM' | 'BOOKMARK'): Promise<Album[]> => this.get<Album[]>(`/albums${type ? `?type=${type}` : ''}`),
+    findOne: (id: number): Promise<Album> => this.get<Album>(`/albums/${id}`),
+    create: (data: { name: string; type?: 'ALBUM' | 'BOOKMARK' }): Promise<Album> => this.post<Album>('/albums', data),
+    update: (id: number, data: { name: string }): Promise<Album> => this.patch<Album>(`/albums/${id}`, data),
+    delete: (id: number): Promise<void> => this.del<void>(`/albums/${id}`),
+    addContent: (albumId: number, contentId: number): Promise<void> => this.post<void>(`/albums/${albumId}/contents/${contentId}`, {}),
+    removeContent: (albumId: number, contentId: number): Promise<void> => this.del<void>(`/albums/${albumId}/contents/${contentId}`),
   };
 }

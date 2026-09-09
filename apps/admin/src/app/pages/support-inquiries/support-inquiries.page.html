@@ -28,7 +28,9 @@
     <div class="flex flex-col items-start p-6 gap-6 bg-white drawer-slide-in"
          style="width: 522px; border-radius: 6px 0 0 6px;"
          role="document"
-         (click)="$event.stopPropagation()">
+         tabindex="-1"
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
 
       <!-- 닫기 버튼 -->
       <div class="flex items-start w-full">

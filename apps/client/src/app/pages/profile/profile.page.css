@@ -857,6 +857,7 @@
   color: rgba(255, 255, 255, 0.85);
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1618,4 +1619,139 @@
   height: 40px;
   padding: 0 12px;
   font-size: 16px;
+}
+
+/* ===== 팔로워/팔로잉 모달 — 모바일 풀스크린 ===== */
+@media (max-width: 768px) {
+  /* 모달 오버레이를 완전 풀스크린으로 */
+  .modal-overlay:has(.modal-shell) {
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0;
+  }
+
+  /* 모달을 풀스크린으로 전환 */
+  .modal-shell {
+    width: 100%;
+    max-width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    animation: none;
+  }
+
+  /* 헤더 → 상단 닫기 바 스타일 */
+  .modal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 5px 20px;
+    gap: 10px;
+    width: 100%;
+    height: 56px;
+    min-height: 56px;
+    background: #090909;
+    box-sizing: border-box;
+  }
+
+  .modal-header-row {
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  /* 타이틀을 숨김 — 본문 내부에 별도 표시 */
+  .modal-title-wrap {
+    display: none;
+  }
+
+  .modal-close-btn svg path {
+    fill: #FFFFFF;
+  }
+
+  /* 본문 영역 — 풀스크린 채우기 */
+  .modal-body {
+    padding: 20px;
+    gap: 20px;
+    background: #18181B;
+    flex: 1;
+    overflow-y: auto;
+    align-items: flex-start;
+  }
+
+  /* 팔로우 버튼 — 모바일 사이즈 */
+  .fm-btn {
+    min-width: 96px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 16px;
+    border-radius: 123123px;
+  }
+
+  .detail-follow-btn {
+    width: auto;
+    min-width: 96px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 16px;
+  }
+
+  /* 모바일 전용 타이틀 표시 */
+  .follow-modal-mobile-title {
+    display: flex;
+  }
+
+  /* 모바일 본문 — 풀스크린 확장 */
+  .follow-modal-body {
+    flex: 1;
+    max-height: none !important;
+    min-height: 0 !important;
+    padding: 20px !important;
+    gap: 20px !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* 데스크톱에서 모바일 전용 타이틀 숨김 */
+.follow-modal-mobile-title {
+  display: none;
+  width: 100%;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+}
+
+/* ===== 모바일 팔로우 취소 바텀시트 ===== */
+.unfollow-sheet-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 데스크톱 호버 효과 비활성화 */
+  .detail-following-btn:hover {
+    background: linear-gradient(90deg, #7A48FF 37%, #5FCCB6 100%);
+    border-color: rgba(255, 255, 255, 0.12);
+    opacity: 1;
+  }
+
+  .detail-following-btn:hover .follow-default { display: inline; }
+  .detail-following-btn:hover .follow-hover { display: none; }
+
+  /* 바텀시트 오버레이 — 모바일에서만 표시 */
+  .unfollow-sheet-overlay {
+    display: flex;
+  }
+
+  @keyframes sheetSlideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes sheetFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 }

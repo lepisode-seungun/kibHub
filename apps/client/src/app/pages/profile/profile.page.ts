@@ -24,6 +24,38 @@ interface ContentCard {
   firstComment?: { body: string; authorName: string };
 }
 
+interface SnsEntry {
+  type: string;
+  url: string;
+}
+
+interface ServerContent {
+  id: number;
+  title: string;
+  thumbnail?: string;
+  author?: { nickname?: string; name?: string };
+  _count?: { comments?: number };
+  feedbackCount?: number;
+  createdAt?: string;
+  topComment?: { body: string; author?: { nickname?: string; name?: string } };
+  comments?: { body: string; author?: { nickname?: string; name?: string } }[];
+}
+
+interface AlbumContent {
+  content?: ServerContent;
+}
+
+interface ServerAlbum {
+  id: number;
+  name: string;
+  _count?: { albumContents?: number };
+  albumContents?: AlbumContent[];
+}
+
+interface UserWithCover {
+  coverImage?: string;
+}
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -81,11 +113,12 @@ export class ProfilePage implements OnInit, OnDestroy {
       await this.auth.refreshUser();
 
       // 커버 이미지 로드
-      if ((user as any).coverImage) {
-        this.bannerBackground.set(`url('${(user as any).coverImage}') center center / cover no-repeat`);
+      const extUser = user as unknown as UserWithCover;
+      if (extUser.coverImage) {
+        this.bannerBackground.set(`url('${extUser.coverImage}') center center / cover no-repeat`);
       }
       if (user.sns && user.sns.length > 0) {
-        this.userSns.set(user.sns.map((s: any) => ({ type: s.type, url: s.url })));
+        this.userSns.set(user.sns.map((s: SnsEntry) => ({ type: s.type, url: s.url })));
       }
       this.userRole.set(user.role || '');
 
@@ -104,27 +137,27 @@ export class ProfilePage implements OnInit, OnDestroy {
     try {
       // 책갈피 탭: BOOKMARK 타입 앨범만 로드
       const albums = await this.api.albums.findAll('BOOKMARK');
-      this.categories.set(albums.map((a: any) => {
-        const acs = a.albumContents || [];
+      this.categories.set((albums as ServerAlbum[]).map((a) => {
+        const acs: AlbumContent[] = a.albumContents || [];
         return {
           id: a.id,
           name: a.name,
           contentCount: a._count?.albumContents || acs.length,
-          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
-          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          thumbnails: acs.slice(0, 4).map((ac) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac) => ac.content?.id).filter((id): id is number => !!id),
           isActive: false,
         };
       }));
 
       // 북마크된 콘텐츠 수집 (모든 앨범의 콘텐츠 합산, 중복 제거)
-      const contentMap = new Map<number, any>();
+      const contentMap = new Map<number, ContentCard>();
       for (const a of albums) {
         for (const ac of (a.albumContents || [])) {
           const c = ac.content;
           if (c && !contentMap.has(c.id)) {
             contentMap.set(c.id, {
               id: c.id,
-              title: c.title,
+              title: c.title || '',
               imageUrl: c.thumbnail || '',
               authorName: c.author?.nickname || c.author?.name || '',
               commentCount: c._count?.comments || 0,
@@ -149,8 +182,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     try {
       const uid = this.userId();
       if (!uid) return;
-      const serverContents: any[] = await this.api.users.contents(uid);
-      this.contents.set(serverContents.map((c: any) => ({
+      const serverContents = await this.api.users.contents(uid) as ServerContent[];
+      this.contents.set(serverContents.map((c) => ({
         id: c.id,
         title: c.title,
         imageUrl: c.thumbnail || '',
@@ -172,14 +205,14 @@ export class ProfilePage implements OnInit, OnDestroy {
   private async loadAlbums(): Promise<void> {
     try {
       const serverAlbums = await this.api.albums.findAll('ALBUM');
-      const mapped: Album[] = serverAlbums.map((a: any) => {
-        const acs = a.albumContents || [];
+      const mapped: Album[] = (serverAlbums as ServerAlbum[]).map((a) => {
+        const acs: AlbumContent[] = a.albumContents || [];
         return {
           id: a.id,
           name: a.name,
           contentCount: a._count?.albumContents || 0,
-          thumbnails: acs.slice(0, 4).map((ac: any) => ac.content?.thumbnail || '').filter(Boolean),
-          contentIds: acs.map((ac: any) => ac.content?.id).filter(Boolean),
+          thumbnails: acs.slice(0, 4).map((ac) => ac.content?.thumbnail || '').filter(Boolean),
+          contentIds: acs.map((ac) => ac.content?.id).filter((id): id is number => !!id),
           isActive: false,
         };
       });
@@ -723,7 +756,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       // 각 유저가 나를 팔로우하는지 / 내가 팔로우하는지 확인
       const me = this.userId();
       const enriched = await Promise.all(
-        list.map(async (u: any) => {
+        list.map(async (u) => {
           let isFollowing = false;
           if (tab === 'followers') {
             try {
@@ -747,11 +780,22 @@ export class ProfilePage implements OnInit, OnDestroy {
     if (!me) return;
     try {
       const result = await this.api.users.toggleFollow(targetId, me);
+      const currentTab = this.followModalTab();
+
       if (!result.followed) {
-        // 팔로우 취소 → 목록에서 제거
-        this.followModalList.set(
-          this.followModalList().filter(u => u.id !== targetId)
-        );
+        if (currentTab === 'following') {
+          // 팔로잉 탭에서 팔로우 취소 → 목록에서 제거
+          this.followModalList.set(
+            this.followModalList().filter(u => u.id !== targetId)
+          );
+        } else {
+          // 팔로워 탭에서 팔로잉 취소 → 상태만 업데이트 (팔로워는 유지)
+          this.followModalList.set(
+            this.followModalList().map(u =>
+              u.id === targetId ? { ...u, isFollowing: false } : u
+            )
+          );
+        }
       } else {
         // 팔로우 → 상태 업데이트
         this.followModalList.set(
@@ -769,5 +813,28 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   getInitial(nickname: string): string {
     return nickname ? nickname.charAt(0).toUpperCase() : '?';
+  }
+
+  // ===== 모바일 팔로우 취소 바텀시트 =====
+  unfollowSheetOpen = signal(false);
+  unfollowSheetTargetId = signal<number | null>(null);
+
+  /** 모바일에서 팔로잉 버튼 클릭 시 바텀시트 열기 */
+  openUnfollowSheet(userId: number): void {
+    this.unfollowSheetTargetId.set(userId);
+    this.unfollowSheetOpen.set(true);
+  }
+
+  closeUnfollowSheet(): void {
+    this.unfollowSheetOpen.set(false);
+    this.unfollowSheetTargetId.set(null);
+  }
+
+  /** 바텀시트에서 팔로우 취소 확정 */
+  async confirmUnfollow(): Promise<void> {
+    const targetId = this.unfollowSheetTargetId();
+    if (!targetId) return;
+    this.closeUnfollowSheet();
+    await this.toggleFollowInModal(targetId);
   }
 }

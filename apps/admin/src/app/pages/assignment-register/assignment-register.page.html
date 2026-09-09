@@ -10,7 +10,9 @@
 
     <!-- 헤더 -->
     <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
-         (click)="toggleBasicInfo()">
+         tabindex="0" role="button"
+         (click)="toggleBasicInfo()"
+         (keydown.enter)="toggleBasicInfo()">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">기본 정보</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"
@@ -97,7 +99,9 @@
   <!-- ===== 파일 업로드 아코디언 ===== -->
   <div class="flex flex-col p-5 gap-6 bg-white border border-gray-200 rounded-lg" style="box-sizing: border-box;">
     <div class="flex items-center gap-3 pb-4 border-b border-gray-200 cursor-pointer"
-         (click)="toggleFileUpload()">
+         tabindex="0" role="button"
+         (click)="toggleFileUpload()"
+         (keydown.enter)="toggleFileUpload()">
       <span class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-700">파일 업로드</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
            class="transition-transform duration-200"
@@ -136,7 +140,7 @@
                 </div>
                 <div class="flex items-center gap-4">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10.5L7.5 15L17 5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cursor-pointer" (click)="removeThumbnail()"><path d="M5 5L15 15M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cursor-pointer" tabindex="0" role="button" (click)="removeThumbnail()" (keydown.enter)="removeThumbnail()"><path d="M5 5L15 15M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
                 </div>
               </div>
             </div>
@@ -168,7 +172,7 @@
                 </div>
                 <div class="flex items-center gap-4">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10.5L7.5 15L17 5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cursor-pointer" (click)="removeMaterial(i)"><path d="M5 5L15 15M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cursor-pointer" tabindex="0" role="button" (click)="removeMaterial(i)" (keydown.enter)="removeMaterial(i)"><path d="M5 5L15 15M15 5L5 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
                 </div>
               </div>
             </div>

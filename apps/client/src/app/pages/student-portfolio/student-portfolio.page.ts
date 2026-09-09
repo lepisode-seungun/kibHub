@@ -94,7 +94,7 @@ export class StudentPortfolioPage implements OnInit {
     this.ngZone.run(async () => {
       try {
         const data = await this.api.portfolios.findAll({ isHallOfFame: 'false', status: 'VISIBLE' });
-        this.portfolios.set((Array.isArray(data) ? data : []).map((p: any, i: number) => ({
+        this.portfolios.set((Array.isArray(data) ? data : []).map((p, i) => ({
           id: p.id,
           thumbnail: p.thumbnail || '',
           gradient: this.gradients[i % this.gradients.length],

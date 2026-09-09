@@ -113,7 +113,7 @@
           <div class="p-3 bg-gray-50">
             <div class="flex flex-wrap gap-3">
               @for (file of learningFiles(); track file.name) {
-                <div class="box-border flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full cursor-pointer hover:border-zinc-300 transition-colors" (click)="downloadFile(file)">
+                <div class="box-border flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full cursor-pointer hover:border-zinc-300 transition-colors" tabindex="0" role="button" (click)="downloadFile(file)" (keydown.enter)="downloadFile(file)">
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 flex-1 whitespace-nowrap overflow-hidden text-ellipsis">{{ file.name }}</span>
                   <button class="flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

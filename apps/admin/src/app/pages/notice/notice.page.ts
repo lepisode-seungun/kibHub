@@ -64,7 +64,8 @@ export class NoticePage implements OnInit {
     }
   }
 
-  onRowClick(_row: GridRow): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onRowClick(_row: GridRow): void { /* no-op */ }
 
   onRegister(): void {
     this.router.navigate(['/bootcamp/home/notices/new']);

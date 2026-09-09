@@ -64,7 +64,7 @@ export class UploadController {
     @Body('folder') folder?: string,
   ): Promise<UploadResult> {
     if (!file) throw new BadRequestException('파일이 없습니다.');
-    try { file.originalname = decodeURIComponent(file.originalname); } catch (e) {}
+    try { file.originalname = decodeURIComponent(file.originalname); } catch { /* 디코딩 실패 시 원본 유지 */ }
     return this.uploadService.uploadSingle(file, folder || 'general');
   }
 
@@ -88,7 +88,7 @@ export class UploadController {
   ): Promise<UploadResult[]> {
     if (!files || files.length === 0) throw new BadRequestException('파일이 없습니다.');
     files.forEach(file => {
-      try { file.originalname = decodeURIComponent(file.originalname); } catch (e) {}
+      try { file.originalname = decodeURIComponent(file.originalname); } catch { /* 디코딩 실패 시 원본 유지 */ }
     });
     return this.uploadService.uploadMultiple(files, folder || 'general');
   }

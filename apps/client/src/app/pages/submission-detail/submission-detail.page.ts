@@ -11,6 +11,16 @@ interface LearningFile {
   mimeType?: string;
 }
 
+interface CommentEntry {
+  id: number;
+  authorName: string;
+  authorRole: string;
+  authorInitial: string;
+  authorImage: string;
+  body: string;
+  createdAt: string;
+}
+
 @Component({
   selector: 'app-submission-detail',
   standalone: true,
@@ -66,14 +76,19 @@ export class SubmissionDetailPage implements OnInit {
 
   private async loadSubmission(id: number): Promise<void> {
     try {
-      const s: any = await this.api.submissions.findOne(id);
+      const s = await this.api.submissions.findOne(id) as {
+        title?: string; content?: string; type?: string; createdAt: string; authorId?: number;
+        author?: { name?: string; nickname?: string };
+        files?: { name: string; url?: string; mimeType?: string }[];
+        assignment?: { id: number; course?: { name?: string } };
+      };
       this.assignmentTitle.set(s.title || '');
       this.description.set(s.content || '');
       this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
       this.author.set(s.author?.name || s.author?.nickname || '');
       this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
       this.fileName.set(s.files?.[0]?.name || '');
-      this.learningFiles.set((s.files || []).map((f: any) => ({ name: f.name, url: f.url, mimeType: f.mimeType || '' })));
+      this.learningFiles.set((s.files || []).map((f) => ({ name: f.name, url: f.url || '', mimeType: f.mimeType || '' })));
       if (s.assignment) {
         this.courseLabel.set(s.assignment.course?.name || '');
         this.assignmentId = String(s.assignment.id);
@@ -158,7 +173,7 @@ export class SubmissionDetailPage implements OnInit {
   }
 
   // ===== 댓글 =====
-  comments = signal<any[]>([]);
+  comments = signal<CommentEntry[]>([]);
   newComment = signal('');
   isCommentOpen = signal(true);
   isSubmittingComment = signal(false);
@@ -175,7 +190,7 @@ export class SubmissionDetailPage implements OnInit {
     if (!this.submissionId) return;
     try {
       const list = await this.api.submissionComments.findBySubmission(Number(this.submissionId));
-      this.comments.set(list.map((c: any) => ({
+      this.comments.set(list.map((c: { id: number; body: string; createdAt: string; author?: { name?: string; nickname?: string; role?: string; profileImage?: string } }) => ({
         id: c.id,
         authorName: c.author?.name || c.author?.nickname || '',
         authorRole: c.author?.role || '',
