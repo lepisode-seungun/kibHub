@@ -92,12 +92,9 @@ export class AuthService {
   async findEmail(phone: string, birthday?: string) {
     const where: Record<string, string> = { phone };
     if (birthday) where.birthday = birthday;
-    const user = await this.prisma.user.findFirst({ where, select: { email: true } });
-    if (!user) throw new Error('일치하는 회원 정보가 없습니다.');
-    // 이메일 마스킹
-    const [local, domain] = user.email.split('@');
-    const masked = local.slice(0, 3) + '***@' + domain;
-    return masked;
+    const users = await this.prisma.user.findMany({ where, select: { email: true } });
+    if (users.length === 0) throw new Error('일치하는 회원 정보가 없습니다.');
+    return users.map(u => u.email);
   }
 
   // ===== 인증번호 발송 =====

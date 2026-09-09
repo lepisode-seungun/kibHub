@@ -280,7 +280,7 @@ export class ApiService {
     signup: (data: { email: string; password: string; name: string; nickname: string; phone?: string }): Promise<User> =>
       this.post('/auth/signup', data),
     me: (): Promise<User> => this.get<User>('/auth/me'),
-    findEmail: (data: { phone: string; birthday: string }): Promise<{ email: string }> =>
+    findEmail: (data: { phone: string; birthday: string }): Promise<{ emails: string[] }> =>
       this.post('/auth/find-email', data),
     checkEmail: (data: { email: string }): Promise<{ available: boolean }> =>
       this.post('/auth/check-email', data),

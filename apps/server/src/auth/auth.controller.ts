@@ -67,8 +67,8 @@ export class AuthController {
       return res.status(HttpStatus.BAD_REQUEST).json({ error: '연락처를 입력해주세요.' });
     }
     try {
-      const email = await this.authService.findEmail(body.phone, body.birthday);
-      return res.json({ email });
+      const emails = await this.authService.findEmail(body.phone, body.birthday);
+      return res.json({ emails });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : '이메일 찾기 실패';
       return res.status(HttpStatus.NOT_FOUND).json({ error: message });
@@ -220,27 +220,8 @@ export class AuthController {
     }
   }
 
-  // ===== 이메일 템플릿 미리보기 (개발용) =====
-  @Get('preview-reset-email')
-  previewResetEmail(@Res() res: Response) {
-    const html = this.mailService.getResetPasswordHtml('https://example.com/reset-password?token=SAMPLE_TOKEN');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.send(html);
-  }
 
-  @Get('preview-verification-email')
-  previewVerificationEmail(@Res() res: Response) {
-    const html = this.mailService.getVerificationCodeHtml('123456');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.send(html);
-  }
 
-  @Get('preview-temp-password-email')
-  previewTempPasswordEmail(@Res() res: Response) {
-    const html = this.mailService.getTempPasswordHtml('TmpP@ss2024!');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.send(html);
-  }
 
   // ===== 로고 이미지 서빙 =====
   @Get('logo.png')
