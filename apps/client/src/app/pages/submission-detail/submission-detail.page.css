@@ -63,6 +63,21 @@
   border-radius: 4px;
 }
 
+/* ===== 설명 콘텐츠 (innerHTML) ===== */
+:host ::ng-deep .sd-description-content img {
+  max-width: 360px !important;
+  max-height: 300px !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: block;
+}
+
+:host ::ng-deep .sd-description-content font {
+  font-family: 'SUIT', sans-serif !important;
+}
+
 /* ===== 반응형 ===== */
 @media (max-width: 1600px) {
   .sd-tab-nav { padding: 0 100px; }

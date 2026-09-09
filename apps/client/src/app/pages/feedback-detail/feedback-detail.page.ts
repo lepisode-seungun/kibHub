@@ -86,7 +86,7 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
       this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
       this.author.set(s.author?.name || s.author?.nickname || '');
       this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
-      this.fileName.set(s.files?.[0]?.name || '');
+      this.fileName.set(s.assignment?.title || '');
       this.learningFiles.set((s.files || []).map((f: any) => ({ name: f.name, url: f.url })));
       if (s.assignment) {
         this.courseLabel.set(s.assignment.course?.name || '');

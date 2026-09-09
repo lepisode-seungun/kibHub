@@ -143,7 +143,7 @@ export class ApiService {
       this.post<Submission>(`/assignments/${assignmentId}/submissions`, data),
     createFeedback: (parentId: number, data: { title: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<Submission> =>
       this.post<Submission>(`/submissions/${parentId}/feedback`, data),
-    update: (id: number, data: { title?: string; content?: string }): Promise<Submission> => this.patch<Submission>(`/submissions/${id}`, data),
+    update: (id: number, data: { title?: string; content?: string; files?: { name: string; url: string; size?: number; mimeType?: string }[] }): Promise<Submission> => this.patch<Submission>(`/submissions/${id}`, data),
     delete: (id: number): Promise<void> => this.del<void>(`/submissions/${id}`),
   };
 

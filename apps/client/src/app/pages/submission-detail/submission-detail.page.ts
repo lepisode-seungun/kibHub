@@ -80,14 +80,14 @@ export class SubmissionDetailPage implements OnInit {
         title?: string; content?: string; type?: string; createdAt: string; authorId?: number;
         author?: { name?: string; nickname?: string };
         files?: { name: string; url?: string; mimeType?: string }[];
-        assignment?: { id: number; course?: { name?: string } };
+        assignment?: { id: number; title?: string; course?: { name?: string } };
       };
       this.assignmentTitle.set(s.title || '');
       this.description.set(s.content || '');
       this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
       this.author.set(s.author?.name || s.author?.nickname || '');
       this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
-      this.fileName.set(s.files?.[0]?.name || '');
+      this.fileName.set(s.assignment?.title || '');
       this.learningFiles.set((s.files || []).map((f) => ({ name: f.name, url: f.url || '', mimeType: f.mimeType || '' })));
       if (s.assignment) {
         this.courseLabel.set(s.assignment.course?.name || '');
@@ -143,7 +143,9 @@ export class SubmissionDetailPage implements OnInit {
 
   onEdit(): void {
     this.closeMore();
-    // TODO: 수정 페이지 이동 또는 모달
+    this.router.navigate([
+      '/my-bootcamp', this.bootcampId, 'submission', this.submissionId, 'edit',
+    ]);
   }
 
   onDelete(): void {

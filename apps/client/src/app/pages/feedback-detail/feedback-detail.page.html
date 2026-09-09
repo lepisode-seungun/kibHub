@@ -72,9 +72,6 @@
                 <button class="sd-more-item" (click)="onEdit()">수정</button>
                 <button class="sd-more-item" (click)="onDelete()">삭제</button>
               }
-              @if (isInstructor()) {
-                <button class="sd-more-item" (click)="onRegisterFeedback()">피드백 등록</button>
-              }
             </div>
           }
         </div>
@@ -87,14 +84,14 @@
       <!-- 설명 콘텐츠 (스크롤) -->
       <div class="sd-description-wrap">
         <div class="sd-description-scroll">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0">{{ description() }}</p>
+          <div class="sd-description-content font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0" [innerHTML]="description()"></div>
         </div>
       </div>
 
       <!-- 학습자료 -->
       <div class="sd-materials">
         <div class="sd-materials-header" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
-          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">학습자료</span>
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">첨부파일</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isMaterialOpen() ? 'none' : 'rotate(180deg)'" style="transition: transform 0.2s">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
           </svg>

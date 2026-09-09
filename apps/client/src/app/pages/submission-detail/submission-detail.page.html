@@ -71,13 +71,13 @@
           </button>
           @if (isMoreOpen()) {
             <div class="fixed top-0 left-0 w-screen h-screen z-[99]" (click)="closeMore()" (keydown.escape)="closeMore()" tabindex="-1"></div>
-            <div class="absolute top-8 left-0 flex flex-col min-w-[120px] bg-white border border-gray-100 rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.08)] overflow-hidden z-[100]">
+            <div style="position: absolute; top: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; min-width: 80px; background: #fff; border: 1px solid #f3f4f6; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; z-index: 100;">
               @if (isAuthor()) {
-                <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onEdit()">수정</button>
-                <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onDelete()">삭제</button>
+                <button style="display: flex; align-items: center; padding: 6px 0; justify-content: center; text-align: center; background: transparent; border: none; font-family: 'SUIT', sans-serif; font-weight: 500; font-size: 14px; line-height: 150%; letter-spacing: -0.04em; color: #27272A; cursor: pointer;" onmouseover="this.style.background='#f4f4f5'" onmouseout="this.style.background='transparent'" (click)="onEdit()">수정</button>
+                <button style="display: flex; align-items: center; padding: 6px 0; justify-content: center; text-align: center; background: transparent; border: none; font-family: 'SUIT', sans-serif; font-weight: 500; font-size: 14px; line-height: 150%; letter-spacing: -0.04em; color: #27272A; cursor: pointer;" onmouseover="this.style.background='#f4f4f5'" onmouseout="this.style.background='transparent'" (click)="onDelete()">삭제</button>
               }
               @if (isInstructor()) {
-                <button class="flex items-center px-4 py-3 bg-transparent border-none font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-800 cursor-pointer transition-colors duration-150 hover:bg-zinc-100" (click)="onRegisterFeedback()">피드백 등록</button>
+                <button style="display: flex; align-items: center; padding: 6px 0; justify-content: center; text-align: center; background: transparent; border: none; font-family: 'SUIT', sans-serif; font-weight: 500; font-size: 14px; line-height: 150%; letter-spacing: -0.04em; color: #27272A; cursor: pointer;" onmouseover="this.style.background='#f4f4f5'" onmouseout="this.style.background='transparent'" (click)="onRegisterFeedback()">피드백 등록</button>
               }
             </div>
           }
@@ -90,7 +90,7 @@
       <!-- 설명 콘텐츠 (스크롤) -->
       <div class="flex flex-col w-full flex-1 min-h-[200px] max-h-[456px]">
         <div class="sd-description-scroll w-full overflow-y-auto pr-2.5">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0 whitespace-pre-wrap">{{ description() }}</p>
+          <div class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 m-0 whitespace-pre-wrap sd-description-content" [innerHTML]="description()"></div>
           <!-- 이미지 첨부파일 미리보기 -->
           @for (file of learningFiles(); track file.name) {
             @if (isImageFile(file) && file.url) {
@@ -101,10 +101,10 @@
         </div>
       </div>
 
-      <!-- 학습자료 -->
+      <!-- 첨부파일 -->
       <div class="flex flex-col w-full rounded-xl overflow-hidden">
         <div class="flex justify-between items-center p-3 bg-zinc-100 cursor-pointer" role="button" tabindex="0" (click)="toggleMaterial()" (keydown.enter)="toggleMaterial()">
-          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">학습자료</span>
+          <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-zinc-800">첨부파일</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isMaterialOpen() ? 'none' : 'rotate(180deg)'" style="transition: transform 0.2s">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
           </svg>

@@ -130,16 +130,22 @@
 
         <!-- 필터 바 -->
         <div class="as-filter-bar">
-          <span class="as-total">전체 {{ submissions().length }}</span>
+          <span class="as-total">전체 {{ filteredSubmissions().length }}</span>
           <div class="as-filter-right">
-            <div class="as-dropdown">
-              <span class="as-dropdown-text">최신순</span>
+            <div class="as-dropdown" style="position: relative; cursor: pointer;" (click)="toggleSortDropdown()">
+              <span class="as-dropdown-text">{{ sortOrder() === 'newest' ? '최신순' : '오래된순' }}</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>
+              @if (isSortOpen()) {
+                <div style="position: absolute; top: 32px; left: 0; display: flex; flex-direction: column; background: #fff; border: 1px solid #e4e4e7; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10; overflow: hidden; min-width: 100px;">
+                  <button style="padding: 8px 16px; border: none; background: transparent; cursor: pointer; font-family: 'SUIT', sans-serif; font-size: 14px; text-align: left; color: #27272A;" onmouseover="this.style.background='#f4f4f5'" onmouseout="this.style.background='transparent'" (click)="$event.stopPropagation(); applySortOrder('newest')">최신순</button>
+                  <button style="padding: 8px 16px; border: none; background: transparent; cursor: pointer; font-family: 'SUIT', sans-serif; font-size: 14px; text-align: left; color: #27272A;" onmouseover="this.style.background='#f4f4f5'" onmouseout="this.style.background='transparent'" (click)="$event.stopPropagation(); applySortOrder('oldest')">오래된순</button>
+                </div>
+              }
             </div>
             <div class="as-search-input">
-              <input type="text" placeholder="검색어를 입력해주세요." />
+              <input type="text" placeholder="검색어를 입력해주세요." (input)="onSearchInput($event)" />
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                 <circle cx="10.5" cy="10.5" r="7" stroke="#A1A1AA" stroke-width="2" fill="none"/>
                 <path d="M15.5 15.5L20 20" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/>

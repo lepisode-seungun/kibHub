@@ -17,7 +17,7 @@ interface LectureDetail {
   duration?: string;
   category?: string;
   videoUrl?: string;
-  course?: { name?: string; title?: string };
+  course?: { id?: number; name?: string; title?: string };
   files?: { name: string; url: string }[];
 }
 
@@ -55,11 +55,20 @@ export class LectureDetailPage implements OnInit, OnDestroy {
   isMaterialOpen = signal(true);
 
   learningFiles = signal<LearningFile[]>([]);
+  private courseId = 0;
+  private navItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.lectureId = params.get('lectureId') || '';
+      // 기존 YouTube iframe 정리
+      this.youtubeEmbedUrl = null;
+      if (this.ytPlayer) {
+        try { this.ytPlayer.destroy(); } catch { /* ignore */ }
+        this.ytPlayer = null;
+      }
+      this.navItems = [];
       if (this.lectureId) {
         await this.loadLecture(Number(this.lectureId));
       }
@@ -80,6 +89,10 @@ export class LectureDetailPage implements OnInit, OnDestroy {
       this.updateYoutubeEmbed();
       if (lecture.course) {
         this.courseLabel.set(lecture.course.name || lecture.course.title || '');
+        if (lecture.course.id) this.courseId = lecture.course.id;
+      }
+      if (this.navItems.length === 0) {
+        await this.loadNavItems();
       }
       if (lecture.files && lecture.files.length > 0) {
         this.learningFiles.set(lecture.files.map((f: { name: string; url: string }) => ({ name: f.name, url: f.url })));
@@ -101,7 +114,13 @@ export class LectureDetailPage implements OnInit, OnDestroy {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
     if (match) {
       this.youtubeVideoId = match[1];
-      this.youtubeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}?enablejsapi=1`);
+      // null 설정 후 다음 틱에서 새 URL 적용 → iframe 강제 재생성
+      this.youtubeEmbedUrl = null;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.youtubeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`);
+        this.cdr.markForCheck();
+      }, 50);
       // DB에 duration이 없으면 YouTube API로 가져오기
       if (!this.duration()) {
         this.fetchYoutubeDuration(match[1]);
@@ -184,12 +203,48 @@ export class LectureDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  private async loadNavItems(): Promise<void> {
+    try {
+      if (this.returnTab === '학습목록' && this.courseId) {
+        // 학습목록 탭: 같은 과정 내 강의+과제 통합 순서
+        const lectures: any[] = await this.api.lectures.findByCourse(this.courseId);
+        const assignments: any[] = await this.api.assignments.findByCourse(this.courseId);
+        this.navItems = [
+          ...lectures.map((l: any) => ({ type: 'lecture' as const, id: l.id })),
+          ...assignments.map((a: any) => ({ type: 'assignment' as const, id: a.id })),
+        ];
+      } else {
+        // 강의 탭 등: 부트캠프 전체 강의만
+        const courses: any[] = await this.api.courses.findByBootcamp(Number(this.bootcampId));
+        const allItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
+        for (const course of courses) {
+          const lectures: any[] = await this.api.lectures.findByCourse(course.id);
+          lectures.forEach((l: any) => allItems.push({ type: 'lecture', id: l.id }));
+        }
+        this.navItems = allItems;
+      }
+    } catch { /* ignore */ }
+  }
+
   goNextLecture(): void {
-    const nextId = Number(this.lectureId) + 1;
-    this.router.navigate(
-      ['/my-bootcamp', this.bootcampId, 'lecture', nextId],
-      { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
-    );
+    const currentId = Number(this.lectureId);
+    const idx = this.navItems.findIndex(n => n.type === 'lecture' && n.id === currentId);
+    if (idx === -1 || idx >= this.navItems.length - 1) {
+      alert('마지막 항목입니다.');
+      return;
+    }
+    const next = this.navItems[idx + 1];
+    if (next.type === 'assignment') {
+      this.router.navigate(
+        ['/my-bootcamp', this.bootcampId, 'assignment', next.id],
+        { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+      );
+    } else {
+      this.router.navigate(
+        ['/my-bootcamp', this.bootcampId, 'lecture', next.id],
+        { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+      );
+    }
   }
 
   togglePlay(): void {

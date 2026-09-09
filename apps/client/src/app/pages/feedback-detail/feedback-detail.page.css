@@ -156,6 +156,21 @@
 .sd-description-scroll::-webkit-scrollbar-track { background: #D9D9D9; }
 .sd-description-scroll::-webkit-scrollbar-thumb { background: #ACACAC; border-radius: 4px; }
 
+/* ===== 설명 콘텐츠 (innerHTML) ===== */
+:host ::ng-deep .sd-description-content img {
+  max-width: 360px !important;
+  max-height: 300px !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: block;
+}
+
+:host ::ng-deep .sd-description-content font {
+  font-family: 'SUIT', sans-serif !important;
+}
+
 /* ===== 학습자료 toggle ===== */
 .sd-materials {
   display: flex;

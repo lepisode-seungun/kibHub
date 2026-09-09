@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -12,13 +12,16 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './assignment-submit.page.html',
   styleUrls: ['./assignment-submit.page.css'],
 })
-export class AssignmentSubmitPage {
+export class AssignmentSubmitPage implements AfterViewInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   bootcampId = '';
   assignmentId = '';
+  submissionId = '';
+  isEditMode = false;
 
   detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('과제');
@@ -33,7 +36,46 @@ export class AssignmentSubmitPage {
     this.route.params.subscribe((params) => {
       this.bootcampId = params['bootcampId'] || '';
       this.assignmentId = params['assignmentId'] || '';
+      this.submissionId = params['submissionId'] || '';
+      this.isEditMode = !!this.submissionId;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isEditMode) {
+      this.loadSubmission();
+    }
+  }
+
+  private async loadSubmission(): Promise<void> {
+    try {
+      const s = await this.api.submissions.findOne(Number(this.submissionId)) as {
+        title?: string; content?: string;
+        files?: { name: string; url?: string; mimeType?: string }[];
+        assignment?: { id: number };
+      };
+      this.title = s.title || '';
+      this.content = s.content || '';
+      if (s.assignment) {
+        this.assignmentId = String(s.assignment.id);
+      }
+      // 에디터에 기존 내용 삽입
+      if (this.editorArea?.nativeElement && this.content) {
+        this.editorArea.nativeElement.innerHTML = this.content;
+      }
+      // 기존 첨부파일 로드
+      if (s.files?.length) {
+        this.uploadedFiles.set(s.files.map(f => {
+          const parts = f.name.split('.');
+          const ext = parts.length > 1 ? parts.pop()! : '';
+          const name = parts.join('.');
+          return { name, extension: ext, size: '', status: 'done' as const, url: f.url || '' };
+        }));
+      }
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('제출 데이터 로드 실패:', err);
+    }
   }
 
   selectDetailTab(tab: string): void {
@@ -41,9 +83,11 @@ export class AssignmentSubmitPage {
   }
 
   goBack(): void {
-    this.router.navigate([
-      '/my-bootcamp', this.bootcampId, 'assignment', this.assignmentId,
-    ]);
+    if (this.isEditMode) {
+      this.router.navigate(['/my-bootcamp', this.bootcampId, 'submission', this.submissionId]);
+    } else {
+      this.router.navigate(['/my-bootcamp', this.bootcampId, 'assignment', this.assignmentId]);
+    }
   }
 
   removeFile(index: number): void {
@@ -216,11 +260,12 @@ export class AssignmentSubmitPage {
       const files = this.uploadedFiles()
         .filter(f => f.status === 'done' && f.url)
         .map(f => ({ url: f.url ?? '', name: f.name + '.' + f.extension, size: 0, mimeType: '' }));
-      await this.api.submissions.create(Number(this.assignmentId), {
-        title: this.title,
-        content: this.content,
-        files,
-      });
+      const payload = { title: this.title, content: this.content, files };
+      if (this.isEditMode) {
+        await this.api.submissions.update(Number(this.submissionId), payload);
+      } else {
+        await this.api.submissions.create(Number(this.assignmentId), payload);
+      }
       this.goBack();
     } catch (err) {
       console.error('제출 실패:', err);

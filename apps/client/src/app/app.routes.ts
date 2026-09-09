@@ -115,6 +115,14 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'my-bootcamp/:bootcampId/submission/:submissionId/edit',
+    canActivate: [bootcampAccessGuard],
+    loadComponent: () =>
+      import('./pages/assignment-submit/assignment-submit.page').then(
+        (m) => m.AssignmentSubmitPage
+      ),
+  },
+  {
     path: 'my-bootcamp/:bootcampId/submission/:submissionId/feedback-register',
     canActivate: [bootcampAccessGuard],
     loadComponent: () =>

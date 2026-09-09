@@ -80,16 +80,56 @@ export class AssignmentDetailPage implements OnInit {
   activeDetailTab = signal('과제');
 
   learningFiles = signal<LearningFile[]>([]);
+  private courseId = 0;
+  private navItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
   submissions = signal<Submission[]>([]);
   showAllSubmissions = signal(false);
+  sortOrder = signal<'newest' | 'oldest'>('newest');
+  isSortOpen = signal(false);
+  searchKeyword = signal('');
 
   readonly SUBMISSION_LIMIT = 4;
 
+  filteredSubmissions = computed(() => {
+    let all = this.submissions();
+    const keyword = this.searchKeyword().trim().toLowerCase();
+    if (keyword) {
+      const matchIds = new Set<number>();
+      all.forEach(s => {
+        if (s.title.toLowerCase().includes(keyword) || s.author.toLowerCase().includes(keyword)) {
+          matchIds.add(s.id);
+          if (s.parentId) matchIds.add(s.parentId);
+        }
+      });
+      // Also include children of matched parents
+      all.forEach(s => {
+        if (s.parentId && matchIds.has(s.parentId)) matchIds.add(s.id);
+      });
+      all = all.filter(s => matchIds.has(s.id));
+    }
+    if (this.sortOrder() === 'oldest') {
+      // Reverse parent order but keep children after their parent
+      const parents = all.filter(s => !s.isReply);
+      const childrenMap = new Map<number, Submission[]>();
+      all.filter(s => s.isReply).forEach(s => {
+        const arr = childrenMap.get(s.parentId!) || [];
+        arr.push(s);
+        childrenMap.set(s.parentId!, arr);
+      });
+      const reversed: Submission[] = [];
+      for (const p of [...parents].reverse()) {
+        reversed.push(p);
+        (childrenMap.get(p.id) || []).forEach(c => reversed.push(c));
+      }
+      return reversed;
+    }
+    return all;
+  });
+
   visibleSubmissions = computed(() => {
-    const all = this.submissions();
+    const all = this.filteredSubmissions();
     if (this.showAllSubmissions()) return all;
 
-    // parent 그룹 단위로 제한 (parent + 자식 피드백을 하나의 그룹으로)
     let parentCount = 0;
     let cutIndex = all.length;
     for (let i = 0; i < all.length; i++) {
@@ -105,15 +145,32 @@ export class AssignmentDetailPage implements OnInit {
   });
 
   hasMoreSubmissions = computed(() => {
-    const all = this.submissions();
+    const all = this.filteredSubmissions();
     const parentCount = all.filter(s => !s.isReply).length;
     return !this.showAllSubmissions() && parentCount > this.SUBMISSION_LIMIT;
   });
+
+  toggleSortDropdown(): void {
+    this.isSortOpen.update(v => !v);
+  }
+
+  applySortOrder(order: 'newest' | 'oldest'): void {
+    this.sortOrder.set(order);
+    this.isSortOpen.set(false);
+  }
+
+  onSearchInput(event: Event): void {
+    this.searchKeyword.set((event.target as HTMLInputElement).value);
+    this.showAllSubmissions.set(false);
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
       this.assignmentId = params.get('assignmentId') || '';
+      // 기존 YouTube iframe 정리
+      this.youtubeEmbedUrl = null;
+      this.navItems = [];
       if (this.assignmentId) {
         await this.loadAssignment(Number(this.assignmentId));
         await this.loadSubmissions(Number(this.assignmentId));
@@ -143,6 +200,10 @@ export class AssignmentDetailPage implements OnInit {
       }
       if (assignment.course) {
         this.courseLabel.set(assignment.course.name || assignment.course.title || '');
+        if (assignment.course.id) this.courseId = assignment.course.id;
+      }
+      if (this.navItems.length === 0) {
+        await this.loadNavItems();
       }
       if (assignment.files && assignment.files.length > 0) {
         this.learningFiles.set(assignment.files.map((f: { name: string; url: string }) => ({ name: f.name, url: f.url })));
@@ -165,7 +226,7 @@ export class AssignmentDetailPage implements OnInit {
         badge: s.type === 'FEEDBACK' ? '피드백' as const : '과제제출' as const,
         author: s.author?.name || s.author?.nickname || '',
         date: new Date(s.createdAt).toLocaleDateString('ko-KR'),
-        fileName: s.files?.[0]?.name || '',
+        fileName: this.assignmentTitle(),
         commentCount: s._count?.comments || 0,
         isReply: !!s.parentId,
         isInstructor: s.author?.role === 'INSTRUCTOR',
@@ -205,7 +266,16 @@ export class AssignmentDetailPage implements OnInit {
     const url = this.videoUrl();
     if (!url) { this.youtubeEmbedUrl = null; return; }
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    this.youtubeEmbedUrl = match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
+    if (match) {
+      this.youtubeEmbedUrl = null;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.youtubeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`);
+        this.cdr.markForCheck();
+      }, 50);
+    } else {
+      this.youtubeEmbedUrl = null;
+    }
   }
 
   get youtubeThumbnail(): string {
@@ -227,12 +297,48 @@ export class AssignmentDetailPage implements OnInit {
     }
   }
 
+  private async loadNavItems(): Promise<void> {
+    try {
+      if (this.returnTab === '학습목록' && this.courseId) {
+        // 학습목록 탭: 같은 과정 내 강의+과제 통합 순서
+        const lectures: any[] = await this.api.lectures.findByCourse(this.courseId);
+        const assignments: any[] = await this.api.assignments.findByCourse(this.courseId);
+        this.navItems = [
+          ...lectures.map((l: any) => ({ type: 'lecture' as const, id: l.id })),
+          ...assignments.map((a: any) => ({ type: 'assignment' as const, id: a.id })),
+        ];
+      } else {
+        // 과제 탭 등: 부트캠프 전체 과제만
+        const courses: any[] = await this.api.courses.findByBootcamp(Number(this.bootcampId));
+        const allItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
+        for (const course of courses) {
+          const assignments: any[] = await this.api.assignments.findByCourse(course.id);
+          assignments.forEach((a: any) => allItems.push({ type: 'assignment', id: a.id }));
+        }
+        this.navItems = allItems;
+      }
+    } catch { /* ignore */ }
+  }
+
   goNext(): void {
-    const nextId = Number(this.assignmentId) + 1;
-    this.router.navigate(
-      ['/my-bootcamp', this.bootcampId, 'assignment', nextId],
-      { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
-    );
+    const currentId = Number(this.assignmentId);
+    const idx = this.navItems.findIndex(n => n.type === 'assignment' && n.id === currentId);
+    if (idx === -1 || idx >= this.navItems.length - 1) {
+      alert('마지막 항목입니다.');
+      return;
+    }
+    const next = this.navItems[idx + 1];
+    if (next.type === 'lecture') {
+      this.router.navigate(
+        ['/my-bootcamp', this.bootcampId, 'lecture', next.id],
+        { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+      );
+    } else {
+      this.router.navigate(
+        ['/my-bootcamp', this.bootcampId, 'assignment', next.id],
+        { queryParams: this.returnTab ? { tab: this.returnTab } : {} }
+      );
+    }
   }
 
   selectDetailTab(tab: string): void {

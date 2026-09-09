@@ -33,7 +33,7 @@
             <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#27272A"/>
           </svg>
         </button>
-        <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">과제 제출</h1>
+        <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-gray-800 m-0">{{ isEditMode ? '과제 수정' : '과제 제출' }}</h1>
       </div>
     </div>
 
@@ -196,7 +196,7 @@
       <!-- 버튼 행 -->
       <div class="flex justify-center gap-3 w-full">
         <button class="flex-1 flex justify-center items-center px-3 py-2 h-12 bg-white border border-zinc-200 rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 box-border" (click)="onCancel()">취소</button>
-        <button class="flex-1 flex justify-center items-center px-3 py-2 h-12 bg-accent border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-opacity duration-150 hover:opacity-85" (click)="onSubmit()">제출</button>
+        <button class="flex-1 flex justify-center items-center px-3 py-2 h-12 bg-accent border-none rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-opacity duration-150 hover:opacity-85" (click)="onSubmit()">{{ isEditMode ? '수정' : '제출' }}</button>
       </div>
     </div>
   </main>

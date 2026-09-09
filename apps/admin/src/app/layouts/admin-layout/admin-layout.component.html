@@ -1,5 +1,5 @@
-<div class="flex flex-col w-full min-h-screen">
-<!-- ===== 전체 레이아웃 래퍼 ===== -->
+<div class="flex flex-col w-full h-screen overflow-hidden">
+<!-- ===== 헤더 (고정) ===== -->
   <div class="flex items-center px-10 w-full h-[62px] rounded-xl shrink-0"
        style="background: linear-gradient(270.26deg, #122D57 0%, #1C57B5 32.81%, #1C57B5 86.46%, #063681 100%);">
     <div class="flex items-center justify-between w-full h-[46px]">
@@ -11,12 +11,12 @@
     </div>
   </div>
 
-    <!-- ===== 좌측 사이드바 ===== -->
-  <div class="flex items-start gap-3 p-[10px] flex-1">
-    <div class="flex bg-white rounded-3xl flex-1 min-h-[calc(100vh-82px)]">
+  <!-- ===== 본문 (사이드바 + 콘텐츠) ===== -->
+  <div class="flex items-start gap-3 p-[10px] flex-1 overflow-hidden">
+    <div class="flex bg-white rounded-3xl flex-1 h-full overflow-hidden">
 
       <!-- ===== 사이드 네비게이션 ===== -->
-      <nav class="flex flex-col w-[252px] shrink-0 border-r border-zinc-200">
+      <nav class="flex flex-col w-[252px] shrink-0 border-r border-zinc-200 h-full">
 
           <!-- 로고 / 타이틀 영역 -->
         @if (navMode() === 'main') {
@@ -39,7 +39,7 @@
         </div>
 
           <!-- 네비게이션 -->
-        <div class="flex flex-col px-5 gap-0">
+        <div class="flex flex-col px-5 gap-0 flex-1 overflow-y-auto overflow-x-hidden">
 
             <!-- === 메인 네비 === -->
           @if (navMode() === 'main') {
@@ -160,6 +160,19 @@
           }
 
         </div>
+
+        <!-- 로그아웃 버튼 (사이드바 하단) -->
+        <div class="mt-auto px-5 pb-5">
+          <div class="w-full h-px bg-zinc-200 mb-3"></div>
+          <button
+            class="flex items-center gap-3 px-4 py-3 w-full rounded-md border-none cursor-pointer transition-colors duration-150 bg-white text-zinc-400 hover:bg-zinc-50 font-suit font-medium text-base leading-[150%] tracking-[-0.04em]"
+            (click)="logout()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" stroke="#A1A1AA" stroke-width="1.5" fill="none"/>
+            </svg>
+            <span>로그아웃</span>
+          </button>
+        </div>
       </nav>
 
       <!-- ===== 콘텐츠 영역 ===== -->
@@ -172,29 +185,10 @@
               <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#194477]">{{ breadcrumb }}</span>
             </div>
           </div>
-          <!-- 알림 아이콘 -->
-          <div class="relative">
-            <button type="button" class="relative flex items-center justify-center w-10 h-10 bg-white rounded-md cursor-pointer hover:bg-zinc-50 transition-colors border-none p-0" (click)="toggleProfileDropdown()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#9CA3AF">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-              </svg>
-              <div class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[15px] h-[15px] px-1 bg-[#3C8EEE] rounded-full">
-                <span class="font-suit font-medium text-xs text-white leading-none">3</span>
-              </div>
-            </button>
-            @if (profileDropdownOpen()) {
-              <div class="absolute right-0 top-12 w-40 bg-white rounded-lg shadow-lg border border-zinc-100 z-50 overflow-hidden">
-                <button class="flex items-center gap-2 w-full px-4 py-3 border-none bg-white hover:bg-zinc-50 cursor-pointer transition-colors font-suit font-medium text-sm text-zinc-600" (click)="logout()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-                  로그아웃
-                </button>
-              </div>
-            }
-          </div>
         </div>
 
         <!-- 콘텐츠 -->
-        <div class="p-6 flex-1 w-full overflow-x-hidden">
+        <div class="p-6 flex-1 w-full overflow-y-auto overflow-x-hidden">
           <router-outlet></router-outlet>
         </div>
       </div>
