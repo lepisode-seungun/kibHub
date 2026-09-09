@@ -128,7 +128,7 @@
     </div>
 
     <!-- Image Viewer -->
-    <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'" (mouseleave)="hoveredCommentId.set(null)">
+    <div class="detail-images" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'default'">
       <!-- Floating Buttons (sticky) -->
       <div class="detail-floating-anchor">
         <div [ngClass]="isSidebarOpen() ? 'detail-floating' : 'detail-floating floating-sidebar-closed'">
@@ -178,7 +178,7 @@
             <!-- 영구 마커들 -->
             @if (markersVisible()) {
               @for (m of img.markers; track m.rank) {
-                <div class="saved-marker" [class.marker-hovered]="hoveredCommentId() === m.commentId" [style.top.%]="m.top" [style.left.%]="m.left" (click)="activateMarkerComment(m.rank, $event)" (keydown.enter)="activateMarkerComment(m.rank, $event)" tabindex="0" role="button" (mouseenter)="hoveredCommentId.set(m.commentId ?? null)">
+                <div class="saved-marker" [class.marker-hovered]="hoveredCommentId() === m.commentId" [style.top.%]="m.top" [style.left.%]="m.left" (click)="activateMarkerComment(m.rank, $event)" (keydown.enter)="activateMarkerComment(m.rank, $event)" tabindex="0" role="button">
                   <img src="/icons/marker-active.svg" alt="마커" class="marker-icon" />
                   <span class="marker-num">{{ m.rank }}</span>
                 </div>
@@ -373,10 +373,10 @@
     </div>
 
     <!-- 댓글 리스트 -->
-    <div class="comments-list" (mouseleave)="hoveredCommentId.set(null)">
+    <div class="comments-list">
       @for (comment of filteredComments; track comment.id) {
         <div class="comment-item-wrap" [id]="'comment-' + comment.id">
-          <div [ngClass]="{'comment-item': true, 'comment-active': comment.isActive, 'comment-hovered': hoveredCommentId() === comment.id && comment.markerNum}" (mouseenter)="comment.markerNum ? hoveredCommentId.set(comment.id) : null">
+          <div [ngClass]="{'comment-item': true, 'comment-active': comment.isActive, 'comment-hovered': hoveredCommentId() === comment.id && comment.markerNum}">
             <!-- 아이콘: 피드백=마커, 일반=채팅버블 -->
             @if (comment.type === 'feedback') {
               <div [ngClass]="{'comment-marker': true, 'marker-active': comment.isActive}">
@@ -479,7 +479,7 @@
 
           <!-- 대댓글 -->
           @for (reply of comment.replies; track reply.id) {
-            <div class="reply-item" [id]="'comment-' + reply.id" [class.comment-hovered]="hoveredCommentId() === reply.id && reply.markerNum" (mouseenter)="reply.markerNum ? hoveredCommentId.set(reply.id) : null">
+            <div class="reply-item" [id]="'comment-' + reply.id" [class.comment-hovered]="hoveredCommentId() === reply.id && reply.markerNum">
               <div class="flex items-start gap-2" style="padding-top: 4px;">
                 <div class="reply-line"></div>
                 @if (reply.type === 'feedback') {

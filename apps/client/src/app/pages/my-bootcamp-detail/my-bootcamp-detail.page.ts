@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, signal, inject, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -401,14 +401,35 @@ export class MyBootcampDetailPage implements OnInit {
 
   /* ===== 공지사항 탭 ===== */
   notices = signal<Notice[]>([]);
-
   currentNoticePage = signal(1);
-  totalNoticePages = 5;
-  noticeSearchText = '';
+  noticesPerPage = 10;
+  noticeSearchText = signal('');
 
   onNoticeSearch(event: Event): void {
-    this.noticeSearchText = (event.target as HTMLInputElement).value;
+    this.noticeSearchText.set((event.target as HTMLInputElement).value);
+    this.currentNoticePage.set(1);
   }
+
+  filteredNotices = computed(() => {
+    let items = this.notices();
+    const q = this.noticeSearchText().trim().toLowerCase();
+    
+    if (q) {
+      items = items.filter(n => 
+        (n.title && n.title.toLowerCase().includes(q)) || 
+        (n.description && n.description.toLowerCase().includes(q))
+      );
+    }
+    
+    return items;
+  });
+
+  totalNoticePages = computed(() => Math.max(1, Math.ceil(this.filteredNotices().length / this.noticesPerPage)));
+  noticePagesArray = computed(() => Array.from({ length: this.totalNoticePages() }, (_, i) => i + 1));
+  paginatedNotices = computed(() => {
+    const start = (this.currentNoticePage() - 1) * this.noticesPerPage;
+    return this.filteredNotices().slice(start, start + this.noticesPerPage);
+  });
 
   goToNoticePage(page: number): void {
     this.currentNoticePage.set(page);

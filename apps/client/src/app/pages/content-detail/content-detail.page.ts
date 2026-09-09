@@ -597,7 +597,6 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     // 최상위 댓글에서 찾기
     const target = this.comments.find(c => c.markerNum === rank);
     let scrollTargetId = target ? `comment-${target.id}` : '';
-    let isReply = false;
 
     // 대댓글에서 찾기
     if (!target) {
@@ -605,41 +604,22 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const reply = (c.replies || []).find((r: ReplyEntry) => r.markerNum === rank);
         if (reply) {
           scrollTargetId = `comment-${reply.id}`;
-          isReply = true;
           break;
         }
-      }
-      // 대댓글 추적 시 모든 댓글 호버링 해제
-      if (isReply) {
-        this.comments.forEach(c => c.isActive = false);
       }
     }
 
     if (!scrollTargetId) return;
 
-    if (!isReply && target) {
-      // 최상위 댓글 토글
-      if (target.isActive && scrollTargetId === `comment-${target.id}`) {
-        target.isActive = false;
-      } else {
-        this.comments.forEach(c => c.isActive = false);
-        target.isActive = true;
-        setTimeout(() => {
-          const el = document.getElementById(scrollTargetId);
-          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+    // 스크롤 + 짧은 하이라이트
+    setTimeout(() => {
+      const el = document.getElementById(scrollTargetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('marker-flash');
+        setTimeout(() => el.classList.remove('marker-flash'), 500);
       }
-    } else {
-      // 대댓글: 스크롤 + flash highlight
-      setTimeout(() => {
-        const el = document.getElementById(scrollTargetId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.classList.add('marker-flash');
-          setTimeout(() => el.classList.remove('marker-flash'), 1500);
-        }
-      }, 100);
-    }
+    }, 100);
   }
 
   /* 신고 모달 */

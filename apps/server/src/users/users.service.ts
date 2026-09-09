@@ -95,8 +95,9 @@ export class UsersService {
     });
   }
 
-  /** 유저가 참여(합격)한 부트캠프 목록 */
+  /** 유저가 참여(합격)한 부트캠프 + 강사로 참여한 부트캠프 목록 */
   async findUserBootcamps(userId: number) {
+    // 1. 지원자(합격) 부트캠프
     const applicants = await this.prisma.applicant.findMany({
       where: { userId, status: 'ACCEPTED' },
       include: {
@@ -104,7 +105,7 @@ export class UsersService {
       },
       orderBy: { appliedAt: 'desc' },
     });
-    return applicants.map(a => ({
+    const fromApplicant = applicants.map(a => ({
       id: a.bootcamp.id,
       status: a.bootcamp.status,
       name: a.bootcamp.name,
@@ -112,6 +113,34 @@ export class UsersService {
       endDate: a.bootcamp.endDate,
       createdAt: a.bootcamp.createdAt,
     }));
+
+    // 2. 강사 초대 부트캠프
+    const instructorRecords = await this.prisma.bootcampInstructor.findMany({
+      where: { userId },
+      include: {
+        bootcamp: { select: { id: true, name: true, status: true, startDate: true, endDate: true, createdAt: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    const fromInstructor = instructorRecords.map(r => ({
+      id: r.bootcamp.id,
+      status: r.bootcamp.status,
+      name: r.bootcamp.name,
+      startDate: r.bootcamp.startDate,
+      endDate: r.bootcamp.endDate,
+      createdAt: r.bootcamp.createdAt,
+    }));
+
+    // 3. 중복 제거 후 합산
+    const seen = new Set<number>();
+    const merged = [];
+    for (const b of [...fromApplicant, ...fromInstructor]) {
+      if (!seen.has(b.id)) {
+        seen.add(b.id);
+        merged.push(b);
+      }
+    }
+    return merged;
   }
 
   /** 유저가 작성한 콘텐츠 목록 */

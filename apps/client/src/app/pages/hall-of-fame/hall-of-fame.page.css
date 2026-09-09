@@ -58,22 +58,6 @@
 .card-thumbnail:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(122, 72, 255, 0.15); }
 .card-thumbnail:hover::before { opacity: 1; }
 
-.card-thumbnail-overlay {
-  position: absolute;
-  top: 12px; right: 12px;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  color: #FFFFFF;
-  opacity: 0;
-  transform: translate(4px, -4px);
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 2;
-}
-
-.card-thumbnail:hover .card-thumbnail-overlay { opacity: 1; transform: translate(0, 0); }
 
 /* Badges */
 .badge {

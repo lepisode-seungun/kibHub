@@ -53,6 +53,8 @@ function toMemberDetail(u: User): MemberDetail {
 interface BootcampHistoryRow {
   [key: string]: unknown;
   id: number;
+  bootcampId: number;
+  bootcampName: string;
   status: string;
   name: string;
   appliedAt: string;
@@ -143,8 +145,10 @@ export class MemberDetailPage implements OnInit {
       const statusMap: Record<string, string> = {
         PENDING: '대기', ACCEPTED: '합격', WAITING: '수강대기', COMPLETED: '수료', REJECTED: '불합격',
       };
-      this.bootcampHistory.set(applications.map((a: { id: number; status: string; bootcamp?: { name: string }; appliedAt?: string }) => ({
+      this.bootcampHistory.set(applications.map((a: { id: number; status: string; bootcampId: number; bootcamp?: { id: number; name: string }; appliedAt?: string }) => ({
         id: a.id,
+        bootcampId: a.bootcamp?.id || a.bootcampId,
+        bootcampName: a.bootcamp?.name || '-',
         status: statusMap[a.status] || a.status,
         name: a.bootcamp?.name || '-',
         appliedAt: a.appliedAt ? new Date(a.appliedAt).toLocaleDateString('ko-KR') : '-',
@@ -279,6 +283,7 @@ export class MemberDetailPage implements OnInit {
   // ===== 행 클릭 핸들러 =====
   onApplicationClick(gridRow: GridRow): void {
     const row = gridRow as unknown as BootcampHistoryRow;
+    this.bootcampCtx.setBootcamp(row.bootcampId, row.bootcampName);
     this.router.navigate(['/bootcamp/home/applicants', row.id]);
   }
 
@@ -295,7 +300,11 @@ export class MemberDetailPage implements OnInit {
 
   onCommentClick(gridRow: GridRow): void {
     const row = gridRow as unknown as CommentHistoryRow;
-    if (row.contentId) this.router.navigate(['/content', row.contentId]);
+    if (row.contentId) {
+      this.router.navigate(['/content', row.contentId], {
+        queryParams: { commentId: row.commentId },
+      });
+    }
   }
 
   // ===== 케밥 메뉴 =====

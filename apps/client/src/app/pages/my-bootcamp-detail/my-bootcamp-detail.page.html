@@ -302,7 +302,7 @@
     @if (activeDetailTab() === '공지사항') {
       <!-- 필터 바 -->
       <div class="flex justify-between items-center w-full max-w-[1400px] h-12">
-        <span class="mbd-notice-total font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ notices().length }}</span>
+        <span class="mbd-notice-total font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredNotices().length }}</span>
         <div class="flex items-center gap-3">
           <div class="at-dropdown" role="button" tabindex="0" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
             <span>{{ sortOrder() }}</span>
@@ -327,7 +327,7 @@
 
       <!-- 공지사항 리스트 -->
       <div class="flex flex-col w-full max-w-[1400px]">
-        @for (notice of notices(); track notice.id) {
+        @for (notice of paginatedNotices(); track notice.id) {
           <div class="nt-item" role="button" tabindex="0" (click)="navigateToNotice(notice.id)" (keydown.enter)="navigateToNotice(notice.id)">
             <div class="flex items-center gap-3 w-full">
               @if (notice.isPinned) {
@@ -350,14 +350,14 @@
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#52525B"/>
           </svg>
         </button>
-        @for (page of [1, 2, 3, 4, 5]; track page) {
+        @for (page of noticePagesArray(); track page) {
           <button
             [ngClass]="currentNoticePage() === page ? 'nt-page-btn nt-page-active' : 'nt-page-btn'"
             (click)="goToNoticePage(page)">
             {{ page }}
           </button>
         }
-        <button class="nt-page-arrow" (click)="goToNoticePage(currentNoticePage() + 1)" [disabled]="currentNoticePage() === totalNoticePages">
+        <button class="nt-page-arrow" (click)="goToNoticePage(currentNoticePage() + 1)" [disabled]="currentNoticePage() === totalNoticePages()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#52525B"/>
           </svg>

@@ -79,7 +79,7 @@ export class HallOfFamePage implements OnInit, OnDestroy {
             title: p.workTitle || '작품명 미정',
             studentName: p.userName || p.authorName || '수강생',
             cohort: p.bootcampName || '',
-            platform: p.launchPlatform || '플랫폼',
+            platform: p.launchPlatform || '',
             platformLink: p.launchUrl || '#',
             description: p.workIntro || '',
           };

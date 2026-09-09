@@ -2695,14 +2695,14 @@
   }
 }
 
-/* ===== Marker Flash Highlight (대댓글 추적) ===== */
+/* ===== Marker Flash Highlight (댓글 추적) ===== */
 .marker-flash {
-  animation: markerFlashAnim 1.5s ease-out;
+  animation: markerFlashAnim 0.5s ease-out;
 }
 
 @keyframes markerFlashAnim {
-  0% { background-color: rgba(60, 142, 238, 0.25); }
-  100% { background-color: transparent; }
+  0% { background-color: #2E2331; box-shadow: inset 0 0 0 1px #622F73; }
+  100% { background-color: transparent; box-shadow: none; }
 }
 
 /* ===== 신고 성공 애니메이션 ===== */

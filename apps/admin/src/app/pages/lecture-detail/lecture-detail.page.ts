@@ -101,7 +101,7 @@ export class LectureDetailPage implements OnInit {
         content: lecture.content || lecture.body || '', materials: lecture.files || [],
       });
       if (lecture.course) {
-        const SM: Record<string, string> = { PENDING: '대기', IN_PROGRESS: '진행중', COMPLETED: '완료', VISIBLE: '노출', HIDDEN: '숨김' };
+        const SM: Record<string, string> = { PENDING: '노출', IN_PROGRESS: '진행중', COMPLETED: '완료', VISIBLE: '노출', HIDDEN: '숨김' };
         this.courseData.set({
           id: lecture.course.id,
           name: lecture.course.name || lecture.course.title || '',

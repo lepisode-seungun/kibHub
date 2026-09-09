@@ -60,7 +60,25 @@ export class ContentDetailPage implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) this.loadContent(id);
+    if (id) {
+      this.loadContent(id).then(() => {
+        const commentId = this.route.snapshot.queryParamMap.get('commentId');
+        if (commentId) {
+          // 댓글 섹션이 닫혀 있으면 열기
+          if (!this.section3Expanded()) this.section3Expanded.set(true);
+          // 댓글 섹션으로 스크롤
+          setTimeout(() => {
+            const el = document.getElementById('comment-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // 해당 댓글 드로어 열기
+            const targetComment = this.commentData().find(c => c.id === Number(commentId));
+            if (targetComment) {
+              setTimeout(() => this.openCommentDrawer(targetComment as unknown as GridRow), 400);
+            }
+          }, 200);
+        }
+      });
+    }
   }
 
   async loadContent(id: number): Promise<void> {

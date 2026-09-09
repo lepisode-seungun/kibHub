@@ -42,21 +42,13 @@
               @if (card.thumbnailUrl) {
                 <img [src]="card.thumbnailUrl" [alt]="card.title" class="w-full h-full object-cover rounded-lg" />
               }
-              <div class="card-thumbnail-overlay">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
             </div>
             <div class="flex flex-col gap-3 px-1">
               <div class="flex gap-1.5 items-center">
-                @if (card.badgeText) {
-                  <span class="badge badge--accent">{{ card.badgeText }}</span>
-                }
-                <span class="badge badge--outline">{{ card.statusText }}</span>
+                <span class="badge badge--outline">{{ card.platform || '' }}</span>
               </div>
-              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.bootcampName }}</h3>
-              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0 line-clamp-2">{{ card.summary }}</p>
+              <h3 class="font-suit font-bold text-lg leading-[150%] tracking-tight text-white m-0">{{ card.studentName }}</h3>
+              <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 m-0 line-clamp-2">{{ card.cohort }}</p>
             </div>
           </article>
         }
@@ -91,22 +83,22 @@
             <div class="hof-modal-thumb" [style.background]="selectedCard()!.thumbnailUrl ? 'url(' + selectedCard()!.thumbnailUrl + ') center/cover no-repeat' : selectedCard()!.thumbnailGradient"></div>
             <div class="flex flex-col gap-3 flex-1">
               <h3 class="font-suit font-bold text-xl leading-[150%] tracking-tight text-white m-0">{{ selectedCard()!.title }}</h3>
-              <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">수강생명</span>
+              <div class="flex items-center gap-3 flex-wrap mt-2">
+                <div class="flex items-center gap-3">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">수강생명</span>
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.studentName }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">기수</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">기수</span>
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.cohort }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 w-20 shrink-0">런칭 플랫폼</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">런칭 플랫폼</span>
                   <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ selectedCard()!.platform }}</span>
-                  @if (selectedCard()!.platformLink && selectedCard()!.platformLink !== '#') {
-                    <a [href]="selectedCard()!.platformLink" target="_blank" rel="noopener noreferrer" class="font-suit font-medium text-sm leading-[150%] tracking-tight text-accent hover:opacity-80 no-underline ml-1">바로가기 &gt;</a>
-                  }
                 </div>
+                @if (selectedCard()!.platformLink && selectedCard()!.platformLink !== '#') {
+                  <a [href]="selectedCard()!.platformLink" target="_blank" rel="noopener noreferrer" class="badge badge--outline no-underline" style="cursor: pointer;">바로가기</a>
+                }
               </div>
             </div>
           </div>
