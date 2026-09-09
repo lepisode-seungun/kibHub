@@ -7,9 +7,18 @@
     <!-- 섹션 헤더 -->
     <div class="section-header">
       <h1 class="section-title">부트캠프 목록</h1>
-      <svg class="section-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="#FFFFFF"/>
-      </svg>
+      <div class="carousel-nav">
+        <button class="carousel-nav-btn" (click)="scrollCards('left')" aria-label="이전 카드">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="#FFFFFF"/>
+          </svg>
+        </button>
+        <button class="carousel-nav-btn" (click)="scrollCards('right')" aria-label="다음 카드">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="#FFFFFF"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- 카드 목록 -->

@@ -43,14 +43,35 @@
   flex: 1;
 }
 
-.section-arrow {
+.carousel-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
-.section-arrow:hover {
-  transform: translateX(4px);
+.carousel-nav-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.carousel-nav-btn:active {
+  transform: scale(0.92);
 }
 
 /* ===== 카드 행 ===== */

@@ -202,6 +202,7 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   @ViewChild('cardsRow') cardsRowRef!: ElementRef<HTMLDivElement>;
   private isCardsDragging = false;
   private hasDragged = false;
+  private isMomentumActive = false;
   private cardsDragStartX = 0;
   private cardsDragStartPageX = 0;
   private cardsScrollLeft = 0;
@@ -211,11 +212,21 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   private cardsMomentumId = 0;
   private static readonly DRAG_THRESHOLD = 4; // px — 이 이상 이동해야 드래그로 인식
 
+  scrollCards(direction: 'left' | 'right'): void {
+    const el = this.cardsRowRef?.nativeElement;
+    if (!el) return;
+    // 첫 번째 카드 너비 + gap(24px) 기준으로 스크롤
+    const card = el.querySelector('.bootcamp-card') as HTMLElement;
+    const scrollAmount = card ? card.offsetWidth + 24 : 300;
+    el.scrollBy({ left: direction === 'right' ? scrollAmount : -scrollAmount, behavior: 'smooth' });
+  }
+
   onCardsMouseDown(event: MouseEvent): void {
     const el = this.cardsRowRef?.nativeElement;
     if (!el) return;
     event.preventDefault();
     cancelAnimationFrame(this.cardsMomentumId);
+    this.isMomentumActive = false;
     this.isCardsDragging = true;
     this.hasDragged = false;
     this.cardsDragStartX = event.pageX - el.offsetLeft;
@@ -243,12 +254,14 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     document.removeEventListener('mouseup', this.boundCardsMouseUp);
   }
 
-  onCardClick(event: MouseEvent): void {
-    if (this.hasDragged) {
+  onCardClick(event: MouseEvent): boolean {
+    // 드래그했거나 모멘텀 관성 중이면 클릭 차단
+    if (this.hasDragged || this.isMomentumActive) {
       event.preventDefault();
-      event.stopPropagation();
-      return;
+      event.stopImmediatePropagation();
+      return false;
     }
+    return true;
   }
 
   private boundCardsMouseMove = (e: MouseEvent): void => {
@@ -288,9 +301,21 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     let velocity = this.cardsDragVelocity * 800; // 초기 모멘텀 (px)
     const friction = 0.95; // 감속 비율
 
+    // 드래그하지 않았으면 모멘텀 불필요
+    if (!this.hasDragged || Math.abs(velocity) < 0.5) {
+      el.style.scrollSnapType = 'x mandatory';
+      this.hasDragged = false;
+      this.isMomentumActive = false;
+      return;
+    }
+
+    this.isMomentumActive = true;
+
     const step = () => {
       if (Math.abs(velocity) < 0.5) {
         el.style.scrollSnapType = 'x mandatory';
+        this.isMomentumActive = false;
+        this.hasDragged = false;
         return;
       }
       el.scrollLeft += velocity;

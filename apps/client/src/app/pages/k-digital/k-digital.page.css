@@ -99,6 +99,22 @@
 .kd-status--closed { background: #52525B; color: #E4E4E7; }
 .kd-status--ended { background: #EF4444; color: #FFFFFF; }
 
+/* 큰 화면 — 텍스트를 배너 박스 비율에 맞게 스케일 */
+@media (min-width: 1441px) {
+  .kd-hero {
+    padding-top: 6.2%;
+  }
+  .kd-hero-title {
+    font-size: 2.3vw !important;
+    line-height: 120% !important;
+    margin-top: -1.04vw !important;
+  }
+  .kd-hero-subtitle {
+    font-size: 1.15vw !important;
+    margin-top: 1.8vw !important;
+  }
+}
+
 /* 반응형 */
 @media (max-width: 1440px) {
   .kd-grid-section { padding: 60px 60px; }
