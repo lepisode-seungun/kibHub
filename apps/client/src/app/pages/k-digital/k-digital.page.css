@@ -105,12 +105,12 @@
     padding-top: 6.2%;
   }
   .kd-hero-title {
-    font-size: 2.3vw !important;
-    line-height: 120% !important;
+    font-size: 1.67vw !important;
+    line-height: 150% !important;
     margin-top: -1.04vw !important;
   }
   .kd-hero-subtitle {
-    font-size: 1.15vw !important;
+    font-size: 0.94vw !important;
     margin-top: 1.8vw !important;
   }
 }

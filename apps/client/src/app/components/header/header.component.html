@@ -397,9 +397,7 @@
           </svg>
           <span>로그아웃</span>
         </div>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#A1A1AA">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
+
       </button>
     } @else {
       <!-- ===== 비로그인 상태 ===== -->
@@ -565,7 +563,11 @@
               <div class="noti-content">
                 <div class="noti-icon">
                   @if (noti.actorProfileImage) {
-                    <img [src]="noti.actorProfileImage" style="width:20px;height:20px;border-radius:50%;object-fit:cover" alt="" />
+                    <img [src]="noti.actorProfileImage" style="width:100%;height:100%;border-radius:50%;object-fit:cover" alt="" />
+                  } @else if (noti.actorNickname) {
+                    <span class="flex items-center justify-center w-full h-full bg-[#3F3F46] rounded-full">
+                      <span class="font-suit font-bold text-[14px] text-white">{{ noti.actorNickname.charAt(0).toUpperCase() }}</span>
+                    </span>
                   } @else {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="#71717A">
                       <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
