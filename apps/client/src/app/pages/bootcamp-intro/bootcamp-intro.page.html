@@ -16,43 +16,55 @@
     <div class="cards-row" #cardsRow
          (mousedown)="onCardsMouseDown($event)"
          (mouseleave)="onCardsMouseUp()">
-      @for (card of bootcampCards(); track card.id) {
-        <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]" (click)="onCardClick($event)">
-          <!-- 썸네일 -->
-          @if (card.thumbnailUrl) {
-            <div class="card-thumbnail">
-              <img [src]="card.thumbnailUrl" alt="" class="w-full h-full object-cover" />
+      @for (card of displayCards(); track card.id) {
+        @if (card.id > 0) {
+          <a class="bootcamp-card" [routerLink]="['/k-digital', card.id]" (click)="onCardClick($event)">
+            <!-- 썸네일 -->
+            @if (card.thumbnailUrl) {
+              <div class="card-thumbnail">
+                <img [src]="card.thumbnailUrl" alt="" class="w-full h-full object-cover" />
+              </div>
+            } @else {
+              <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
+            }
+
+            <!-- 카드 정보 -->
+            <div class="card-info">
+              <!-- 뱃지 행 -->
+              <div class="badge-row">
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+                    'status-badge--preparing': card.status === 'preparing',
+                    'status-badge--recruiting': card.status === 'recruiting',
+                    'status-badge--operating': card.status === 'operating',
+                    'status-badge--closed': card.status === 'closed',
+                    'status-badge--ended': card.status === 'ended'
+                  }"
+                >{{ card.statusText }}</span>
+                @if (card.deadline) {
+                  <span class="deadline-badge">{{ card.deadline }}</span>
+                }
+              </div>
+
+              <!-- 부트캠프명 -->
+              <h3 class="card-name">{{ card.name }}</h3>
+
+              <!-- 요약설명 -->
+              <p class="card-summary">{{ card.summary }}</p>
             </div>
-          } @else {
+          </a>
+        } @else {
+          <!-- 빈 placeholder 카드 -->
+          <div class="bootcamp-card" style="pointer-events: none;">
             <div class="card-thumbnail" [style.background]="card.thumbnailGradient"></div>
-          }
-
-          <!-- 카드 정보 -->
-          <div class="card-info">
-            <!-- 뱃지 행 -->
-            <div class="badge-row">
-              <span
-                class="status-badge"
-                [ngClass]="{
-                  'status-badge--preparing': card.status === 'preparing',
-                  'status-badge--recruiting': card.status === 'recruiting',
-                  'status-badge--operating': card.status === 'operating',
-                  'status-badge--closed': card.status === 'closed',
-                  'status-badge--ended': card.status === 'ended'
-                }"
-              >{{ card.statusText }}</span>
-              @if (card.deadline) {
-                <span class="deadline-badge">{{ card.deadline }}</span>
-              }
+            <div class="card-info">
+              <div class="badge-row"></div>
+              <h3 class="card-name">&nbsp;</h3>
+              <p class="card-summary">&nbsp;</p>
             </div>
-
-            <!-- 부트캠프명 -->
-            <h3 class="card-name">{{ card.name }}</h3>
-
-            <!-- 요약설명 -->
-            <p class="card-summary">{{ card.summary }}</p>
           </div>
-        </a>
+        }
       }
     </div>
   </section>
@@ -112,9 +124,7 @@
         <div class="feature-banner-inner">
           <div class="feature-banner-row">
             <span class="feature-banner-text">웹툰 실무 전문 커리큘럼</span>
-            <span class="feature-banner-sep">·</span>
             <span class="feature-banner-text">현업 전문가 맞춤 피드백</span>
-            <span class="feature-banner-sep">·</span>
             <span class="feature-banner-text">글로벌 진출 올인원 서포트</span>
           </div>
         </div>
@@ -131,39 +141,34 @@
 
       <!-- 이미지 그리드 (부트캠프 카드 동적 연동) -->
       <div class="academy-grid">
-        @if (bootcampCards().length > 0) {
-          <div class="academy-grid-row">
-            @for (card of bootcampCards().slice(0, 3); track card.id) {
+        <div class="academy-grid-row">
+          @for (card of displayCards().slice(0, 3); track card.id; let i = $index) {
+            @if (card.id > 0) {
               <a class="grid-img" [routerLink]="['/k-digital', card.id]"
+                 [style.flex]="[194, 195, 194][i]"
                  [ngStyle]="card.thumbnailUrl
                    ? { 'background-image': 'url(' + card.thumbnailUrl + ')', 'background-size': 'cover', 'background-position': 'center' }
                    : { 'background': card.thumbnailGradient }">
               </a>
+            } @else {
+              <div class="grid-img" [style.flex]="[194, 195, 194][i]" [style.background]="card.thumbnailGradient"></div>
             }
-          </div>
-          @if (bootcampCards().length > 3) {
-            <div class="academy-grid-row">
-              @for (card of bootcampCards().slice(3, 6); track card.id) {
-                <a class="grid-img" [routerLink]="['/k-digital', card.id]"
-                   [ngStyle]="card.thumbnailUrl
-                     ? { 'background-image': 'url(' + card.thumbnailUrl + ')', 'background-size': 'cover', 'background-position': 'center' }
-                     : { 'background': card.thumbnailGradient }">
-                </a>
-              }
-            </div>
           }
-        } @else {
-          <div class="academy-grid-row">
-            <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-            <div class="grid-img" style="flex: 195; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-            <div class="grid-img" style="flex: 194; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
-          </div>
-          <div class="academy-grid-row">
-            <div class="grid-img" style="flex: 236; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
-            <div class="grid-img" style="flex: 217; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
-            <div class="grid-img" style="flex: 130; background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);"></div>
-          </div>
-        }
+        </div>
+        <div class="academy-grid-row">
+          @for (card of displayCards().slice(3, 6); track card.id; let i = $index) {
+            @if (card.id > 0) {
+              <a class="grid-img" [routerLink]="['/k-digital', card.id]"
+                 [style.flex]="[236, 217, 130][i]"
+                 [ngStyle]="card.thumbnailUrl
+                   ? { 'background-image': 'url(' + card.thumbnailUrl + ')', 'background-size': 'cover', 'background-position': 'center' }
+                   : { 'background': card.thumbnailGradient }">
+              </a>
+            } @else {
+              <div class="grid-img" [style.flex]="[236, 217, 130][i]" [style.background]="card.thumbnailGradient"></div>
+            }
+          }
+        </div>
         <!-- 4방향 페이드 -->
         <div class="grid-fade grid-fade--top"></div>
         <div class="grid-fade grid-fade--left"></div>

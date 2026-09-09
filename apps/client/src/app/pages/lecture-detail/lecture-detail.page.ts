@@ -207,19 +207,19 @@ export class LectureDetailPage implements OnInit, OnDestroy {
     try {
       if (this.returnTab === '학습목록' && this.courseId) {
         // 학습목록 탭: 같은 과정 내 강의+과제 통합 순서
-        const lectures: any[] = await this.api.lectures.findByCourse(this.courseId);
-        const assignments: any[] = await this.api.assignments.findByCourse(this.courseId);
+        const lectures = await this.api.lectures.findByCourse(this.courseId);
+        const assignments = await this.api.assignments.findByCourse(this.courseId);
         this.navItems = [
-          ...lectures.map((l: any) => ({ type: 'lecture' as const, id: l.id })),
-          ...assignments.map((a: any) => ({ type: 'assignment' as const, id: a.id })),
+          ...lectures.map(l => ({ type: 'lecture' as const, id: l.id })),
+          ...assignments.map(a => ({ type: 'assignment' as const, id: a.id })),
         ];
       } else {
         // 강의 탭 등: 부트캠프 전체 강의만
-        const courses: any[] = await this.api.courses.findByBootcamp(Number(this.bootcampId));
+        const courses = await this.api.courses.findByBootcamp(Number(this.bootcampId));
         const allItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
         for (const course of courses) {
-          const lectures: any[] = await this.api.lectures.findByCourse(course.id);
-          lectures.forEach((l: any) => allItems.push({ type: 'lecture', id: l.id }));
+          const lectures = await this.api.lectures.findByCourse(course.id);
+          lectures.forEach(l => allItems.push({ type: 'lecture', id: l.id }));
         }
         this.navItems = allItems;
       }

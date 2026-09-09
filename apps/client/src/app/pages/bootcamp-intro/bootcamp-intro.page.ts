@@ -169,6 +169,35 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
   }
   bootcampCards = signal<BootcampCard[]>([]);
 
+  private readonly placeholderGradients = [
+    'linear-gradient(135deg, #667eea, #764ba2)',
+    'linear-gradient(135deg, #f093fb, #f5576c)',
+    'linear-gradient(135deg, #4facfe, #00f2fe)',
+    'linear-gradient(135deg, #43e97b, #38f9d7)',
+    'linear-gradient(135deg, #fa709a, #fee140)',
+    'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+  ];
+
+  /** 항상 6개 카드 반환 — 부족하면 빈 placeholder 카드로 채움 */
+  displayCards = computed<BootcampCard[]>(() => {
+    const real = this.bootcampCards();
+    if (real.length >= 6) return real.slice(0, 6);
+    const padded = [...real];
+    for (let i = real.length; i < 6; i++) {
+      padded.push({
+        id: -(i + 1),
+        name: '',
+        summary: '',
+        status: 'closed',
+        statusText: '',
+        deadline: null,
+        thumbnailGradient: this.placeholderGradients[i % this.placeholderGradients.length],
+        thumbnailUrl: null,
+      });
+    }
+    return padded;
+  });
+
   // ===== 카드 드래그 스크롤 (모멘텀 관성 적용) =====
   @ViewChild('cardsRow') cardsRowRef!: ElementRef<HTMLDivElement>;
   private isCardsDragging = false;

@@ -62,7 +62,7 @@
               @if (isColorOpen()) {
                 <div style="position: absolute; top: 36px; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; background: #fff; border: 1px solid #e4e4e7; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10;">
                   @for (color of colorOptions; track color) {
-                    <button style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #e4e4e7; cursor: pointer; padding: 0;" [style.background]="color" (click)="applyColor(color)"></button>
+                    <button style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid #e4e4e7; cursor: pointer; padding: 0;" [style.background]="color" [attr.aria-label]="'색상 ' + color" (click)="applyColor(color)"></button>
                   }
                 </div>
               }

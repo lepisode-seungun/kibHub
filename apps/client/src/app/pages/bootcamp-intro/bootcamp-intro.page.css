@@ -475,7 +475,7 @@
   font-family: var(--font-family);
   font-style: normal;
   font-weight: 700;
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: 20px;
   line-height: 150%;
   text-align: center;
   letter-spacing: -0.04em;
@@ -497,7 +497,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
 }
 
 .feature-banner-sep {
@@ -556,6 +556,8 @@
   height: 55.15%;  /* 325 / 589.28 */
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
   gap: 13px;
   z-index: 1;
 }
@@ -564,57 +566,66 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0;
   gap: 8px;
-  flex: 1;
+  width: 100%;
+  height: 156px;
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
 }
 
 .grid-img {
-  flex: 1;
-  height: 100%;
+  height: 156px;
   border-radius: 6px;
   background-size: cover;
   background-position: center;
   min-width: 0;
   display: block;
+  flex: 1;
 }
 
-/* 그리드 4방향 페이드 */
+/* 그리드 4방향 페이드 — Figma 코너 기반 (rotate 변환 해석) */
 .grid-fade {
   position: absolute;
   pointer-events: none;
   z-index: 2;
 }
 
+/* Rectangle 2320: 상단 좌측 → 우측으로 페이드 (156×398 rotate -90deg) */
 .grid-fade--top {
   top: 0;
   left: 0;
-  right: 0;
-  height: 48%;     /* 156 / 325 */
-  background: linear-gradient(180deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
-}
-
-.grid-fade--left {
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 26%;      /* 156 / 599 */
+  width: 66%;        /* 398 / 599 */
+  height: 48%;       /* 156 / 325 */
   background: linear-gradient(90deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
 }
 
+/* Rectangle 2322: 하단 좌측 → 우측으로 페이드 (161×156 rotate -90deg) */
+.grid-fade--left {
+  bottom: 0;
+  left: 0;
+  width: 26%;        /* 156 / 599 */
+  height: 50%;       /* 161 / 325 */
+  background: linear-gradient(90deg, #19181D 0%, rgba(22, 21, 26, 0) 100%);
+}
+
+/* Rectangle 2323: 상단 우측 → 좌측으로 페이드 (156×156 rotate 90deg) */
 .grid-fade--right {
   top: 0;
   right: 0;
-  bottom: 0;
-  width: 26%;      /* 156 / 599 */
+  width: 26%;        /* 156 / 599 */
+  height: 48%;       /* 156 / 325 */
   background: linear-gradient(270deg, #1B1A20 0%, rgba(26, 25, 30, 0) 100%);
 }
 
+/* Rectangle 2324: 하단 우측 → 좌측으로 페이드 (157×156 rotate 90deg) */
 .grid-fade--bottom {
   bottom: 0;
-  left: 0;
   right: 0;
-  height: 48%;     /* 156 / 325 */
-  background: linear-gradient(0deg, #1D1C21 0%, rgba(29, 28, 33, 0) 100%);
+  width: 26%;        /* 156 / 599 */
+  height: 48%;       /* 157 / 325 */
+  background: linear-gradient(270deg, #1D1C21 0%, rgba(29, 28, 33, 0) 100%);
 }
 
 /* ===== Responsive ===== */
@@ -879,23 +890,27 @@
 
   /* 그리드 페이드 — 모바일 배경색 맞춤 */
   .grid-fade--top {
+    width: 66%;
     height: 48%;
-    background: linear-gradient(180deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
+    background: linear-gradient(90deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
   }
 
   .grid-fade--left {
     width: 26%;
-    background: linear-gradient(90deg, #16151A 0%, rgba(20, 21, 25, 0) 100%);
+    height: 50%;
+    background: linear-gradient(90deg, #19181D 0%, rgba(22, 21, 26, 0) 100%);
   }
 
   .grid-fade--right {
     width: 26%;
+    height: 48%;
     background: linear-gradient(270deg, #1B1A20 0%, rgba(26, 25, 30, 0) 100%);
   }
 
   .grid-fade--bottom {
+    width: 26%;
     height: 48%;
-    background: linear-gradient(0deg, #1D1C21 0%, rgba(29, 28, 33, 0) 100%);
+    background: linear-gradient(270deg, #1D1C21 0%, rgba(29, 28, 33, 0) 100%);
   }
 
   /* 비디오 섹션 */
