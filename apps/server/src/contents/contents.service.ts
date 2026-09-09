@@ -69,6 +69,7 @@ export class ContentsService {
         select: {
           contentId: true,
           body: true,
+          createdAt: true,
           author: { select: { nickname: true, name: true } },
         },
       });

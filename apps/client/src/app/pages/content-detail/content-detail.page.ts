@@ -725,6 +725,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     if (!text || !this.contentId) return;
 
     const isFeedback = this.commentMode() === 'feedback';
+    if (isFeedback && !this.pendingMarker()) {
+      alert('피드백 댓글을 달려면 이미지에 마커를 먼저 찍어주세요.');
+      return;
+    }
     const currentMarkerNum = isFeedback ? this.nextMarkerNum : null;
     const attached = this.attachedImages();
     const localPreviews = attached.map(a => a.preview);

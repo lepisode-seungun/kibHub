@@ -492,7 +492,7 @@ export class BootcampIntroPage implements OnInit {
         await this.api.histories.deleteByYear(year);
         // 로컬에서도 즉시 제거
         this.historyData.update(data => data.filter(g => g.year !== year));
-      } catch (e) {
+      } catch {
         // DB에 항목이 없었던 빈 폴더면 로컬에서만 제거
         this.historyData.update(data => data.filter(g => g.year !== year));
       }

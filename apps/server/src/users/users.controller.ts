@@ -88,6 +88,16 @@ export class UsersController {
     return this.usersService.getFollowCounts(id);
   }
 
+  @Get(':id/followers')
+  getFollowers(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getFollowers(id);
+  }
+
+  @Get(':id/following')
+  getFollowing(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getFollowing(id);
+  }
+
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);

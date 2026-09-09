@@ -175,6 +175,10 @@ export class ApiService {
       this.get(`/users/${id}/follow-status?userId=${userId}`),
     followCounts: (id: number): Promise<{ followerCount: number; followingCount: number }> =>
       this.get(`/users/${id}/follow-counts`),
+    followers: (id: number): Promise<{ id: number; nickname: string; profileImage: string | null }[]> =>
+      this.get(`/users/${id}/followers`),
+    following: (id: number): Promise<{ id: number; nickname: string; profileImage: string | null }[]> =>
+      this.get(`/users/${id}/following`),
   };
 
   // ===== Comments =====

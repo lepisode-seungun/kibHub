@@ -432,7 +432,10 @@
 
 <!-- ===== 파트너 등록/수정 사이드 드로어 ===== -->
 @if (showPartnerDrawer()) {
-  <div class="fixed inset-0 z-[9998]" (click)="closePartnerDrawer()"></div>
+  <div class="fixed inset-0 z-[9998]"
+       role="button" tabindex="0"
+       (click)="closePartnerDrawer()"
+       (keyup.escape)="closePartnerDrawer()"></div>
   <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
        style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
 
@@ -666,7 +669,10 @@
 
 <!-- ===== 히스토리 연도 사이드 드로어 ===== -->
 @if (showYearDrawer()) {
-  <div class="fixed inset-0 z-[9998]" (click)="closeYearDrawer()"></div>
+  <div class="fixed inset-0 z-[9998]"
+       role="button" tabindex="0"
+       (click)="closeYearDrawer()"
+       (keyup.escape)="closeYearDrawer()"></div>
   <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
        style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
 
@@ -710,7 +716,10 @@
 
 <!-- ===== 히스토리 항목 사이드 드로어 ===== -->
 @if (showHistoryItemDrawer()) {
-  <div class="fixed inset-0 z-[9998]" (click)="closeHistoryItemDrawer()"></div>
+  <div class="fixed inset-0 z-[9998]"
+       role="button" tabindex="0"
+       (click)="closeHistoryItemDrawer()"
+       (keyup.escape)="closeHistoryItemDrawer()"></div>
   <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
        style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
 
@@ -793,7 +802,10 @@
 
 <!-- ===== 포스터 등록/수정 사이드 드로어 ===== -->
 @if (showPosterDrawer()) {
-  <div class="fixed inset-0 z-[9998]" (click)="closePosterDrawer()"></div>
+  <div class="fixed inset-0 z-[9998]"
+       role="button" tabindex="0"
+       (click)="closePosterDrawer()"
+       (keyup.escape)="closePosterDrawer()"></div>
   <div class="fixed top-0 right-0 h-full z-[9999] flex flex-col p-6 gap-6 bg-white overflow-y-auto drawer-slide-in"
        style="width: 522px; border-radius: 6px 0 0 6px; box-shadow: -4px 0 24px rgba(0,0,0,0.12);">
 
@@ -827,7 +839,11 @@
       <input type="file" id="posterImageInput" accept="image/*" class="hidden" (change)="onPosterImageSelected($event)"/>
       <div class="flex flex-col items-center justify-center px-4 py-6 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors"
            style="min-height: 103px;"
-           (click)="triggerFileInput('posterImageInput')">
+           role="button"
+           tabindex="0"
+           (click)="triggerFileInput('posterImageInput')"
+           (keydown.enter)="triggerFileInput('posterImageInput')"
+           (keydown.space)="triggerFileInput('posterImageInput'); $event.preventDefault()">
         <svg width="20" height="19" viewBox="0 0 20 19" fill="none">
           <path d="M10.8333 0V10.3848L15.1667 6.0515L16.6985 7.58333L9.75 14.5318L2.8015 7.58333L4.33333 6.0515L8.66667 10.3848V0H10.8333ZM0 16.25H19.5V18.4167H0V16.25Z" fill="#3C8EEE"/>
         </svg>

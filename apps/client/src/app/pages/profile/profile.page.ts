@@ -53,6 +53,13 @@ export class ProfilePage implements OnInit, OnDestroy {
   generalCount = signal(0);
   receivedLikes = signal(0);
 
+  // 팔로잉/팔로워
+  followingCount = signal(0);
+  followerCount = signal(0);
+  isFollowModalOpen = signal(false);
+  followModalTab = signal<'following' | 'followers'>('following');
+  followModalList = signal<{ id: number; nickname: string; profileImage: string | null; isFollowing: boolean }[]>([]);
+
   ngOnInit(): void {
     document.body.style.backgroundColor = '#151419';
     this.loadProfile();
@@ -87,6 +94,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.loadCategories();
       this.loadAlbums();
       this.loadCommentStats(user.id);
+      this.loadFollowCounts(user.id);
     } catch (e) {
       console.error('프로필 로드 실패:', e);
     }
@@ -148,11 +156,11 @@ export class ProfilePage implements OnInit, OnDestroy {
         imageUrl: c.thumbnail || '',
         authorName: c.author?.nickname || c.author?.name || '',
         commentCount: c._count?.comments || 0,
-        feedbackCount: c._count?.comments || 0,
+        feedbackCount: c.feedbackCount || 0,
         createdAt: c.createdAt || '',
-        firstComment: c.comments?.[0] ? {
-          body: c.comments[0].body,
-          authorName: c.comments[0].author?.nickname || c.comments[0].author?.name || '',
+        firstComment: c.topComment ? {
+          body: c.topComment.body,
+          authorName: c.topComment.author?.nickname || c.topComment.author?.name || '',
         } : undefined,
       })));
       this.allCount.set(serverContents.length);
@@ -677,5 +685,89 @@ export class ProfilePage implements OnInit, OnDestroy {
   closeDeleteCategoryModal(): void {
     this.isDeleteCategoryModalOpen.set(false);
     this.deleteCategoryTargetId.set(null);
+  }
+
+  /* ===== 팔로잉/팔로워 모달 ===== */
+  private async loadFollowCounts(userId: number): Promise<void> {
+    try {
+      const counts = await this.api.users.followCounts(userId);
+      this.followingCount.set(counts.followingCount);
+      this.followerCount.set(counts.followerCount);
+    } catch { /* ignore */ }
+  }
+
+  async openFollowModal(tab: 'following' | 'followers'): Promise<void> {
+    this.followModalTab.set(tab);
+    this.isFollowModalOpen.set(true);
+    await this.loadFollowList(tab);
+  }
+
+  closeFollowModal(): void {
+    this.isFollowModalOpen.set(false);
+    this.followModalList.set([]);
+  }
+
+  async switchFollowTab(tab: 'following' | 'followers'): Promise<void> {
+    this.followModalTab.set(tab);
+    await this.loadFollowList(tab);
+  }
+
+  private async loadFollowList(tab: 'following' | 'followers'): Promise<void> {
+    const uid = this.userId();
+    if (!uid) return;
+    try {
+      const list = tab === 'following'
+        ? await this.api.users.following(uid)
+        : await this.api.users.followers(uid);
+
+      // 각 유저가 나를 팔로우하는지 / 내가 팔로우하는지 확인
+      const me = this.userId();
+      const enriched = await Promise.all(
+        list.map(async (u: any) => {
+          let isFollowing = false;
+          if (tab === 'followers') {
+            try {
+              const status = await this.api.users.followStatus(u.id, me);
+              isFollowing = status.isFollowing;
+            } catch { /* ignore */ }
+          } else {
+            isFollowing = true; // 팔로잉 탭이면 이미 팔로우 중
+          }
+          return { ...u, isFollowing };
+        }),
+      );
+      this.followModalList.set(enriched);
+    } catch {
+      this.followModalList.set([]);
+    }
+  }
+
+  async toggleFollowInModal(targetId: number): Promise<void> {
+    const me = this.userId();
+    if (!me) return;
+    try {
+      const result = await this.api.users.toggleFollow(targetId, me);
+      if (!result.followed) {
+        // 팔로우 취소 → 목록에서 제거
+        this.followModalList.set(
+          this.followModalList().filter(u => u.id !== targetId)
+        );
+      } else {
+        // 팔로우 → 상태 업데이트
+        this.followModalList.set(
+          this.followModalList().map(u =>
+            u.id === targetId ? { ...u, isFollowing: true } : u
+          )
+        );
+      }
+      // 카운트 갱신
+      await this.loadFollowCounts(me);
+    } catch {
+      console.error('팔로우 토글 실패');
+    }
+  }
+
+  getInitial(nickname: string): string {
+    return nickname ? nickname.charAt(0).toUpperCase() : '?';
   }
 }

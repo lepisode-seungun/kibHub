@@ -12,6 +12,7 @@ interface LectureCard {
   duration?: string;
   dateRange?: string;
   thumbnail: string;
+  videoUrl?: string;
 }
 
 interface LectureTabCard {
@@ -22,6 +23,7 @@ interface LectureTabCard {
   status: string;
   hasImage: boolean;
   thumbnail: string;
+  videoUrl?: string;
 }
 
 interface AssignmentTabCard {
@@ -277,6 +279,7 @@ export class MyBootcampDetailPage implements OnInit {
           id: l.id, title: l.title || '', category: l.category || '',
           duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
           thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+          videoUrl: l.videoUrl || '',
         })));
         allAssignments.push(...assignments.map((a: AssignmentResponse) => ({
           id: a.id, title: a.title || '', course: section.title,
@@ -286,6 +289,7 @@ export class MyBootcampDetailPage implements OnInit {
         })));
       }
       this.lectureCards.set(allLectures);
+      this.fetchMissingDurations();
       this.assignmentCards.set(allAssignments);
       this.courseSections.set([...sections]); // trigger re-render
 
@@ -332,6 +336,7 @@ export class MyBootcampDetailPage implements OnInit {
         ...lectures.map((l: LectureResponse) => ({
           id: l.id, type: '강의' as const, category: l.category || '', title: l.title || '',
           duration: l.duration || '', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+          videoUrl: l.videoUrl || '',
         })),
         ...assignments.map((a: AssignmentResponse) => ({
           id: a.id, type: '과제' as const, category: '', title: a.title || '',
@@ -344,6 +349,7 @@ export class MyBootcampDetailPage implements OnInit {
         id: l.id, title: l.title || '', category: l.category || '',
         duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
         thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+        videoUrl: l.videoUrl || '',
       })));
       this.assignmentCards.set(assignments.map((a: AssignmentResponse) => ({
         id: a.id, title: a.title || '', course: section.title,
@@ -428,6 +434,86 @@ export class MyBootcampDetailPage implements OnInit {
     };
     if (dueDateEnd) return `${fmt(dueDate)} ~ ${fmt(dueDateEnd)}`;
     return fmt(dueDate);
+  }
+
+  /** duration이 비어있는 강의의 유튜브 영상 길이 자동 조회 */
+  private fetchMissingDurations(): void {
+    const cards = this.lectureCards();
+    const missing = cards.filter(c => !c.duration && c.videoUrl);
+    console.log('[fetchMissingDurations] total:', cards.length, 'missing:', missing.length, missing.map(c => ({ id: c.id, videoUrl: c.videoUrl?.substring(0, 40) })));
+    if (missing.length === 0) return;
+
+    const extractVideoId = (url: string) => {
+      const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+      return m ? m[1] : null;
+    };
+
+    const processBatch = () => {
+      let idx = 0;
+      const processNext = () => {
+        if (idx >= missing.length) return;
+        const card = missing[idx++];
+        const videoId = extractVideoId(card.videoUrl || '');
+        if (!videoId) { processNext(); return; }
+
+        const container = document.createElement('div');
+        container.id = `yt-dur-${card.id}`;
+        container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
+        document.body.appendChild(container);
+
+        new (window as any).YT.Player(`yt-dur-${card.id}`, {
+          videoId,
+          events: {
+            onReady: (event: any) => {
+              const sec = event.target.getDuration();
+              console.log('[YT onReady] card:', card.id, 'duration sec:', sec);
+              if (sec > 0) {
+                const min = Math.floor(sec / 60);
+                const s = Math.floor(sec % 60);
+                const formatted = `${min}:${s.toString().padStart(2, '0')}`;
+                card.duration = formatted;
+                // 학습목록 탭(courseSections)의 카드도 업데이트
+                for (const section of this.courseSections()) {
+                  const sCard = section.cards.find(c => c.id === card.id && c.type === '강의');
+                  if (sCard) { sCard.duration = formatted; break; }
+                }
+                this.lectureCards.set([...this.lectureCards()]);
+                this.courseSections.set([...this.courseSections()]);
+              }
+              event.target.destroy();
+              container.remove();
+              // 다음 카드 처리 (약간의 딜레이)
+              setTimeout(processNext, 100);
+            },
+          },
+        });
+      };
+      processNext();
+    };
+
+    const waitForYT = (callback: () => void) => {
+      if ((window as any).YT && (window as any).YT.Player) {
+        callback();
+        return;
+      }
+      // API 스크립트 로드
+      if (!document.getElementById('yt-iframe-api')) {
+        const tag = document.createElement('script');
+        tag.id = 'yt-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+      // YT.Player 준비될 때까지 폴링
+      const interval = setInterval(() => {
+        if ((window as any).YT && (window as any).YT.Player) {
+          clearInterval(interval);
+          callback();
+        }
+      }, 200);
+      setTimeout(() => clearInterval(interval), 10000);
+    };
+
+    waitForYT(() => processBatch());
   }
 }
 

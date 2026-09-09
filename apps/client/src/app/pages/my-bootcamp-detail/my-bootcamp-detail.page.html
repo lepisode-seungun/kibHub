@@ -97,7 +97,9 @@
                       @if (card.thumbnail) {
                         <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
                       } @else {
-                        <div class="mbd-thumb-placeholder"></div>
+                      <div class="at-thumb-gradient">
+                        <span class="at-thumb-text">{{ card.title }}</span>
+                      </div>
                       }
                     </div>
                     <div class="flex flex-col items-start px-2 gap-2 w-full box-border">
@@ -124,7 +126,9 @@
                       @if (card.thumbnail) {
                         <img [src]="card.thumbnail" alt="" class="w-full h-full object-cover" />
                       } @else {
-                        <div class="mbd-thumb-placeholder"></div>
+                        <div class="at-thumb-gradient">
+                          <span class="at-thumb-text">{{ card.title }}</span>
+                        </div>
                       }
                     </div>
                     <div class="flex flex-col items-start px-2 gap-2 w-full box-border">

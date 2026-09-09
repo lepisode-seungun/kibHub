@@ -1,9 +1,11 @@
 import { Route } from '@angular/router';
 import { bootcampAccessGuard } from './guards/bootcamp-access.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const appRoutes: Route[] = [
   {
     path: 'upload',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/upload/upload.page').then((m) => m.UploadPage),
   },
@@ -21,6 +23,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'profile-edit',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/profile-edit/profile-edit.page').then(
         (m) => m.ProfileEditPage
@@ -28,6 +31,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'change-email',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/change-email/change-email.page').then(
         (m) => m.ChangeEmailPage
@@ -35,6 +39,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'change-password',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/change-password/change-password.page').then(
         (m) => m.ChangePasswordPage
@@ -49,6 +54,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'profile',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/profile/profile.page').then(
         (m) => m.ProfilePage
@@ -277,6 +283,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'withdraw',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/withdraw/withdraw.page').then(
         (m) => m.WithdrawPage

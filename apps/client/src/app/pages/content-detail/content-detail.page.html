@@ -420,8 +420,10 @@
                   @if (openDropdownId() === comment.id) {
                     <div class="comment-dropdown-overlay" tabindex="-1" (click)="closeDropdown()" (keydown.escape)="closeDropdown()"></div>
                     <div class="comment-dropdown">
-                      <button class="dropdown-item dropdown-item-active" (click)="startEdit(comment)">수정</button>
-                      <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
+                      @if (comment.isMe) {
+                        <button class="dropdown-item dropdown-item-active" (click)="startEdit(comment)">수정</button>
+                        <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
+                      }
                       <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal(comment.id)">신고</button>
                     </div>
                   }

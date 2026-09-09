@@ -1610,3 +1610,12 @@
 .detail-following-btn .follow-hover { display: none; }
 .detail-following-btn:hover .follow-default { display: none; }
 .detail-following-btn:hover .follow-hover { display: inline; }
+
+/* 팔로우 모달 내부 버튼 (사이즈 오버라이드) */
+.fm-btn {
+  width: auto;
+  min-width: 96px;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 16px;
+}

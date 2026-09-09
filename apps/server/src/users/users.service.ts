@@ -116,7 +116,7 @@ export class UsersService {
 
   /** 유저가 작성한 콘텐츠 목록 */
   async findUserContents(userId: number) {
-    return this.prisma.content.findMany({
+    const contents = await this.prisma.content.findMany({
       where: { authorId: userId },
       include: {
         category: { select: { name: true } },
@@ -124,6 +124,36 @@ export class UsersService {
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    // 각 콘텐츠의 피드백 댓글 수 + 최상위 피드백 댓글
+    const ids = contents.map(c => c.id);
+    if (ids.length === 0) return contents;
+
+    const feedbackCounts = await this.prisma.comment.groupBy({
+      by: ['contentId'],
+      where: { contentId: { in: ids }, markerNum: { not: null } },
+      _count: true,
+    });
+    const feedbackCountMap = new Map(feedbackCounts.map(c => [c.contentId, c._count]));
+
+    const topComments = await this.prisma.comment.findMany({
+      where: { contentId: { in: ids }, status: 'VISIBLE', markerNum: { not: null } },
+      orderBy: [{ likeCount: 'desc' }, { createdAt: 'desc' }],
+      distinct: ['contentId'],
+      select: {
+        contentId: true,
+        body: true,
+        createdAt: true,
+        author: { select: { nickname: true, name: true } },
+      },
+    });
+    const commentMap = new Map(topComments.map(c => [c.contentId, c]));
+
+    return contents.map(c => ({
+      ...c,
+      feedbackCount: feedbackCountMap.get(c.id) || 0,
+      topComment: commentMap.get(c.id) || null,
+    }));
   }
 
   /** 유저가 작성한 댓글 목록 */
@@ -233,5 +263,33 @@ export class UsersService {
       this.prisma.follow.count({ where: { followerId: userId } }),
     ]);
     return { followerCount, followingCount };
+  }
+
+  /** 팔로워 목록 (나를 팔로우하는 사람들) */
+  async getFollowers(userId: number) {
+    const follows = await this.prisma.follow.findMany({
+      where: { followingId: userId },
+      select: {
+        follower: {
+          select: { id: true, nickname: true, profileImage: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return follows.map(f => f.follower);
+  }
+
+  /** 팔로잉 목록 (내가 팔로우하는 사람들) */
+  async getFollowing(userId: number) {
+    const follows = await this.prisma.follow.findMany({
+      where: { followerId: userId },
+      select: {
+        following: {
+          select: { id: true, nickname: true, profileImage: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return follows.map(f => f.following);
   }
 }

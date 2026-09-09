@@ -21,9 +21,9 @@ export class AlbumsService {
                 _count: { select: { comments: true } },
                 comments: {
                   take: 1,
-                  orderBy: { createdAt: 'asc' },
-                  where: { parentId: null },
-                  select: { body: true, author: { select: { nickname: true, name: true } } },
+                  orderBy: { likeCount: 'desc' },
+                  where: { parentId: null, status: 'VISIBLE', markerNum: { not: null } },
+                  select: { body: true, createdAt: true, author: { select: { nickname: true, name: true } } },
                 },
               },
             },

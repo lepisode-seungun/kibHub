@@ -16,64 +16,36 @@ export function isImageFile(file: { name?: string; mimeType?: string }): boolean
 }
 
 /**
- * 파일을 실제 다운로드 — "다른 이름으로 저장" 다이얼로그 표시
- * showSaveFilePicker 지원 시 저장 경로 선택 가능 (Chrome/Edge)
- * 미지원 시 fetch+blob 방식으로 fallback
+ * 파일을 다운로드 — 크롬 다운로드 로그에 기록됨
+ * fetch + blob + a[download] 방식 사용
  */
 export async function downloadFile(url?: string, fileName?: string): Promise<void> {
   if (!url) return;
 
   const name = fileName || url.split('/').pop()?.split('?')[0] || 'download';
-  const downloadUrl = `${url}${url.includes('?') ? '&' : '?'}download=${encodeURIComponent(name)}`;
-
-  let blob: Blob | null = null;
 
   // 1) fetch로 blob 가져오기 (CORS 우회를 위해 proxy 사용)
   try {
     const proxyUrl = `/api/upload/proxy?url=${encodeURIComponent(url)}`;
     const res = await fetch(proxyUrl);
     if (res.ok) {
-      blob = await res.blob();
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      return;
     }
   } catch {
-    // CORS 등 fetch 실패 → fallback
+    // fetch 실패 → fallback
   }
 
-  // 2) blob 성공 시 showSaveFilePicker 시도
-  if (blob) {
-    if ('showSaveFilePicker' in window) {
-      try {
-        const ext = name.includes('.') ? name.split('.').pop()! : '';
-        const handle = await (window as any).showSaveFilePicker({
-          suggestedName: name,
-          types: ext ? [{
-            description: `${ext.toUpperCase()} 파일`,
-            accept: { [blob.type || 'application/octet-stream']: [`.${ext}`] },
-          }] : [],
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-        return;
-      } catch (pickerErr: any) {
-        if (pickerErr?.name === 'AbortError') return;
-        // picker 실패 시 a[download] fallback
-      }
-    }
-
-    // 3) a[download] fallback
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(blobUrl);
-    return;
-  }
-
-  // 4) fetch 자체가 실패한 경우 → a 태그로 fallback
+  // 2) fetch 실패 시 → a 태그로 직접 다운로드
+  const downloadUrl = `${url}${url.includes('?') ? '&' : '?'}download=${encodeURIComponent(name)}`;
   const a = document.createElement('a');
   a.href = downloadUrl;
   a.download = name;

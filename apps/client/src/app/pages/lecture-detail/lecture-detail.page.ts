@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, signal, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -28,12 +28,14 @@ interface LectureDetail {
   templateUrl: './lecture-detail.page.html',
   styleUrls: ['./lecture-detail.page.css'],
 })
-export class LectureDetailPage implements OnInit {
+export class LectureDetailPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
   private sanitizer = inject(DomSanitizer);
   private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
+  private ytPlayer: any = null;
 
   lectureId = '';
   bootcampId = '';
@@ -91,12 +93,83 @@ export class LectureDetailPage implements OnInit {
   }
 
   youtubeEmbedUrl: SafeResourceUrl | null = null;
+  private youtubeVideoId = '';
 
   private updateYoutubeEmbed(): void {
     const url = this.videoUrl();
     if (!url) { this.youtubeEmbedUrl = null; return; }
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    this.youtubeEmbedUrl = match ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}`) : null;
+    if (match) {
+      this.youtubeVideoId = match[1];
+      this.youtubeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${match[1]}?enablejsapi=1`);
+      // DB에 duration이 없으면 YouTube API로 가져오기
+      if (!this.duration()) {
+        this.fetchYoutubeDuration(match[1]);
+      }
+    } else {
+      this.youtubeEmbedUrl = null;
+    }
+  }
+
+  /** YouTube IFrame API로 영상 길이 가져오기 */
+  private fetchYoutubeDuration(videoId: string): void {
+    const loadApi = () => {
+      // 숨겨진 div에 플레이어 생성 (duration 조회 전용)
+      const container = document.createElement('div');
+      container.id = 'yt-duration-player';
+      container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
+      document.body.appendChild(container);
+
+      this.ytPlayer = new (window as any).YT.Player('yt-duration-player', {
+        videoId,
+        events: {
+          onReady: (event: any) => {
+            const sec = event.target.getDuration();
+            if (sec > 0) {
+              const min = Math.floor(sec / 60);
+              const s = Math.floor(sec % 60);
+              const formatted = `${min}:${s.toString().padStart(2, '0')}`;
+              this.ngZone.run(() => {
+                this.duration.set(formatted);
+                this.cdr.markForCheck();
+              });
+            }
+            // 플레이어 정리
+            event.target.destroy();
+            container.remove();
+            this.ytPlayer = null;
+          },
+        },
+      });
+    };
+
+    const waitForYT = (callback: () => void) => {
+      if ((window as any).YT && (window as any).YT.Player) {
+        callback();
+        return;
+      }
+      if (!document.getElementById('yt-iframe-api')) {
+        const tag = document.createElement('script');
+        tag.id = 'yt-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+      }
+      const interval = setInterval(() => {
+        if ((window as any).YT && (window as any).YT.Player) {
+          clearInterval(interval);
+          callback();
+        }
+      }, 200);
+      setTimeout(() => clearInterval(interval), 10000);
+    };
+
+    waitForYT(() => loadApi());
+  }
+
+  ngOnDestroy(): void {
+    if (this.ytPlayer) {
+      try { this.ytPlayer.destroy(); } catch { /* ignore */ }
+    }
   }
 
   returnTab = '';
