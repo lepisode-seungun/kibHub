@@ -132,46 +132,40 @@
       <!-- Floating Buttons (sticky) -->
       <div class="detail-floating-anchor">
         <div [ngClass]="isSidebarOpen() ? 'detail-floating' : 'detail-floating floating-sidebar-closed'">
-          <div class="floating-group">
-            <div class="floating-translate-wrap" (mouseenter)="toggleTranslateDropdown()" (mouseleave)="isTranslateOpen.set(false)">
-              @if (selectedLang() === 'en') {
-                <button class="floating-translate-badge" (click)="selectLang('ko')">
-                  <span>English</span>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><g clip-path="url(#clip0_translate)"><path d="M12.7312 5.86437C12.6438 5.60187 12.3813 5.47062 12.1188 5.53625C11.8563 5.62375 11.725 5.88625 11.7906 6.14875C11.9438 6.63 12.0312 7.13312 12.0312 7.63625C12.0312 8.40187 11.8562 9.12375 11.5281 9.80187C10.675 11.5519 8.94688 12.6456 7 12.6456C4.22187 12.6456 1.96875 10.3925 1.96875 7.65812C1.96875 4.92375 4.22187 2.67062 7 2.67062C7.50313 2.67062 8.00625 2.73625 8.46563 2.88937L7.72187 3.23937C7.48125 3.34875 7.37188 3.655 7.48125 3.89562C7.56875 4.07062 7.74375 4.18 7.91875 4.18C7.98438 4.18 8.05 4.15812 8.11562 4.13625L10.0406 3.23937C10.15 3.17375 10.2594 3.08625 10.3031 2.955C10.3469 2.82375 10.3469 2.6925 10.2812 2.58312L9.40625 0.658122C9.29688 0.417497 8.99063 0.308122 8.75 0.417497C8.50938 0.526872 8.4 0.833122 8.50938 1.07375L8.925 1.9925C8.3125 1.77375 7.65625 1.66437 6.97813 1.66437C3.69687 1.68625 0.984375 4.355 0.984375 7.65812C0.984375 10.9612 3.69687 13.63 7 13.63C9.31875 13.63 11.3969 12.3394 12.4031 10.2612C12.7969 9.45187 13.0156 8.57687 13.0156 7.65812C13.0156 7.04562 12.9062 6.43312 12.7312 5.86437Z" fill="white"/></g><defs><clipPath id="clip0_translate"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>
+          <div class="floating-hub">
+            <!-- 위쪽 날개: 마커/책갈피/공유 -->
+            <div class="floating-wing floating-wing-top" [class.floating-wing-open]="isFloatingMenuOpen()" [class.floating-wing-closed]="!isFloatingMenuOpen()">
+              <div class="floating-group">
+                <button class="floating-btn" [class.floating-btn-active]="!markersVisible()" (click)="markersVisible.set(!markersVisible())">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4755 14.0792L10.929 9.62349L11.9222 8.60777C12.3369 8.18373 12.3369 7.49623 11.9222 7.07219C11.8227 6.97039 11.7083 6.89304 11.5862 6.84012L6.66016 11.766C6.71057 11.9213 6.7962 12.0672 6.91704 12.1908C7.33168 12.6148 8.00395 12.6148 8.4186 12.1908L9.52757 11.0567L14.074 15.5124L15.0377 15.7551L16.0013 15.9978L15.7384 15.0385L15.4755 14.0792ZM4.95009 11.5363C3.74667 11.3811 2.58267 10.831 1.65858 9.88594C-0.55286 7.62439 -0.55286 3.9577 1.65858 1.69616C3.87002 -0.565386 7.45547 -0.565386 9.66691 1.69616C10.6233 2.67422 11.1661 3.91509 11.2952 5.19145L4.95009 11.5363Z" fill="currentColor"/><path d="M13.8138 2.17969L2.17604 13.817" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <span>마커 숨기기</span>
                 </button>
-              } @else {
-                <button class="floating-btn floating-translate" (click)="openTranslateSheet()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                  <span>콘텐츠 번역</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8" [style.transform]="isTranslateOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s"><path d="M7 10l5 5 5-5z"/></svg>
+                <button class="floating-btn" (click)="toggleBookmark()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
+                  <span>책갈피 추가</span>
                 </button>
-                @if (isTranslateOpen()) {
-                  <div class="translate-dropdown"><div class="translate-dropdown-inner">
-                    <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedLang() === 'ko'" (click)="selectLang('ko')">한국어</button>
-                    <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedLang() === 'en'" (click)="selectLang('en')">English</button>
-                  </div></div>
-                }
-              }
+                <button class="floating-btn" (click)="openShareModal()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                  <span>공유하기</span>
+                </button>
+              </div>
             </div>
-            <button class="floating-btn" [class.floating-btn-active]="!markersVisible()" (click)="markersVisible.set(!markersVisible())">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.4755 14.0792L10.929 9.62349L11.9222 8.60777C12.3369 8.18373 12.3369 7.49623 11.9222 7.07219C11.8227 6.97039 11.7083 6.89304 11.5862 6.84012L6.66016 11.766C6.71057 11.9213 6.7962 12.0672 6.91704 12.1908C7.33168 12.6148 8.00395 12.6148 8.4186 12.1908L9.52757 11.0567L14.074 15.5124L15.0377 15.7551L16.0013 15.9978L15.7384 15.0385L15.4755 14.0792ZM4.95009 11.5363C3.74667 11.3811 2.58267 10.831 1.65858 9.88594C-0.55286 7.62439 -0.55286 3.9577 1.65858 1.69616C3.87002 -0.565386 7.45547 -0.565386 9.66691 1.69616C10.6233 2.67422 11.1661 3.91509 11.2952 5.19145L4.95009 11.5363Z" fill="currentColor"/><path d="M13.8138 2.17969L2.17604 13.817" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <span>마커 숨기기</span>
+            <!-- 햄버거 (항상 고정) -->
+            <button class="floating-circle floating-hamburger" (click)="isFloatingMenuOpen.set(!isFloatingMenuOpen())">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/>
+              </svg>
             </button>
-            <button class="floating-btn" (click)="toggleBookmark()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg>
-              <span>책갈피 추가</span>
-            </button>
-            <button class="floating-btn" (click)="openShareModal()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
-              <span>공유하기</span>
-            </button>
+            <!-- 아래쪽 날개: 피드백/스크롤 -->
+            <div class="floating-wing floating-wing-bottom" [class.floating-wing-open]="isFloatingMenuOpen()" [class.floating-wing-closed]="!isFloatingMenuOpen()">
+              <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="toggleFeedbackMode()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+              <button class="floating-circle" (click)="scrollToTop()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 14l5-5 5 5z"/></svg></button>
+              <button class="floating-circle" (click)="scrollToBottom()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 10l5 5 5-5z"/></svg></button>
+            </div>
           </div>
-          <button class="floating-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="#D4D4D8" stroke-width="2" stroke-linecap="round"/></svg></button>
-          <button [ngClass]="commentMode() === 'feedback' ? 'floating-add floating-add-active' : 'floating-add'" (click)="toggleFeedbackMode()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#F2EDFF"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-          <button class="floating-circle" (click)="scrollToTop()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 14l5-5 5 5z"/></svg></button>
-          <button class="floating-circle" (click)="scrollToBottom()"><svg width="28" height="28" viewBox="0 0 24 24" fill="#D4D4D8"><path d="M7 10l5 5 5-5z"/></svg></button>
         </div>
       </div>
+
       @for (img of images; track $index) {
         <div class="detail-image-frame" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" (click)="onImageFrameClick($event, $index)" (keydown.enter)="onImageFrameClick($event, $index)">
           <div class="detail-image" [style.background]="img.gradient">
@@ -198,7 +192,7 @@
   </div><!-- /detail-left -->
 
   <!-- Mobile floating comment button -->
-  <button class="mobile-comment-fab" [hidden]="!isMobileCommentOpen()" (click)="isMobileCommentOpen.set(true)" aria-label="댓글쓰기">
+  <button class="mobile-comment-fab" [hidden]="!isMobileCommentOpen() || !isMobileFabVisible()" (click)="scrollToCompose()" aria-label="댓글쓰기">
     <svg width="82" height="40" viewBox="0 0 82 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="82" height="40" rx="12" fill="#7A48FF" fill-opacity="0.9"/>
       <path d="M18.592 14.336V15.472H14.576V19.536C15.536 19.5253 16.368 19.4933 17.072 19.44C17.776 19.3867 18.496 19.2853 19.232 19.136L19.36 20.256C18.56 20.416 17.776 20.5227 17.008 20.576C16.2507 20.6293 15.2907 20.656 14.128 20.656H13.216V14.336H18.592ZM14.384 26.08C15.2267 25.9413 16.0107 25.6853 16.736 25.312C17.4613 24.9387 18.0373 24.4907 18.464 23.968C18.8907 23.4347 19.104 22.8747 19.104 22.288V21.792H20.48V22.288C20.48 22.8747 20.6933 23.4347 21.12 23.968C21.5467 24.5013 22.1227 24.9547 22.848 25.328C23.5733 25.6907 24.3627 25.9413 25.216 26.08L24.64 27.152C23.5627 26.96 22.592 26.6027 21.728 26.08C20.864 25.5573 20.2187 24.9173 19.792 24.16C19.3653 24.9173 18.72 25.5573 17.856 26.08C16.992 26.6027 16.0213 26.96 14.944 27.152L14.384 26.08ZM20.08 13.392H21.392V16.768H23.168V13.12H24.496V22.432H23.168V17.904H21.392V21.2H20.08V13.392ZM37.0724 13.712V14.64C37.0724 15.312 37.0564 15.9253 37.0244 16.48C36.9924 17.0347 36.907 17.6533 36.7684 18.336H38.7044V19.456H25.9524V18.336H35.4084C35.547 17.6853 35.6324 17.0933 35.6644 16.56C35.707 16.0267 35.7284 15.456 35.7284 14.848H27.5844V13.712H37.0724ZM27.4404 20.8H37.1204V24.416H28.8644V25.952H37.4724V27.072H27.4884V23.36H35.7444V21.888H27.4404V20.8ZM55.0803 19.808V20.944H42.3602V19.808H55.0803ZM43.8642 24.64C43.8642 23.84 44.2909 23.2213 45.1443 22.784C45.9976 22.336 47.1816 22.112 48.6963 22.112C50.2109 22.112 51.3949 22.336 52.2483 22.784C53.1016 23.2213 53.5283 23.84 53.5283 24.64C53.5283 25.4507 53.1016 26.08 52.2483 26.528C51.3949 26.976 50.2109 27.2 48.6963 27.2C47.1816 27.2 45.9976 26.976 45.1443 26.528C44.2909 26.08 43.8642 25.4507 43.8642 24.64ZM43.9603 13.664H53.4963V14.816H45.3203V17.392H53.5923V18.512H43.9603V13.664ZM45.2563 24.64C45.2563 25.12 45.5549 25.488 46.1523 25.744C46.7603 25.9893 47.6083 26.112 48.6963 26.112C49.7843 26.112 50.6269 25.9893 51.2243 25.744C51.8216 25.488 52.1203 25.12 52.1203 24.64C52.1203 24.1813 51.8163 23.824 51.2083 23.568C50.6109 23.312 49.7736 23.184 48.6963 23.184C47.6189 23.184 46.7763 23.312 46.1683 23.568C45.5603 23.824 45.2563 24.1813 45.2563 24.64ZM61.3526 20.848V19.424H57.3366V15.936H65.4486V14.56H57.3046V13.472H66.8086V16.944H58.6806V18.352H67.1126V19.424H62.7446V20.848H68.4406V21.984H55.6886V20.848H61.3526ZM57.0966 23.008H66.8886V27.088H65.5126V24.144H57.0966V23.008Z" fill="white"/>
@@ -217,7 +211,7 @@
 
     <!-- 접기/열기 버튼 -->
     <button class="sidebar-toggle-btn" (click)="toggleSidebar()" [attr.aria-label]="isSidebarOpen() ? '사이드바 닫기' : '사이드바 열기'">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" [style.transform]="isSidebarOpen() ? 'rotate(0)' : 'rotate(180deg)'">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" [style.transform]="isSidebarOpen() ? 'rotate(180deg)' : 'rotate(0)'">
         <path d="M13 7l-5 5 5 5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M19 7l-5 5 5 5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -328,47 +322,6 @@
           <span>일반 댓글</span>
           <span [ngClass]="activeCommentTab() === 'general' ? 'filter-count active' : 'filter-count'">{{ generalCount }}</span>
         </button>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="filter-divider"></div>
-        <div class="sidebar-translate-wrap" (mouseenter)="toggleFilterTranslate()" (mouseleave)="isFilterTranslateOpen.set(false)">
-          @if (selectedSidebarLang() === 'en') {
-            <button class="sidebar-translate-badge" (click)="selectFilterLang('ko')">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M9.57333 8C9.62667 7.56 9.66667 7.12 9.66667 6.66667C9.66667 6.21333 9.62667 5.77333 9.57333 5.33333H11.8267C11.9333 5.76 12 6.20667 12 6.66667C12 7.12667 11.9333 7.57333 11.8267 8M8.39333 11.7067C8.79333 10.9667 9.1 10.1667 9.31333 9.33333H11.28C10.6341 10.4455 9.60941 11.288 8.39333 11.7067ZM8.22667 8H5.10667C5.04 7.56 5 7.12 5 6.66667C5 6.21333 5.04 5.76667 5.10667 5.33333H8.22667C8.28667 5.76667 8.33333 6.21333 8.33333 6.66667C8.33333 7.12 8.28667 7.56 8.22667 8ZM6.66667 11.9733C6.11333 11.1733 5.66667 10.2867 5.39333 9.33333H7.94C7.66667 10.2867 7.22 11.1733 6.66667 11.9733ZM4 4H2.05333C2.69243 2.88469 3.71644 2.04083 4.93333 1.62667C4.53333 2.36667 4.23333 3.16667 4 4ZM2.05333 9.33333H4C4.23333 10.1667 4.53333 10.9667 4.93333 11.7067C3.71884 11.2882 2.69619 10.4455 2.05333 9.33333ZM1.50667 8C1.4 7.57333 1.33333 7.12667 1.33333 6.66667C1.33333 6.20667 1.4 5.76 1.50667 5.33333H3.76C3.70667 5.77333 3.66667 6.21333 3.66667 6.66667C3.66667 7.12 3.70667 7.56 3.76 8M6.66667 1.35333C7.22 2.15333 7.66667 3.04667 7.94 4H5.39333C5.66667 3.04667 6.11333 2.15333 6.66667 1.35333ZM11.28 4H9.31333C9.10436 3.17441 8.79541 2.3774 8.39333 1.62667C9.62 2.04667 10.64 2.89333 11.28 4ZM6.66667 0C2.98 0 0 3 0 6.66667C0 8.43478 0.702379 10.1305 1.95262 11.3807C2.57168 11.9998 3.30661 12.4908 4.11544 12.8259C4.92428 13.1609 5.79119 13.3333 6.66667 13.3333C8.43478 13.3333 10.1305 12.631 11.3807 11.3807C12.631 10.1305 13.3333 8.43478 13.3333 6.66667C13.3333 5.79119 13.1609 4.92428 12.8259 4.11544C12.4908 3.30661 11.9998 2.57168 11.3807 1.95262C10.7617 1.33356 10.0267 0.842501 9.21789 0.50747C8.40905 0.172438 7.54215 0 6.66667 0Z" fill="#F2EDFF"/>
-              </svg>
-              <span>English</span>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <g clip-path="url(#clip0_filter_translate)">
-                  <path d="M12.7312 5.86437C12.6438 5.60187 12.3813 5.47062 12.1188 5.53625C11.8563 5.62375 11.725 5.88625 11.7906 6.14875C11.9438 6.63 12.0312 7.13312 12.0312 7.63625C12.0312 8.40187 11.8562 9.12375 11.5281 9.80187C10.675 11.5519 8.94688 12.6456 7 12.6456C4.22187 12.6456 1.96875 10.3925 1.96875 7.65812C1.96875 4.92375 4.22187 2.67062 7 2.67062C7.50313 2.67062 8.00625 2.73625 8.46563 2.88937L7.72187 3.23937C7.48125 3.34875 7.37188 3.655 7.48125 3.89562C7.56875 4.07062 7.74375 4.18 7.91875 4.18C7.98438 4.18 8.05 4.15812 8.11562 4.13625L10.0406 3.23937C10.15 3.17375 10.2594 3.08625 10.3031 2.955C10.3469 2.82375 10.3469 2.6925 10.2812 2.58312L9.40625 0.658122C9.29688 0.417497 8.99063 0.308122 8.75 0.417497C8.50938 0.526872 8.4 0.833122 8.50938 1.07375L8.925 1.9925C8.3125 1.77375 7.65625 1.66437 6.97813 1.66437C3.69687 1.68625 0.984375 4.355 0.984375 7.65812C0.984375 10.9612 3.69687 13.63 7 13.63C9.31875 13.63 11.3969 12.3394 12.4031 10.2612C12.7969 9.45187 13.0156 8.57687 13.0156 7.65812C13.0156 7.04562 12.9062 6.43312 12.7312 5.86437Z" fill="white"/>
-                </g>
-                <defs>
-                  <clipPath id="clip0_filter_translate">
-                    <rect width="14" height="14" fill="white"/>
-                  </clipPath>
-                </defs>
-              </svg>
-            </button>
-          } @else {
-            <button class="sidebar-translate-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-              </svg>
-              <span>언어선택</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#71717A" [style.transform]="isFilterTranslateOpen() ? 'rotate(180deg)' : 'none'" style="transition: transform 0.2s">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
-            </button>
-            @if (isFilterTranslateOpen()) {
-              <div class="translate-dropdown">
-                <div class="translate-dropdown-inner">
-                  <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedSidebarLang() === 'ko'" (click)="selectFilterLang('ko')">한국어</button>
-                  <button class="translate-dropdown-item" [class.translate-dropdown-item--active]="selectedSidebarLang() === 'en'" (click)="selectFilterLang('en')">English</button>
-                </div>
-              </div>
-            }
-          }
-        </div>
       </div>
     </div>
 
@@ -1032,57 +985,6 @@
           (click)="hasSelectedCategories() && confirmBookmark()"
         >추가</button>
       </div>
-    </div>
-  </div>
-}
-
-<!-- ===== 모바일 번역 하단 시트 ===== -->
-@if (isTranslateSheetOpen()) {
-  <div class="translate-sheet-overlay fixed inset-0 bg-black/50 z-[200]" tabindex="-1" (click)="closeTranslateSheet()" (keydown.escape)="closeTranslateSheet()"></div>
-  <div class="translate-sheet fixed bottom-0 left-0 right-0 w-full flex flex-col items-start bg-[#1C1B20] rounded-t-xl z-[201] box-border">
-    <!-- Handle -->
-    <div class="w-8 h-1 bg-zinc-600 rounded-sm mx-auto mt-2.5"></div>
-    <!-- Header -->
-    <div class="flex justify-between items-center px-5 pt-4 pb-2 w-full box-border">
-      <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-zinc-100">콘텐츠 번역</span>
-      <button class="bg-transparent border-none cursor-pointer p-1 flex items-center rounded-full transition-colors duration-150 hover:bg-white/[0.08]" (click)="closeTranslateSheet()" aria-label="닫기">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-      </button>
-    </div>
-    <!-- Body -->
-    <div class="flex flex-col w-full px-3 pb-5 box-border gap-0.5">
-      <button
-        class="flex items-center gap-3 py-3.5 px-3 w-full bg-transparent border-none rounded-xl cursor-pointer transition-colors duration-150 hover:bg-white/[0.05] box-border"
-        [ngClass]="selectedLang() === 'ko' ? 'bg-[rgba(161,72,255,0.08)]' : ''"
-        (click)="selectLang('ko')">
-        <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="selectedLang() === 'ko' ? '#A148FF' : '#71717A'">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-        </svg>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight flex-1 text-left"
-              [ngClass]="selectedLang() === 'ko' ? 'text-[#CAB6FF] !font-semibold' : 'text-zinc-300'">한국어</span>
-        @if (selectedLang() === 'ko') {
-          <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="#A148FF">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-          </svg>
-        }
-      </button>
-      <button
-        class="flex items-center gap-3 py-3.5 px-3 w-full bg-transparent border-none rounded-xl cursor-pointer transition-colors duration-150 hover:bg-white/[0.05] box-border"
-        [ngClass]="selectedLang() === 'en' ? 'bg-[rgba(161,72,255,0.08)]' : ''"
-        (click)="selectLang('en')">
-        <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="selectedLang() === 'en' ? '#A148FF' : '#71717A'">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-        </svg>
-        <span class="font-suit font-medium text-base leading-[150%] tracking-tight flex-1 text-left"
-              [ngClass]="selectedLang() === 'en' ? 'text-[#CAB6FF] !font-semibold' : 'text-zinc-300'">English</span>
-        @if (selectedLang() === 'en') {
-          <svg class="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="#A148FF">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-          </svg>
-        }
-      </button>
     </div>
   </div>
 }

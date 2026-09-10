@@ -9,6 +9,20 @@
   </div>
 </div>
 
+<div class="ld-wrapper">
+  <!-- ===== 탭 네비게이션 ===== -->
+  <nav class="ld-tab-nav">
+    <div class="flex max-w-[1400px] w-full">
+      @for (tab of detailTabs; track tab) {
+        <button
+          [ngClass]="activeDetailTab() === tab ? 'ld-tab-item ld-tab-item-active' : 'ld-tab-item'"
+          (click)="selectDetailTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+  </nav>
+
 <main class="lecture-page">
   <!-- ===== 상단 바 ===== -->
   <div class="flex items-center justify-between w-full max-w-[1400px] h-10">
@@ -142,3 +156,4 @@
     </div>
   </div>
 </main>
+</div>

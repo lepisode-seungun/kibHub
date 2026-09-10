@@ -80,7 +80,7 @@
 .bd-edu-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   padding: 80px 260px;
   gap: 40px;
   width: 100%;
@@ -166,11 +166,13 @@
   color: #A1A1AA;
   margin: 0;
   white-space: pre-line;
+  text-align: left;
+  align-self: stretch;
 }
 
 :host ::ng-deep .bd-block-desc img {
-  max-width: 500px !important;
-  width: auto !important;
+  width: 700px !important;
+  max-width: 100% !important;
   height: auto !important;
   object-fit: contain;
   border-radius: 8px;
@@ -1213,7 +1215,6 @@
   }
 
   .bd-hero-title {
-    font-size: 24px !important;
     background: linear-gradient(180deg, #ECEFEF 0%, #FFFFFF 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;

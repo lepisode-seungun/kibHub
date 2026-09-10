@@ -68,8 +68,10 @@ export class SupportFaqPage implements OnInit {
     return [statusLabel, '수정', '삭제'];
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onRowClick(_row: GridRow): void { /* no-op */ }
+  onRowClick(gridRow: GridRow): void {
+    const row = gridRow as unknown as FaqRow;
+    this.openEditDrawer(row);
+  }
 
   onRegister(): void {
     this.drawerMode.set('create');

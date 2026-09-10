@@ -58,6 +58,9 @@ export class LectureDetailPage implements OnInit, OnDestroy {
   private courseId = 0;
   private navItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
 
+  detailTabs = ['학습목록', '강의', '과제', '공지사항'];
+  activeDetailTab = signal('강의');
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(async (params) => {
       this.bootcampId = params.get('bootcampId') || '';
@@ -253,6 +256,17 @@ export class LectureDetailPage implements OnInit, OnDestroy {
 
   toggleMaterial(): void {
     this.isMaterialOpen.update(v => !v);
+  }
+
+  selectDetailTab(tab: string): void {
+    this.activeDetailTab.set(tab);
+    if (tab === '학습목록' || tab === '과제' || tab === '공지사항') {
+      if (this.bootcampId) {
+        this.router.navigate(['/my-bootcamp', this.bootcampId], {
+          queryParams: { tab },
+        });
+      }
+    }
   }
 
   downloadFile(file: LearningFile): void {

@@ -71,6 +71,20 @@ export class BootcampDetailPage implements OnInit, OnDestroy {
   recruitReview = signal('');
   recruitReviewVisible = signal(false);
 
+  /** HTML 태그를 제거하고 실제 텍스트/이미지가 있는지 확인 */
+  private hasContent(html: string): boolean {
+    if (!html) return false;
+    // img 태그가 있으면 콘텐츠 있음
+    if (/<img\s/i.test(html)) return true;
+    // HTML 태그 제거 후 공백·줄바꿈 제거
+    const text = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').replace(/\u200B/g, '').trim();
+    return text.length > 0;
+  }
+
+  hasIntro = computed(() => this.hasContent(this.recruitIntro()));
+  hasCurriculum = computed(() => this.hasContent(this.recruitCurriculum()));
+  hasReview = computed(() => this.hasContent(this.recruitReview()));
+
   /** sanitized HTML — 에디터 인라인 스타일(text-align 등) 유지 */
   safeIntroHtml = computed<SafeHtml>(() =>
     this.sanitizer.bypassSecurityTrustHtml(this.recruitIntro())

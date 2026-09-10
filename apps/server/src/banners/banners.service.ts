@@ -30,6 +30,7 @@ export class BannersService {
         content: data.content || '',
         link: data.link || null,
         vimeoLink: data.vimeoLink || null,
+        textColor: data.textColor || '#FFFFFF',
         pcImage: data.pcImage || null,
         mobileImage: data.mobileImage || null,
         sortOrder: data.sortOrder || 0,
@@ -44,6 +45,7 @@ export class BannersService {
     if (data.content !== undefined) updateData.content = data.content;
     if (data.link !== undefined) updateData.link = data.link || null;
     if (data.vimeoLink !== undefined) updateData.vimeoLink = data.vimeoLink || null;
+    if (data.textColor !== undefined) updateData.textColor = data.textColor || '#FFFFFF';
     if (data.pcImage !== undefined) updateData.pcImage = data.pcImage || null;
     if (data.mobileImage !== undefined) updateData.mobileImage = data.mobileImage || null;
     if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;

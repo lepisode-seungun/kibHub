@@ -379,7 +379,6 @@
   overflow-x: auto;
   overflow-y: visible;
   scrollbar-width: none;
-  cursor: grab;
   user-select: none;
   padding-bottom: 60px;
   margin-bottom: -60px;
@@ -432,7 +431,7 @@
   border: 1px solid #3F3F46;
   box-shadow: 0 8.4px 16.8px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
-  cursor: pointer;
+  cursor: grab;
   transition: border-color 0.2s, background 0.2s;
   flex-shrink: 0;
   overflow: visible;

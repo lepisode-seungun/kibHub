@@ -318,15 +318,15 @@
 .detail-floating {
   position: absolute;
   right: 16px;
-  top: 16px;
+  top: 170px; /* 위쪽 날개가 펼쳐져도 상단 침범 안 하도록 */
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-end;
-  gap: 14px;
   width: 150px;
   pointer-events: none;
   z-index: 10;
+  /* 햄버거 중심으로 relative context */
+  position: absolute;
 }
 
 /* 사이드바 닫혔을 때 플로팅 위치 조정 */
@@ -347,6 +347,67 @@
   align-items: flex-end;
   gap: 8px;
   pointer-events: auto;
+}
+
+/* Hub: relative container - 햄버거만 normal flow, 날개는 absolute */
+.floating-hub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+/* Hamburger - 항상 고정 */
+.floating-hamburger {
+  pointer-events: auto;
+  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+/* Wing containers - absolute 배치로 햄버거 위치 불변 */
+.floating-wing {
+  position: absolute;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: auto;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 위쪽 날개 */
+.floating-wing-top {
+  bottom: calc(100% + 14px);
+  transform-origin: bottom center;
+}
+.floating-wing-top.floating-wing-open {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  pointer-events: auto;
+}
+.floating-wing-top.floating-wing-closed {
+  opacity: 0;
+  transform: translateY(20px) scaleY(0.5);
+  pointer-events: none;
+}
+
+/* 아래쪽 날개 */
+.floating-wing-bottom {
+  top: calc(100% + 14px);
+  transform-origin: top center;
+}
+.floating-wing-bottom.floating-wing-open {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  pointer-events: auto;
+}
+.floating-wing-bottom.floating-wing-closed {
+  opacity: 0;
+  transform: translateY(-20px) scaleY(0.5);
+  pointer-events: none;
 }
 
 .floating-btn {

@@ -5,6 +5,7 @@ export interface Banner {
   content: string;
   link: string | null;
   vimeoLink: string | null;
+  textColor: string;
   pcImage: string | null;
   mobileImage: string | null;
   sortOrder: number;
@@ -18,6 +19,7 @@ export interface CreateBannerDto {
   content?: string;
   link?: string;
   vimeoLink?: string;
+  textColor?: string;
   pcImage?: string;
   mobileImage?: string;
   sortOrder?: number;

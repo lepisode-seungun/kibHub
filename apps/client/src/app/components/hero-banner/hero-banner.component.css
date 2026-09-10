@@ -48,12 +48,12 @@
   pointer-events: none;
 }
 
-/* ===== Floating Cards (Figma 스펙: 194.4×127.8 고정, 위치는 % 반응형) ===== */
+/* ===== Floating Cards (Figma 스펙: 194.4×127.8 기준, vw 반응형) ===== */
 .floating-card {
   position: absolute;
   z-index: 10;
-  width: 194.4px;
-  height: 127.8px;
+  width: clamp(150px, 11vw, 480px);
+  height: clamp(100px, 7.2vw, 316px);
   border-radius: 5.4px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);

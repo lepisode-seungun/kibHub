@@ -45,7 +45,7 @@
 
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="mbd-tab-nav">
-    <div class="mbd-tab-nav-inner">
+    <div class="mbd-tab-nav-inner max-w-[1400px] w-full">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'mbd-tab-item mbd-tab-item-active' : 'mbd-tab-item'"
@@ -58,6 +58,7 @@
 
   <!-- ===== 메인 콘텐츠 영역 ===== -->
   <section class="mbd-content">
+    <div class="flex flex-col items-start gap-5 w-full max-w-[1400px]">
 
     <!-- ===== 학습목록 탭 ===== -->
     @if (activeDetailTab() === '학습목록') {
@@ -194,7 +195,7 @@
 
       <!-- 강의 카드 그리드 -->
       <div class="flex flex-wrap items-start content-start gap-6 w-full">
-        @for (card of filteredLectures; track card.id) {
+        @for (card of displayedLectures; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
             <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
               @if (card.thumbnail) {
@@ -222,10 +223,11 @@
         }
       </div>
 
-      <!-- 더보기 -->
+      @if (hasMoreLectures) {
       <div class="flex justify-center w-full">
-        <button class="at-loadmore-btn">더보기</button>
+        <button class="at-loadmore-btn" (click)="loadMoreLectures()">더보기</button>
       </div>
+      }
     }
 
     <!-- ===== 과제 탭 ===== -->
@@ -268,7 +270,7 @@
 
       <!-- 과제 카드 그리드 -->
       <div class="flex flex-wrap items-start content-start gap-6 w-full">
-        @for (card of filteredAssignments; track card.id) {
+        @for (card of displayedAssignments; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
             <div class="flex justify-center items-center w-full h-[218px] rounded-lg overflow-hidden">
               @if (card.thumbnail) {
@@ -292,10 +294,11 @@
         }
       </div>
 
-      <!-- 더보기 -->
+      @if (hasMoreAssignments) {
       <div class="flex justify-center w-full">
-        <button class="at-loadmore-btn">더보기</button>
+        <button class="at-loadmore-btn" (click)="loadMoreAssignments()">더보기</button>
       </div>
+      }
     }
 
     <!-- ===== 공지사항 탭 ===== -->
@@ -365,5 +368,6 @@
       </div>
     }
 
+    </div>
   </section>
 </main>

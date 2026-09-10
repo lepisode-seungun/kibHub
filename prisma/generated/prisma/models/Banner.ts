@@ -43,6 +43,7 @@ export type BannerMinAggregateOutputType = {
   content: string | null
   link: string | null
   vimeoLink: string | null
+  textColor: string | null
   pcImage: string | null
   mobileImage: string | null
   sortOrder: number | null
@@ -57,6 +58,7 @@ export type BannerMaxAggregateOutputType = {
   content: string | null
   link: string | null
   vimeoLink: string | null
+  textColor: string | null
   pcImage: string | null
   mobileImage: string | null
   sortOrder: number | null
@@ -71,6 +73,7 @@ export type BannerCountAggregateOutputType = {
   content: number
   link: number
   vimeoLink: number
+  textColor: number
   pcImage: number
   mobileImage: number
   sortOrder: number
@@ -97,6 +100,7 @@ export type BannerMinAggregateInputType = {
   content?: true
   link?: true
   vimeoLink?: true
+  textColor?: true
   pcImage?: true
   mobileImage?: true
   sortOrder?: true
@@ -111,6 +115,7 @@ export type BannerMaxAggregateInputType = {
   content?: true
   link?: true
   vimeoLink?: true
+  textColor?: true
   pcImage?: true
   mobileImage?: true
   sortOrder?: true
@@ -125,6 +130,7 @@ export type BannerCountAggregateInputType = {
   content?: true
   link?: true
   vimeoLink?: true
+  textColor?: true
   pcImage?: true
   mobileImage?: true
   sortOrder?: true
@@ -226,6 +232,7 @@ export type BannerGroupByOutputType = {
   content: string
   link: string | null
   vimeoLink: string | null
+  textColor: string
   pcImage: string | null
   mobileImage: string | null
   sortOrder: number
@@ -263,6 +270,7 @@ export type BannerWhereInput = {
   content?: Prisma.StringFilter<"Banner"> | string
   link?: Prisma.StringNullableFilter<"Banner"> | string | null
   vimeoLink?: Prisma.StringNullableFilter<"Banner"> | string | null
+  textColor?: Prisma.StringFilter<"Banner"> | string
   pcImage?: Prisma.StringNullableFilter<"Banner"> | string | null
   mobileImage?: Prisma.StringNullableFilter<"Banner"> | string | null
   sortOrder?: Prisma.IntFilter<"Banner"> | number
@@ -277,6 +285,7 @@ export type BannerOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   link?: Prisma.SortOrderInput | Prisma.SortOrder
   vimeoLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   pcImage?: Prisma.SortOrderInput | Prisma.SortOrder
   mobileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -294,6 +303,7 @@ export type BannerWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"Banner"> | string
   link?: Prisma.StringNullableFilter<"Banner"> | string | null
   vimeoLink?: Prisma.StringNullableFilter<"Banner"> | string | null
+  textColor?: Prisma.StringFilter<"Banner"> | string
   pcImage?: Prisma.StringNullableFilter<"Banner"> | string | null
   mobileImage?: Prisma.StringNullableFilter<"Banner"> | string | null
   sortOrder?: Prisma.IntFilter<"Banner"> | number
@@ -308,6 +318,7 @@ export type BannerOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   link?: Prisma.SortOrderInput | Prisma.SortOrder
   vimeoLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   pcImage?: Prisma.SortOrderInput | Prisma.SortOrder
   mobileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -330,6 +341,7 @@ export type BannerScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"Banner"> | string
   link?: Prisma.StringNullableWithAggregatesFilter<"Banner"> | string | null
   vimeoLink?: Prisma.StringNullableWithAggregatesFilter<"Banner"> | string | null
+  textColor?: Prisma.StringWithAggregatesFilter<"Banner"> | string
   pcImage?: Prisma.StringNullableWithAggregatesFilter<"Banner"> | string | null
   mobileImage?: Prisma.StringNullableWithAggregatesFilter<"Banner"> | string | null
   sortOrder?: Prisma.IntWithAggregatesFilter<"Banner"> | number
@@ -343,6 +355,7 @@ export type BannerCreateInput = {
   content?: string
   link?: string | null
   vimeoLink?: string | null
+  textColor?: string
   pcImage?: string | null
   mobileImage?: string | null
   sortOrder?: number
@@ -357,6 +370,7 @@ export type BannerUncheckedCreateInput = {
   content?: string
   link?: string | null
   vimeoLink?: string | null
+  textColor?: string
   pcImage?: string | null
   mobileImage?: string | null
   sortOrder?: number
@@ -370,6 +384,7 @@ export type BannerUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vimeoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   pcImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
@@ -384,6 +399,7 @@ export type BannerUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vimeoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   pcImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
@@ -398,6 +414,7 @@ export type BannerCreateManyInput = {
   content?: string
   link?: string | null
   vimeoLink?: string | null
+  textColor?: string
   pcImage?: string | null
   mobileImage?: string | null
   sortOrder?: number
@@ -411,6 +428,7 @@ export type BannerUpdateManyMutationInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vimeoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   pcImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
@@ -425,6 +443,7 @@ export type BannerUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vimeoLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  textColor?: Prisma.StringFieldUpdateOperationsInput | string
   pcImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
@@ -439,6 +458,7 @@ export type BannerCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   link?: Prisma.SortOrder
   vimeoLink?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   pcImage?: Prisma.SortOrder
   mobileImage?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -458,6 +478,7 @@ export type BannerMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   link?: Prisma.SortOrder
   vimeoLink?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   pcImage?: Prisma.SortOrder
   mobileImage?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -472,6 +493,7 @@ export type BannerMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   link?: Prisma.SortOrder
   vimeoLink?: Prisma.SortOrder
+  textColor?: Prisma.SortOrder
   pcImage?: Prisma.SortOrder
   mobileImage?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -501,6 +523,7 @@ export type BannerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   content?: boolean
   link?: boolean
   vimeoLink?: boolean
+  textColor?: boolean
   pcImage?: boolean
   mobileImage?: boolean
   sortOrder?: boolean
@@ -515,6 +538,7 @@ export type BannerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   content?: boolean
   link?: boolean
   vimeoLink?: boolean
+  textColor?: boolean
   pcImage?: boolean
   mobileImage?: boolean
   sortOrder?: boolean
@@ -529,6 +553,7 @@ export type BannerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   content?: boolean
   link?: boolean
   vimeoLink?: boolean
+  textColor?: boolean
   pcImage?: boolean
   mobileImage?: boolean
   sortOrder?: boolean
@@ -543,6 +568,7 @@ export type BannerSelectScalar = {
   content?: boolean
   link?: boolean
   vimeoLink?: boolean
+  textColor?: boolean
   pcImage?: boolean
   mobileImage?: boolean
   sortOrder?: boolean
@@ -550,7 +576,7 @@ export type BannerSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BannerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "header" | "content" | "link" | "vimeoLink" | "pcImage" | "mobileImage" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
+export type BannerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "header" | "content" | "link" | "vimeoLink" | "textColor" | "pcImage" | "mobileImage" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
 
 export type $BannerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Banner"
@@ -562,6 +588,7 @@ export type $BannerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     content: string
     link: string | null
     vimeoLink: string | null
+    textColor: string
     pcImage: string | null
     mobileImage: string | null
     sortOrder: number
@@ -996,6 +1023,7 @@ export interface BannerFieldRefs {
   readonly content: Prisma.FieldRef<"Banner", 'String'>
   readonly link: Prisma.FieldRef<"Banner", 'String'>
   readonly vimeoLink: Prisma.FieldRef<"Banner", 'String'>
+  readonly textColor: Prisma.FieldRef<"Banner", 'String'>
   readonly pcImage: Prisma.FieldRef<"Banner", 'String'>
   readonly mobileImage: Prisma.FieldRef<"Banner", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Banner", 'Int'>

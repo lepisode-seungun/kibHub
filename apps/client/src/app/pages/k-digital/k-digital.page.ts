@@ -84,19 +84,22 @@ export class KDigitalPage implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       const result = await this.api.bootcamps.findPaged(this.currentPage, this.pageSize);
-      const newCards = result.data.map((b, i) => {
-        const mapped = this.STATUS_MAP[b.status] || { status: 'closed', text: b.status };
-        return {
-          id: b.id,
-          name: b.name,
-          summary: b.description || '',
-          status: mapped.status,
-          statusText: mapped.text,
-          deadline: null,
-          thumbnailGradient: this.gradients[(this.bootcampCards().length + i) % this.gradients.length],
-          thumbnailUrl: b.thumbnail || null,
-        };
-      });
+      const existingIds = new Set(this.bootcampCards().map(c => c.id));
+      const newCards = result.data
+        .filter(b => !existingIds.has(b.id))
+        .map((b, i) => {
+          const mapped = this.STATUS_MAP[b.status] || { status: 'closed', text: b.status };
+          return {
+            id: b.id,
+            name: b.name,
+            summary: b.description || '',
+            status: mapped.status,
+            statusText: mapped.text,
+            deadline: null,
+            thumbnailGradient: this.gradients[(this.bootcampCards().length + i) % this.gradients.length],
+            thumbnailUrl: b.thumbnail || null,
+          };
+        });
 
       this.bootcampCards.update(prev => [...prev, ...newCards]);
       this.hasMore.set(this.currentPage < result.meta.totalPages);

@@ -1,4 +1,4 @@
-import { Component, signal, computed, ViewChild, ElementRef, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, computed, ViewChild, ElementRef, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -334,6 +334,22 @@ export class UserProfilePage implements OnInit, OnDestroy {
   onSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery.set(input.value);
+  }
+
+  /* ===== 빈 영역 클릭 시 앨범/카테고리 선택 해제 ===== */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.pf-album-card') && !target.closest('.pf-album-slider-wrap')) {
+      if (this.selectedAlbumId() !== null) {
+        this.albums.update(list => list.map(a => ({ ...a, isActive: false })));
+        this.selectedAlbumId.set(null);
+      }
+      if (this.selectedCategoryId() !== null) {
+        this.categories.update(list => list.map(c => ({ ...c, isActive: false })));
+        this.selectedCategoryId.set(null);
+      }
+    }
   }
 
   selectAlbum(id: number): void {

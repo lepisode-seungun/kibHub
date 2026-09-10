@@ -5,8 +5,10 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
 import { ImageUploadComponent, ImageUploadData } from '../../components/image-upload/image-upload.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CONTENT_STATUS_BADGES } from '../../shared/badge-styles';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../shared/toast/toast.service';
 import { CreateBannerDto } from '../../shared/types';
 import { GridRow } from '../../components/data-grid/data-grid.component';
 
@@ -19,7 +21,7 @@ interface BannerGridRow {
   content: string;
   link: string;
   createdAt: string;
-  _raw: { id: number; status: string; header: string; content: string; link?: string | null; vimeoLink?: string | null; pcImage?: string | null };
+  _raw: { id: number; status: string; header: string; content: string; link?: string | null; vimeoLink?: string | null; textColor?: string; pcImage?: string | null; mobileImage?: string | null };
 }
 
 interface PosterGridRow {
@@ -27,7 +29,7 @@ interface PosterGridRow {
   id: number;
   image: string;
   createdAt: string;
-  _raw: { id: number };
+  _raw: { id: number; imageUrl?: string };
 }
 
 interface PartnerGridRow {
@@ -51,13 +53,14 @@ interface HistoryItem {
 @Component({
   selector: 'adm-bootcamp-intro',
   standalone: true,
-  imports: [CommonModule, TextEditorComponent, DataGridComponent, ImageUploadComponent],
+  imports: [CommonModule, TextEditorComponent, DataGridComponent, ImageUploadComponent, ConfirmDialogComponent],
   templateUrl: './bootcamp-intro.page.html',
   styleUrl: './bootcamp-intro.page.css',
 })
 export class BootcampIntroPage implements OnInit {
   private api = inject(ApiService);
   private sanitizer = inject(DomSanitizer);
+  private toast = inject(ToastService);
   activeTab = signal<'intro' | 'banner' | 'academy' | 'partner'>('intro');
 
   // ===== 소개 탭 =====
@@ -92,10 +95,10 @@ export class BootcampIntroPage implements OnInit {
   async saveAcademyIntro(): Promise<void> {
     try {
       await this.api.siteSettings.set('academy_intro', this.academyIntroDraft);
-      alert('저장되었습니다.');
+      this.toast.success('저장되었습니다.');
     } catch (e) {
       console.error('소개 콘텐츠 저장 실패:', e);
-      alert('저장에 실패했습니다.');
+      this.toast.error('저장에 실패했습니다.');
     }
   }
 
@@ -172,14 +175,14 @@ export class BootcampIntroPage implements OnInit {
 
   async registerVimeoLink(): Promise<void> {
     const url = this.vimeoLink();
-    if (!url.trim()) { alert('비메오 링크를 입력하세요.'); return; }
+    if (!url.trim()) { this.toast.warning('비메오 링크를 입력하세요.'); return; }
     try {
       await this.api.siteSettings.set('video_url', url);
       this.vimeoEmbedUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.toVideoEmbed(url)));
-      alert('영상이 등록되었습니다.');
+      this.toast.success('영상이 등록되었습니다.');
     } catch (e) {
       console.error('영상 등록 실패:', e);
-      alert('영상 등록에 실패했습니다.');
+      this.toast.error('영상 등록에 실패했습니다.');
     }
   }
 
@@ -255,12 +258,18 @@ export class BootcampIntroPage implements OnInit {
   showPosterDrawer = signal(false);
   posterDrawerMode = signal<'add' | 'edit'>('add');
   posterImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
+  posterExistingImageUrl = signal('');
   private editingPosterId: number | null = null;
+
+  // 포스터 삭제 확인 모달
+  showPosterDeleteDialog = signal(false);
+  posterDeleteTargetId = signal<number | null>(null);
 
   openPosterDrawer(mode: 'add' | 'edit', row?: PosterGridRow): void {
     this.posterDrawerMode.set(mode);
     this.editingPosterId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.posterImage.set(null);
+    this.posterExistingImageUrl.set(mode === 'edit' && row ? (row._raw?.imageUrl || row.image || '') : '');
     this.showPosterDrawer.set(true);
   }
 
@@ -290,31 +299,64 @@ export class BootcampIntroPage implements OnInit {
 
   async submitPosterDrawer(): Promise<void> {
     const img = this.posterImage();
-    if (!img?.file) { alert('이미지를 업로드하세요.'); return; }
+    const isEdit = this.posterDrawerMode() === 'edit' && this.editingPosterId;
+
+    if (!img?.file && !isEdit) {
+      this.toast.warning('이미지를 업로드하세요.');
+      return;
+    }
+
     try {
-      const uploaded = await this.api.upload.single(img.file, 'posters');
-      await this.api.posters.create({ imageUrl: uploaded.url });
+      if (img?.file) {
+        const uploaded = await this.api.upload.single(img.file, 'posters');
+        if (isEdit) {
+          await this.api.posters.update(this.editingPosterId!, { imageUrl: uploaded.url });
+          this.toast.success('포스터가 수정되었습니다.');
+        } else {
+          await this.api.posters.create({ imageUrl: uploaded.url });
+          this.toast.success('포스터가 등록되었습니다.');
+        }
+      } else if (isEdit) {
+        // 이미지 변경 없이 닫기
+        this.toast.success('변경사항이 없습니다.');
+      }
       this.showPosterDrawer.set(false);
       await this.loadPosters();
-      alert('포스터가 등록되었습니다.');
     } catch (e) {
-      console.error('포스터 등록 실패:', e);
-      alert('등록에 실패했습니다.');
+      console.error('포스터 처리 실패:', e);
+      this.toast.error('처리에 실패했습니다.');
     }
   }
 
   async onPosterContextMenu(event: { action: string; row: GridRow }): Promise<void> {
-    if (event.action === '삭제') {
+    if (event.action === '수정') {
+      this.openPosterDrawer('edit', event.row as unknown as PosterGridRow);
+    } else if (event.action === '삭제') {
       const id = (event.row['_raw'] as { id: number })?.id || (event.row['id'] as number);
-      if (!confirm('포스터를 삭제하시겠습니까?')) return;
+      this.posterDeleteTargetId.set(id);
+      this.showPosterDeleteDialog.set(true);
+    }
+  }
+
+  async onPosterDeleteConfirm(): Promise<void> {
+    const id = this.posterDeleteTargetId();
+    if (id) {
       try {
         await this.api.posters.delete(id);
         await this.loadPosters();
+        this.toast.success('포스터가 삭제되었습니다.');
       } catch (e) {
         console.error('포스터 삭제 실패:', e);
-        alert('삭제에 실패했습니다.');
+        this.toast.error('삭제에 실패했습니다.');
       }
     }
+    this.showPosterDeleteDialog.set(false);
+    this.posterDeleteTargetId.set(null);
+  }
+
+  onPosterDeleteCancel(): void {
+    this.showPosterDeleteDialog.set(false);
+    this.posterDeleteTargetId.set(null);
   }
 
   // ===== 파트너 드로어 =====
@@ -366,7 +408,7 @@ export class BootcampIntroPage implements OnInit {
 
   async submitPartnerDrawer(): Promise<void> {
     const form = this.partnerForm();
-    if (!form.name.trim()) { alert('이름을 입력하세요.'); return; }
+    if (!form.name.trim()) { this.toast.warning('이름을 입력하세요.'); return; }
     try {
       if (this.partnerDrawerMode() === 'add') {
         let logoUrl = '';
@@ -389,7 +431,7 @@ export class BootcampIntroPage implements OnInit {
       await this.loadPartners();
     } catch (e) {
       console.error('파트너 저장 실패:', e);
-      alert('저장에 실패했습니다.');
+      this.toast.error('저장에 실패했습니다.');
     }
   }
 
@@ -404,7 +446,7 @@ export class BootcampIntroPage implements OnInit {
         await this.loadPartners();
       } catch (e) {
         console.error('파트너 삭제 실패:', e);
-        alert('삭제에 실패했습니다.');
+        this.toast.error('삭제에 실패했습니다.');
       }
     }
   }
@@ -471,10 +513,10 @@ export class BootcampIntroPage implements OnInit {
 
   async submitYearDrawer(): Promise<void> {
     const year = this.yearDrawerValue();
-    if (!year.trim()) { alert('연도를 입력하세요.'); return; }
+    if (!year.trim()) { this.toast.warning('연도를 입력하세요.'); return; }
     // 이미 존재하는 연도인지 체크
     const existing = this.historyData().find(g => g.year === year.trim());
-    if (existing) { alert(`${year}년은 이미 존재합니다.`); return; }
+    if (existing) { this.toast.warning(`${year}년은 이미 존재합니다.`); return; }
     // 빈 연도 폴더를 추가 (정렬: 내림차순)
     const current = [...this.historyData(), { year: year.trim(), items: [] }];
     current.sort((a, b) => parseInt(b.year) - parseInt(a.year));
@@ -524,7 +566,7 @@ export class BootcampIntroPage implements OnInit {
         await this.loadHistories();
       } catch (e) {
         console.error('항목 삭제 실패:', e);
-        alert('삭제에 실패했습니다.');
+        this.toast.error('삭제에 실패했습니다.');
       }
     }
   }
@@ -559,7 +601,7 @@ export class BootcampIntroPage implements OnInit {
   async submitHistoryItemDrawer(): Promise<void> {
     const form = this.historyItemForm();
     if (!form.year.trim() || !form.title.trim() || !form.date.trim()) {
-      alert('연도, 제목, 상세날짜를 입력하세요.');
+      this.toast.warning('연도, 제목, 상세날짜를 입력하세요.');
       return;
     }
     try {
@@ -581,7 +623,7 @@ export class BootcampIntroPage implements OnInit {
       await this.loadHistories();
     } catch (e) {
       console.error('히스토리 항목 저장 실패:', e);
-      alert('저장에 실패했습니다.');
+      this.toast.error('저장에 실패했습니다.');
     }
   }
 
@@ -663,12 +705,15 @@ export class BootcampIntroPage implements OnInit {
   // ===== 메인배너 수정 드로어 =====
   showBannerDrawer = signal(false);
   bannerDrawerRow = signal<{ id: number; status: string; link?: string | null } | null>(null);
+  bannerPcImageUrl = signal('');
+  bannerMobileImageUrl = signal('');
   bannerForm = signal({
     status: '',
     vimeoLink: '',
     header: '',
     content: '',
     link: '',
+    textColor: '#FFFFFF',
   });
 
   bannerContextMenuFn = (row: GridRow): string[] => {
@@ -716,10 +761,15 @@ export class BootcampIntroPage implements OnInit {
         header: raw?.header || row.header || '',
         content: raw?.content || row.content || '',
         link: raw?.link || row.link || '',
+        textColor: raw?.textColor || '#FFFFFF',
       });
+      this.bannerPcImageUrl.set(raw?.pcImage || '');
+      this.bannerMobileImageUrl.set(raw?.mobileImage || '');
     } else {
       this.bannerDrawerRow.set(null);
-      this.bannerForm.set({ status: '노출', vimeoLink: '', header: '', content: '', link: '' });
+      this.bannerForm.set({ status: '노출', vimeoLink: '', header: '', content: '', link: '', textColor: '#FFFFFF' });
+      this.bannerPcImageUrl.set('');
+      this.bannerMobileImageUrl.set('');
     }
     this.showBannerDrawer.set(true);
   }
@@ -780,6 +830,7 @@ export class BootcampIntroPage implements OnInit {
         content: form.content,
         link: form.link || undefined,
         vimeoLink: form.vimeoLink || undefined,
+        textColor: form.textColor || '#FFFFFF',
       };
       if (pcImageUrl) bannerData['pcImage'] = pcImageUrl;
       if (mobileImageUrl) bannerData['mobileImage'] = mobileImageUrl;

@@ -30,17 +30,17 @@
     }
     <!-- 텍스트 서식 -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" [class.active]="isItalic()" title="기울임" (click)="toggleItalic()">
+      <button class="toolbar-btn" [class.active]="isItalic()" title="기울임" (mousedown)="$event.preventDefault()" (click)="toggleItalic()">
         <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M8.023 0H9.51C10.062 0 10.51 0.448 10.51 1C10.51 1.552 10.062 2 9.51 2H8.693L4.193 14H4.938C5.49 14 5.938 14.448 5.938 15C5.938 15.552 5.49 16 4.938 16H2.773C2.758 16.001 2.742 16.001 2.727 16H1C0.448 16 0 15.552 0 15C0 14.448 0.448 14 1 14H2.057L6.557 2H5.813C5.26 2 4.813 1.552 4.813 1C4.813 0.448 5.26 0 5.813 0H7.977C7.992 -0.0001 8.008 -0.0001 8.023 0Z" fill="currentColor"/>
         </svg>
       </button>
-      <button class="toolbar-btn" [class.active]="isBold()" title="굵게" (click)="toggleBold()">
+      <button class="toolbar-btn" [class.active]="isBold()" title="굵게" (mousedown)="$event.preventDefault()" (click)="toggleBold()">
         <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M1 0C0.448 0 0 0.448 0 1V8V15C0 15.552 0.448 16 1 16H9C10.286 16 11.542 15.554 12.487 14.727C13.436 13.897 14 12.74 14 11.5C14 10.26 13.436 9.103 12.487 8.273C12.209 8.03 11.904 7.819 11.58 7.644C12.473 6.82 13 5.699 13 4.5C13 3.26 12.436 2.103 11.487 1.273C10.542 0.446 9.286 0 8 0H1ZM8 7C8.836 7 9.614 6.708 10.17 6.222C10.721 5.74 11 5.117 11 4.5C11 3.883 10.721 3.26 10.17 2.778C9.614 2.292 8.836 2 8 2H2V7H8ZM2 9V14H9C9.836 14 10.614 13.708 11.17 13.222C11.721 12.74 12 12.117 12 11.5C12 10.883 11.721 10.26 11.17 9.778C10.614 9.292 9.836 9 9 9H8H2Z" fill="currentColor"/>
         </svg>
       </button>
-      <button class="toolbar-btn" [class.active]="isUnderline()" title="밑줄" (click)="toggleUnderline()">
+      <button class="toolbar-btn" [class.active]="isUnderline()" title="밑줄" (mousedown)="$event.preventDefault()" (click)="toggleUnderline()">
         <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C2 0.448 1.552 1 1 1C0.448 1 0 0.552 0 1V6.444C0 7.947 0.597 9.389 1.66 10.451C2.722 11.514 4.164 12.111 5.667 12.111C7.17 12.111 8.611 11.514 9.674 10.451C10.736 9.389 11.333 7.947 11.333 6.444V1C11.333 0.448 10.886 0 10.333 0C9.781 0 9.333 0.448 9.333 1V6.444C9.333 7.417 8.947 8.35 8.259 9.037C7.572 9.725 6.639 10.111 5.667 10.111C4.694 10.111 3.762 9.725 3.074 9.037C2.386 8.35 2 7.417 2 6.444V0ZM1 14C0.448 14 0 14.448 0 15C0 15.552 0.448 16 1 16H10.352C10.904 16 11.352 15.552 11.352 15C11.352 14.448 10.904 14 10.352 14H1Z" fill="currentColor"/>
         </svg>
@@ -94,12 +94,12 @@
 
     <!-- 리스트 -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" title="글머리 기호" (click)="setList('ul')">
+      <button class="toolbar-btn" title="글머리 기호" (mousedown)="$event.preventDefault()" (click)="setList('ul')">
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 0.75C3.25 0.336 3.586 0 4 0H15.248C15.662 0 15.998 0.336 15.998 0.75C15.998 1.164 15.662 1.5 15.248 1.5H4C3.586 1.5 3.25 1.164 3.25 0.75ZM3.25 5.941C3.25 5.527 3.586 5.191 4 5.191H15.248C15.662 5.191 15.998 5.527 15.998 5.941C15.998 6.356 15.662 6.691 15.248 6.691H4C3.586 6.691 3.25 6.356 3.25 5.941ZM3.25 11.133C3.25 10.719 3.586 10.383 4 10.383H15.248C15.662 10.383 15.998 10.719 15.998 11.133C15.998 11.547 15.662 11.883 15.248 11.883H4C3.586 11.883 3.25 11.547 3.25 11.133ZM0 0.75C0 0.336 0.336 0 0.75 0H0.758C1.172 0 1.508 0.336 1.508 0.75C1.508 1.164 1.172 1.5 0.758 1.5H0.75C0.336 1.5 0 1.164 0 0.75ZM0 5.941C0 5.527 0.336 5.191 0.75 5.191H0.758C1.172 5.191 1.508 5.527 1.508 5.941C1.508 6.356 1.172 6.691 0.758 6.691H0.75C0.336 6.691 0 6.356 0 5.941ZM0 11.133C0 10.719 0.336 10.383 0.75 10.383H0.758C1.172 10.383 1.508 10.719 1.508 11.133C1.508 11.547 1.172 11.883 0.758 11.883H0.75C0.336 11.883 0 11.547 0 11.133Z" fill="#6B7280"/>
         </svg>
       </button>
-      <button class="toolbar-btn" title="번호 매기기" (click)="setList('ol')">
+      <button class="toolbar-btn" title="번호 매기기" (mousedown)="$event.preventDefault()" (click)="setList('ol')">
         <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M7.898 2.9C7.898 2.486 8.234 2.15 8.648 2.15H19.896C20.311 2.15 20.646 2.486 20.646 2.9C20.646 3.315 20.311 3.65 19.896 3.65H8.648C8.234 3.65 7.898 3.315 7.898 2.9Z" fill="#6B7280" transform="translate(-4, 0)"/>
           <path fill-rule="evenodd" clip-rule="evenodd" d="M7.898 8.092C7.898 7.678 8.234 7.342 8.648 7.342H19.896C20.311 7.342 20.646 7.678 20.646 8.092C20.646 8.506 20.311 8.842 19.896 8.842H8.648C8.234 8.842 7.898 8.506 7.898 8.092Z" fill="#6B7280" transform="translate(-4, 0)"/>
@@ -115,17 +115,17 @@
 
     <!-- 정렬 -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" title="왼쪽 정렬" (click)="setAlign('left')">
+      <button class="toolbar-btn" title="왼쪽 정렬" (mousedown)="$event.preventDefault()" (click)="setAlign('left')">
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 0.42C0.336 0.42 0 0.756 0 1.17C0 1.584 0.336 1.92 0.75 1.92H15.25C15.664 1.92 16 1.584 16 1.17C16 0.756 15.664 0.42 15.25 0.42H0.75ZM0.75 3.642C0.336 3.642 0 3.978 0 4.392C0 4.806 0.336 5.142 0.75 5.142H12.028C12.442 5.142 12.778 4.806 12.778 4.392C12.778 3.978 12.442 3.642 12.028 3.642H0.75ZM0 7.614C0 7.2 0.336 6.864 0.75 6.864H15.25C15.664 6.864 16 7.2 16 7.614C16 8.029 15.664 8.364 15.25 8.364H0.75C0.336 8.364 0 8.029 0 7.614ZM0.75 10.087C0.336 10.087 0 10.422 0 10.837C0 11.251 0.336 11.587 0.75 11.587H12.028C12.442 11.587 12.778 11.251 12.778 10.837C12.778 10.422 12.442 10.087 12.028 10.087H0.75Z" fill="#6B7280"/>
         </svg>
       </button>
-      <button class="toolbar-btn" title="가운데 정렬" (click)="setAlign('center')">
+      <button class="toolbar-btn" title="가운데 정렬" (mousedown)="$event.preventDefault()" (click)="setAlign('center')">
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 0.42C0.336 0.42 0 0.756 0 1.17C0 1.584 0.336 1.92 0.75 1.92H15.25C15.664 1.92 16 1.584 16 1.17C16 0.756 15.664 0.42 15.25 0.42H0.75ZM3.167 3.642C2.752 3.642 2.417 3.978 2.417 4.392C2.417 4.806 2.752 5.142 3.167 5.142H12.833C13.248 5.142 13.583 4.806 13.583 4.392C13.583 3.978 13.248 3.642 12.833 3.642H3.167ZM0 7.614C0 7.2 0.336 6.864 0.75 6.864H15.25C15.664 6.864 16 7.2 16 7.614C16 8.029 15.664 8.364 15.25 8.364H0.75C0.336 8.364 0 8.029 0 7.614ZM3.167 10.087C2.752 10.087 2.417 10.422 2.417 10.837C2.417 11.251 2.752 11.587 3.167 11.587H12.833C13.248 11.587 13.583 11.251 13.583 10.837C13.583 10.422 13.248 10.087 12.833 10.087H3.167Z" fill="#6B7280"/>
         </svg>
       </button>
-      <button class="toolbar-btn" title="오른쪽 정렬" (click)="setAlign('right')">
+      <button class="toolbar-btn" title="오른쪽 정렬" (mousedown)="$event.preventDefault()" (click)="setAlign('right')">
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 0.42C0.336 0.42 0 0.756 0 1.17C0 1.584 0.336 1.92 0.75 1.92H15.25C15.664 1.92 16 1.584 16 1.17C16 0.756 15.664 0.42 15.25 0.42H0.75ZM3.972 3.642C3.558 3.642 3.222 3.978 3.222 4.392C3.222 4.806 3.558 5.142 3.972 5.142H15.25C15.664 5.142 16 4.806 16 4.392C16 3.978 15.664 3.642 15.25 3.642H3.972ZM0 7.614C0 7.2 0.336 6.864 0.75 6.864H15.25C15.664 6.864 16 7.2 16 7.614C16 8.029 15.664 8.364 15.25 8.364H0.75C0.336 8.364 0 8.029 0 7.614ZM3.972 10.087C3.558 10.087 3.222 10.422 3.222 10.837C3.222 11.251 3.558 11.587 3.972 11.587H15.25C15.664 11.587 16 11.251 16 10.837C16 10.422 15.664 10.087 15.25 10.087H3.972Z" fill="#6B7280"/>
         </svg>

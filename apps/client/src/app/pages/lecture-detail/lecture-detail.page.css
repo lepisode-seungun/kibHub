@@ -7,11 +7,61 @@
   --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* ===== 탭 네비게이션 ===== */
+.ld-tab-nav {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 260px;
+  width: 100%;
+  height: 60px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #F4F4F5;
+}
+
+.ld-tab-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  height: 60px;
+  min-width: 28px;
+  background: none;
+  border: none;
+  border-bottom: 4px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #A1A1AA;
+  transition: color 0.15s, border-color 0.15s;
+  margin-right: 24px;
+  box-sizing: border-box;
+}
+
+.ld-tab-item:last-child {
+  margin-right: 0;
+}
+
+.ld-tab-item:hover {
+  color: #52525B;
+}
+
+.ld-tab-item-active {
+  color: #27272A;
+  border-bottom-color: #7A48FF;
+}
+
+
 /* ===== 페이지 반응형 패딩 ===== */
 .lecture-page {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   padding: 60px 260px;
   gap: 20px;
   min-height: calc(100vh - 72px);
@@ -331,16 +381,20 @@
 /* ===== 반응형 ===== */
 @media (max-width: 1440px) {
   .lecture-page { padding: 60px 100px; }
+  .ld-tab-nav { padding: 0 100px; }
 }
 
 @media (max-width: 1200px) {
   .lecture-page { padding: 40px 40px; }
+  .ld-tab-nav { padding: 0 40px; }
   .lecture-main { flex-direction: column; }
   .lecture-sidebar { width: 100%; min-width: 0; }
   .vc-progress-bar { width: 280px; }
 }
 
 @media (max-width: 768px) {
+  .ld-tab-nav { display: none !important; }
+
   /* 페이지: 패딩 제거, 풀스크린 */
   .lecture-page {
     padding: 0;

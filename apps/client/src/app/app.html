@@ -1,5 +1,5 @@
 <app-header [class.upload-page]="isUpload()" [class.mobile-hidden-page]="isMobileHeaderHidden()" />
-@if (!isHome() && !isLogin() && !isCustomerCenter()) {
+@if (!isHome() && !isLogin() && !isCustomerCenter() && !isMyBootcamp()) {
   <app-sub-header [class.upload-page]="isUpload()" [class.mobile-hidden-page]="isMobileHeaderHidden()" />
 }
 <router-outlet></router-outlet>

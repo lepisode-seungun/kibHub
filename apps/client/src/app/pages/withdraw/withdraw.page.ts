@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -17,6 +17,7 @@ export class WithdrawPage {
   private authService = inject(AuthService);
 
   agreed = signal(false);
+  userEmail = computed(() => this.authService.currentUser()?.email || '');
   password = '';
   reason = '';
   errorMessage = signal('');

@@ -93,14 +93,15 @@
   top: 50%;
   transform: translateY(-50%);
   display: flex;
-  gap: 36px;
+  gap: clamp(24px, 1.875vw, 48px);
   z-index: 1;
 }
 .hero-cards--left { left: 4%; }
 .hero-cards--right { right: 4%; }
 
 .hero-card {
-  width: 244px; height: 160px;
+  width: clamp(180px, 12.7vw, 480px);
+  height: clamp(118px, 8.33vw, 315px);
   border-radius: 8px;
   flex-shrink: 0;
   background-size: cover;
@@ -204,14 +205,28 @@
 
 @media (max-width: 768px) {
   .portfolio-hero {
-    height: 200px;
-    min-height: 160px;
+    height: 400px;
+    min-height: 320px;
   }
   .hero-title { font-size: 22px; }
-  .hero-orb, .hero-dot, .hero-orbit { display: none; }
+  .hero-orb {
+    transform: scale(0.6);
+  }
+  .hero-orb--right {
+    right: 10%;
+    top: 60%;
+  }
+  .hero-orb--left {
+    left: 5%;
+    top: 15%;
+  }
+  .hero-orbit {
+    width: 260px;
+    height: 65px;
+  }
   .hero-glow {
-    width: 200px; height: 200px;
-    filter: blur(120px);
+    width: 250px; height: 250px;
+    filter: blur(150px);
   }
   .portfolio-grid-section {
     padding: 40px 20px;
@@ -230,8 +245,8 @@
 
 @media (max-width: 480px) {
   .portfolio-hero {
-    height: 160px;
-    min-height: 140px;
+    height: 350px;
+    min-height: 280px;
   }
   .hero-title { font-size: 20px; }
   .portfolio-grid-section {

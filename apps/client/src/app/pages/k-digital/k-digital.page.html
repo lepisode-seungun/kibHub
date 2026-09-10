@@ -2,11 +2,11 @@
   <!-- 히어로 배너 (데스크톱) -->
   <section class="kd-hero kd-hero--desktop" id="kd-hero">
     <div class="flex items-center justify-center z-[1]">
-      <h1 class="kd-hero-title font-bold text-[32px] leading-[150%] text-center tracking-tight m-0 -mt-5"
-          style="font-family: 'Gmarket Sans TTF', sans-serif; background: linear-gradient(180deg, #ECEFEF 0%, #FFFFFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ heroTitle }}</h1>
+      <h1 class="kd-hero-title font-bold leading-[150%] text-center tracking-tight m-0 -mt-5"
+          style="font-family: 'Gmarket Sans TTF', sans-serif; font-size: clamp(24px, 2.5vw, 32px); background: linear-gradient(180deg, #ECEFEF 0%, #FFFFFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ heroTitle }}</h1>
     </div>
-    <p class="kd-hero-subtitle font-medium text-[18px] leading-[150%] text-center tracking-tight text-[#D9D9D9] mt-6 z-[1]"
-       style="font-family: 'Gmarket Sans TTF', sans-serif;">{{ heroSubtitle }}</p>
+    <p class="kd-hero-subtitle font-medium leading-[150%] text-center tracking-tight text-[#D9D9D9] mt-6 z-[1]"
+       style="font-family: 'Gmarket Sans TTF', sans-serif; font-size: clamp(14px, 1.4vw, 18px);">{{ heroSubtitle }}</p>
   </section>
 
   <!-- 히어로 배너 (모바일) -->
@@ -32,7 +32,7 @@
         <a class="kd-card" [routerLink]="['/k-digital', card.id]">
           @if (card.thumbnailUrl) {
             <div class="kd-thumb">
-              <img [src]="card.thumbnailUrl" alt="" class="w-full h-full object-cover" />
+              <img [src]="card.thumbnailUrl" alt="" />
             </div>
           } @else {
             <div class="kd-thumb" [style.background]="card.thumbnailGradient"></div>

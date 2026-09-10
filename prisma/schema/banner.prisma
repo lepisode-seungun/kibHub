@@ -6,6 +6,7 @@ model Banner {
   content     String        @default("")
   link        String?
   vimeoLink   String?
+  textColor   String        @default("#FFFFFF")
   pcImage     String?
   mobileImage String?
   sortOrder   Int           @default(0)

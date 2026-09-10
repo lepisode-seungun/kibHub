@@ -280,7 +280,24 @@
 
 @media (max-width: 768px) {
   .search-page { padding: 40px 24px; gap: 20px; }
-  .search-header { width: 100%; }
+  .search-header { width: 100%; gap: 20px; }
+  .search-title { font-size: 16px; }
+  .search-count { font-size: 14px; }
+  .search-tabs {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .search-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
   .card-link { width: 100%; }
   .result-card { aspect-ratio: unset; height: 320px; }
 }

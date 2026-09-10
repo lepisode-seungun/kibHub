@@ -6,6 +6,8 @@ interface BannerSlide {
   id: number;
   title: string;
   subtitle: string;
+  textColor: string;
+  link: string | null;
   pcImage: string | null;
   mobileImage: string | null;
 }
@@ -41,6 +43,8 @@ export class HomeBannerComponent implements OnInit, OnDestroy {
           id: b.id,
           title: b.header,
           subtitle: b.content,
+          textColor: b.textColor || '#FFFFFF',
+          link: b.link || null,
           pcImage: b.pcImage || null,
           mobileImage: b.mobileImage || null,
         }))
@@ -59,7 +63,14 @@ export class HomeBannerComponent implements OnInit, OnDestroy {
   }
 
   get activeSlide(): BannerSlide {
-    return this.slides()[this.currentSlide()] || { id: 0, title: '', subtitle: '', pcImage: null, mobileImage: null };
+    return this.slides()[this.currentSlide()] || { id: 0, title: '', subtitle: '', textColor: '#FFFFFF', link: null, pcImage: null, mobileImage: null };
+  }
+
+  onBannerClick(): void {
+    const link = this.activeSlide.link;
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
   }
 
   /** 현재 슬라이드에 이미지가 있는지 */

@@ -138,6 +138,7 @@ export const BannerScalarFieldEnum = {
   content: 'content',
   link: 'link',
   vimeoLink: 'vimeoLink',
+  textColor: 'textColor',
   pcImage: 'pcImage',
   mobileImage: 'mobileImage',
   sortOrder: 'sortOrder',

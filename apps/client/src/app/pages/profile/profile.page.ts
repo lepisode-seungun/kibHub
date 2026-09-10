@@ -304,6 +304,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   activeTab = signal<'all' | 'album'>('all');
   selectedAlbumId = signal<number | null>(null);
+  hoveredAlbumId = signal<number | null>(null);
   isSortOpen = signal(false);
   selectedSort = signal<'latest' | 'oldest'>('latest');
   openAlbumMenuId = signal<number | null>(null);
@@ -431,6 +432,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
+  resetAlbumFilter(): void {
+    this.albums.update(list => list.map(a => ({ ...a, isActive: false })));
+    this.selectedAlbumId.set(null);
+  }
+
   selectCategory(id: number): void {
     const current = this.selectedCategoryId();
     if (current === id) {
@@ -482,9 +488,14 @@ export class ProfilePage implements OnInit, OnDestroy {
   private dragStartX = 0;
   private dragScrollLeft = 0;
 
+  /** 슬라이더가 스크롤 가능한지 (콘텐츠가 넘치는지) 체크 */
+  private isScrollable(el: HTMLElement): boolean {
+    return el.scrollWidth > el.clientWidth;
+  }
+
   onSliderMouseDown(event: MouseEvent): void {
     const el = this.albumSlider?.nativeElement;
-    if (!el) return;
+    if (!el || !this.isScrollable(el)) return;
     this.isDragging = true;
     this.dragStartX = event.pageX - el.offsetLeft;
     this.dragScrollLeft = el.scrollLeft;
@@ -504,7 +515,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   onSliderMouseUp(): void {
     this.isDragging = false;
     const el = this.albumSlider?.nativeElement;
-    if (el) el.style.cursor = 'grab';
+    if (el) el.style.cursor = this.isScrollable(el) ? 'grab' : '';
   }
 
   openNewAlbumModal(): void {
@@ -582,6 +593,18 @@ export class ProfilePage implements OnInit, OnDestroy {
     const target = event.target as HTMLElement;
     if (target.closest('.pf-album-more-wrap')) return;
     this.openAlbumMenuId.set(null);
+
+    // 앨범/카테고리 카드 밖 클릭 시 선택 해제
+    if (!target.closest('.pf-album-card') && !target.closest('.pf-album-slider-wrap')) {
+      if (this.selectedAlbumId() !== null) {
+        this.albums.update(list => list.map(a => ({ ...a, isActive: false })));
+        this.selectedAlbumId.set(null);
+      }
+      if (this.selectedCategoryId() !== null) {
+        this.categories.update(list => list.map(c => ({ ...c, isActive: false })));
+        this.selectedCategoryId.set(null);
+      }
+    }
   }
 
   toggleAlbumMenu(albumId: number): void {

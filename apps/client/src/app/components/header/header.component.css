@@ -600,7 +600,7 @@
     top: 64px;
     right: auto;
     left: auto;
-    width: 280px;
+    width: 220px;
     height: auto;
     max-height: calc(100vh - 96px);
     border-radius: 12px;
@@ -687,8 +687,8 @@
 .drawer-body {
   display: flex;
   flex-direction: column;
-  padding: 24px 20px;
-  gap: 24px;
+  padding: 16px 12px;
+  gap: 16px;
   background: #09090B;
   flex: 1;
   overflow-y: auto;
@@ -848,7 +848,7 @@
 
 .drawer-footer-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 12px 0;
   font-family: 'SUIT', sans-serif;

@@ -178,24 +178,9 @@ export class BootcampIntroPage implements OnInit, OnDestroy {
     'linear-gradient(135deg, #a18cd1, #fbc2eb)',
   ];
 
-  /** 항상 6개 카드 반환 — 부족하면 빈 placeholder 카드로 채움 */
+  /** 실제 부트캠프 카드만 반환 */
   displayCards = computed<BootcampCard[]>(() => {
-    const real = this.bootcampCards();
-    if (real.length >= 6) return real.slice(0, 6);
-    const padded = [...real];
-    for (let i = real.length; i < 6; i++) {
-      padded.push({
-        id: -(i + 1),
-        name: '',
-        summary: '',
-        status: 'closed',
-        statusText: '',
-        deadline: null,
-        thumbnailGradient: this.placeholderGradients[i % this.placeholderGradients.length],
-        thumbnailUrl: null,
-      });
-    }
-    return padded;
+    return this.bootcampCards();
   });
 
   // ===== 카드 드래그 스크롤 (모멘텀 관성 적용) =====

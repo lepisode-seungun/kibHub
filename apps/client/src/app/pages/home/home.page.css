@@ -10,6 +10,7 @@
 .home {
   width: 100%;
   min-height: 100vh;
+  background: #0C0B10;
 }
 
 @media (max-width: 768px) {
@@ -632,7 +633,7 @@
 @media (max-width: 768px) {
   .content-gallery {
     padding-top: 20px;
-    padding-bottom: 4px;
+    padding-bottom: 40px;
   }
 
   .gallery-inner {
@@ -937,7 +938,7 @@
 /* [TW-KEEP] responsive */
 @media (max-width: 768px) {
   .more-content {
-    padding: 4px;
+    padding: 40px 4px 4px 4px;
     gap: 4px;
   }
 

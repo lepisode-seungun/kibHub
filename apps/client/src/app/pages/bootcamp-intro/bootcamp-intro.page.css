@@ -677,10 +677,6 @@
 }
 
 @media (max-width: 768px) {
-  /* 히어로 배너 숨김 */
-  .bootcamp-intro app-home-banner {
-    display: none !important;
-  }
 
   .bootcamp-list-section {
     padding: 40px 20px;
@@ -793,18 +789,19 @@
 
   .feature-banner {
     width: 320px;
-    height: 77px;
-    padding: 12px;
-    gap: 9px;
+    height: auto;
+    min-height: 77px;
+    padding: 12px 16px;
+    gap: 6px;
     left: 50%;
     top: 4%;
     transform: translateX(-50%);
   }
 
   .feature-banner-text {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    white-space: normal;
+    white-space: nowrap;
     text-align: center;
     line-height: 150%;
   }
@@ -812,13 +809,14 @@
   .feature-banner-inner {
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     width: 100%;
   }
 
   .feature-banner-row {
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 4px;
+    gap: 6px 16px;
   }
 
   .academy-right {
@@ -862,12 +860,12 @@
 
   .corner-dot--tl {
     left: 0;
-    top: 4%;
+    top: 2%;
   }
 
   .corner-dot--tr {
     right: 0;
-    top: 4%;
+    top: 2%;
   }
 
   .corner-dot--bl {
@@ -1556,21 +1554,21 @@
   }
 
   .partner-marquee {
-    height: 56px;
+    height: 80px;
   }
 
   .partner-logo-item {
     width: 180px;
-    height: 64px;
+    height: 80px;
   }
 
   .partner-logo-item img {
-    max-width: 150px;
-    max-height: 50px;
+    max-width: 200px;
+    max-height: 65px;
   }
 
   .partner-marquee-track {
-    gap: 24px;
+    gap: 16px;
   }
 
   .partner-fade {

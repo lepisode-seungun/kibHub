@@ -84,6 +84,11 @@ export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['content'] && this.editorRef?.nativeElement && !this.contentLoaded) {
       const val = this.content();
+      // 에디터에 포커스가 있으면 사용자 입력 중이므로 innerHTML 재설정 스킵
+      if (document.activeElement === this.editorRef.nativeElement) {
+        this.contentLoaded = true;
+        return;
+      }
       if (val) {
         this.editorRef.nativeElement.innerHTML = val;
         this.contentLoaded = true;
@@ -91,9 +96,24 @@ export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
     }
   }
 
-  toggleBold(): void { this.isBold.update(v => !v); document.execCommand('bold'); }
-  toggleItalic(): void { this.isItalic.update(v => !v); document.execCommand('italic'); }
-  toggleUnderline(): void { this.isUnderline.update(v => !v); document.execCommand('underline'); }
+  toggleBold(): void {
+    this.editorRef?.nativeElement?.focus();
+    document.execCommand('bold');
+    this.isBold.update(v => !v);
+    this.contentChange.emit(this.editorRef?.nativeElement?.innerHTML || '');
+  }
+  toggleItalic(): void {
+    this.editorRef?.nativeElement?.focus();
+    document.execCommand('italic');
+    this.isItalic.update(v => !v);
+    this.contentChange.emit(this.editorRef?.nativeElement?.innerHTML || '');
+  }
+  toggleUnderline(): void {
+    this.editorRef?.nativeElement?.focus();
+    document.execCommand('underline');
+    this.isUnderline.update(v => !v);
+    this.contentChange.emit(this.editorRef?.nativeElement?.innerHTML || '');
+  }
 
   // 폰트 크기 드롭다운
   toggleFontSizeMenu(): void { this.fontSizeOpen.update(v => !v); this.colorPaletteOpen.set(false); }
@@ -103,23 +123,35 @@ export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0) {
       if (!sel.isCollapsed) {
-        // 텍스트가 선택된 경우: 선택 영역을 span으로 감싸기
-        const range = sel.getRangeAt(0);
-        const span = document.createElement('span');
-        span.style.fontSize = size;
-        range.surroundContents(span);
-        sel.removeAllRanges();
-        const newRange = document.createRange();
-        newRange.selectNodeContents(span);
-        sel.addRange(newRange);
+        // execCommand('fontSize')로 <font size="7"> 생성 후 span으로 치환
+        document.execCommand('fontSize', false, '7');
+        const editor = this.editorRef?.nativeElement;
+        const replacedSpans: HTMLElement[] = [];
+        if (editor) {
+          const fontTags = editor.querySelectorAll('font[size="7"]');
+          fontTags.forEach((font: Element) => {
+            const span = document.createElement('span');
+            span.style.fontSize = size;
+            span.innerHTML = font.innerHTML;
+            font.parentNode?.replaceChild(span, font);
+            replacedSpans.push(span);
+          });
+        }
+        // 선택 영역 복원
+        if (replacedSpans.length > 0) {
+          const newRange = document.createRange();
+          newRange.setStartBefore(replacedSpans[0]);
+          newRange.setEndAfter(replacedSpans[replacedSpans.length - 1]);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+        }
       } else {
         // 커서만 놓인 경우: 빈 span 삽입 후 커서를 그 안에 배치
         const range = sel.getRangeAt(0);
         const span = document.createElement('span');
         span.style.fontSize = size;
-        span.appendChild(document.createTextNode('\u200B')); // zero-width space
+        span.appendChild(document.createTextNode('\u200B'));
         range.insertNode(span);
-        // 커서를 span 안으로 이동
         const newRange = document.createRange();
         const textNode = span.firstChild;
         if (textNode) {
@@ -221,7 +253,7 @@ export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
           else if (computed.textAlign === 'right') align = 'right';
         }
       }
-      const img = `<div style="text-align: ${align};"><img src="${uploaded.url}" alt="${file.name}" style="max-width: 500px; height: auto; border-radius: 4px; margin: 8px 0; display: inline-block;" /></div>`;
+      const img = `<div style="text-align: ${align};"><img src="${uploaded.url}" alt="${file.name}" style="max-width: 100%; height: auto; border-radius: 4px; margin: 8px 0; display: inline-block;" /></div>`;
       document.execCommand('insertHTML', false, img);
       this.contentChange.emit(this.editorRef?.nativeElement?.innerHTML || '');
     } catch (e) {

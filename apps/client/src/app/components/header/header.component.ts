@@ -213,6 +213,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
   /* ===== 알림 패널 ===== */
   isNotificationOpen = signal(false);
   notifications: AppNotification[] = [];

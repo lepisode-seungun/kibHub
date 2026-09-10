@@ -1,6 +1,7 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../shared/toast/toast.service';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
 @Component({
@@ -12,6 +13,7 @@ import { TextEditorComponent } from '../../components/text-editor/text-editor.co
 })
 export class SchedulePage implements OnInit {
   private api = inject(ApiService);
+  private toast = inject(ToastService);
 
   activeTab = signal<'schedule' | 'management'>('schedule');
 
@@ -64,9 +66,9 @@ export class SchedulePage implements OnInit {
     this.isSaving.set(true);
     try {
       await this.api.siteSettings.set('terms_of_service', this.termsDraft || this.termsContent());
-      alert('이용약관이 저장되었습니다.');
+      this.toast.success('이용약관이 저장되었습니다.');
     } catch {
-      alert('저장에 실패했습니다.');
+      this.toast.error('저장에 실패했습니다.');
     } finally {
       this.isSaving.set(false);
     }
@@ -77,9 +79,9 @@ export class SchedulePage implements OnInit {
     this.isSaving.set(true);
     try {
       await this.api.siteSettings.set('privacy_policy', this.privacyDraft || this.privacyContent());
-      alert('개인정보처리방침이 저장되었습니다.');
+      this.toast.success('개인정보처리방침이 저장되었습니다.');
     } catch {
-      alert('저장에 실패했습니다.');
+      this.toast.error('저장에 실패했습니다.');
     } finally {
       this.isSaving.set(false);
     }

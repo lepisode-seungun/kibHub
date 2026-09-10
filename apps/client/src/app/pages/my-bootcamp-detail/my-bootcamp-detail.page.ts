@@ -110,6 +110,7 @@ export class MyBootcampDetailPage implements OnInit {
   lectureFilterChips = signal<string[]>(['전체']);
   activeLectureFilter = signal('전체');
   lectureSearchText = '';
+  lectureDisplayLimit = signal(8);
 
   /* 정렬 드롭다운 */
   sortOrder = signal<'오름차순' | '내림차순'>('오름차순');
@@ -139,6 +140,18 @@ export class MyBootcampDetailPage implements OnInit {
     return items;
   }
 
+  get displayedLectures() {
+    return this.filteredLectures.slice(0, this.lectureDisplayLimit());
+  }
+
+  get hasMoreLectures() {
+    return this.filteredLectures.length > this.lectureDisplayLimit();
+  }
+
+  loadMoreLectures(): void {
+    this.lectureDisplayLimit.update(v => v + 8);
+  }
+
   selectLectureFilter(chip: string): void {
     this.activeLectureFilter.set(chip);
   }
@@ -151,6 +164,7 @@ export class MyBootcampDetailPage implements OnInit {
   assignmentFilterChips = signal<string[]>(['전체']);
   activeAssignmentFilter = signal('전체');
   assignmentSearchText = '';
+  assignmentDisplayLimit = signal(8);
 
   assignmentCards = signal<AssignmentTabCard[]>([]);
 
@@ -165,6 +179,18 @@ export class MyBootcampDetailPage implements OnInit {
       items = items.filter(i => i.title.toLowerCase().includes(q));
     }
     return items;
+  }
+
+  get displayedAssignments() {
+    return this.filteredAssignments.slice(0, this.assignmentDisplayLimit());
+  }
+
+  get hasMoreAssignments() {
+    return this.filteredAssignments.length > this.assignmentDisplayLimit();
+  }
+
+  loadMoreAssignments(): void {
+    this.assignmentDisplayLimit.update(v => v + 8);
   }
 
   selectAssignmentFilter(chip: string): void {

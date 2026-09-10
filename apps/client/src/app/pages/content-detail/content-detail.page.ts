@@ -74,15 +74,23 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
   isSidebarOpen = signal(true);
   isMobileCommentOpen = signal(false);
+  isMobileFabVisible = signal(true);
 
   private mobileCommentEffect = effect(() => {
     const isOpen = this.isMobileCommentOpen();
     if (typeof document !== 'undefined') {
       document.body.style.overflow = isOpen ? 'hidden' : '';
     }
+    if (isOpen) {
+      // 바텀시트 열리면 스크롤 가능 여부 체크 후 FAB 표시 결정
+      setTimeout(() => this.checkCommentScrollable(), 150);
+    } else {
+      this.isMobileFabVisible.set(false);
+    }
   });
   commentMode = signal<'general' | 'feedback'>('general');
   markersVisible = signal(true);
+  isFloatingMenuOpen = signal(true);
   hoveredCommentId = signal<number | null>(null);
   isLoggedIn = this.authService.isLoggedIn;
   currentUserName = signal('');  
@@ -273,6 +281,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
             markerNum: c.markerNum ?? null,
             markerTop: c.markerTop ?? null,
             markerLeft: c.markerLeft ?? null,
+            markerImageIndex: c.markerImageIndex ?? 0,
             isMe: c.author?.id === this.currentUserId(),
             isActive: false,
             type: (c.type || 'general') as 'feedback' | 'general',
@@ -289,6 +298,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
               markerNum: r.markerNum ?? null,
               markerTop: r.markerTop ?? null,
               markerLeft: r.markerLeft ?? null,
+              markerImageIndex: r.markerImageIndex ?? 0,
               isMe: r.author?.id === this.currentUserId(),
               type: (r.type || 'general') as 'feedback' | 'general',
               content: r.body,
@@ -1172,5 +1182,32 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   scrollToBottom(): void {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  /** 모바일: 댓글 입력칸으로 스크롤 + FAB 숨김 */
+  scrollToCompose(): void {
+    // 바텀시트가 안 열려있으면 열기
+    if (!this.isMobileCommentOpen()) {
+      this.isMobileCommentOpen.set(true);
+    }
+    this.isMobileFabVisible.set(false);
+
+    // DOM 업데이트 후 스크롤
+    setTimeout(() => {
+      const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
+      const compose = sidebar?.querySelector('.comment-compose') as HTMLElement;
+      if (sidebar && compose) {
+        sidebar.scrollTo({ top: 0, behavior: 'smooth' });
+        compose.querySelector('textarea')?.focus();
+      }
+    }, 100);
+  }
+
+  /** 댓글 영역이 스크롤할 만큼 많은지 체크 */
+  private checkCommentScrollable(): void {
+    const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
+    if (sidebar) {
+      this.isMobileFabVisible.set(sidebar.scrollHeight > sidebar.clientHeight);
+    }
   }
 }

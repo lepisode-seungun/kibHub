@@ -1,4 +1,6 @@
-<section class="home-banner" id="home-banner">
+<section class="home-banner" id="home-banner"
+         [style.cursor]="activeSlide.link ? 'pointer' : 'default'"
+         (click)="onBannerClick()">
   <!-- Full Background — 슬라이드별 이미지 동적 전환 -->
   @if (totalSlides > 0) {
     @if (hasImage) {
@@ -21,14 +23,14 @@
   <div class="banner-overlay">
     @if (totalSlides > 0) {
       <div class="flex flex-col items-start gap-3">
-        <h2 class="banner-title">{{ activeSlide.title }}</h2>
-        <p class="banner-subtitle">{{ activeSlide.subtitle }}</p>
+        <h2 class="banner-title" [style.color]="activeSlide.textColor">{{ activeSlide.title }}</h2>
+        <p class="banner-subtitle" [style.color]="activeSlide.textColor">{{ activeSlide.subtitle }}</p>
       </div>
 
       <!-- Slider Controls -->
       <div class="flex items-center gap-6 w-full">
         <div class="banner-pagination">
-          <button class="banner-arrow" aria-label="이전 슬라이드" (click)="prevSlide()">
+          <button class="banner-arrow" aria-label="이전 슬라이드" (click)="prevSlide(); $event.stopPropagation()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -36,7 +38,7 @@
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white">{{ currentSlide() + 1 }}</span>
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">/</span>
           <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white/20">{{ totalSlides }}</span>
-          <button class="banner-arrow" aria-label="다음 슬라이드" (click)="nextSlide()">
+          <button class="banner-arrow" aria-label="다음 슬라이드" (click)="nextSlide(); $event.stopPropagation()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
