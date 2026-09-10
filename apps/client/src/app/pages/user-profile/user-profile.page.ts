@@ -81,6 +81,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
   isOwnProfile = signal(false);
   isLoggedIn = signal(false);
   currentUserId = 0;
+  isLoginRequiredModalOpen = signal(false);
 
   // 활동 정보
   feedbackCount = signal(0);
@@ -311,7 +312,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
 
   async toggleFollow(): Promise<void> {
     if (!this.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      this.isLoginRequiredModalOpen.set(true);
       return;
     }
     try {
@@ -450,7 +451,7 @@ export class UserProfilePage implements OnInit, OnDestroy {
 
   async toggleFollowInModal(targetId: number): Promise<void> {
     if (!this.currentUserId) {
-      this.router.navigate(['/login']);
+      this.isLoginRequiredModalOpen.set(true);
       return;
     }
     try {
