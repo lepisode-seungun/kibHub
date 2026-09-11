@@ -1,16 +1,15 @@
 :host {
   display: block;
   --font-family: 'SUIT', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #151419;
 }
 
 .detail-page {
   display: flex;
   flex-direction: row;
-  padding: 24px;
+  padding: 24px max(24px, calc(50vw - 900px));
   gap: 24px;
   width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
   background: #151419;
   min-height: 100vh;
   box-sizing: border-box;
@@ -688,9 +687,15 @@
   height: 54px;
   transition: transform 0.15s ease;
 }
-.saved-marker:hover {
+.saved-marker:active {
   transform: translate(-50%, -100%) scale(1.15);
   z-index: 11;
+}
+@media (hover: hover) {
+  .saved-marker:hover {
+    transform: translate(-50%, -100%) scale(1.15);
+    z-index: 11;
+  }
 }
 .saved-marker .marker-icon {
   width: 38px;
@@ -1418,6 +1423,7 @@
     flex-shrink: 0;
   }
 
+
   .mobile-toggle-inner {
     display: flex;
     flex-direction: column;
@@ -1616,6 +1622,7 @@
   border-radius: 16px;
   overflow: hidden;
   z-index: 2100;
+  background: #18181B;
   animation: report-modal-in 0.25s ease;
 }
 
@@ -2758,7 +2765,7 @@
 
 /* ===== Marker Flash Highlight (댓글 추적) ===== */
 .marker-flash {
-  animation: markerFlashAnim 0.5s ease-out;
+  animation: markerFlashAnim 1.5s ease-out;
 }
 
 @keyframes markerFlashAnim {
@@ -2771,4 +2778,14 @@
   0% { transform: scale(0); opacity: 0; }
   60% { transform: scale(1.15); }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== 토스트 알림 애니메이션 ===== */
+@keyframes toastSlideUp {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-toast-in {
+  animation: toastSlideUp 0.3s ease-out forwards;
 }

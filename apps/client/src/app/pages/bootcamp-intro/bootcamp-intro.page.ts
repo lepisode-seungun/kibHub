@@ -15,13 +15,6 @@ export interface BootcampCard {
   thumbnailGradient: string;
   thumbnailUrl: string | null;
 }
-
-interface PosterResponse {
-  id: number;
-  imageUrl: string;
-  displayOrder: number;
-}
-
 interface HistoryItem {
   id: number;
   title: string;

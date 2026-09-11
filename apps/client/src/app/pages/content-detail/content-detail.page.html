@@ -118,12 +118,27 @@
           </svg>
           <span>공유</span>
         </button>
-        <button class="detail-action-btn" (click)="openReportModal()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 17h-2v-2h2v2zm0-4h-2V9h2v6z"/>
-          </svg>
-          <span>신고</span>
-        </button>
+        @if (isOwnContent()) {
+          <button class="detail-action-btn" (click)="goToEdit()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+            <span>수정</span>
+          </button>
+          <button class="detail-action-btn" (click)="openContentDeleteModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </svg>
+            <span>삭제</span>
+          </button>
+        } @else {
+          <button class="detail-action-btn" (click)="openReportModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 17h-2v-2h2v2zm0-4h-2V9h2v6z"/>
+            </svg>
+            <span>신고</span>
+          </button>
+        }
       </div>
     </div>
 
@@ -260,9 +275,6 @@
               <path fill-rule="evenodd" clip-rule="evenodd" d="M28.0244 26.2316L34.2772 32.3603L34.6386 33.6793L35 34.9982L33.6753 34.6645L32.3506 34.3308L26.0978 28.2022L24.5175 29.8185C23.9769 30.3714 23.1006 30.3714 22.56 29.8185L22.4533 29.7093C22.2105 29.461 22.0767 29.1433 22.0521 28.8187C19.662 29.2196 17.1243 28.4774 15.281 26.5921C12.2409 23.4827 12.2409 18.4414 15.281 15.332C18.3211 12.2227 23.2501 12.2227 26.2902 15.332C28.1346 17.2184 28.86 19.8159 28.4665 22.2617C28.7828 22.2876 29.092 22.4243 29.334 22.6718L29.4407 22.781C29.9813 23.3338 29.9813 24.2302 29.4407 24.7831L28.0244 26.2316Z" [attr.fill]="commentMode() === 'feedback' ? '#A148FF' : '#FAFAFA'"/>
             </svg>
           </button>
-          <svg class="compose-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-          </svg>
         </div>
         <div class="flex flex-col flex-1 gap-2">
           <textarea class="compose-textarea" [class.compose-textarea-feedback]="commentMode() === 'feedback'" [value]="commentText" [placeholder]="commentMode() === 'feedback' ? '피드백을 입력하세요.' : '일반댓글'" (input)="onCommentInput($event)"></textarea>
@@ -985,6 +997,65 @@
           (click)="hasSelectedCategories() && confirmBookmark()"
         >추가</button>
       </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 콘텐츠 삭제 확인 모달 ===== -->
+@if (isContentDeleteModalOpen()) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+    <div class="flex flex-col items-start w-[320px] md:w-[700px] rounded-2xl overflow-hidden" style="filter: drop-shadow(2px 6px 31px rgba(0,0,0,0.04));">
+      <!-- 헤더 -->
+      <div class="flex flex-col items-center px-5 pt-5 md:px-8 md:pt-8 w-full bg-[#18181B]">
+        <div class="flex flex-row justify-center items-center w-full">
+          <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">콘텐츠 삭제</span>
+          <button class="flex items-center justify-center w-6 h-6 bg-transparent border-none cursor-pointer p-0" aria-label="닫기" (click)="closeContentDeleteModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 바디 -->
+      <div class="flex flex-col items-center px-5 py-8 md:px-8 gap-6 w-full bg-[#18181B]" style="min-height: 248px;">
+        <!-- 콘텐츠 정보 테이블 -->
+        <div class="flex flex-col items-start w-full">
+          <div class="box-border flex flex-row items-start px-5 py-4 gap-6 w-full border border-b-0 border-[#3F3F46] rounded-t-xl">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#A1A1AA] shrink-0">콘텐츠 명</span>
+            <div class="w-0 h-3 border-l border-[#3F3F46] self-center shrink-0"></div>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white truncate">{{ title }}</span>
+          </div>
+          <div class="box-border flex flex-row items-center px-5 py-4 gap-6 w-full border border-[#3F3F46] rounded-b-xl">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#A1A1AA] shrink-0">등록일시</span>
+            <div class="w-0 h-3 border-l border-[#3F3F46] self-center shrink-0"></div>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-white" [innerHTML]="dateStr.replace(/(오전|오후)/, '<br>$1')"></span>
+          </div>
+        </div>
+
+        <!-- 경고 메시지 -->
+        <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-center text-[#D4D4D8] m-0">해당 콘텐츠를 삭제하시겠습니까? <br>삭제 시 해당 콘텐츠에 등록된 모든 댓글도<br>함께 삭제되며, 복구가 불가능합니다.</p>
+      </div>
+
+      <!-- 푸터 -->
+      <div class="flex flex-col items-center p-5 md:px-8 md:pt-5 md:pb-8 w-full bg-[#18181B] border-t border-[#262626]">
+        <div class="flex flex-row justify-center items-start gap-3 w-full">
+          <button class="box-border flex justify-center items-center py-3 gap-2.5 flex-1 h-12 bg-[#3F3F46] border border-white/[0.12] rounded-xl cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-[#52525B]" (click)="closeContentDeleteModal()">취소</button>
+          <button class="flex justify-center items-center py-2 px-3 gap-1 flex-1 h-12 bg-[#991B1B] rounded-xl border-none cursor-pointer font-suit font-medium text-base leading-[150%] tracking-tight text-white transition-colors duration-150 hover:bg-[#7F1D1D]" (click)="confirmContentDelete()">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 토스트 알림 ===== -->
+@if (toastVisible()) {
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] animate-toast-in">
+    <div class="flex flex-row items-start p-3 gap-2 w-[328px] bg-[#27272A] rounded-xl" style="box-shadow: 0 4px 24px rgba(0,0,0,0.3);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#AF91FF"/>
+      </svg>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#E4E4E7]">{{ toastMessage() }}</span>
     </div>
   </div>
 }

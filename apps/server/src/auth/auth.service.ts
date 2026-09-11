@@ -36,8 +36,23 @@ export class AuthService {
     const existing = await this.prisma.user.findUnique({ where: { email: data.email } });
     if (existing) {
       if (existing.status === 'WITHDRAWN') {
-        // 탈퇴 계정 잔여 데이터 전체 정리
-        await this.cleanupUserData(existing.id);
+        // 탈퇴 계정 재가입: 기존 WITHDRAWN 유저를 업데이트하여 재활성화
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        const user = await this.prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            password: hashedPassword,
+            name: data.name || '',
+            nickname: data.nickname,
+            phone: data.phone || '',
+            birthday: data.birthday || null,
+            intro: data.intro || '',
+            profileImage: null,
+            coverImage: null,
+            status: 'ACTIVE',
+          },
+        });
+        return user;
       } else {
         throw new Error('이미 존재하는 이메일입니다.');
       }
@@ -173,50 +188,78 @@ export class AuthService {
     await this.cleanupUserData(userId);
   }
 
-  // ===== 유저 관련 데이터 전체 삭제 =====
+  // ===== 유저 탈퇴 처리 (약관 준수) =====
+  //
+  // [즉시 삭제] 콘텐츠, 해당 콘텐츠의 모든 댓글, 앨범, 책갈피, 팔로우, 알림
+  // [유지] 타 유저 콘텐츠 댓글, 1:1 문의, 부트캠프 과제/댓글
+  // [소프트 삭제] User → status: WITHDRAWN + 개인정보 초기화
+  //
   private async cleanupUserData(userId: number) {
     await this.prisma.$transaction(async (tx) => {
-      await tx.follow.deleteMany({ where: { OR: [{ followerId: userId }, { followingId: userId }] } });
-      await tx.commentLike.deleteMany({ where: { userId } });
-      await tx.report.deleteMany({ where: { reporterId: userId } });
-      await tx.comment.deleteMany({ where: { authorId: userId } });
+      // ── 1. 즉시 삭제 대상 ──
 
+      // 팔로우 관계
+      await tx.follow.deleteMany({ where: { OR: [{ followerId: userId }, { followingId: userId }] } });
+
+      // 내가 누른 댓글 좋아요
+      await tx.commentLike.deleteMany({ where: { userId } });
+
+      // 내가 한 신고
+      await tx.report.deleteMany({ where: { reporterId: userId } });
+
+      // 알림
+      await tx.notification.deleteMany({ where: { userId } });
+
+      // SNS 연동 정보
+      await tx.userSns.deleteMany({ where: { userId } });
+
+      // 앨범 + 책갈피 (앨범 내 콘텐츠 연결도 삭제)
       const albums = await tx.album.findMany({ where: { ownerId: userId }, select: { id: true } });
       if (albums.length > 0) {
         await tx.albumContent.deleteMany({ where: { albumId: { in: albums.map(a => a.id) } } });
         await tx.album.deleteMany({ where: { ownerId: userId } });
       }
 
+      // 내 콘텐츠 + 해당 콘텐츠의 모든 댓글/좋아요
       const contents = await tx.content.findMany({ where: { authorId: userId }, select: { id: true } });
       if (contents.length > 0) {
         const contentIds = contents.map(c => c.id);
-        const comments = await tx.comment.findMany({ where: { contentId: { in: contentIds } }, select: { id: true } });
-        if (comments.length > 0) {
-          await tx.commentLike.deleteMany({ where: { commentId: { in: comments.map(c => c.id) } } });
+        const commentsOnMyContent = await tx.comment.findMany({ where: { contentId: { in: contentIds } }, select: { id: true } });
+        if (commentsOnMyContent.length > 0) {
+          await tx.commentLike.deleteMany({ where: { commentId: { in: commentsOnMyContent.map(c => c.id) } } });
         }
         await tx.comment.deleteMany({ where: { contentId: { in: contentIds } } });
         await tx.albumContent.deleteMany({ where: { contentId: { in: contentIds } } });
         await tx.content.deleteMany({ where: { authorId: userId } });
       }
 
-      const inquiries = await tx.inquiry.findMany({ where: { authorId: userId }, select: { id: true } });
-      if (inquiries.length > 0) {
-        await tx.inquiryFile.deleteMany({ where: { inquiryId: { in: inquiries.map(i => i.id) } } });
-        await tx.inquiry.deleteMany({ where: { authorId: userId } });
-      }
-
+      // 지원서
       await tx.applicant.deleteMany({ where: { userId } });
-      await tx.bootcampInstructor.deleteMany({ where: { userId } });
-      await tx.submissionComment.deleteMany({ where: { authorId: userId } });
-      const submissions = await tx.submission.findMany({ where: { authorId: userId }, select: { id: true } });
-      if (submissions.length > 0) {
-        const subIds = submissions.map(s => s.id);
-        await tx.submissionFile.deleteMany({ where: { submissionId: { in: subIds } } });
-        await tx.submissionComment.deleteMany({ where: { submissionId: { in: subIds } } });
-        await tx.submission.deleteMany({ where: { authorId: userId } });
-      }
 
-      await tx.user.delete({ where: { id: userId } });
+      // 부트캠프 강사 관계
+      await tx.bootcampInstructor.deleteMany({ where: { userId } });
+
+      // ── 2. 유지 대상 (삭제하지 않음) ──
+      // - 타 유저 콘텐츠에 남긴 댓글 (Comment) → User WITHDRAWN 상태로 "탈퇴한 사용자" 표시
+      // - 1:1 문의 (Inquiry + InquiryFile) → 유지
+      // - 부트캠프 과제 제출 (Submission + SubmissionFile) → 유지
+      // - 부트캠프 과제 댓글 (SubmissionComment) → 유지
+
+      // ── 3. User 소프트 삭제 (개인정보 초기화) ──
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          status: 'WITHDRAWN',
+          nickname: '탈퇴한 사용자',
+          name: '',
+          phone: '',
+          birthday: null,
+          intro: '',
+          profileImage: null,
+          coverImage: null,
+          password: '', // 빈 문자열 → 로그인 불가
+        },
+      });
     });
   }
 }

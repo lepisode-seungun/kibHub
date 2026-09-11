@@ -33,7 +33,7 @@
   gap: 52px;
   position: absolute;
   width: 360px;
-  left: 200px;
+  left: max(40px, calc(50vw - 860px));
   top: 223px;
   background: #1C1B20;
   border: 1px solid #212024;
@@ -277,7 +277,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 200px 20px 600px;
+  padding: 20px max(40px, calc(50vw - 860px)) 20px calc(max(40px, calc(50vw - 860px)) + 400px);
   height: 100%;
 }
 
@@ -362,7 +362,7 @@
   display: flex;
   flex-direction: column;
   gap: 60px;
-  padding: 60px 200px 60px 600px;
+  padding: 60px max(40px, calc(50vw - 860px)) 60px calc(max(40px, calc(50vw - 860px)) + 400px);
   width: 100%;
   box-sizing: border-box;
   flex: 1;
@@ -1285,13 +1285,13 @@
 /* ===== 반응형 ===== */
 @media (max-width: 1600px) {
   .pf-sidebar {
-    left: 40px;
+    left: max(40px, calc(50vw - 860px));
   }
   .pf-main {
-    padding: 60px 100px 60px 440px;
+    padding: 60px max(40px, calc(50vw - 860px)) 60px calc(max(40px, calc(50vw - 860px)) + 400px);
   }
   .pf-tabbar-inner {
-    padding: 20px 100px 20px 440px;
+    padding: 20px max(40px, calc(50vw - 860px)) 20px calc(max(40px, calc(50vw - 860px)) + 400px);
   }
 }
 

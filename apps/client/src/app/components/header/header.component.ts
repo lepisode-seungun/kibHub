@@ -219,7 +219,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   /* ===== 알림 패널 ===== */
   isNotificationOpen = signal(false);
-  notifications: AppNotification[] = [];
+  notifications = signal<AppNotification[]>([]);
   unreadCount = signal(0);
 
   private async loadNotifications(): Promise<void> {
@@ -229,7 +229,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.api.notifications.findAll(),
         this.api.notifications.unreadCount(),
       ]);
-      this.notifications = list.map((n: any) => ({
+      this.notifications.set(list.map((n: any) => ({
         id: n.id,
         type: n.type,
         message: n.message,
@@ -241,7 +241,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         targetType: n.targetType,
         createdAt: n.createdAt,
         relativeTime: this.getRelativeTime(n.createdAt),
-      }));
+      })));
       this.unreadCount.set(countRes.count);
     } catch { /* 로그인 안 한 상태면 무시 */ }
   }
@@ -271,28 +271,34 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toggleNotiCheck(noti: AppNotification): void {
-    noti.isChecked = !noti.isChecked;
+    this.notifications.update(list =>
+      list.map(n => n.id === noti.id ? { ...n, isChecked: !n.isChecked } : n)
+    );
   }
 
   onSelectAll(): void {
-    const allChecked = this.notifications.every(n => n.isChecked);
-    this.notifications.forEach(n => n.isChecked = !allChecked);
+    const allChecked = this.notifications().every(n => n.isChecked);
+    this.notifications.update(list =>
+      list.map(n => ({ ...n, isChecked: !allChecked }))
+    );
   }
 
   async onDeleteSelected(): Promise<void> {
-    const ids = this.notifications.filter(n => n.isChecked).map(n => n.id);
+    const ids = this.notifications().filter(n => n.isChecked).map(n => n.id);
     if (ids.length === 0) return;
     try {
       await this.api.notifications.deleteMany(ids);
-      this.notifications = this.notifications.filter(n => !n.isChecked);
-      this.unreadCount.set(this.notifications.filter(n => !n.isRead).length);
+      this.notifications.update(list => list.filter(n => !n.isChecked));
+      this.unreadCount.set(this.notifications().filter(n => !n.isRead).length);
     } catch { /* ignore */ }
   }
 
   async onMarkAllRead(): Promise<void> {
     try {
       await this.api.notifications.markAllRead();
-      this.notifications.forEach(n => n.isRead = true);
+      this.notifications.update(list =>
+        list.map(n => ({ ...n, isRead: true }))
+      );
       this.unreadCount.set(0);
     } catch { /* ignore */ }
   }
@@ -300,7 +306,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onNotiClick(noti: AppNotification): void {
     // 읽음 처리
     if (!noti.isRead) {
-      noti.isRead = true;
+      this.notifications.update(list =>
+        list.map(n => n.id === noti.id ? { ...n, isRead: true } : n)
+      );
       this.unreadCount.update(c => Math.max(0, c - 1));
       this.api.notifications.markRead([noti.id]).catch(() => {});
     }

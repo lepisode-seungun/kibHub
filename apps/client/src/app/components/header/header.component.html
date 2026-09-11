@@ -444,7 +444,7 @@
     <!-- 헤더 -->
     <div class="noti-header">
       <div class="noti-header-inner">
-        <span class="noti-title">알림 ({{ notifications.length }})</span>
+        <span class="noti-title">알림 ({{ notifications().length }})</span>
         <button class="noti-close-btn noti-desktop-close" (click)="closeNotification()" aria-label="닫기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -475,9 +475,9 @@
       </div>
 
       <!-- 알림 리스트 / 빈 상태 -->
-      @if (notifications.length > 0) {
+      @if (notifications().length > 0) {
         <div class="noti-list">
-          @for (noti of notifications; track noti.id) {
+          @for (noti of notifications(); track noti.id) {
             <div [ngClass]="noti.isRead ? 'noti-item noti-item-read' : 'noti-item'" (click)="onNotiClick(noti)">
               <!-- 체크박스 -->
               <div class="noti-checkbox-wrap" role="checkbox" [attr.aria-checked]="noti.isChecked" tabindex="0" (click)="toggleNotiCheck(noti); $event.stopPropagation()" (keydown.enter)="toggleNotiCheck(noti)">

@@ -44,11 +44,13 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0 100px;
+  padding: 0 clamp(20px, 5.2vw, 40px);
   gap: 10px;
-  max-width: 1920px;
   height: 72px;
+  max-width: 1800px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ===== Left Section: Logo + Nav ===== */
@@ -119,6 +121,7 @@
   align-items: center;
   gap: 12px;
   height: 40px;
+  margin-right: -20px;
 }
 
 /* ===== Search Bar ===== */
@@ -510,20 +513,12 @@
 
 /* ===== Responsive ===== */
 @media (max-width: 1440px) {
-  .header-inner {
-    padding: 0 60px;
-  }
-
   .search-bar {
     width: 320px;
   }
 }
 
 @media (max-width: 1200px) {
-  .header-inner {
-    padding: 0 40px;
-  }
-
   .search-bar {
     width: 260px;
   }
@@ -540,10 +535,6 @@
 @media (max-width: 768px) {
   .header {
     display: none;
-  }
-
-  .header-inner {
-    padding: 0 20px;
   }
 
   .search-bar {

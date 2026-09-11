@@ -8,7 +8,7 @@
 .portfolio-hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 1920 / 440;
+  aspect-ratio: 1920 / 360;
   min-height: 260px;
   background: linear-gradient(180deg, #010101 11.8%, #51199F 73.54%);
   overflow: hidden;
@@ -129,7 +129,7 @@
 .portfolio-grid-section {
   display: flex;
   flex-direction: column;
-  padding: 80px 100px;
+  padding: 80px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px));
   gap: 40px;
   width: 100%;
   background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
@@ -188,14 +188,14 @@
 
 /* ===== 반응형 ===== */
 @media (max-width: 1440px) {
-  .portfolio-grid-section { padding: 80px 60px; }
+  .portfolio-grid-section { padding: 80px max(20px, calc(50% - 880px)); }
 }
 
 @media (max-width: 1200px) {
   .hero-cards { display: none; }
   .portfolio-hero { aspect-ratio: auto; height: 300px; }
   .hero-title { font-size: 28px; }
-  .portfolio-grid-section { padding: 60px 40px; gap: 32px; }
+  .portfolio-grid-section { padding: 60px max(20px, calc(50% - 880px)); gap: 32px; }
   .portfolio-row { flex-wrap: wrap; }
   .portfolio-card {
     flex: 0 0 calc(50% - 12px);

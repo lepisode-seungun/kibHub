@@ -63,6 +63,10 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   // 제출 상태
   isSubmitting = signal(false);
   formError = signal('');
+
+  // 수정 모드
+  isEditMode = false;
+  editContentId = 0;
   categoryError = signal('');
   titleError = signal('');
   subDescError = signal('');
@@ -124,11 +128,60 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     document.body.classList.add('page-content-upload');
     this.route.paramMap.subscribe((params) => {
-      this.contentType = params.get('type') || 'webtoon';
-      const mapped = this.TYPE_MAP[this.contentType];
-      if (mapped) this.selectedType.set(mapped);
+      const id = params.get('id');
+      const type = params.get('type');
+      if (id && !type) {
+        // content/:id/edit 라우트 → 수정 모드
+        this.isEditMode = true;
+        this.editContentId = Number(id);
+        this.loadContentForEdit(this.editContentId);
+      } else {
+        // upload/:type 라우트 → 생성 모드
+        this.contentType = type || 'webtoon';
+        const mapped = this.TYPE_MAP[this.contentType];
+        if (mapped) this.selectedType.set(mapped);
+      }
     });
     this.loadCategories();
+  }
+
+  private async loadContentForEdit(contentId: number): Promise<void> {
+    try {
+      const content = await this.api.contents.findOne(contentId);
+      // 기본 정보 채우기
+      this.title = content.title || '';
+      this.description = content.body || '';
+
+      // 타입 매핑
+      const typeReverseMap: Record<string, string> = {
+        WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글',
+      };
+      this.selectedType.set(typeReverseMap[content.type] || '웹툰');
+
+      // 카테고리
+      if (content.category?.name) {
+        this.selectedCategory.set(content.category.name);
+      }
+
+      // 썸네일
+      if (content.thumbnail) {
+        this.croppedThumbnailUrl.set(content.thumbnail);
+      }
+
+      // 이미지 목록
+      if (content.images && content.images.length > 0) {
+        this.contentItems.set(content.images.map((url: string, i: number) => ({
+          id: Date.now() + i,
+          fileName: `image_${i + 1}`,
+          size: '-',
+          thumbnailUrl: url,
+          status: 'done' as const,
+        })));
+      }
+    } catch (e) {
+      console.error('콘텐츠 로드 실패:', e);
+      this.formError.set('콘텐츠를 불러올 수 없습니다.');
+    }
   }
 
   private async loadCategories(): Promise<void> {
@@ -243,13 +296,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   // ===== 이미지 업로드 버튼 =====
   openThumbSelectModal(): void {
-    if (this.thumbCandidates().length > 0) {
-      this.isThumbModalOpen.set(true);
-    } else {
-      // 처음: 선택 모달도 열고 파일 다이얼로그도 열기
-      this.isThumbModalOpen.set(true);
-      this.triggerFileInput();
-    }
+    this.triggerFileInput();
   }
 
   triggerFileInput(): void {
@@ -276,7 +323,6 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     reader.onload = (e) => {
       const result = e.target?.result as string;
       this.cropImageSrc.set(result);
-      this.isThumbModalOpen.set(true);
       this.isCropModalOpen.set(true);
       setTimeout(() => this.initCropper(), 300);
     };
@@ -330,7 +376,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     this.cropImageSrc.set('');
   }
 
-  // 크롭 저장 → 후보에 추가 → 선택 모달 열기
+  // 크롭 저장 → 썸네일 직접 적용
   saveCrop(): void {
     if (!this.cropper) return;
 
@@ -341,25 +387,12 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
     if (canvas) {
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-      this.thumbCandidateId++;
-      this.thumbCandidates.update(list => [
-        ...list,
-        {
-          id: this.thumbCandidateId,
-          name: this.selectedFileName(),
-          size: this.selectedFileSize(),
-          dataUrl,
-        },
-      ]);
-      if (this.thumbCandidates().length === 1) {
-        this.selectedThumbId.set(this.thumbCandidateId);
-      }
+      this.croppedThumbnailUrl.set(dataUrl);
     }
 
     this.destroyCropper();
     this.isCropModalOpen.set(false);
     this.cropImageSrc.set('');
-    this.isThumbModalOpen.set(true);
   }
 
   // ===== 선택 모달 =====
@@ -553,7 +586,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       this.titleError.set('제목을 입력해주세요.');
       hasError = true;
     }
-    if (!this.subDescription.trim()) {
+    if (!this.isEditMode && !this.subDescription.trim()) {
       this.subDescError.set('설명을 입력해주세요.');
       hasError = true;
     }
@@ -571,14 +604,20 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     this.isSubmitting.set(true);
 
     try {
-      // 1. 썸네일 업로드 (크롭 이미지가 있는 경우)
+      // 1. 썸네일 처리
       let thumbnailUrl: string | undefined;
       const croppedUrl = this.croppedThumbnailUrl();
       if (croppedUrl) {
-        const blob = this.dataUrlToBlob(croppedUrl);
-        const file = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
-        const result = await this.api.upload.single(file, 'thumbnails');
-        thumbnailUrl = result.url;
+        if (croppedUrl.startsWith('data:')) {
+          // 새로 크롭한 이미지 → 업로드
+          const blob = this.dataUrlToBlob(croppedUrl);
+          const file = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
+          const result = await this.api.upload.single(file, 'thumbnails');
+          thumbnailUrl = result.url;
+        } else {
+          // 기존 HTTP URL → 그대로 사용
+          thumbnailUrl = croppedUrl;
+        }
       }
 
       // 2. 선택된 카테고리 ID 찾기
@@ -590,28 +629,43 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         .filter(item => item.status === 'done' && item.thumbnailUrl)
         .map(item => item.thumbnailUrl);
 
-      // 4. 콘텐츠 생성
-      const created = await this.api.contents.create({
-        title: this.title.trim(),
-        body: this.description.trim(),
-        type: this.mapTypeToContentType(this.selectedType()),
-        thumbnail: thumbnailUrl,
-        images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
-        categoryId,
-      });
+      // 4. 콘텐츠 생성 또는 수정
+      if (this.isEditMode) {
+        // 수정 모드: update API 사용
+        await this.api.contents.update(this.editContentId, {
+          title: this.title.trim(),
+          body: this.description.trim(),
+          type: this.mapTypeToContentType(this.selectedType()),
+          thumbnail: thumbnailUrl,
+          images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
+          categoryId,
+        });
+        // 수정 완료 → 상세 페이지로 이동
+        this.router.navigate(['/content', this.editContentId]);
+      } else {
+        // 생성 모드: create API 사용
+        const created = await this.api.contents.create({
+          title: this.title.trim(),
+          body: this.description.trim(),
+          type: this.mapTypeToContentType(this.selectedType()),
+          thumbnail: thumbnailUrl,
+          images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
+          categoryId,
+        });
 
-      // 5. 선택된 앨범이 있으면 콘텐츠를 앨범에 추가
-      const albumId = this.selectedAlbumId();
-      if (albumId && created?.id) {
-        try {
-          await this.api.albums.addContent(albumId, created.id);
-        } catch (e) {
-          console.error('앨범에 콘텐츠 추가 실패:', e);
+        // 5. 선택된 앨범이 있으면 콘텐츠를 앨범에 추가
+        const albumId = this.selectedAlbumId();
+        if (albumId && created?.id) {
+          try {
+            await this.api.albums.addContent(albumId, created.id);
+          } catch (e) {
+            console.error('앨범에 콘텐츠 추가 실패:', e);
+          }
         }
-      }
 
-      // 6. 성공 → 홈으로 이동
-      this.router.navigate(['/']);
+        // 6. 성공 → 홈으로 이동
+        this.router.navigate(['/']);
+      }
     } catch (e: unknown) {
       console.error('콘텐츠 업로드 실패:', e);
       const err = e as Record<string, unknown>;

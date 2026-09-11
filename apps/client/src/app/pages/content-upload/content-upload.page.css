@@ -3,7 +3,7 @@
    타이포/간격/색상은 HTML inline TW로 이동.
    아래는 구조/레이아웃/모달/크롭/애니메이션만 유지.
    ============================================ */
-:host { display: block; }
+:host { display: block; background: #151419; }
 
 /* ===== 페이지 레이아웃 ===== */
 /* [TW-KEEP] 2-column layout */
@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 260px;
+  padding: 80px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px));
   gap: 40px;
 }
 
@@ -27,7 +27,7 @@
   flex-direction: row;
   align-items: flex-start;
   gap: 40px;
-  width: 1400px;
+  width: 100%;
   max-width: 100%;
 }
 
@@ -409,6 +409,7 @@
 .cu-right {
   flex: 1;
   min-width: 0;
+  max-width: 640px;
 }
 
 .cu-preview-card {

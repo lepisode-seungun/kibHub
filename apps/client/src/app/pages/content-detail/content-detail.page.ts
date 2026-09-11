@@ -75,17 +75,24 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   isSidebarOpen = signal(true);
   isMobileCommentOpen = signal(false);
   isMobileFabVisible = signal(true);
+  private composeObserver: IntersectionObserver | null = null;
+  private sidebarScrollHandler: (() => void) | null = null;
 
   private mobileCommentEffect = effect(() => {
     const isOpen = this.isMobileCommentOpen();
     if (typeof document !== 'undefined') {
+      // 피드백 모드에서 바텀시트 닫을 때는 스크롤 허용 (이미지 탭 가능하도록)
       document.body.style.overflow = isOpen ? 'hidden' : '';
     }
     if (isOpen) {
       // 바텀시트 열리면 스크롤 가능 여부 체크 후 FAB 표시 결정
-      setTimeout(() => this.checkCommentScrollable(), 150);
+      setTimeout(() => {
+        this.checkCommentScrollable();
+        this.setupComposeObserver();
+      }, 150);
     } else {
       this.isMobileFabVisible.set(false);
+      this.teardownComposeObserver();
     }
   });
   commentMode = signal<'general' | 'feedback'>('general');
@@ -373,10 +380,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     document.body.classList.remove('page-content-detail');
     document.body.style.overflow = '';
+    this.teardownComposeObserver();
   }
 
   goBack(): void {
     this.router.navigate(['/']);
+  }
+
+  /** CSS 브레이크포인트(768px)와 동일하게 모바일 여부 판단 */
+  private isMobileView(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth <= 768;
   }
 
   async toggleBookmark(): Promise<void> {
@@ -520,6 +533,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.pendingMarker.set(null);
     } else {
       this.commentMode.set('feedback');
+      // 모바일에서만: 마커 찍을 수 있도록 바텀시트 닫기
+      if (this.isMobileView() && this.isMobileCommentOpen()) {
+        this.isMobileCommentOpen.set(false);
+      }
     }
   }
 
@@ -544,7 +561,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.pendingMarker.set(null);
     } else {
       this.commentMode.set('feedback');
-      if (!this.isSidebarOpen()) {
+      // 모바일에서만: 마커 찍을 수 있도록 바텀시트 닫기
+      if (this.isMobileView() && this.isMobileCommentOpen()) {
+        this.isMobileCommentOpen.set(false);
+      } else if (!this.isSidebarOpen()) {
         this.isSidebarOpen.set(true);
       }
     }
@@ -585,6 +605,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       } else {
         this.pendingMarker.set({ top: 50, left: 50, imageIndex });
       }
+      // 모바일에서만: 마커 찍히면 잠시 후 바텀시트 다시 열고, 해당 이미지를 보이도록 스크롤
+      if (this.isMobileView() && !this.isMobileCommentOpen()) {
+        setTimeout(() => {
+          this.isMobileCommentOpen.set(true);
+          // DOM 업데이트 후 마커가 찍힌 이미지를 바텀시트 위로 스크롤
+          setTimeout(() => {
+            const imageFrames = document.querySelectorAll('.detail-image-frame');
+            const targetFrame = imageFrames[imageIndex] as HTMLElement;
+            if (targetFrame) {
+              targetFrame.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 200);
+        }, 600);
+      }
     } else {
       this.openManuscriptViewer(imageIndex);
     }
@@ -621,15 +655,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
     if (!scrollTargetId) return;
 
-    // 스크롤 + 짧은 하이라이트
+    // 모바일: 댓글 시트가 닫혀있으면 열기
+    const needsOpen = !this.isMobileCommentOpen();
+    if (needsOpen) {
+      this.isMobileCommentOpen.set(true);
+    }
+
+    // 스크롤 + 짧은 하이라이트 (시트 열림 대기 후)
     setTimeout(() => {
       const el = document.getElementById(scrollTargetId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el.classList.add('marker-flash');
-        setTimeout(() => el.classList.remove('marker-flash'), 500);
+        setTimeout(() => el.classList.remove('marker-flash'), 1500);
       }
-    }, 100);
+    }, needsOpen ? 400 : 100);
   }
 
   /* 신고 모달 */
@@ -650,6 +690,43 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.reportType.set('content');
     this.reportTargetId.set(Number(this.contentId));
     this.isReportModalOpen.set(true);
+  }
+
+  goToEdit(): void {
+    this.router.navigate(['/content', this.contentId, 'edit']);
+  }
+
+  /* 콘텐츠 삭제 확인 모달 */
+  isContentDeleteModalOpen = signal(false);
+
+  /* 토스트 알림 */
+  toastVisible = signal(false);
+  toastMessage = signal('');
+
+  openContentDeleteModal(): void {
+    this.isContentDeleteModalOpen.set(true);
+  }
+
+  closeContentDeleteModal(): void {
+    this.isContentDeleteModalOpen.set(false);
+  }
+
+  private showToast(message: string, duration = 2000): void {
+    this.toastMessage.set(message);
+    this.toastVisible.set(true);
+    setTimeout(() => this.toastVisible.set(false), duration);
+  }
+
+  async confirmContentDelete(): Promise<void> {
+    try {
+      await this.api.contents.delete(Number(this.contentId));
+      this.isContentDeleteModalOpen.set(false);
+      this.showToast('콘텐츠가 삭제되었습니다.');
+      setTimeout(() => this.router.navigate(['/']), 1500);
+    } catch (e) {
+      console.error('콘텐츠 삭제 실패:', e);
+      this.isContentDeleteModalOpen.set(false);
+    }
   }
 
   openCommentReportModal(commentId: number): void {
@@ -1125,6 +1202,43 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     this.editingCategoryName.set('');
   }
 
+  scrollToCompose(): void {
+    // 바텀시트가 안 열려있으면 열기
+    if (!this.isMobileCommentOpen()) {
+      this.isMobileCommentOpen.set(true);
+    }
+    this.isMobileFabVisible.set(false);
+
+    // DOM 업데이트 후 부드러운 스크롤 (easeInOutCubic)
+    setTimeout(() => {
+      const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
+      const compose = sidebar?.querySelector('.comment-compose') as HTMLElement;
+      if (sidebar && compose) {
+        const targetTop = compose.offsetTop - sidebar.offsetTop;
+        const startTop = sidebar.scrollTop;
+        const distance = targetTop - startTop;
+        const duration = 500; // ms
+        let startTime: number | null = null;
+
+        const easeInOutCubic = (t: number) =>
+          t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        const step = (timestamp: number) => {
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          sidebar.scrollTop = startTop + distance * easeInOutCubic(progress);
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            compose.querySelector('textarea')?.focus();
+          }
+        };
+        requestAnimationFrame(step);
+      }
+    }, 150);
+  }
+
   async confirmRenameCategory(): Promise<void> {
     const id = this.editingCategoryId();
     const name = this.editingCategoryName().trim();
@@ -1184,30 +1298,48 @@ export class ContentDetailPage implements OnInit, OnDestroy {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   }
 
-  /** 모바일: 댓글 입력칸으로 스크롤 + FAB 숨김 */
-  scrollToCompose(): void {
-    // 바텀시트가 안 열려있으면 열기
-    if (!this.isMobileCommentOpen()) {
-      this.isMobileCommentOpen.set(true);
-    }
-    this.isMobileFabVisible.set(false);
-
-    // DOM 업데이트 후 스크롤
-    setTimeout(() => {
-      const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
-      const compose = sidebar?.querySelector('.comment-compose') as HTMLElement;
-      if (sidebar && compose) {
-        sidebar.scrollTo({ top: 0, behavior: 'smooth' });
-        compose.querySelector('textarea')?.focus();
-      }
-    }, 100);
-  }
 
   /** 댓글 영역이 스크롤할 만큼 많은지 체크 */
   private checkCommentScrollable(): void {
     const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
     if (sidebar) {
       this.isMobileFabVisible.set(sidebar.scrollHeight > sidebar.clientHeight);
+    }
+  }
+
+  /** 댓글 입력 영역이 보이면 FAB 숨김, 안 보이면 FAB 표시 */
+  private setupComposeObserver(): void {
+    this.teardownComposeObserver();
+    const sidebar = document.querySelector('.sidebar-wrapper .detail-right') as HTMLElement;
+    const compose = sidebar?.querySelector('.comment-compose') as HTMLElement;
+    if (!sidebar || !compose) return;
+
+    this.composeObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          // 댓글 입력 영역이 보이면 FAB 숨김
+          if (entry.isIntersecting) {
+            this.isMobileFabVisible.set(false);
+          } else {
+            // 스크롤 가능한 경우에만 FAB 재표시
+            if (sidebar.scrollHeight > sidebar.clientHeight) {
+              this.isMobileFabVisible.set(true);
+            }
+          }
+        }
+      },
+      { root: sidebar, threshold: 0.3 }
+    );
+    this.composeObserver.observe(compose);
+  }
+
+  private teardownComposeObserver(): void {
+    if (this.composeObserver) {
+      this.composeObserver.disconnect();
+      this.composeObserver = null;
+    }
+    if (this.sidebarScrollHandler) {
+      this.sidebarScrollHandler = null;
     }
   }
 }

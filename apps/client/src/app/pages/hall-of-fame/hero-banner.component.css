@@ -8,7 +8,7 @@
 .hero-banner {
   position: relative;
   width: 100%;
-  aspect-ratio: 1920 / 440;
+  aspect-ratio: 1920 / 360;
   min-height: 260px;
   overflow: hidden;
   background: linear-gradient(0deg, #3F3160 0%, #1B1426 12%, #100B09 32%);
@@ -24,7 +24,7 @@
   min-width: 100%;
   height: 100%;
   max-width: none;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   pointer-events: none;
   z-index: 1;
@@ -52,8 +52,8 @@
 .floating-card {
   position: absolute;
   z-index: 10;
-  width: clamp(150px, 11vw, 480px);
-  height: clamp(100px, 7.2vw, 316px);
+  width: clamp(120px, 9vw, 400px);
+  height: clamp(80px, 5.9vw, 260px);
   border-radius: 5.4px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);

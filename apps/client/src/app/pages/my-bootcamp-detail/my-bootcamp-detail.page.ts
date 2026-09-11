@@ -113,14 +113,14 @@ export class MyBootcampDetailPage implements OnInit {
   lectureDisplayLimit = signal(8);
 
   /* 정렬 드롭다운 */
-  sortOrder = signal<'오름차순' | '내림차순'>('오름차순');
+  sortOrder = signal<'최신순' | '오래된순'>('최신순');
   isSortDropdownOpen = signal(false);
 
   toggleSortDropdown(): void {
     this.isSortDropdownOpen.update(v => !v);
   }
 
-  selectSortOrder(order: '오름차순' | '내림차순'): void {
+  selectSortOrder(order: '최신순' | '오래된순'): void {
     this.sortOrder.set(order);
     this.isSortDropdownOpen.set(false);
   }
@@ -137,6 +137,9 @@ export class MyBootcampDetailPage implements OnInit {
       const q = this.lectureSearchText.trim().toLowerCase();
       items = items.filter(i => i.title.toLowerCase().includes(q));
     }
+    // 정렬: 최신순(id 내림차순) / 오래된순(id 오름차순)
+    const order = this.sortOrder();
+    items = [...items].sort((a, b) => order === '최신순' ? b.id - a.id : a.id - b.id);
     return items;
   }
 
@@ -178,6 +181,8 @@ export class MyBootcampDetailPage implements OnInit {
       const q = this.assignmentSearchText.trim().toLowerCase();
       items = items.filter(i => i.title.toLowerCase().includes(q));
     }
+    const order = this.sortOrder();
+    items = [...items].sort((a, b) => order === '최신순' ? b.id - a.id : a.id - b.id);
     return items;
   }
 
@@ -446,6 +451,9 @@ export class MyBootcampDetailPage implements OnInit {
         (n.description && n.description.toLowerCase().includes(q))
       );
     }
+
+    const order = this.sortOrder();
+    items = [...items].sort((a, b) => order === '최신순' ? b.id - a.id : a.id - b.id);
     
     return items;
   });

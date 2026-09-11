@@ -2,7 +2,7 @@ import { Component, signal, computed, OnDestroy, OnInit, inject, NgZone, Applica
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HeroBannerComponent, FloatingCard } from '../../components/hero-banner/hero-banner.component';
+import { HeroBannerComponent, FloatingCard } from './hero-banner.component';
 import { ApiService } from '../../services/api.service';
 
 interface PortfolioCard {

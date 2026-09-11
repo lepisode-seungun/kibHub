@@ -7,7 +7,7 @@
 .home-banner {
   position: relative;
   width: 100%;
-  aspect-ratio: 1920 / 440;
+  aspect-ratio: 1920 / 360;
   min-height: 260px;
   overflow: hidden;
   background: #0C0B10;

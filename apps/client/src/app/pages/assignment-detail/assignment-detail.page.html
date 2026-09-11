@@ -12,7 +12,7 @@
 <div class="ad-wrapper">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="ad-tab-nav">
-    <div class="flex max-w-[1400px] w-full">
+    <div class="flex max-w-[1440px] w-full">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'ad-tab-item ad-tab-item-active' : 'ad-tab-item'"
@@ -26,7 +26,7 @@
   <!-- ===== 메인 콘텐츠 ===== -->
   <main class="ad-page">
     <!-- 상단 바 -->
-    <div class="flex items-center justify-between w-full max-w-[1400px] h-12">
+    <div class="flex items-center justify-between w-full max-w-[1440px] h-12">
       <div class="flex items-center gap-3">
         <button class="ad-back-btn hidden md:flex" (click)="goBack()" aria-label="뒤로 가기">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -44,7 +44,7 @@
     </div>
 
     <!-- ===== 강의 섹션 ===== -->
-    <div class="flex gap-5 w-full max-w-[1400px]">
+    <div class="flex gap-5 w-full max-w-[1440px]">
       <div class="ad-lecture-video-wrap">
         <div class="ad-lecture-video-player">
           @if (youtubeEmbedUrl) {
@@ -132,7 +132,7 @@
         <div class="as-filter-bar">
           <span class="as-total">전체 {{ filteredSubmissions().length }}</span>
           <div class="as-filter-right">
-            <div class="as-dropdown" style="position: relative; cursor: pointer;" (click)="toggleSortDropdown()">
+            <div class="as-dropdown" style="position: relative; cursor: pointer;" tabindex="0" role="button" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()">
               <span class="as-dropdown-text">{{ sortOrder() === 'newest' ? '최신순' : '오래된순' }}</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA">
                 <path d="M7 10l5 5 5-5z"/>

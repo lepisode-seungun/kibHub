@@ -12,7 +12,7 @@
 <div class="flex flex-col">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="nd-tab-nav">
-    <div class="flex">
+    <div class="nd-tab-nav-inner">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'nd-tab-item nd-tab-item-active' : 'nd-tab-item'"
@@ -25,7 +25,7 @@
 
   <!-- ===== 메인 ===== -->
   <main class="nd-page">
-    <div class="flex flex-col items-center gap-6 w-full max-w-[1400px]">
+    <div class="flex flex-col items-center gap-6 w-full max-w-[1440px]">
       <!-- 제목 행 -->
       <div class="flex items-center gap-2 w-full">
         @if (isPinned()) {
@@ -56,14 +56,14 @@
         @for (file of attachFiles(); track file.id) {
           @if (isImageFile(file) && file.url) {
             <img [src]="file.url" [alt]="file.name"
-                 class="rounded-xl object-cover" style="max-width: 100%; max-height: 500px;" />
+                 class="rounded-xl object-cover" style="max-width: 25%; max-height: 500px;" />
           }
         }
       </div>
 
       <!-- 첨부파일 -->
       @if (attachFiles().length > 0) {
-        <div class="nd-attach-files flex flex-wrap items-start gap-6 w-full max-w-[1400px]">
+        <div class="nd-attach-files flex flex-wrap items-start gap-6 w-full max-w-[1440px]">
           @for (file of attachFiles(); track file.id) {
             <button type="button" class="flex items-center px-3 py-2 gap-3 max-w-[296px] bg-white border border-gray-100 rounded-full transition-colors duration-150 hover:border-zinc-300 box-border cursor-pointer text-left" (click)="onDownloadFile(file)">
               <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-700 whitespace-nowrap overflow-hidden text-ellipsis flex-1">{{ file.name }}</span>

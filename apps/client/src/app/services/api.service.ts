@@ -176,6 +176,8 @@ export class ApiService {
     },
     findOne: (id: number): Promise<Content> => this.get<Content>(`/contents/${id}`),
     create: (data: CreateContentDto): Promise<Content> => this.post<Content>('/contents', data),
+    update: (id: number, data: Partial<CreateContentDto>): Promise<Content> => this.patch<Content>(`/contents/${id}`, data),
+    delete: (id: number): Promise<void> => this.del<void>(`/contents/${id}`),
   };
 
   // ===== Content Categories =====

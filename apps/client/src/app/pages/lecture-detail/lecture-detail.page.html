@@ -12,7 +12,7 @@
 <div class="ld-wrapper">
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="ld-tab-nav">
-    <div class="flex max-w-[1400px] w-full">
+    <div class="flex max-w-[1440px] w-full">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'ld-tab-item ld-tab-item-active' : 'ld-tab-item'"
@@ -25,7 +25,7 @@
 
 <main class="lecture-page">
   <!-- ===== 상단 바 ===== -->
-  <div class="flex items-center justify-between w-full max-w-[1400px] h-10">
+  <div class="flex items-center justify-between w-full max-w-[1440px] h-10">
     <div class="flex items-center gap-3">
       <button class="lecture-back-btn hidden md:flex" (click)="goBack()" aria-label="뒤로 가기">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -140,6 +140,8 @@
                     </svg>
                   </button>
                 </div>
+              } @empty {
+                <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-400">등록된 학습자료가 없습니다.</span>
               }
             </div>
           </div>

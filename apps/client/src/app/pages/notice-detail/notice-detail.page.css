@@ -5,11 +5,20 @@
   box-sizing: border-box;
   display: flex;
   align-items: flex-end;
-  padding: 0 260px;
+  justify-content: center;
+  padding: 0 clamp(20px, 5.2vw, 100px);
   width: 100%;
   height: 60px;
   background: #FFFFFF;
   border-bottom: 1px solid #F4F4F5;
+}
+
+.nd-tab-nav-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  max-width: 1440px;
+  width: 100%;
 }
 
 .nd-tab-item {
@@ -29,7 +38,6 @@
   letter-spacing: -0.04em;
   color: #A1A1AA;
   transition: color 0.15s, border-color 0.15s;
-  margin-right: 24px;
   box-sizing: border-box;
 }
 
@@ -46,7 +54,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 260px;
+  padding: 60px clamp(20px, 5.2vw, 100px);
   gap: 20px;
   min-height: calc(100vh - 132px);
   background: #FFFFFF;
@@ -84,7 +92,7 @@
 }
 
 /* [TW-KEEP] 이미지 반응형 */
-@media (max-width: 1440px) {
+@media (max-width: 1600px) {
   .nd-page { padding: 60px 100px; }
   .nd-tab-nav { padding: 0 100px; }
 }
@@ -98,6 +106,7 @@
 @media (max-width: 768px) {
   .nd-page { padding: 20px; }
   .nd-tab-nav { display: none !important; }
+  .nd-tab-nav-inner { gap: 16px; }
   .nd-attach-files {
     flex-direction: column !important;
     gap: 12px !important;

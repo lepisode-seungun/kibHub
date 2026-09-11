@@ -12,32 +12,39 @@
 <main class="flex flex-col min-h-screen bg-white">
   <!-- ===== 히어로 섹션 (다크) ===== -->
   <section class="mbd-hero">
-    <div class="flex flex-col items-start gap-6 w-full max-w-[1400px]">
+    <div class="flex flex-col items-start gap-6 w-full box-border" style="max-width: 1800px; margin: 0 auto; padding: 0 calc(clamp(20px, 5.2vw, 40px) + 130px) 0 calc(clamp(20px, 5.2vw, 40px) + 154px);">
       <div class="flex flex-col gap-6 w-full">
-        <!-- 데스크톱: < 뱃지 제목 한 줄 -->
-        <div class="hidden md:flex items-center gap-3">
-          <button class="mbd-back-btn" (click)="goBack()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+        <!-- 데스크톱: < 뒤로 + 배지 + 제목 + 날짜 -->
+        <div class="hidden md:flex items-center justify-between w-full">
+          <div class="flex items-center gap-3">
+            <button class="mbd-back-btn" (click)="goBack()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#A1A1AA"/>
+              </svg>
+            </button>
+            <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus() }}</span>
+            <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle() }}</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#A1A1AA" opacity="0.5"/>
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v6h18V6c0-1.1-.9-2-2-2z" fill="#A1A1AA"/>
             </svg>
-          </button>
-          <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus() }}</span>
-          <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle() }}</h1>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange() }}</span>
+          </div>
         </div>
 
-        <!-- 모바일: 뱃지 위, 제목 아래 -->
+        <!-- 모바일: 배지, 제목 아래로 -->
         <div class="md:hidden flex flex-col items-start gap-2">
           <span class="flex justify-center items-center px-2 py-0.5 bg-[#3B342D] rounded-md font-suit font-medium text-sm leading-[150%] tracking-tight text-orange-300 shrink-0">{{ bootcampStatus() }}</span>
           <h1 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-white m-0">{{ bootcampTitle() }}</h1>
-        </div>
-
-        <!-- 교육 기간 -->
-        <div class="flex items-center gap-2">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#A1A1AA" opacity="0.5"/>
-            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v6h18V6c0-1.1-.9-2-2-2z" fill="#A1A1AA"/>
-          </svg>
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange() }}</span>
+          <div class="flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#A1A1AA" opacity="0.5"/>
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v6h18V6c0-1.1-.9-2-2-2z" fill="#A1A1AA"/>
+            </svg>
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400">{{ dateRange() }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -45,7 +52,7 @@
 
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="mbd-tab-nav">
-    <div class="mbd-tab-nav-inner max-w-[1400px] w-full">
+    <div class="mbd-tab-nav-inner w-full">
       @for (tab of detailTabs; track tab) {
         <button
           [ngClass]="activeDetailTab() === tab ? 'mbd-tab-item mbd-tab-item-active' : 'mbd-tab-item'"
@@ -58,7 +65,7 @@
 
   <!-- ===== 메인 콘텐츠 영역 ===== -->
   <section class="mbd-content">
-    <div class="flex flex-col items-start gap-5 w-full max-w-[1400px]">
+    <div class="flex flex-col items-start gap-5 w-full">
 
     <!-- ===== 학습목록 탭 ===== -->
     @if (activeDetailTab() === '학습목록') {
@@ -179,8 +186,8 @@
             </svg>
             @if (isSortDropdownOpen()) {
               <div class="at-dropdown-menu">
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오래된순'" (click)="selectSortOrder('오래된순'); $event.stopPropagation()">오래된순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '최신순'" (click)="selectSortOrder('최신순'); $event.stopPropagation()">최신순</button>
               </div>
             }
           </div>
@@ -254,8 +261,8 @@
             </svg>
             @if (isSortDropdownOpen()) {
               <div class="at-dropdown-menu">
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오래된순'" (click)="selectSortOrder('오래된순'); $event.stopPropagation()">오래된순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '최신순'" (click)="selectSortOrder('최신순'); $event.stopPropagation()">최신순</button>
               </div>
             }
           </div>
@@ -304,7 +311,7 @@
     <!-- ===== 공지사항 탭 ===== -->
     @if (activeDetailTab() === '공지사항') {
       <!-- 필터 바 -->
-      <div class="flex justify-between items-center w-full max-w-[1400px] h-12">
+      <div class="flex justify-between items-center w-full h-12">
         <span class="mbd-notice-total font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-600">전체 {{ filteredNotices().length }}</span>
         <div class="flex items-center gap-3">
           <div class="at-dropdown" role="button" tabindex="0" (click)="toggleSortDropdown()" (keydown.enter)="toggleSortDropdown()" style="white-space: nowrap; cursor: pointer; position: relative;">
@@ -314,8 +321,8 @@
             </svg>
             @if (isSortDropdownOpen()) {
               <div class="at-dropdown-menu">
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오름차순'" (click)="selectSortOrder('오름차순'); $event.stopPropagation()">오름차순</button>
-                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '내림차순'" (click)="selectSortOrder('내림차순'); $event.stopPropagation()">내림차순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '오래된순'" (click)="selectSortOrder('오래된순'); $event.stopPropagation()">오래된순</button>
+                <button class="at-dropdown-item" [class.at-dropdown-item-active]="sortOrder() === '최신순'" (click)="selectSortOrder('최신순'); $event.stopPropagation()">최신순</button>
               </div>
             }
           </div>
@@ -329,7 +336,7 @@
       </div>
 
       <!-- 공지사항 리스트 -->
-      <div class="flex flex-col w-full max-w-[1400px]">
+      <div class="flex flex-col w-full">
         @for (notice of paginatedNotices(); track notice.id) {
           <div class="nt-item" role="button" tabindex="0" (click)="navigateToNotice(notice.id)" (keydown.enter)="navigateToNotice(notice.id)">
             <div class="flex items-center gap-3 w-full">
@@ -347,7 +354,7 @@
       </div>
 
       <!-- 페이지네이터 -->
-      <div class="flex justify-center items-center p-3 gap-2 w-full max-w-[1400px]">
+      <div class="flex justify-center items-center p-3 gap-2 w-full">
         <button class="nt-page-arrow" (click)="goToNoticePage(currentNoticePage() - 1)" [disabled]="currentNoticePage() === 1">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#52525B"/>

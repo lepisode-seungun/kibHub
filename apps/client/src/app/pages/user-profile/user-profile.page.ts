@@ -397,10 +397,39 @@ export class UserProfilePage implements OnInit, OnDestroy {
     return { latest: '최신순', oldest: '오래된순' };
   }
 
-  scrollSlider(direction: 'left' | 'right'): void {
+  /* ===== 드래그 스크롤 ===== */
+  private isDragging = false;
+  private dragStartX = 0;
+  private dragScrollLeft = 0;
+
+  onSliderMouseDown(event: MouseEvent): void {
     const el = this.albumSlider?.nativeElement;
     if (!el) return;
-    el.scrollBy({ left: direction === 'right' ? 270 : -270, behavior: 'smooth' });
+    this.isDragging = true;
+    this.dragStartX = event.pageX - el.offsetLeft;
+    this.dragScrollLeft = el.scrollLeft;
+    el.style.cursor = 'grabbing';
+    el.style.scrollBehavior = 'auto';
+    el.style.scrollSnapType = 'none';
+  }
+
+  onSliderMouseMove(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    event.preventDefault();
+    const el = this.albumSlider?.nativeElement;
+    if (!el) return;
+    const x = event.pageX - el.offsetLeft;
+    const walk = (x - this.dragStartX) * 1.5;
+    el.scrollLeft = this.dragScrollLeft - walk;
+  }
+
+  onSliderMouseUp(): void {
+    this.isDragging = false;
+    const el = this.albumSlider?.nativeElement;
+    if (!el) return;
+    el.style.cursor = 'grab';
+    el.style.scrollBehavior = '';
+    el.style.scrollSnapType = '';
   }
 
   splitAlbumName(name: string): string[] {

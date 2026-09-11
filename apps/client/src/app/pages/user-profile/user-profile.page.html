@@ -155,10 +155,11 @@
     <!-- 앨범 카드 슬라이더 (앨범 탭) -->
     @if (activeTab() === 'all' && albums().length > 0) {
     <div class="pf-album-slider-wrap">
-      <button class="pf-slider-arrow pf-slider-arrow-left" aria-label="이전" (click)="scrollSlider('left')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M14 6l1.41 1.41L10.83 12l4.58 4.59L14 18l-6-6z"/></svg>
-      </button>
-      <div class="pf-album-slider" #albumSlider>
+      <div class="pf-album-slider" #albumSlider
+        (mousedown)="onSliderMouseDown($event)"
+        (mousemove)="onSliderMouseMove($event)"
+        (mouseup)="onSliderMouseUp()"
+        (mouseleave)="onSliderMouseUp()">
         @for (album of albums(); track album.id) {
           <div class="pf-album-card" [class.pf-album-card-active]="album.isActive" role="button" tabindex="0" (click)="selectAlbum(album.id)" (keydown.enter)="selectAlbum(album.id)">
             <div class="pf-album-grid">
@@ -185,20 +186,17 @@
           </div>
         }
       </div>
-      <div class="pf-album-slider-fade"></div>
-      <button class="pf-slider-arrow pf-slider-arrow-right" aria-label="다음" (click)="scrollSlider('right')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-      </button>
     </div>
     }
 
     <!-- 카테고리 카드 슬라이더 (책갈피 탭) -->
     @if (activeTab() === 'album' && categories().length > 0) {
     <div class="pf-album-slider-wrap">
-      <button class="pf-slider-arrow pf-slider-arrow-left" aria-label="이전" (click)="scrollSlider('left')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M14 6l1.41 1.41L10.83 12l4.58 4.59L14 18l-6-6z"/></svg>
-      </button>
-      <div class="pf-album-slider" #albumSlider>
+      <div class="pf-album-slider" #albumSlider
+        (mousedown)="onSliderMouseDown($event)"
+        (mousemove)="onSliderMouseMove($event)"
+        (mouseup)="onSliderMouseUp()"
+        (mouseleave)="onSliderMouseUp()">
         @for (cat of categories(); track cat.id) {
           <div class="pf-album-card" [class.pf-album-card-active]="cat.isActive" role="button" tabindex="0" (click)="selectCategory(cat.id)" (keydown.enter)="selectCategory(cat.id)">
             <div class="pf-album-grid">
@@ -225,10 +223,6 @@
           </div>
         }
       </div>
-      <div class="pf-album-slider-fade"></div>
-      <button class="pf-slider-arrow pf-slider-arrow-right" aria-label="다음" (click)="scrollSlider('right')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-      </button>
     </div>
     }
 

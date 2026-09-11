@@ -1,4 +1,4 @@
-:host { display: block; }
+:host { display: block; background: #151419; }
 
 .search-page {
   display: flex;
@@ -7,7 +7,7 @@
   gap: 32px;
   min-height: 100vh;
   background: #151419;
-  padding: 80px 100px;
+  padding: 80px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px));
 }
 
 /* Search Header */
@@ -121,7 +121,7 @@
   flex-wrap: wrap;
   gap: 24px;
   width: 100%;
-  max-width: 1720px;
+  max-width: 100%;
 }
 
 /* Card Link */
@@ -271,7 +271,7 @@
 
 /* Responsive */
 @media (max-width: 1440px) {
-  .search-page { padding: 60px 60px; }
+  .search-page { padding: 60px max(20px, calc(50% - 880px)); }
 }
 
 @media (max-width: 1024px) {

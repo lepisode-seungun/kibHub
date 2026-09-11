@@ -167,6 +167,14 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'content/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/content-upload/content-upload.page').then(
+        (m) => m.ContentUploadPage
+      ),
+  },
+  {
     path: 'hall-of-fame',
     loadComponent: () =>
       import('./pages/hall-of-fame/hall-of-fame.page').then(

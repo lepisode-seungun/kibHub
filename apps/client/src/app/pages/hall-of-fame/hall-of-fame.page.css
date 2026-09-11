@@ -5,7 +5,7 @@
 .hall-of-fame {
   display: flex;
   flex-direction: column;
-  padding: 120px 100px;
+  padding: 120px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px));
   gap: 40px;
   width: 100%;
   background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
@@ -95,9 +95,9 @@
 @keyframes card-enter { to { opacity: 1; transform: translateY(0); } }
 
 /* 반응형 */
-@media (max-width: 1440px) { .hall-of-fame { padding: 80px 60px; } }
+@media (max-width: 1440px) { .hall-of-fame { padding: 80px max(20px, calc(50% - 880px)); } }
 @media (max-width: 1200px) {
-  .hall-of-fame { padding: 60px 40px; gap: 32px; }
+  .hall-of-fame { padding: 60px max(20px, calc(50% - 880px)); gap: 32px; }
   .hall-of-fame-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {

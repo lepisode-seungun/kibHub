@@ -70,12 +70,12 @@ export class App {
     { initialValue: window.location.pathname.startsWith('/customer-center') }
   );
 
-  /** 현재 라우트가 내 부트캠프 목록인지 추적 */
+  /** 현재 라우트가 내 부트캠프 관련 페이지인지 추적 */
   isMyBootcamp = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map((e) => e.urlAfterRedirects.split('?')[0] === '/my-bootcamp')
+      map((e) => e.urlAfterRedirects.split('?')[0].startsWith('/my-bootcamp'))
     ),
-    { initialValue: window.location.pathname === '/my-bootcamp' }
+    { initialValue: window.location.pathname.startsWith('/my-bootcamp') }
   );
 }

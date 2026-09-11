@@ -18,7 +18,7 @@
         <div class="cu-card">
           <div class="cu-card-header" role="button" tabindex="0" (click)="toggleDetail()" (keydown.enter)="toggleDetail()">
             <div class="flex items-center gap-1">
-              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">콘텐츠 업로드</span>
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">{{ isEditMode ? '콘텐츠 수정' : '콘텐츠 업로드' }}</span>
               <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
             </div>
             <div class="cu-card-toggle">
@@ -114,7 +114,7 @@
                     <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
                   <div class="flex items-center w-full">
-                    <input #titleInput id="titleInput" class="cu-input" type="text" placeholder="입력해주세요." (input)="onTitleInput($event)"/>
+                    <input #titleInput id="titleInput" class="cu-input" type="text" placeholder="입력해주세요." [value]="title" (input)="onTitleInput($event)"/>
                   </div>
                   @if (titleError()) {
                     <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ titleError() }}</span>
@@ -139,7 +139,7 @@
                     <span class="font-suit font-semibold text-base leading-[150%] tracking-tight text-white">내용</span>
                     <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
                   </div>
-                  <textarea class="cu-textarea" placeholder="입력해주세요." rows="5" (input)="onDescriptionInput($event)"></textarea>
+                  <textarea class="cu-textarea" placeholder="입력해주세요." rows="5" (input)="onDescriptionInput($event)">{{ description }}</textarea>
                   @if (descError()) {
                     <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-[#F87171]">{{ descError() }}</span>
                   }
@@ -189,7 +189,7 @@
         <div class="cu-card">
           <div class="cu-card-header" role="button" tabindex="0" (click)="toggleContent()" (keydown.enter)="toggleContent()">
             <div class="flex items-center gap-1">
-              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">콘텐츠 업로드</span>
+              <span class="font-suit font-bold text-lg leading-[150%] tracking-tight text-[#FAFAFA]">{{ isEditMode ? '콘텐츠 수정' : '콘텐츠 업로드' }}</span>
               <span class="w-1.5 h-1.5 bg-accent rounded-full shrink-0"></span>
               <div class="cu-help-wrap">
                 <svg class="shrink-0 cu-help-icon" width="18" height="18" viewBox="0 0 24 24" fill="#A1A1AA">
@@ -382,100 +382,48 @@
     <button class="cu-footer-cancel" (click)="goBack()">이전</button>
     <button class="cu-footer-submit" (click)="submitContent()" [disabled]="isSubmitting()">
       @if (isSubmitting()) {
-        업로드 중...
+        {{ isEditMode ? '수정 중...' : '업로드 중...' }}
       } @else {
-        다음
+        {{ isEditMode ? '수정' : '업로드' }}
       }
     </button>
   </footer>
 </div>
 
 <!-- ===== 모달 영역 ===== -->
-@if (isThumbModalOpen() || isCropModalOpen()) {
+@if (isCropModalOpen()) {
   <div class="tm-overlay" (click)="closeAllModals()" (keydown.escape)="closeAllModals()" tabindex="-1" role="button" aria-label="모달 닫기"></div>
-  <div class="tm-wrapper" [class.tm-wrapper-dual]="isThumbModalOpen() && isCropModalOpen()">
-
-    <!-- 선택 모달 -->
-    @if (isThumbModalOpen()) {
-      <div class="tm-modal tm-modal-inline">
-        <div class="tm-header">
-          <div class="flex justify-center items-center w-full">
-            <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">썸네일 선택</span>
-            <button class="tm-close" aria-label="닫기" (click)="closeThumbModal()">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="tm-body">
-          <div class="flex flex-col gap-6 w-full">
-            @for (item of thumbCandidates(); track item.id) {
-              <div
-                class="tm-item"
-                [class.tm-item-selected]="selectedThumbId() === item.id"
-                role="button"
-                tabindex="0"
-                (click)="selectThumb(item.id)"
-                (keydown.enter)="selectThumb(item.id)">
-                <img [src]="item.dataUrl" alt="썸네일" class="tm-item-thumb" [class.tm-item-thumb-lg]="selectedThumbId() === item.id" style="object-fit: cover;" />
-                <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
-                  <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ item.name }}</span>
-                  <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ item.size }}</span>
-                </div>
-                @if (selectedThumbId() === item.id) {
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#AF91FF">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                } @else {
-                  <div class="tm-item-move">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M12.5 2.5H15.8333V0L20 4.16667L15.8333 8.33333V5.83333H12.5V2.5ZM17.5 9.95V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H10.05C10 2.775 10 3.05833 10 3.33333C10 5.10144 10.7024 6.79714 11.9526 8.04738C13.2029 9.29762 14.8986 10 16.6667 10C16.9417 10 17.225 10 17.5 9.95ZM15.8333 15L12.0833 10L9.16667 13.75L7.08333 11.25L4.16667 15H15.8333Z" fill="#71717A"/>
-                    </svg>
-                  </div>
-                }
-              </div>
-            }
-          </div>
-        </div>
-        <div class="tm-footer" style="justify-content: space-between;">
-          <button class="tm-confirm" style="background: #3F3F46; border: 1px solid #52525B;" (click)="addMoreThumbnails()">추가 업로드</button>
-          <button class="tm-confirm" (click)="confirmThumbSelection()">선택</button>
-        </div>
-      </div>
-    }
+  <div class="tm-wrapper">
 
     <!-- 크롭 모달 -->
-    @if (isCropModalOpen()) {
-      <div class="tm-modal tm-modal-inline tm-modal-crop">
-        <div class="tm-header">
-          <div class="flex justify-center items-center w-full">
-            <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">썸네일 편집</span>
-            <button class="tm-close" aria-label="닫기" (click)="closeCropModal()">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="tm-body">
-          <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 self-start">원하는 부분을 선택하고, 저장 버튼을 눌러 썸네일을 설정해주세요.</span>
-          <div class="crop-container">
-            <img #cropImage [src]="cropImageSrc()" alt="크롭 이미지" class="crop-image" />
-          </div>
-          <div class="tm-item" style="width: 100%;">
-            <div class="tm-item-thumb"></div>
-            <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
-              <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ selectedFileName() }}</span>
-              <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ selectedFileSize() }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="tm-footer">
-          <button class="tm-confirm" (click)="saveCrop()">저장</button>
+    <div class="tm-modal tm-modal-inline tm-modal-crop">
+      <div class="tm-header">
+        <div class="flex justify-center items-center w-full">
+          <span class="flex-1 font-suit font-bold text-xl leading-[150%] tracking-tight text-white">썸네일 편집</span>
+          <button class="tm-close" aria-label="닫기" (click)="closeCropModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#71717A">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
         </div>
       </div>
-    }
+      <div class="tm-body">
+        <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-400 self-start">원하는 부분을 선택하고, 저장 버튼을 눌러 썸네일을 설정해주세요.</span>
+        <div class="crop-container">
+          <img #cropImage [src]="cropImageSrc()" alt="크롭 이미지" class="crop-image" />
+        </div>
+        <div class="tm-item" style="width: 100%;">
+          <div class="tm-item-thumb"></div>
+          <div class="flex flex-col justify-center gap-1 flex-1 min-w-0">
+            <span class="font-suit font-medium text-base leading-[150%] tracking-tight text-[#FAFAFA] whitespace-nowrap overflow-hidden text-ellipsis">{{ selectedFileName() }}</span>
+            <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ selectedFileSize() }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="tm-footer">
+        <button class="tm-confirm" (click)="saveCrop()">저장</button>
+      </div>
+    </div>
 
   </div>
 }
