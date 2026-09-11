@@ -100,7 +100,7 @@
           <div class="sd-materials-body">
             <div class="flex flex-wrap gap-3">
               @for (file of learningFiles(); track file.name) {
-                <div class="sd-file-chip" (click)="downloadFile(file)" style="cursor: pointer;">
+                <div class="sd-file-chip" role="button" tabindex="0" (click)="downloadFile(file)" (keydown.enter)="downloadFile(file)" style="cursor: pointer;">
                   <span class="sd-file-name">{{ file.name }}</span>
                   <button class="sd-file-download" aria-label="다운로드" (click)="$event.stopPropagation(); downloadFile(file)">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

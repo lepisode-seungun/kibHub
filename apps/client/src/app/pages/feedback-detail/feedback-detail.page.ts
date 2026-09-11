@@ -18,6 +18,18 @@ interface Comment {
   avatarInitial: string;
 }
 
+interface SubmissionResponse {
+  title?: string;
+  content?: string;
+  type?: string;
+  author?: { name?: string; nickname?: string };
+  authorId?: number;
+  createdAt: string;
+  assignment?: { id: number; title?: string; course?: { name?: string } };
+  files?: { name: string; url: string }[];
+  comments?: { id: number; author?: { name?: string; nickname?: string }; createdAt: string; body: string }[];
+}
+
 @Component({
   selector: 'app-feedback-detail',
   standalone: true,
@@ -80,21 +92,21 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
 
   private async loadFeedback(id: number): Promise<void> {
     try {
-      const s: any = await this.api.submissions.findOne(id);
+      const s = await this.api.submissions.findOne(id) as SubmissionResponse;
       this.assignmentTitle.set(s.title || '');
       this.description.set(s.content || '');
       this.badge.set(s.type === 'FEEDBACK' ? '피드백' : '과제제출');
       this.author.set(s.author?.name || s.author?.nickname || '');
       this.date.set(new Date(s.createdAt).toLocaleDateString('ko-KR'));
       this.fileName.set(s.assignment?.title || '');
-      this.learningFiles.set((s.files || []).map((f: any) => ({ name: f.name, url: f.url })));
+      this.learningFiles.set((s.files || []).map((f: { name: string; url: string }) => ({ name: f.name, url: f.url })));
       if (s.assignment) {
         this.courseLabel.set(s.assignment.course?.name || '');
         this.assignmentId = String(s.assignment.id);
       }
       // 댓글 로드
       if (s.comments) {
-        this.comments.set(s.comments.map((c: any) => ({
+        this.comments.set(s.comments.map((c: { id: number; author?: { name?: string; nickname?: string }; createdAt: string; body: string }) => ({
           id: c.id,
           author: c.author?.name || c.author?.nickname || '',
           date: new Date(c.createdAt).toLocaleDateString('ko-KR'),
@@ -184,7 +196,7 @@ export class FeedbackDetailPage implements OnInit, OnDestroy {
   async submitComment(): Promise<void> {
     if (!this.newComment().trim()) return;
     try {
-      const c: any = await this.api.submissionComments.create(Number(this.feedbackId), { body: this.newComment().trim() });
+      const c = await this.api.submissionComments.create(Number(this.feedbackId), { body: this.newComment().trim() }) as { id: number; author?: { name?: string; nickname?: string }; createdAt: string; body: string };
       this.comments.update(list => [...list, {
         id: c.id,
         author: c.author?.name || c.author?.nickname || '',
