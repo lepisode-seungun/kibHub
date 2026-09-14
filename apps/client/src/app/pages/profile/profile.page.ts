@@ -238,6 +238,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   private readonly BANNER_IMAGE = "url('/images/profile-banner.jpg') center center / cover no-repeat";
   private readonly DEFAULT_COVER = "url('/images/default-banner.svg') center center / cover no-repeat";
   bannerBackground = signal<string>("url('/images/profile-banner.jpg') center center / cover no-repeat");
+  isBannerOverlayVisible = signal(false);
+
+  toggleBannerOverlay(): void {
+    this.isBannerOverlayVisible.update(v => !v);
+  }
 
   /** 파일 업로드 트리거 */
   triggerCoverUpload(): void {

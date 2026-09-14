@@ -1,12 +1,13 @@
 <div class="pf-wrap">
   <!-- ===== 배너 ===== -->
-  <div class="pf-banner group relative" [style.background]="bannerBackground()">
+  <div class="pf-banner group relative" [style.background]="bannerBackground()" (click)="toggleBannerOverlay()">
     <!-- 호버 오버레이 -->
-    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-[5]">
+    <div class="pf-banner-overlay absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-[5]"
+         [class.pf-banner-overlay-active]="isBannerOverlayVisible()">
       <div class="flex flex-col items-start gap-2">
         <div class="flex items-center gap-3">
-          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6]" (click)="triggerCoverUpload()">배경 변경</button>
-          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-transparent border border-zinc-500 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-white/10" (click)="resetToDefaultCover()">기본 이미지로 변경</button>
+          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-accent border-none rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-[#6B3CE6]" (click)="triggerCoverUpload(); $event.stopPropagation()">배경 변경</button>
+          <button class="flex items-center justify-center px-3 py-2 gap-1 h-10 bg-transparent border border-zinc-500 rounded-xl font-suit font-medium text-base leading-[150%] tracking-tight text-white cursor-pointer transition-all duration-200 hover:bg-white/10" (click)="resetToDefaultCover(); $event.stopPropagation()">기본 이미지로 변경</button>
         </div>
         <span class="font-suit font-medium text-xs leading-[150%] tracking-tight text-white/50 ml-16">권장 사이즈 : 1920x300</span>
       </div>

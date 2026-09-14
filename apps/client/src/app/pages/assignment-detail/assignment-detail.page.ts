@@ -234,10 +234,32 @@ export class AssignmentDetailPage implements OnInit {
         createdAt: s.createdAt,
       });
 
+      // 강사가 아닌 경우: 본인이 작성한 제출물 + 해당 피드백만 표시
+      let filtered = list;
+      if (!this.isInstructor()) {
+        const currentUser = this.authService.currentUser();
+        const myName = currentUser?.name || currentUser?.nickname || '';
+        // 본인이 작성한 parent(과제제출) ID 수집
+        const myParentIds = new Set<number>();
+        list.forEach(s => {
+          if (!s.parentId) {
+            const authorName = s.author?.name || s.author?.nickname || '';
+            if (authorName === myName) {
+              myParentIds.add(s.id);
+            }
+          }
+        });
+        // 본인 과제제출 + 해당 피드백만 필터
+        filtered = list.filter(s => {
+          if (!s.parentId) return myParentIds.has(s.id);
+          return myParentIds.has(s.parentId);
+        });
+      }
+
       // parent(과제제출)와 children(피드백)을 그룹핑
-      const parents = list.filter(s => !s.parentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const parents = filtered.filter(s => !s.parentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       const childrenMap = new Map<number, SubmissionResponse[]>();
-      list.filter(s => s.parentId).forEach(s => {
+      filtered.filter(s => s.parentId).forEach(s => {
         const arr = childrenMap.get(s.parentId as number) || [];
         arr.push(s);
         childrenMap.set(s.parentId as number, arr);

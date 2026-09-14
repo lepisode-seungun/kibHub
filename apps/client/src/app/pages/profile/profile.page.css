@@ -1315,15 +1315,27 @@
 @media (max-width: 768px) {
   /* 배너 축소 */
   .pf-banner {
-    height: 160px;
+    height: 240px;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* 사이드바: 패딩/갭 축소 */
+  /* 모바일: 배너 오버레이 — JS 토글로 표시/숨김 */
+  /* group-hover 비활성화 (모바일 hover 고정 방지) */
+  .pf-banner:hover .pf-banner-overlay {
+    opacity: 0 !important;
+  }
+  .pf-banner .pf-banner-overlay.pf-banner-overlay-active {
+    opacity: 1 !important;
+  }
+
+  /* 사이드바: 패딩/갭 축소, 하단까지 채움 */
   .pf-sidebar {
     padding: 24px 20px;
     gap: 32px;
     margin-top: -40px;
     border-radius: 12px 12px 0 0;
+    flex: 1;
+    min-height: calc(100vh - 200px);
   }
   .pf-user-info,
   .pf-follow-stats,
@@ -1335,6 +1347,9 @@
   }
   .pf-btn {
     width: 100%;
+  }
+  .pf-btn:hover {
+    opacity: 1;
   }
 
   /* 탭 바 */
@@ -1462,6 +1477,15 @@
   .pf-content-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  /* 앨범/책갈피 관련 영역 전체 숨김 */
+  .pf-tabbar,
+  .pf-mobile-new-album-btn,
+  .pf-album-slider-wrap,
+  .pf-content-section,
+  .pf-main {
+    display: none !important;
   }
 
   /* 콘텐츠 카드: 풀너비 */
