@@ -69,6 +69,17 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   bookmarkCount = 0;
   commentCount = 0;
   dateStr = '';
+  contentType = '';
+
+  // 그림 전용 필드
+  artMedium = '';
+  artTools: string[] = [];
+  artistNote = '';
+  workDuration = '';
+  difficulty = '';
+  resolution = '';
+  processImages: string[] = [];
+
   isBookmarked = signal(false);
   isDescOpen = signal(true);
   activeCommentTab = signal<'feedback' | 'general' | 'all'>('all');
@@ -256,6 +267,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.category = content.category?.name || '미분류';
         this.dateStr = new Date(content.createdAt).toLocaleString('ko-KR');
         this.commentCount = content._count?.comments || 0;
+        this.contentType = content.type || '';
+
+        // 그림 전용 필드 바인딩
+        this.artMedium = content.artMedium || '';
+        this.artTools = content.artTools || [];
+        this.artistNote = content.artistNote || '';
+        this.workDuration = content.workDuration || '';
+        this.difficulty = content.difficulty || '';
+        this.resolution = content.resolution || '';
+        this.processImages = content.processImages || [];
 
         const imageList: typeof this.images = [];
         if (content.thumbnail) {

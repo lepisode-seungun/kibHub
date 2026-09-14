@@ -842,6 +842,256 @@
   display: none;
 }
 
+/* ===== 그림 전용 섹션 ===== */
+.cu-art-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.cu-art-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cu-art-divider-icon {
+  font-size: 18px;
+}
+
+.cu-art-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #3F3F46 0%, transparent 100%);
+}
+
+/* 도구 칩 */
+.cu-tool-chip {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #242424;
+  border: 1px solid #3F3F46;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cu-tool-chip:hover {
+  border-color: #52525B;
+  background: #2A2A2E;
+}
+
+.cu-tool-chip-active {
+  background: rgba(122, 72, 255, 0.15);
+  border-color: #7A48FF;
+}
+
+.cu-tool-chip-active:hover {
+  background: rgba(122, 72, 255, 0.25);
+}
+
+/* 도구 직접 입력 */
+.cu-input-sm {
+  height: 36px !important;
+  font-size: 13px !important;
+  flex: 1;
+}
+
+.cu-tool-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  height: 36px;
+  background: #3F3F46;
+  border: none;
+  border-radius: 8px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #D4D4D8;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.cu-tool-add-btn:hover { background: #52525B; }
+
+/* 커스텀 도구 태그 */
+.cu-tool-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: rgba(122, 72, 255, 0.12);
+  border: 1px solid rgba(122, 72, 255, 0.3);
+  border-radius: 6px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #AF91FF;
+}
+
+.cu-tool-tag-remove {
+  background: none;
+  border: none;
+  color: #AF91FF;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.cu-tool-tag-remove:hover { opacity: 1; }
+
+/* 난이도 버튼 */
+.cu-diff-btn {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: #242424;
+  border: 1px solid #3F3F46;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cu-diff-btn:hover { border-color: #52525B; }
+
+.cu-diff-active {
+  background: #2D2640;
+  border-color: #7A48FF;
+}
+
+.cu-diff-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: all 0.15s;
+}
+
+.cu-diff-dot-beginner { background: #43E97B; }
+.cu-diff-dot-mid { background: #FDB813; }
+.cu-diff-dot-adv { background: #F87171; }
+.cu-diff-dot-selected { box-shadow: 0 0 6px currentColor; transform: scale(1.2); }
+
+/* 해상도 표시 */
+.cu-resolution-display {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  height: 48px;
+  background: #27272A;
+  border: 1px dashed #3F3F46;
+  border-radius: 12px;
+}
+
+/* 작업 과정 그리드 */
+.cu-process-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cu-process-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #27272A;
+  border: 1px solid #3F3F46;
+}
+
+.cu-process-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cu-process-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cu-process-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.cu-process-item:hover .cu-process-remove { opacity: 1; }
+
+.cu-process-label {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  padding: 2px 4px;
+}
+
+.cu-process-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background: #27272A;
+  border: 1px dashed #52525B;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cu-process-add:hover {
+  border-color: #7A48FF;
+  background: rgba(122, 72, 255, 0.08);
+}
+
+.cu-process-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100px;
+  background: #27272A;
+  border: 1px dashed #52525B;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cu-process-empty:hover {
+  border-color: #7A48FF;
+  background: rgba(122, 72, 255, 0.05);
+}
+
 /* ===== 반응형 ===== */
 /* [TW-KEEP] responsive */
 @media (max-width: 1600px) {

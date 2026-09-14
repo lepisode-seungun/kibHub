@@ -60,6 +60,21 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   subDescription = '';
   description = '';
 
+  // 그림 전용 필드
+  selectedTools = signal<string[]>([]);
+  customTool = '';
+  artMedium = '';
+  artistNote = '';
+  workDuration = '';
+  selectedDifficulty = signal<string>('');
+  imageResolution = signal('');
+  processImages = signal<{ id: number; fileName: string; thumbnailUrl: string; status: 'uploading' | 'done' | 'error' }[]>([]);
+
+  // 사용 도구 옵션
+  toolOptions = ['Photoshop', 'Clip Studio', 'Procreate', 'Illustrator', 'SAI'];
+  difficultyOptions = ['초급', '중급', '고급'];
+  mediumOptions = ['디지털', '수채화', '유화', '아크릴', '색연필', '연필/목탄'];
+
   // 제출 상태
   isSubmitting = signal(false);
   formError = signal('');
@@ -234,6 +249,93 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   onDescriptionInput(event: Event): void {
     this.description = (event.target as HTMLTextAreaElement).value;
+  }
+
+  // ===== 그림 전용 핸들러 =====
+  toggleTool(tool: string): void {
+    this.selectedTools.update(tools =>
+      tools.includes(tool) ? tools.filter(t => t !== tool) : [...tools, tool]
+    );
+  }
+
+  onCustomToolInput(event: Event): void {
+    this.customTool = (event.target as HTMLInputElement).value;
+  }
+
+  addCustomTool(): void {
+    const tool = this.customTool.trim();
+    if (tool && !this.selectedTools().includes(tool)) {
+      this.selectedTools.update(tools => [...tools, tool]);
+      this.customTool = '';
+    }
+  }
+
+  removeCustomTool(tool: string): void {
+    this.selectedTools.update(tools => tools.filter(t => t !== tool));
+  }
+
+  selectMedium(medium: string): void {
+    this.artMedium = this.artMedium === medium ? '' : medium;
+  }
+
+  selectDifficulty(level: string): void {
+    this.selectedDifficulty.set(this.selectedDifficulty() === level ? '' : level);
+  }
+
+  onArtistNoteInput(event: Event): void {
+    this.artistNote = (event.target as HTMLTextAreaElement).value;
+  }
+
+  onWorkDurationInput(event: Event): void {
+    this.workDuration = (event.target as HTMLInputElement).value;
+  }
+
+  async onProcessImageSelect(): Promise<void> {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = async () => {
+      if (!input.files) return;
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const id = Date.now() + i;
+
+        // 첫 번째 이미지인 경우 해상도 감지
+        if (this.processImages().length === 0 && i === 0) {
+          this.detectResolution(file);
+        }
+
+        this.processImages.update(items => [...items, {
+          id, fileName: file.name, thumbnailUrl: '', status: 'uploading' as const,
+        }]);
+
+        try {
+          const result = await this.api.upload.single(file, 'process');
+          this.processImages.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'done' as const, thumbnailUrl: result.url } : item
+          ));
+        } catch {
+          this.processImages.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'error' as const } : item
+          ));
+        }
+      }
+    };
+    input.click();
+  }
+
+  removeProcessImage(id: number): void {
+    this.processImages.update(items => items.filter(i => i.id !== id));
+  }
+
+  private detectResolution(file: File): void {
+    const img = new Image();
+    img.onload = () => {
+      this.imageResolution.set(`${img.naturalWidth} × ${img.naturalHeight}px`);
+      URL.revokeObjectURL(img.src);
+    };
+    img.src = URL.createObjectURL(file);
   }
 
   async onFileSelect(): Promise<void> {
@@ -586,10 +688,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       this.titleError.set('제목을 입력해주세요.');
       hasError = true;
     }
-    if (!this.isEditMode && !this.subDescription.trim()) {
-      this.subDescError.set('설명을 입력해주세요.');
-      hasError = true;
-    }
+
     if (!this.description.trim()) {
       this.descError.set('내용을 입력해주세요.');
       hasError = true;
@@ -629,6 +728,22 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         .filter(item => item.status === 'done' && item.thumbnailUrl)
         .map(item => item.thumbnailUrl);
 
+      // 3-1. 작업 과정 이미지 URL 수집 (그림 전용)
+      const processImageUrls = this.processImages()
+        .filter(item => item.status === 'done' && item.thumbnailUrl)
+        .map(item => item.thumbnailUrl);
+
+      // 그림 전용 필드
+      const artFields = this.selectedType() === '그림' ? {
+        artMedium: this.artMedium || undefined,
+        artTools: this.selectedTools().length > 0 ? this.selectedTools() : undefined,
+        artistNote: this.artistNote.trim() || undefined,
+        workDuration: this.workDuration.trim() || undefined,
+        difficulty: this.selectedDifficulty() || undefined,
+        resolution: this.imageResolution() || undefined,
+        processImages: processImageUrls.length > 0 ? processImageUrls : undefined,
+      } : {};
+
       // 4. 콘텐츠 생성 또는 수정
       if (this.isEditMode) {
         // 수정 모드: update API 사용
@@ -639,6 +754,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
           thumbnail: thumbnailUrl,
           images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
           categoryId,
+          ...artFields,
         });
         // 수정 완료 → 상세 페이지로 이동
         this.router.navigate(['/content', this.editContentId]);
@@ -651,6 +767,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
           thumbnail: thumbnailUrl,
           images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
           categoryId,
+          ...artFields,
         });
 
         // 5. 선택된 앨범이 있으면 콘텐츠를 앨범에 추가

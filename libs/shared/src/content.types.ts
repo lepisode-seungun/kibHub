@@ -18,6 +18,14 @@ export interface Content {
   body: string;
   thumbnail: string | null;
   images: string[];
+  // 그림 전용 필드
+  artMedium?: string | null;
+  artTools?: string[];
+  artistNote?: string | null;
+  workDuration?: string | null;
+  difficulty?: string | null;
+  resolution?: string | null;
+  processImages?: string[];
   viewCount: number;
   categoryId: number | null;
   category?: ContentCategory;
@@ -37,6 +45,14 @@ export interface CreateContentDto {
   status?: ContentStatus;
   thumbnail?: string;
   images?: string[];
+  // 그림 전용 필드
+  artMedium?: string;
+  artTools?: string[];
+  artistNote?: string;
+  workDuration?: string;
+  difficulty?: string;
+  resolution?: string;
+  processImages?: string[];
 }
 
 // ===== Comment =====

@@ -52,6 +52,10 @@ interface ContentCard {
   comment?: string;
   commenter?: string;
   commentTime?: string;
+  // 그림 전용
+  difficulty?: string;
+  artTools?: string[];
+  artMedium?: string;
 }
 
 interface MentorCard {
@@ -199,6 +203,9 @@ export class HomePage implements AfterViewInit, OnInit {
         comment: c.topComment?.body || '',
         commenter: c.topComment?.author?.nickname || c.topComment?.author?.name || '',
         commentTime: c.topComment?.createdAt ? this.getRelativeTime(c.topComment.createdAt) : '',
+        difficulty: c.difficulty || '',
+        artTools: c.artTools || [],
+        artMedium: c.artMedium || '',
       });
       // 첫 12개는 갤러리
       this.contentCards.set(contents.slice(0, 12).map((c, i) => ({

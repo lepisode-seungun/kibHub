@@ -7,6 +7,14 @@ model Content {
   body       String           @default("")
   thumbnail  String?
   images     String[]         @default([])
+  // 그림 전용 필드
+  artMedium       String?
+  artTools        String[]     @default([])
+  artistNote      String?
+  workDuration    String?
+  difficulty      String?
+  resolution      String?
+  processImages   String[]     @default([])
   viewCount  Int              @default(0)
   categoryId Int?
   category   ContentCategory? @relation(fields: [categoryId], references: [id])

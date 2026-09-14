@@ -47,6 +47,11 @@ export type ContentMinAggregateOutputType = {
   title: string | null
   body: string | null
   thumbnail: string | null
+  artMedium: string | null
+  artistNote: string | null
+  workDuration: string | null
+  difficulty: string | null
+  resolution: string | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -61,6 +66,11 @@ export type ContentMaxAggregateOutputType = {
   title: string | null
   body: string | null
   thumbnail: string | null
+  artMedium: string | null
+  artistNote: string | null
+  workDuration: string | null
+  difficulty: string | null
+  resolution: string | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -76,6 +86,13 @@ export type ContentCountAggregateOutputType = {
   body: number
   thumbnail: number
   images: number
+  artMedium: number
+  artTools: number
+  artistNote: number
+  workDuration: number
+  difficulty: number
+  resolution: number
+  processImages: number
   viewCount: number
   categoryId: number
   authorId: number
@@ -106,6 +123,11 @@ export type ContentMinAggregateInputType = {
   title?: true
   body?: true
   thumbnail?: true
+  artMedium?: true
+  artistNote?: true
+  workDuration?: true
+  difficulty?: true
+  resolution?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -120,6 +142,11 @@ export type ContentMaxAggregateInputType = {
   title?: true
   body?: true
   thumbnail?: true
+  artMedium?: true
+  artistNote?: true
+  workDuration?: true
+  difficulty?: true
+  resolution?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -135,6 +162,13 @@ export type ContentCountAggregateInputType = {
   body?: true
   thumbnail?: true
   images?: true
+  artMedium?: true
+  artTools?: true
+  artistNote?: true
+  workDuration?: true
+  difficulty?: true
+  resolution?: true
+  processImages?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -237,6 +271,13 @@ export type ContentGroupByOutputType = {
   body: string
   thumbnail: string | null
   images: string[]
+  artMedium: string | null
+  artTools: string[]
+  artistNote: string | null
+  workDuration: string | null
+  difficulty: string | null
+  resolution: string | null
+  processImages: string[]
   viewCount: number
   categoryId: number | null
   authorId: number
@@ -275,6 +316,13 @@ export type ContentWhereInput = {
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
   images?: Prisma.StringNullableListFilter<"Content">
+  artMedium?: Prisma.StringNullableFilter<"Content"> | string | null
+  artTools?: Prisma.StringNullableListFilter<"Content">
+  artistNote?: Prisma.StringNullableFilter<"Content"> | string | null
+  workDuration?: Prisma.StringNullableFilter<"Content"> | string | null
+  difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
+  resolution?: Prisma.StringNullableFilter<"Content"> | string | null
+  processImages?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -294,6 +342,13 @@ export type ContentOrderByWithRelationInput = {
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  artMedium?: Prisma.SortOrderInput | Prisma.SortOrder
+  artTools?: Prisma.SortOrder
+  artistNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  workDuration?: Prisma.SortOrderInput | Prisma.SortOrder
+  difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolution?: Prisma.SortOrderInput | Prisma.SortOrder
+  processImages?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -316,6 +371,13 @@ export type ContentWhereUniqueInput = Prisma.AtLeast<{
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
   images?: Prisma.StringNullableListFilter<"Content">
+  artMedium?: Prisma.StringNullableFilter<"Content"> | string | null
+  artTools?: Prisma.StringNullableListFilter<"Content">
+  artistNote?: Prisma.StringNullableFilter<"Content"> | string | null
+  workDuration?: Prisma.StringNullableFilter<"Content"> | string | null
+  difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
+  resolution?: Prisma.StringNullableFilter<"Content"> | string | null
+  processImages?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -335,6 +397,13 @@ export type ContentOrderByWithAggregationInput = {
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  artMedium?: Prisma.SortOrderInput | Prisma.SortOrder
+  artTools?: Prisma.SortOrder
+  artistNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  workDuration?: Prisma.SortOrderInput | Prisma.SortOrder
+  difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolution?: Prisma.SortOrderInput | Prisma.SortOrder
+  processImages?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -358,6 +427,13 @@ export type ContentScalarWhereWithAggregatesInput = {
   body?: Prisma.StringWithAggregatesFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
   images?: Prisma.StringNullableListFilter<"Content">
+  artMedium?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  artTools?: Prisma.StringNullableListFilter<"Content">
+  artistNote?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  workDuration?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  difficulty?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  resolution?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  processImages?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntWithAggregatesFilter<"Content"> | number
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Content"> | number | null
   authorId?: Prisma.IntWithAggregatesFilter<"Content"> | number
@@ -372,6 +448,13 @@ export type ContentCreateInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -389,6 +472,13 @@ export type ContentUncheckedCreateInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -405,6 +495,13 @@ export type ContentUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -422,6 +519,13 @@ export type ContentUncheckedUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -439,6 +543,13 @@ export type ContentCreateManyInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -453,6 +564,13 @@ export type ContentUpdateManyMutationInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -466,6 +584,13 @@ export type ContentUncheckedUpdateManyInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -489,6 +614,13 @@ export type ContentCountOrderByAggregateInput = {
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  artMedium?: Prisma.SortOrder
+  artTools?: Prisma.SortOrder
+  artistNote?: Prisma.SortOrder
+  workDuration?: Prisma.SortOrder
+  difficulty?: Prisma.SortOrder
+  resolution?: Prisma.SortOrder
+  processImages?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -510,6 +642,11 @@ export type ContentMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
+  artMedium?: Prisma.SortOrder
+  artistNote?: Prisma.SortOrder
+  workDuration?: Prisma.SortOrder
+  difficulty?: Prisma.SortOrder
+  resolution?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -524,6 +661,11 @@ export type ContentMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
   thumbnail?: Prisma.SortOrder
+  artMedium?: Prisma.SortOrder
+  artistNote?: Prisma.SortOrder
+  workDuration?: Prisma.SortOrder
+  difficulty?: Prisma.SortOrder
+  resolution?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -557,11 +699,29 @@ export type ContentCreateimagesInput = {
   set: string[]
 }
 
+export type ContentCreateartToolsInput = {
+  set: string[]
+}
+
+export type ContentCreateprocessImagesInput = {
+  set: string[]
+}
+
 export type EnumContentTypeFieldUpdateOperationsInput = {
   set?: $Enums.ContentType
 }
 
 export type ContentUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ContentUpdateartToolsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ContentUpdateprocessImagesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -693,6 +853,13 @@ export type ContentCreateWithoutCategoryInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -709,6 +876,13 @@ export type ContentUncheckedCreateWithoutCategoryInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   authorId: number
   createdAt?: Date | string
@@ -754,6 +928,13 @@ export type ContentScalarWhereInput = {
   body?: Prisma.StringFilter<"Content"> | string
   thumbnail?: Prisma.StringNullableFilter<"Content"> | string | null
   images?: Prisma.StringNullableListFilter<"Content">
+  artMedium?: Prisma.StringNullableFilter<"Content"> | string | null
+  artTools?: Prisma.StringNullableListFilter<"Content">
+  artistNote?: Prisma.StringNullableFilter<"Content"> | string | null
+  workDuration?: Prisma.StringNullableFilter<"Content"> | string | null
+  difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
+  resolution?: Prisma.StringNullableFilter<"Content"> | string | null
+  processImages?: Prisma.StringNullableListFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -768,6 +949,13 @@ export type ContentCreateWithoutAlbumContentsInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -784,6 +972,13 @@ export type ContentUncheckedCreateWithoutAlbumContentsInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -815,6 +1010,13 @@ export type ContentUpdateWithoutAlbumContentsInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -831,6 +1033,13 @@ export type ContentUncheckedUpdateWithoutAlbumContentsInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -846,6 +1055,13 @@ export type ContentCreateWithoutCommentsInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -862,6 +1078,13 @@ export type ContentUncheckedCreateWithoutCommentsInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -893,6 +1116,13 @@ export type ContentUpdateWithoutCommentsInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -909,6 +1139,13 @@ export type ContentUncheckedUpdateWithoutCommentsInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -924,6 +1161,13 @@ export type ContentCreateWithoutAuthorInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -940,6 +1184,13 @@ export type ContentUncheckedCreateWithoutAuthorInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
@@ -982,6 +1233,13 @@ export type ContentCreateManyCategoryInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   authorId: number
   createdAt?: Date | string
@@ -995,6 +1253,13 @@ export type ContentUpdateWithoutCategoryInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1011,6 +1276,13 @@ export type ContentUncheckedUpdateWithoutCategoryInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1027,6 +1299,13 @@ export type ContentUncheckedUpdateManyWithoutCategoryInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1041,6 +1320,13 @@ export type ContentCreateManyAuthorInput = {
   body?: string
   thumbnail?: string | null
   images?: Prisma.ContentCreateimagesInput | string[]
+  artMedium?: string | null
+  artTools?: Prisma.ContentCreateartToolsInput | string[]
+  artistNote?: string | null
+  workDuration?: string | null
+  difficulty?: string | null
+  resolution?: string | null
+  processImages?: Prisma.ContentCreateprocessImagesInput | string[]
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
@@ -1054,6 +1340,13 @@ export type ContentUpdateWithoutAuthorInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1070,6 +1363,13 @@ export type ContentUncheckedUpdateWithoutAuthorInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1086,6 +1386,13 @@ export type ContentUncheckedUpdateManyWithoutAuthorInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ContentUpdateimagesInput | string[]
+  artMedium?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  artTools?: Prisma.ContentUpdateartToolsInput | string[]
+  artistNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1140,6 +1447,13 @@ export type ContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   body?: boolean
   thumbnail?: boolean
   images?: boolean
+  artMedium?: boolean
+  artTools?: boolean
+  artistNote?: boolean
+  workDuration?: boolean
+  difficulty?: boolean
+  resolution?: boolean
+  processImages?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1160,6 +1474,13 @@ export type ContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   body?: boolean
   thumbnail?: boolean
   images?: boolean
+  artMedium?: boolean
+  artTools?: boolean
+  artistNote?: boolean
+  workDuration?: boolean
+  difficulty?: boolean
+  resolution?: boolean
+  processImages?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1177,6 +1498,13 @@ export type ContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   body?: boolean
   thumbnail?: boolean
   images?: boolean
+  artMedium?: boolean
+  artTools?: boolean
+  artistNote?: boolean
+  workDuration?: boolean
+  difficulty?: boolean
+  resolution?: boolean
+  processImages?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1194,6 +1522,13 @@ export type ContentSelectScalar = {
   body?: boolean
   thumbnail?: boolean
   images?: boolean
+  artMedium?: boolean
+  artTools?: boolean
+  artistNote?: boolean
+  workDuration?: boolean
+  difficulty?: boolean
+  resolution?: boolean
+  processImages?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1201,7 +1536,7 @@ export type ContentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "images" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
+export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "images" | "artMedium" | "artTools" | "artistNote" | "workDuration" | "difficulty" | "resolution" | "processImages" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
 export type ContentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Content$categoryArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1234,6 +1569,13 @@ export type $ContentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     body: string
     thumbnail: string | null
     images: string[]
+    artMedium: string | null
+    artTools: string[]
+    artistNote: string | null
+    workDuration: string | null
+    difficulty: string | null
+    resolution: string | null
+    processImages: string[]
     viewCount: number
     categoryId: number | null
     authorId: number
@@ -1673,6 +2015,13 @@ export interface ContentFieldRefs {
   readonly body: Prisma.FieldRef<"Content", 'String'>
   readonly thumbnail: Prisma.FieldRef<"Content", 'String'>
   readonly images: Prisma.FieldRef<"Content", 'String[]'>
+  readonly artMedium: Prisma.FieldRef<"Content", 'String'>
+  readonly artTools: Prisma.FieldRef<"Content", 'String[]'>
+  readonly artistNote: Prisma.FieldRef<"Content", 'String'>
+  readonly workDuration: Prisma.FieldRef<"Content", 'String'>
+  readonly difficulty: Prisma.FieldRef<"Content", 'String'>
+  readonly resolution: Prisma.FieldRef<"Content", 'String'>
+  readonly processImages: Prisma.FieldRef<"Content", 'String[]'>
   readonly viewCount: Prisma.FieldRef<"Content", 'Int'>
   readonly categoryId: Prisma.FieldRef<"Content", 'Int'>
   readonly authorId: Prisma.FieldRef<"Content", 'Int'>

@@ -93,6 +93,91 @@
           <span class="font-suit font-medium text-sm text-zinc-500">·</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ dateStr }}</span>
         </div>
+
+        <!-- 그림 전용: 작품 정보 -->
+        @if (contentType === 'ILLUSTRATION' && (artMedium || artTools.length || difficulty || workDuration || resolution)) {
+          <div class="detail-art-info">
+            <div class="detail-art-divider">
+              <span class="detail-art-divider-icon">🎨</span>
+              <span class="font-suit font-bold text-sm text-zinc-400">작품 정보</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="detail-art-grid">
+              @if (artMedium) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">매체</span>
+                  <span class="detail-art-value">{{ artMedium }}</span>
+                </div>
+              }
+              @if (artTools.length > 0) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">도구</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    @for (tool of artTools; track tool) {
+                      <span class="detail-art-tool-tag">{{ tool }}</span>
+                    }
+                  </div>
+                </div>
+              }
+              @if (difficulty) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">난이도</span>
+                  <span class="detail-art-diff" [ngClass]="{
+                    'detail-art-diff-beginner': difficulty === '초급',
+                    'detail-art-diff-mid': difficulty === '중급',
+                    'detail-art-diff-adv': difficulty === '고급'
+                  }">
+                    <span class="detail-art-diff-dot"></span>
+                    {{ difficulty }}
+                  </span>
+                </div>
+              }
+              @if (workDuration) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">작업 시간</span>
+                  <span class="detail-art-value">{{ workDuration }}</span>
+                </div>
+              }
+              @if (resolution) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">해상도</span>
+                  <span class="detail-art-value" style="color: #AF91FF;">{{ resolution }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 그림 전용: 작가 노트 -->
+        @if (contentType === 'ILLUSTRATION' && artistNote) {
+          <div class="detail-art-note">
+            <div class="detail-art-divider">
+              <span class="detail-art-divider-icon">✍️</span>
+              <span class="font-suit font-bold text-sm text-zinc-400">작업 의도</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <p class="font-suit font-medium text-base leading-[170%] tracking-tight text-zinc-300 m-0 whitespace-pre-wrap">{{ artistNote }}</p>
+          </div>
+        }
+
+        <!-- 그림 전용: 작업 과정 -->
+        @if (contentType === 'ILLUSTRATION' && processImages.length > 0) {
+          <div class="detail-art-process">
+            <div class="detail-art-divider">
+              <span class="detail-art-divider-icon">🔄</span>
+              <span class="font-suit font-bold text-sm text-zinc-400">작업 과정</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="detail-process-grid">
+              @for (img of processImages; track $index) {
+                <div class="detail-process-item">
+                  <img [src]="img" alt="과정 {{ $index + 1 }}" class="detail-process-img" />
+                  <span class="detail-process-label font-suit font-semibold text-[11px] text-zinc-400">{{ $index + 1 }}단계</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
     }
 
