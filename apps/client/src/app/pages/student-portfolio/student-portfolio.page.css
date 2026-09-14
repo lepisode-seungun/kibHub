@@ -205,8 +205,9 @@
 
 @media (max-width: 768px) {
   .portfolio-hero {
-    height: 386px;
-    min-height: 320px;
+    aspect-ratio: auto !important;
+    height: 386px !important;
+    min-height: 386px !important;
   }
   .hero-title { font-size: 32px; }
   .hero-orb {

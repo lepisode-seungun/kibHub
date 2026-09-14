@@ -153,6 +153,8 @@ export class CustomerCenterPage implements OnInit, OnDestroy {
 
   onSearchInput(value: string): void {
     this.searchQuery.set(value);
+    this.hasSearched.set(value.trim().length > 0);
+    this.currentPage.set(1);
   }
 
   private stripHtml(html: string): string {

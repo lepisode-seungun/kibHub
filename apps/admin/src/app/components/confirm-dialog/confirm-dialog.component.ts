@@ -15,7 +15,7 @@ export interface DialogDetailRow {
 })
 export class ConfirmDialogComponent {
   /** 다이얼로그 표시 여부 */
-  visible = input<boolean>(false);
+  visible = input<boolean>(true);
 
   /** 제목 (예: '공지사항 삭제') */
   title = input<string>('');
@@ -33,22 +33,22 @@ export class ConfirmDialogComponent {
   confirmText = input<string>('삭제');
 
   /** 취소 이벤트 */
-  dialogCancel = output<void>();
+  cancel = output<void>();
 
   /** 확인 이벤트 */
-  dialogConfirm = output<void>();
+  confirm = output<void>();
 
   onOverlayClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('dialog-overlay')) {
-      this.dialogCancel.emit();
+      this.cancel.emit();
     }
   }
 
   onCancel(): void {
-    this.dialogCancel.emit();
+    this.cancel.emit();
   }
 
   onConfirm(): void {
-    this.dialogConfirm.emit();
+    this.confirm.emit();
   }
 }
