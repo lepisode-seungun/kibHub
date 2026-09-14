@@ -592,8 +592,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
 
   onImageFrameClick(event: Event, imageIndex: number): void {
-    // 실제 .detail-image 영역 클릭인지 확인 (프레임 바깥 빈 영역 무시)
+    // 마커 클릭은 activateMarkerComment에서 처리하므로 여기서 무시
     const target = event.target as HTMLElement;
+    if (target.closest('.saved-marker') || target.closest('.pending-marker')) return;
+
+    // 실제 .detail-image 영역 클릭인지 확인 (프레임 바깥 빈 영역 무시)
     const imageEl = target.closest('.detail-image');
     if (!imageEl) return;
 
@@ -640,6 +643,13 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   activateMarkerComment(rank: number, event: Event): void {
     event.stopPropagation();
+    event.stopImmediatePropagation();
+    event.preventDefault();
+
+    // 뷰어가 열려있으면 닫기 (body overflow 복원)
+    if (this.isViewerOpen()) {
+      this.isViewerOpen.set(false);
+    }
 
     // 최상위 댓글에서 찾기
     const target = this.comments.find(c => c.markerNum === rank);
@@ -658,6 +668,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
     if (!scrollTargetId) return;
 
+    // body overflow 강제 복원 (스크롤 잠김 방지)
+    document.body.style.overflow = '';
+
     // 모바일: 댓글 시트가 닫혀있으면 열기
     const needsOpen = !this.isMobileCommentOpen();
     if (needsOpen) {
@@ -666,9 +679,16 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
     // 스크롤 + 짧은 하이라이트 (시트 열림 대기 후)
     setTimeout(() => {
+      // 스크롤 전 overflow 다시 확인
+      document.body.style.overflow = '';
+
       const el = document.getElementById(scrollTargetId);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const rect = el.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = scrollTop + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+        window.scrollTo({ top: Math.max(0, targetY), behavior: 'instant' as ScrollBehavior });
+
         el.classList.add('marker-flash');
         setTimeout(() => el.classList.remove('marker-flash'), 1500);
       }
@@ -776,10 +796,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   }
 
   get manuscriptImages(): { gradient: string; markers?: { rank: number; top: number; left: number; commentId?: number }[] }[] {
-    const visible = this.markersVisible();
+    // 뷰어에는 마커 없는 순수 원본 이미지만 표시
     return this.images.map(img => ({
       gradient: img.gradient,
-      markers: visible ? img.markers : [],
+      markers: [],
     }));
   }
 

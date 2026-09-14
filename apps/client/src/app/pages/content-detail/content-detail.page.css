@@ -316,7 +316,7 @@
 
 .detail-floating {
   position: absolute;
-  right: 16px;
+  right: -16px;
   top: 170px; /* 위쪽 날개가 펼쳐져도 상단 침범 안 하도록 */
   display: flex;
   flex-direction: column;
