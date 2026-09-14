@@ -182,8 +182,8 @@
       </div>
 
       @for (img of images; track $index) {
-        <div class="detail-image-frame" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" (click)="onImageFrameClick($event, $index)" (keydown.enter)="onImageFrameClick($event, $index)">
-          <div class="detail-image" [style.background]="img.gradient">
+        <div class="detail-image-frame" (click)="onImageFrameClick($event, $index)" (keydown.enter)="onImageFrameClick($event, $index)">
+          <div class="detail-image" role="button" tabindex="0" [style.cursor]="commentMode() === 'feedback' ? 'crosshair' : 'pointer'" [style.background]="img.gradient">
             <!-- 영구 마커들 -->
             @if (markersVisible()) {
               @for (m of img.markers; track m.rank) {

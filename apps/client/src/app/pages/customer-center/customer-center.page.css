@@ -265,7 +265,7 @@
   flex: 1;
 }
 
-.cc-faq-expanded .cc-faq-title { font-size: 20px; }
+/* expanded 상태에서도 폰트 크기 유지 */
 
 .cc-faq-a-badge {
   display: flex;

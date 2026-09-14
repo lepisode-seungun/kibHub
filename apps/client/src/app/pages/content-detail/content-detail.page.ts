@@ -592,12 +592,15 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
 
   onImageFrameClick(event: Event, imageIndex: number): void {
+    // 실제 .detail-image 영역 클릭인지 확인 (프레임 바깥 빈 영역 무시)
+    const target = event.target as HTMLElement;
+    const imageEl = target.closest('.detail-image');
+    if (!imageEl) return;
+
     if (this.commentMode() === 'feedback') {
       event.stopPropagation();
       event.preventDefault();
-      const frame = (event.target as HTMLElement).closest('.detail-image') || event.currentTarget as HTMLElement;
-      if (!frame) return;
-      const rect = frame.getBoundingClientRect();
+      const rect = imageEl.getBoundingClientRect();
       if (event instanceof MouseEvent) {
         const top = ((event.clientY - rect.top) / rect.height) * 100;
         const left = ((event.clientX - rect.left) / rect.width) * 100;
