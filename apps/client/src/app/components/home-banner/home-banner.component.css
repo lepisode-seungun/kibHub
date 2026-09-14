@@ -7,7 +7,7 @@
 .home-banner {
   position: relative;
   width: 100%;
-  aspect-ratio: 1920 / 360;
+  aspect-ratio: 1920 / 440;
   min-height: 260px;
   overflow: hidden;
   background: #0C0B10;
@@ -89,7 +89,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
   padding: 0;
   transition: color var(--transition-fast);
 }
@@ -138,6 +138,12 @@
 }
 
 @media (max-width: 768px) {
+  .home-banner {
+    aspect-ratio: auto;
+    height: 386px;
+    min-height: 320px;
+  }
+
   .banner-overlay {
     padding: 32px 20px;
   }

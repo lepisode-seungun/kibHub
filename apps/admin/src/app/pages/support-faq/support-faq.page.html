@@ -1,7 +1,7 @@
 <adm-data-grid
   [columns]="columns"
   [data]="faqs()"
-  searchPlaceholder="검색어를 입력하세요"
+  searchPlaceholder="제목, 성명, 연락처, 메모로 검색해주세요."
   [contextMenuItemsFn]="getContextMenuItems"
   (contextMenuSelect)="onContextMenu($event)"
   (rowClick)="onRowClick($event)">

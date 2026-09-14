@@ -8,7 +8,7 @@
 .hero-banner {
   position: relative;
   width: 100%;
-  aspect-ratio: 1920 / 360;
+  aspect-ratio: 1920 / 440;
   min-height: 260px;
   overflow: hidden;
   background: linear-gradient(0deg, #3F3160 0%, #1B1426 12%, #100B09 32%);
@@ -52,8 +52,8 @@
 .floating-card {
   position: absolute;
   z-index: 10;
-  width: clamp(120px, 9vw, 400px);
-  height: clamp(80px, 5.9vw, 260px);
+  width: clamp(130px, 10.125vw, 400px);
+  height: clamp(85px, 6.66vw, 260px);
   border-radius: 5.4px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
@@ -123,9 +123,20 @@
 
 @media (max-width: 1024px) {
   .floating-card { display: none; }
-  .hero-banner { aspect-ratio: auto; height: 300px; }
+  .hero-banner { aspect-ratio: auto; height: 300px; min-height: 260px; }
 }
 
 @media (max-width: 768px) {
-  :host { display: none; }
+  .hero-banner {
+    aspect-ratio: auto;
+    height: 386px;
+    min-height: 320px;
+  }
+  .banner-bg-svg {
+    object-fit: cover;
+    object-position: center center;
+  }
+  .banner-title {
+    font-size: 28px;
+  }
 }

@@ -392,6 +392,9 @@
   transform: translateY(20px) scaleY(0.5);
   pointer-events: none;
 }
+.floating-wing-top.floating-wing-closed * {
+  pointer-events: none !important;
+}
 
 /* 아래쪽 날개 */
 .floating-wing-bottom {
@@ -407,6 +410,9 @@
   opacity: 0;
   transform: translateY(-20px) scaleY(0.5);
   pointer-events: none;
+}
+.floating-wing-bottom.floating-wing-closed * {
+  pointer-events: none !important;
 }
 
 .floating-btn {

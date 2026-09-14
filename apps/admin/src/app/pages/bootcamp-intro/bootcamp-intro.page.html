@@ -90,7 +90,8 @@
           [contextMenuItemsFn]="bannerContextMenuFn"
           (contextMenuSelect)="onBannerContextMenu($event)"
           (rowClick)="openBannerDrawer($any($event))"
-          searchPlaceholder="검색어를 입력하세요">
+          (rowReorder)="onBannerReorder($event)"
+          searchPlaceholder="제목, 성명, 연락처, 메모로 검색해주세요.">
           <button gridActions
                   class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
                   (click)="openBannerDrawer()">
@@ -183,7 +184,8 @@
           [contextMenuItems]="['수정', '삭제']"
           (contextMenuSelect)="onPosterContextMenu($event)"
           (rowClick)="openPosterDrawer('edit', $any($event))"
-          searchPlaceholder="검색어를 입력하세요">
+          (rowReorder)="onPosterReorder($event)"
+          searchPlaceholder="제목, 성명, 연락처, 메모로 검색해주세요.">
           <button gridActions
                   class="flex items-center justify-center gap-2 px-3 py-2 h-9 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm leading-[17px] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
                   (click)="openPosterDrawer('add')">
@@ -418,7 +420,7 @@
       [columns]="partnerColumns"
       [data]="partnerData()"
       [contextMenuItems]="['수정', '삭제']"
-      searchPlaceholder="검색어를 입력하세요"
+      searchPlaceholder="제목, 성명, 연락처, 메모로 검색해주세요."
       (contextMenuSelect)="onPartnerContextMenu($event)"
       (rowClick)="openPartnerDrawer('edit', $any($event))">
       <button gridActions
@@ -839,6 +841,16 @@
     <h4 class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700 m-0">
       {{ posterDrawerMode() === 'add' ? '포스터 등록' : '포스터 수정' }}
     </h4>
+
+    <!-- 제목 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">제목</span>
+      <input type="text"
+             class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="포스터 제목을 입력하세요"
+             [value]="posterTitle()"
+             (input)="posterTitle.set($any($event.target).value)"/>
+    </div>
 
     <!-- 이미지 * -->
     <div class="flex flex-col gap-2">

@@ -42,11 +42,11 @@ export class ImageViewerComponent implements OnChanges {
   }
 
   prevPage(): void {
-    this.currentPage.update(p => p > 1 ? p - 1 : this.totalPages);
+    this.currentPage.update(p => p > 1 ? p - 1 : 1);
   }
 
   nextPage(): void {
-    this.currentPage.update(p => p < this.totalPages ? p + 1 : 1);
+    this.currentPage.update(p => p < this.totalPages ? p + 1 : this.totalPages);
   }
 
   onOverlayClick(event: Event): void {

@@ -554,6 +554,7 @@ export type PortfolioFileScalarFieldEnum = (typeof PortfolioFileScalarFieldEnum)
 export const PosterScalarFieldEnum = {
   id: 'id',
   imageUrl: 'imageUrl',
+  title: 'title',
   displayOrder: 'displayOrder',
   createdAt: 'createdAt'
 } as const

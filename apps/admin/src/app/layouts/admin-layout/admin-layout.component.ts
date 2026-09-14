@@ -59,7 +59,6 @@ export class AdminLayoutComponent implements OnInit {
         { label: '포트폴리오 / 명예의 전당', route: '/site/portfolio' },
         { label: '사업자 정보', route: '/site/business-info' },
         { label: '약관 관리', route: '/site/terms' },
-        { label: '번역 관리', route: '/site/translation' },
       ],
     },
     { label: '관리자 관리', icon: 'admin', route: '/admins' },

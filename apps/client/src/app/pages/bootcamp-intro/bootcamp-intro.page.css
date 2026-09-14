@@ -731,16 +731,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 40px 0;
     gap: 40px;
-    background: #09090B;
+    background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
   }
 
   .academy-left {
     gap: 20px;
     align-items: center;
     width: 100%;
-    max-width: 320px;
+    max-width: none;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
   .academy-label {
@@ -755,10 +757,11 @@
   }
 
   .academy-headline {
+    font-size: 20px;
     font-weight: 700;
     line-height: 150%;
     text-align: center;
-    max-width: 280px;
+    max-width: none;
   }
 
   .academy-description {
@@ -766,7 +769,7 @@
     font-weight: 500;
     line-height: 150%;
     text-align: center;
-    max-width: 320px;
+    max-width: none;
     align-self: stretch;
   }
 
@@ -788,18 +791,19 @@
   }
 
   .feature-banner {
-    width: 320px;
+    width: calc(90% - 12px);
     height: auto;
-    min-height: 77px;
+    min-height: 85px;
     padding: 12px 16px;
     gap: 6px;
     left: 50%;
-    top: 4%;
+    top: 1%;
     transform: translateX(-50%);
+    box-sizing: border-box;
   }
 
   .feature-banner-text {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
     text-align: center;
@@ -821,8 +825,9 @@
 
   .academy-right {
     width: 100%;
-    max-width: 326px;
-    aspect-ratio: 326 / 311.89;
+    max-width: none;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
   /* 데코 요소 모바일 조정 */
@@ -831,19 +836,20 @@
   }
 
   .deco-logo {
-    width: 60px;
-    top: -7%;
+    width: 70px;
+    top: -12%;
   }
 
   .deco-orbit {
     width: 68%;
-    height: 24%;
-    top: 2%;
+    height: 30%;
+    top: -4%;
+    z-index: 3;
   }
 
   .deco-star {
     left: 72%;
-    top: -2%;
+    top: -8%;
     width: 15px;
     height: 15px;
   }
@@ -852,38 +858,38 @@
     display: none;
   }
 
-  /* 코너 다이아몬드 — 배너에 맞춤 */
+  /* 코너 다이아몬드 — 배너 꼭지점 중심 정렬 */
   .corner-dot {
     width: 6px;
     height: 6px;
   }
 
   .corner-dot--tl {
-    left: 0;
-    top: 2%;
+    left: calc(5% + 3px);
+    top: calc(1% - 3px);
   }
 
   .corner-dot--tr {
-    right: 0;
-    top: 2%;
+    right: calc(5% + 3px);
+    top: calc(1% - 3px);
   }
 
   .corner-dot--bl {
-    left: 0;
-    top: calc(4% + 77px);
+    left: calc(5% + 3px);
+    top: calc(1% + 85px - 3px);
   }
 
   .corner-dot--br {
-    right: 0;
-    top: calc(4% + 77px);
+    right: calc(5% + 3px);
+    top: calc(1% + 85px - 3px);
   }
 
   /* 이미지 그리드 — 모바일 */
   .academy-grid {
     left: 1%;
-    top: 44%;
+    top: 38%;
     width: 98%;
-    height: 56%;
+    height: 62%;
     gap: 7px;
   }
 
@@ -936,8 +942,47 @@
     order: -1;
   }
 
+  .history-progress-bar {
+    display: none;
+  }
+
   .history-showcase {
     padding: 20px 0;
+  }
+
+  /* 컴팩트 로고+궤도+별 (모바일 포스터 위) */
+  .showcase-compact-logo {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 150px;
+    height: 60px;
+    margin-bottom: 40px;
+  }
+
+  .showcase-compact-logo .compact-orbit {
+    position: absolute;
+    width: 100%;
+    height: 65%;
+    border: 1.2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: rotate(-15deg);
+    top: 25%;
+  }
+
+  .showcase-compact-logo .compact-logo {
+    position: relative;
+    width: 80px;
+    z-index: 2;
+  }
+
+  .showcase-compact-logo .compact-star {
+    position: absolute;
+    right: 69px;
+    top: 5px;
+    z-index: 3;
+    animation: twinkle 3s ease-in-out infinite;
   }
 
   .showcase-image {
@@ -1092,6 +1137,12 @@
 /* ============================================
    섹션 3: History 타임라인
    ============================================ */
+
+/* 컴팩트 로고 — 데스크톱 숨김 */
+.showcase-compact-logo {
+  display: none;
+}
+
 .history-section {
   display: flex;
   flex-direction: row;

@@ -32,6 +32,12 @@
   box-sizing: border-box;
 }
 
+.mbd-hero-inner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 calc(clamp(20px, 5.2vw, 40px) + 130px) 0 calc(clamp(20px, 5.2vw, 40px) + 154px);
+}
+
 /* ===== 뒤로가기 hover ===== */
 .mbd-back-btn {
   display: flex;
@@ -467,6 +473,7 @@
 
 @media (max-width: 768px) {
   .mbd-hero { padding: 24px 20px; }
+  .mbd-hero-inner { padding: 0; max-width: none; }
   .mbd-tab-nav { padding: 0 20px; }
   .mbd-content { padding: 20px 20px; }
   .mbd-lecture-card { width: calc(50% - 12px); }

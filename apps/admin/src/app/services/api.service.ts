@@ -64,6 +64,7 @@ interface ReorderResponse {
 interface PosterResponse {
   id: number;
   imageUrl: string;
+  title?: string;
   displayOrder?: number;
   createdAt?: string;
 }
@@ -382,11 +383,10 @@ export class ApiService {
     set: (key: string, value: string): Promise<{ key: string; value: string }> => this.put(`/site-settings/${key}`, { value }),
   };
 
-  // ===== Posters =====
   readonly posters = {
     findAll: (): Promise<PosterResponse[]> => this.get('/posters'),
-    create: (data: { imageUrl: string; displayOrder?: number }): Promise<PosterResponse> => this.post('/posters', data),
-    update: (id: number, data: { imageUrl?: string; displayOrder?: number }): Promise<PosterResponse> => this.put(`/posters/${id}`, data),
+    create: (data: { imageUrl: string; title?: string; displayOrder?: number }): Promise<PosterResponse> => this.post('/posters', data),
+    update: (id: number, data: { imageUrl?: string; title?: string; displayOrder?: number }): Promise<PosterResponse> => this.put(`/posters/${id}`, data),
     delete: (id: number): Promise<void> => this.del(`/posters/${id}`),
   };
 

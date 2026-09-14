@@ -39,6 +39,7 @@ export type PosterSumAggregateOutputType = {
 export type PosterMinAggregateOutputType = {
   id: number | null
   imageUrl: string | null
+  title: string | null
   displayOrder: number | null
   createdAt: Date | null
 }
@@ -46,6 +47,7 @@ export type PosterMinAggregateOutputType = {
 export type PosterMaxAggregateOutputType = {
   id: number | null
   imageUrl: string | null
+  title: string | null
   displayOrder: number | null
   createdAt: Date | null
 }
@@ -53,6 +55,7 @@ export type PosterMaxAggregateOutputType = {
 export type PosterCountAggregateOutputType = {
   id: number
   imageUrl: number
+  title: number
   displayOrder: number
   createdAt: number
   _all: number
@@ -72,6 +75,7 @@ export type PosterSumAggregateInputType = {
 export type PosterMinAggregateInputType = {
   id?: true
   imageUrl?: true
+  title?: true
   displayOrder?: true
   createdAt?: true
 }
@@ -79,6 +83,7 @@ export type PosterMinAggregateInputType = {
 export type PosterMaxAggregateInputType = {
   id?: true
   imageUrl?: true
+  title?: true
   displayOrder?: true
   createdAt?: true
 }
@@ -86,6 +91,7 @@ export type PosterMaxAggregateInputType = {
 export type PosterCountAggregateInputType = {
   id?: true
   imageUrl?: true
+  title?: true
   displayOrder?: true
   createdAt?: true
   _all?: true
@@ -180,6 +186,7 @@ export type PosterGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type PosterGroupByOutputType = {
   id: number
   imageUrl: string
+  title: string | null
   displayOrder: number
   createdAt: Date
   _count: PosterCountAggregateOutputType | null
@@ -210,6 +217,7 @@ export type PosterWhereInput = {
   NOT?: Prisma.PosterWhereInput | Prisma.PosterWhereInput[]
   id?: Prisma.IntFilter<"Poster"> | number
   imageUrl?: Prisma.StringFilter<"Poster"> | string
+  title?: Prisma.StringNullableFilter<"Poster"> | string | null
   displayOrder?: Prisma.IntFilter<"Poster"> | number
   createdAt?: Prisma.DateTimeFilter<"Poster"> | Date | string
 }
@@ -217,6 +225,7 @@ export type PosterWhereInput = {
 export type PosterOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -227,6 +236,7 @@ export type PosterWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PosterWhereInput[]
   NOT?: Prisma.PosterWhereInput | Prisma.PosterWhereInput[]
   imageUrl?: Prisma.StringFilter<"Poster"> | string
+  title?: Prisma.StringNullableFilter<"Poster"> | string | null
   displayOrder?: Prisma.IntFilter<"Poster"> | number
   createdAt?: Prisma.DateTimeFilter<"Poster"> | Date | string
 }, "id">
@@ -234,6 +244,7 @@ export type PosterWhereUniqueInput = Prisma.AtLeast<{
 export type PosterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PosterCountOrderByAggregateInput
@@ -249,12 +260,14 @@ export type PosterScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PosterScalarWhereWithAggregatesInput | Prisma.PosterScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Poster"> | number
   imageUrl?: Prisma.StringWithAggregatesFilter<"Poster"> | string
+  title?: Prisma.StringNullableWithAggregatesFilter<"Poster"> | string | null
   displayOrder?: Prisma.IntWithAggregatesFilter<"Poster"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Poster"> | Date | string
 }
 
 export type PosterCreateInput = {
   imageUrl: string
+  title?: string | null
   displayOrder?: number
   createdAt?: Date | string
 }
@@ -262,12 +275,14 @@ export type PosterCreateInput = {
 export type PosterUncheckedCreateInput = {
   id?: number
   imageUrl: string
+  title?: string | null
   displayOrder?: number
   createdAt?: Date | string
 }
 
 export type PosterUpdateInput = {
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -275,6 +290,7 @@ export type PosterUpdateInput = {
 export type PosterUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -282,12 +298,14 @@ export type PosterUncheckedUpdateInput = {
 export type PosterCreateManyInput = {
   id?: number
   imageUrl: string
+  title?: string | null
   displayOrder?: number
   createdAt?: Date | string
 }
 
 export type PosterUpdateManyMutationInput = {
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -295,6 +313,7 @@ export type PosterUpdateManyMutationInput = {
 export type PosterUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -302,6 +321,7 @@ export type PosterUncheckedUpdateManyInput = {
 export type PosterCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -314,6 +334,7 @@ export type PosterAvgOrderByAggregateInput = {
 export type PosterMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -321,6 +342,7 @@ export type PosterMaxOrderByAggregateInput = {
 export type PosterMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -335,6 +357,7 @@ export type PosterSumOrderByAggregateInput = {
 export type PosterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   imageUrl?: boolean
+  title?: boolean
   displayOrder?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["poster"]>
@@ -342,6 +365,7 @@ export type PosterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type PosterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   imageUrl?: boolean
+  title?: boolean
   displayOrder?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["poster"]>
@@ -349,6 +373,7 @@ export type PosterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type PosterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   imageUrl?: boolean
+  title?: boolean
   displayOrder?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["poster"]>
@@ -356,11 +381,12 @@ export type PosterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type PosterSelectScalar = {
   id?: boolean
   imageUrl?: boolean
+  title?: boolean
   displayOrder?: boolean
   createdAt?: boolean
 }
 
-export type PosterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "displayOrder" | "createdAt", ExtArgs["result"]["poster"]>
+export type PosterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "title" | "displayOrder" | "createdAt", ExtArgs["result"]["poster"]>
 
 export type $PosterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Poster"
@@ -368,6 +394,7 @@ export type $PosterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     imageUrl: string
+    title: string | null
     displayOrder: number
     createdAt: Date
   }, ExtArgs["result"]["poster"]>
@@ -795,6 +822,7 @@ export interface Prisma__PosterClient<T, Null = never, ExtArgs extends runtime.T
 export interface PosterFieldRefs {
   readonly id: Prisma.FieldRef<"Poster", 'Int'>
   readonly imageUrl: Prisma.FieldRef<"Poster", 'String'>
+  readonly title: Prisma.FieldRef<"Poster", 'String'>
   readonly displayOrder: Prisma.FieldRef<"Poster", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Poster", 'DateTime'>
 }

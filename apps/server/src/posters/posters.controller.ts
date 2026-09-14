@@ -16,12 +16,12 @@ export class PostersController {
   }
 
   @Post()
-  create(@Body() body: { imageUrl: string; displayOrder?: number }) {
+  create(@Body() body: { imageUrl: string; title?: string; displayOrder?: number }) {
     return this.postersService.create(body);
   }
 
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: { imageUrl?: string; displayOrder?: number }) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: { imageUrl?: string; title?: string; displayOrder?: number }) {
     return this.postersService.update(id, body);
   }
 

@@ -36,7 +36,7 @@ export class DataGridComponent {
   data = input.required<GridRow[]>();
 
   /** 검색 플레이스홀더 */
-  searchPlaceholder = input<string>('검색어를 입력하세요');
+  searchPlaceholder = input<string>('제목, 성명, 연락처, 메모로 검색해주세요.');
 
   /** 검색 표시 여부 */
   showSearch = input<boolean>(true);

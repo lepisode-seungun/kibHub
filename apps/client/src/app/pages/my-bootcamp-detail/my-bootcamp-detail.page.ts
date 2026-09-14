@@ -244,7 +244,10 @@ export class MyBootcampDetailPage implements OnInit {
       this.bootcampTitle.set(bootcamp.name || '');
 
       // 날짜 포맷
-      const fmt = (d: string) => d ? d.substring(0, 10) : '';
+      const fmt = (d: string) => {
+        const dt = new Date(d);
+        return `${dt.getFullYear()}. ${String(dt.getMonth() + 1).padStart(2, '0')}. ${String(dt.getDate()).padStart(2, '0')}일`;
+      };
       this.dateRange.set(bootcamp.startDate && bootcamp.endDate
         ? `${fmt(bootcamp.startDate)} ~ ${fmt(bootcamp.endDate)}` : '');
 

@@ -28,8 +28,9 @@ interface PosterGridRow {
   [key: string]: unknown;
   id: number;
   image: string;
+  title: string;
   createdAt: string;
-  _raw: { id: number; imageUrl?: string };
+  _raw: { id: number; imageUrl?: string; title?: string };
 }
 
 interface PartnerGridRow {
@@ -125,6 +126,7 @@ export class BootcampIntroPage implements OnInit {
     { key: 'content', label: '내용' },
     { key: 'link', label: '링크' },
     { key: 'createdAt', label: '등록일시', width: '150px', headerColor: 'text-gray-600' },
+    { key: '_drag', label: '', width: '60px', type: 'drag' },
   ];
 
   bannerData = signal<BannerGridRow[]>([]);
@@ -208,7 +210,9 @@ export class BootcampIntroPage implements OnInit {
   posterColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '80px' },
     { key: 'image', label: '이미지', width: '200px', type: 'image' },
+    { key: 'title', label: '제목' },
     { key: 'createdAt', label: '등록일시', headerColor: 'text-gray-600' },
+    { key: '_drag', label: '', width: '60px', type: 'drag' },
   ];
 
   posterData = signal<PosterGridRow[]>([]);
@@ -219,6 +223,7 @@ export class BootcampIntroPage implements OnInit {
       this.posterData.set(data.map(p => ({
         id: p.id,
         image: p.imageUrl || '',
+        title: p.title || '',
         createdAt: formatDate(p.createdAt),
         _raw: p,
       })));
@@ -259,6 +264,7 @@ export class BootcampIntroPage implements OnInit {
   posterDrawerMode = signal<'add' | 'edit'>('add');
   posterImage = signal<{ name: string; size: string; preview: string; file?: File } | null>(null);
   posterExistingImageUrl = signal('');
+  posterTitle = signal('');
   private editingPosterId: number | null = null;
 
   // 포스터 삭제 확인 모달
@@ -270,6 +276,7 @@ export class BootcampIntroPage implements OnInit {
     this.editingPosterId = mode === 'edit' && row ? (row._raw?.id || row.id) : null;
     this.posterImage.set(null);
     this.posterExistingImageUrl.set(mode === 'edit' && row ? (row._raw?.imageUrl || row.image || '') : '');
+    this.posterTitle.set(mode === 'edit' && row ? (row._raw?.title || row.title || '') : '');
     this.showPosterDrawer.set(true);
   }
 
@@ -300,6 +307,7 @@ export class BootcampIntroPage implements OnInit {
   async submitPosterDrawer(): Promise<void> {
     const img = this.posterImage();
     const isEdit = this.posterDrawerMode() === 'edit' && this.editingPosterId;
+    const title = this.posterTitle();
 
     if (!img?.file && !isEdit) {
       this.toast.warning('이미지를 업로드하세요.');
@@ -310,15 +318,15 @@ export class BootcampIntroPage implements OnInit {
       if (img?.file) {
         const uploaded = await this.api.upload.single(img.file, 'posters');
         if (isEdit) {
-          await this.api.posters.update(this.editingPosterId!, { imageUrl: uploaded.url });
+          await this.api.posters.update(this.editingPosterId!, { imageUrl: uploaded.url, title });
           this.toast.success('포스터가 수정되었습니다.');
         } else {
-          await this.api.posters.create({ imageUrl: uploaded.url });
+          await this.api.posters.create({ imageUrl: uploaded.url, title });
           this.toast.success('포스터가 등록되었습니다.');
         }
       } else if (isEdit) {
-        // 이미지 변경 없이 닫기
-        this.toast.success('변경사항이 없습니다.');
+        await this.api.posters.update(this.editingPosterId!, { title });
+        this.toast.success('포스터가 수정되었습니다.');
       }
       this.showPosterDrawer.set(false);
       await this.loadPosters();
@@ -357,6 +365,19 @@ export class BootcampIntroPage implements OnInit {
   onPosterDeleteCancel(): void {
     this.showPosterDeleteDialog.set(false);
     this.posterDeleteTargetId.set(null);
+  }
+
+  async onPosterReorder(reorderedRows: GridRow[]): Promise<void> {
+    const updated = reorderedRows as unknown as PosterGridRow[];
+    this.posterData.set(updated);
+    try {
+      for (let i = 0; i < updated.length; i++) {
+        const id = (updated[i]._raw as { id: number })?.id || updated[i].id;
+        await this.api.posters.update(id, { displayOrder: i });
+      }
+    } catch (e) {
+      console.error('포스터 순서 저장 실패:', e);
+    }
   }
 
   // ===== 파트너 드로어 =====
@@ -748,6 +769,19 @@ export class BootcampIntroPage implements OnInit {
       await this.loadBanners();
     } catch (e) {
       console.error('배너 상태 변경 실패:', e);
+    }
+  }
+
+  async onBannerReorder(reorderedRows: GridRow[]): Promise<void> {
+    const updated = reorderedRows as unknown as BannerGridRow[];
+    this.bannerData.set(updated);
+    try {
+      for (let i = 0; i < updated.length; i++) {
+        const id = (updated[i]._raw as { id: number })?.id || updated[i].id;
+        await this.api.banners.update(id, { sortOrder: i });
+      }
+    } catch (e) {
+      console.error('배너 순서 저장 실패:', e);
     }
   }
 
