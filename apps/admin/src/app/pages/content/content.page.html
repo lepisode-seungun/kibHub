@@ -1,5 +1,20 @@
+<!-- ===== 타입 탭 바 ===== -->
+<div class="flex items-center gap-1 mb-4 border-b border-gray-200">
+  @for (tab of tabs; track tab) {
+    <button
+      class="flex items-center justify-center px-4 py-2.5 border-none cursor-pointer font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] transition-colors bg-transparent"
+      [ngClass]="selectedTab() === tab
+        ? 'text-[#3C8EEE] border-b-2 border-[#3C8EEE]'
+        : 'text-gray-400 hover:text-gray-600'"
+      [style.borderBottom]="selectedTab() === tab ? '2px solid #3C8EEE' : '2px solid transparent'"
+      (click)="selectTab(tab)">
+      {{ tab }}
+    </button>
+  }
+</div>
+
 <adm-data-grid
-  [columns]="columns"
+  [columns]="columns()"
   [data]="contents()"
   searchPlaceholder="제목, 성명, 연락처, 메모로 검색해주세요."
   [contextMenuItemsFn]="gridContextMenuFn"
@@ -11,6 +26,7 @@
     카테고리 설정
   </button>
 </adm-data-grid>
+
 
 <!-- ===== 삭제 확인 다이얼로그 ===== -->
 @if (showDeleteDialog()) {

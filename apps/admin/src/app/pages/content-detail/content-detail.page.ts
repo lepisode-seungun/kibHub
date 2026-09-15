@@ -1,5 +1,6 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, HostListener } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
@@ -57,6 +58,11 @@ export class ContentDetailPage implements OnInit {
 
   // ===== 콘텐츠 데이터 =====
   content = signal<Content | null>(null);
+  private sanitizer = inject(DomSanitizer);
+  safeBody = computed(() => {
+    const body = this.content()?.body || '-';
+    return this.sanitizer.bypassSecurityTrustHtml(body);
+  });
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));

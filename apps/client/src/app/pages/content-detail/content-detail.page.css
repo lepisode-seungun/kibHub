@@ -172,6 +172,12 @@
   overflow: hidden;
 }
 
+/* 애니메이션 종료 후 overflow 해제 (작업 과정 등 긴 콘텐츠 노출) */
+.accordion-content.accordion-done {
+  overflow: visible;
+  max-height: none;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -181,7 +187,7 @@
   }
   to {
     opacity: 1;
-    max-height: 600px;
+    max-height: 3000px;
     padding-top: 24px;
     padding-bottom: 24px;
   }
@@ -194,6 +200,38 @@
   padding: 24px;
   gap: 24px;
   background: #1C1B20;
+}
+
+/* 글 타입 본문 리치 텍스트 스타일 */
+:host ::ng-deep .detail-writing-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+:host ::ng-deep .detail-writing-body ul,
+:host ::ng-deep .detail-writing-body ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+:host ::ng-deep .detail-writing-body li {
+  margin: 4px 0;
+}
+
+:host ::ng-deep .detail-writing-body b,
+:host ::ng-deep .detail-writing-body strong {
+  font-weight: 700;
+}
+
+:host ::ng-deep .detail-writing-body i,
+:host ::ng-deep .detail-writing-body em {
+  font-style: italic;
+}
+
+:host ::ng-deep .detail-writing-body u {
+  text-decoration: underline;
 }
 
 /* detail-description-inner -> TW inline */

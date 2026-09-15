@@ -68,9 +68,13 @@
 
     <!-- Description (아코디언 - isDescOpen일 때만 표시) -->
     @if (isDescOpen()) {
-      <div class="detail-description accordion-content">
+      <div class="detail-description accordion-content" (animationend)="onAccordionDone($event)">
         <div class="flex flex-col gap-2 w-full">
-          <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
+          @if (contentType === 'WRITING') {
+            <div class="detail-writing-body font-suit font-medium text-base leading-[180%] tracking-tight text-zinc-300 m-0" [innerHTML]="safeDescription"></div>
+          } @else {
+            <p class="font-suit font-medium text-base leading-[150%] tracking-tight text-zinc-300 m-0">{{ description }}</p>
+          }
         </div>
         <div class="flex flex-wrap items-center gap-3">
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">글</span>
@@ -93,6 +97,66 @@
           <span class="font-suit font-medium text-sm text-zinc-500">·</span>
           <span class="font-suit font-medium text-sm leading-[150%] tracking-tight text-zinc-500">{{ dateStr }}</span>
         </div>
+
+        <!-- 웹툰 전용: 작품 정보 -->
+        @if (contentType === 'WEBTOON' && (webtoonGenre || targetAudience || webtoonTools.length || episodeNumber)) {
+          <div class="detail-art-info">
+            <div class="detail-art-divider">
+              <span class="detail-art-divider-icon">📖</span>
+              <span class="font-suit font-bold text-sm text-zinc-400">웹툰 정보</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="detail-art-grid">
+              @if (webtoonGenre) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">장르</span>
+                  <span class="detail-art-value">{{ webtoonGenre }}</span>
+                </div>
+              }
+              @if (targetAudience) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">독자층</span>
+                  <span class="detail-art-value">{{ targetAudience }}</span>
+                </div>
+              }
+              @if (webtoonTools.length > 0) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">도구</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    @for (tool of webtoonTools; track tool) {
+                      <span class="detail-art-tool-tag">{{ tool }}</span>
+                    }
+                  </div>
+                </div>
+              }
+              @if (episodeNumber) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">에피소드</span>
+                  <span class="detail-art-value" style="color: #38C4D1;">{{ episodeNumber }}화</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 웹툰 전용: 콘티/스토리보드 -->
+        @if (contentType === 'WEBTOON' && storyboardImages.length > 0) {
+          <div class="detail-art-process">
+            <div class="detail-art-divider">
+              <span class="detail-art-divider-icon">🎬</span>
+              <span class="font-suit font-bold text-sm text-zinc-400">콘티/스토리보드</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="detail-process-grid">
+              @for (img of storyboardImages; track $index) {
+                <div class="detail-process-item" style="cursor: pointer;" (click)="openStoryboardViewer($index)" role="button" tabindex="0" (keydown.enter)="openStoryboardViewer($index)">
+                  <img [src]="img" alt="콘티 {{ $index + 1 }}" class="detail-process-img" />
+                  <span class="detail-process-label font-suit font-semibold text-[11px] text-zinc-400">{{ $index + 1 }}컷</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
 
         <!-- 그림 전용: 작품 정보 -->
         @if (contentType === 'ILLUSTRATION' && (artMedium || artTools.length || difficulty || workDuration || resolution)) {
@@ -170,7 +234,7 @@
             </div>
             <div class="detail-process-grid">
               @for (img of processImages; track $index) {
-                <div class="detail-process-item">
+                <div class="detail-process-item" style="cursor: pointer;" (click)="openProcessViewer($index)" role="button" tabindex="0" (keydown.enter)="openProcessViewer($index)">
                   <img [src]="img" alt="과정 {{ $index + 1 }}" class="detail-process-img" />
                   <span class="detail-process-label font-suit font-semibold text-[11px] text-zinc-400">{{ $index + 1 }}단계</span>
                 </div>
@@ -178,6 +242,78 @@
             </div>
           </div>
         }
+
+        <!-- 글 전용: 작품 정보 -->
+        @if (contentType === 'WRITING' && (writingGenre || writingTools.length || wordCount)) {
+          <div class="detail-art-info">
+            <div class="detail-art-divider">
+              <span class="font-suit font-bold text-sm text-zinc-400">글 정보</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="detail-art-grid">
+              @if (writingGenre) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">장르</span>
+                  <span class="detail-art-value">{{ writingGenre }}</span>
+                </div>
+              }
+              @if (wordCount) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">글자 수</span>
+                  <span class="detail-art-value">{{ wordCount | number }}자</span>
+                </div>
+              }
+              @if (writingTools.length > 0) {
+                <div class="detail-art-item">
+                  <span class="detail-art-label">사용 도구</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    @for (tool of writingTools; track tool) {
+                      <span class="detail-art-tag">{{ tool }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 글 전용: 참고 자료 -->
+        @if (contentType === 'WRITING' && referenceUrls.length > 0) {
+          <div class="detail-art-info">
+            <div class="detail-art-divider">
+              <span class="font-suit font-bold text-sm text-zinc-400">참고 자료</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              @for (url of referenceUrls; track url) {
+                <a [href]="url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-800/50 transition-colors" style="text-decoration: none;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#71717A"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                  <span class="font-suit font-medium text-sm text-[#AF91FF] overflow-hidden text-ellipsis whitespace-nowrap">{{ url }}</span>
+                </a>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 글 전용: 첨부파일 -->
+        @if (contentType === 'WRITING' && attachments.length > 0) {
+          <div class="detail-art-info">
+            <div class="detail-art-divider">
+              <span class="font-suit font-bold text-sm text-zinc-400">첨부파일</span>
+              <div class="detail-art-divider-line"></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              @for (file of attachments; track file.url) {
+                <a [href]="file.url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors" style="text-decoration: none;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                  <span class="font-suit font-medium text-sm text-zinc-300">{{ file.name }}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#52525B" class="ml-auto"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                </a>
+              }
+            </div>
+          </div>
+        }
+
       </div>
     }
 
@@ -765,6 +901,23 @@
     (closed)="closeViewer()"
   />
 
+  <!-- ===== 작업 과정 뷰어 ===== -->
+  <app-image-viewer
+    [images]="processViewerImages"
+    [isOpen]="isProcessViewerOpen()"
+    [startPage]="currentProcessPage()"
+    [pageLabel]="'단계'"
+    (closed)="closeProcessViewer()"
+  />
+
+  <!-- ===== 콘티/스토리보드 뷰어 ===== -->
+  <app-image-viewer
+    [images]="storyboardViewerImages"
+    [isOpen]="isStoryboardViewerOpen()"
+    [startPage]="currentStoryboardPage()"
+    [pageLabel]="'컷'"
+    (closed)="closeStoryboardViewer()"
+  />
 
   <!-- ===== 댓글 삭제 확인 모달 ===== -->
   @if (isDeleteModalOpen()) {

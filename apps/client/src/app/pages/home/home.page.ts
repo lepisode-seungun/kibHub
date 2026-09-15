@@ -56,6 +56,13 @@ interface ContentCard {
   difficulty?: string;
   artTools?: string[];
   artMedium?: string;
+  // 웹툰 전용
+  webtoonGenre?: string;
+  targetAudience?: string;
+  webtoonTools?: string[];
+  episodeNumber?: number | null;
+  // 글 전용
+  writingGenre?: string;
 }
 
 interface MentorCard {
@@ -206,6 +213,11 @@ export class HomePage implements AfterViewInit, OnInit {
         difficulty: c.difficulty || '',
         artTools: c.artTools || [],
         artMedium: c.artMedium || '',
+        webtoonGenre: c.webtoonGenre || '',
+        targetAudience: c.targetAudience || '',
+        webtoonTools: c.webtoonTools || [],
+        episodeNumber: c.episodeNumber ?? null,
+        writingGenre: c.writingGenre || '',
       });
       // 첫 12개는 갤러리
       this.contentCards.set(contents.slice(0, 12).map((c, i) => ({

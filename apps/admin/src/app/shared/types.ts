@@ -80,6 +80,12 @@ export interface ContentRow {
   comments: number;
   views: number;
   createdAt: string;
+  // 그림 전용
+  artMedium?: string;
+  difficulty?: string;
+  // 웹툰 전용
+  webtoonGenre?: string;
+  targetAudience?: string;
 }
 
 /** 댓글 행 */

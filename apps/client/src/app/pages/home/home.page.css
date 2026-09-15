@@ -669,6 +669,42 @@
   color: #AF91FF;
 }
 
+.gallery-genre-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: rgba(56, 196, 209, 0.15);
+  border-radius: 4px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #38C4D1;
+}
+
+.gallery-audience-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: rgba(175, 145, 255, 0.12);
+  border-radius: 4px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #C4B5FD;
+}
+
+.gallery-episode-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: rgba(253, 184, 19, 0.15);
+  border-radius: 4px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: #FDB813;
+}
+
 /* [TW-KEEP] rotated square arrow */
 .gallery-comment-arrow {
   position: absolute;

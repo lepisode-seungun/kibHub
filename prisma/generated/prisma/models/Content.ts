@@ -28,6 +28,8 @@ export type AggregateContent = {
 
 export type ContentAvgAggregateOutputType = {
   id: number | null
+  episodeNumber: number | null
+  wordCount: number | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -35,6 +37,8 @@ export type ContentAvgAggregateOutputType = {
 
 export type ContentSumAggregateOutputType = {
   id: number | null
+  episodeNumber: number | null
+  wordCount: number | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -52,6 +56,11 @@ export type ContentMinAggregateOutputType = {
   workDuration: string | null
   difficulty: string | null
   resolution: string | null
+  webtoonGenre: string | null
+  targetAudience: string | null
+  episodeNumber: number | null
+  writingGenre: string | null
+  wordCount: number | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -71,6 +80,11 @@ export type ContentMaxAggregateOutputType = {
   workDuration: string | null
   difficulty: string | null
   resolution: string | null
+  webtoonGenre: string | null
+  targetAudience: string | null
+  episodeNumber: number | null
+  writingGenre: string | null
+  wordCount: number | null
   viewCount: number | null
   categoryId: number | null
   authorId: number | null
@@ -93,6 +107,16 @@ export type ContentCountAggregateOutputType = {
   difficulty: number
   resolution: number
   processImages: number
+  webtoonGenre: number
+  targetAudience: number
+  webtoonTools: number
+  episodeNumber: number
+  storyboardImages: number
+  writingGenre: number
+  wordCount: number
+  referenceUrls: number
+  writingTools: number
+  attachments: number
   viewCount: number
   categoryId: number
   authorId: number
@@ -104,6 +128,8 @@ export type ContentCountAggregateOutputType = {
 
 export type ContentAvgAggregateInputType = {
   id?: true
+  episodeNumber?: true
+  wordCount?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -111,6 +137,8 @@ export type ContentAvgAggregateInputType = {
 
 export type ContentSumAggregateInputType = {
   id?: true
+  episodeNumber?: true
+  wordCount?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -128,6 +156,11 @@ export type ContentMinAggregateInputType = {
   workDuration?: true
   difficulty?: true
   resolution?: true
+  webtoonGenre?: true
+  targetAudience?: true
+  episodeNumber?: true
+  writingGenre?: true
+  wordCount?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -147,6 +180,11 @@ export type ContentMaxAggregateInputType = {
   workDuration?: true
   difficulty?: true
   resolution?: true
+  webtoonGenre?: true
+  targetAudience?: true
+  episodeNumber?: true
+  writingGenre?: true
+  wordCount?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -169,6 +207,16 @@ export type ContentCountAggregateInputType = {
   difficulty?: true
   resolution?: true
   processImages?: true
+  webtoonGenre?: true
+  targetAudience?: true
+  webtoonTools?: true
+  episodeNumber?: true
+  storyboardImages?: true
+  writingGenre?: true
+  wordCount?: true
+  referenceUrls?: true
+  writingTools?: true
+  attachments?: true
   viewCount?: true
   categoryId?: true
   authorId?: true
@@ -278,6 +326,16 @@ export type ContentGroupByOutputType = {
   difficulty: string | null
   resolution: string | null
   processImages: string[]
+  webtoonGenre: string | null
+  targetAudience: string | null
+  webtoonTools: string[]
+  episodeNumber: number | null
+  storyboardImages: string[]
+  writingGenre: string | null
+  wordCount: number | null
+  referenceUrls: string[]
+  writingTools: string[]
+  attachments: runtime.JsonValue | null
   viewCount: number
   categoryId: number | null
   authorId: number
@@ -323,6 +381,16 @@ export type ContentWhereInput = {
   difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
   resolution?: Prisma.StringNullableFilter<"Content"> | string | null
   processImages?: Prisma.StringNullableListFilter<"Content">
+  webtoonGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  targetAudience?: Prisma.StringNullableFilter<"Content"> | string | null
+  webtoonTools?: Prisma.StringNullableListFilter<"Content">
+  episodeNumber?: Prisma.IntNullableFilter<"Content"> | number | null
+  storyboardImages?: Prisma.StringNullableListFilter<"Content">
+  writingGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  wordCount?: Prisma.IntNullableFilter<"Content"> | number | null
+  referenceUrls?: Prisma.StringNullableListFilter<"Content">
+  writingTools?: Prisma.StringNullableListFilter<"Content">
+  attachments?: Prisma.JsonNullableFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -349,6 +417,16 @@ export type ContentOrderByWithRelationInput = {
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   resolution?: Prisma.SortOrderInput | Prisma.SortOrder
   processImages?: Prisma.SortOrder
+  webtoonGenre?: Prisma.SortOrderInput | Prisma.SortOrder
+  targetAudience?: Prisma.SortOrderInput | Prisma.SortOrder
+  webtoonTools?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  storyboardImages?: Prisma.SortOrder
+  writingGenre?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceUrls?: Prisma.SortOrder
+  writingTools?: Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -378,6 +456,16 @@ export type ContentWhereUniqueInput = Prisma.AtLeast<{
   difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
   resolution?: Prisma.StringNullableFilter<"Content"> | string | null
   processImages?: Prisma.StringNullableListFilter<"Content">
+  webtoonGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  targetAudience?: Prisma.StringNullableFilter<"Content"> | string | null
+  webtoonTools?: Prisma.StringNullableListFilter<"Content">
+  episodeNumber?: Prisma.IntNullableFilter<"Content"> | number | null
+  storyboardImages?: Prisma.StringNullableListFilter<"Content">
+  writingGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  wordCount?: Prisma.IntNullableFilter<"Content"> | number | null
+  referenceUrls?: Prisma.StringNullableListFilter<"Content">
+  writingTools?: Prisma.StringNullableListFilter<"Content">
+  attachments?: Prisma.JsonNullableFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -404,6 +492,16 @@ export type ContentOrderByWithAggregationInput = {
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   resolution?: Prisma.SortOrderInput | Prisma.SortOrder
   processImages?: Prisma.SortOrder
+  webtoonGenre?: Prisma.SortOrderInput | Prisma.SortOrder
+  targetAudience?: Prisma.SortOrderInput | Prisma.SortOrder
+  webtoonTools?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  storyboardImages?: Prisma.SortOrder
+  writingGenre?: Prisma.SortOrderInput | Prisma.SortOrder
+  wordCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceUrls?: Prisma.SortOrder
+  writingTools?: Prisma.SortOrder
+  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -434,6 +532,16 @@ export type ContentScalarWhereWithAggregatesInput = {
   difficulty?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
   resolution?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
   processImages?: Prisma.StringNullableListFilter<"Content">
+  webtoonGenre?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  targetAudience?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  webtoonTools?: Prisma.StringNullableListFilter<"Content">
+  episodeNumber?: Prisma.IntNullableWithAggregatesFilter<"Content"> | number | null
+  storyboardImages?: Prisma.StringNullableListFilter<"Content">
+  writingGenre?: Prisma.StringNullableWithAggregatesFilter<"Content"> | string | null
+  wordCount?: Prisma.IntNullableWithAggregatesFilter<"Content"> | number | null
+  referenceUrls?: Prisma.StringNullableListFilter<"Content">
+  writingTools?: Prisma.StringNullableListFilter<"Content">
+  attachments?: Prisma.JsonNullableWithAggregatesFilter<"Content">
   viewCount?: Prisma.IntWithAggregatesFilter<"Content"> | number
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Content"> | number | null
   authorId?: Prisma.IntWithAggregatesFilter<"Content"> | number
@@ -455,6 +563,16 @@ export type ContentCreateInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -479,6 +597,16 @@ export type ContentUncheckedCreateInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -502,6 +630,16 @@ export type ContentUpdateInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -526,6 +664,16 @@ export type ContentUncheckedUpdateInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -550,6 +698,16 @@ export type ContentCreateManyInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -571,6 +729,16 @@ export type ContentUpdateManyMutationInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -591,6 +759,16 @@ export type ContentUncheckedUpdateManyInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -621,6 +799,16 @@ export type ContentCountOrderByAggregateInput = {
   difficulty?: Prisma.SortOrder
   resolution?: Prisma.SortOrder
   processImages?: Prisma.SortOrder
+  webtoonGenre?: Prisma.SortOrder
+  targetAudience?: Prisma.SortOrder
+  webtoonTools?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  storyboardImages?: Prisma.SortOrder
+  writingGenre?: Prisma.SortOrder
+  wordCount?: Prisma.SortOrder
+  referenceUrls?: Prisma.SortOrder
+  writingTools?: Prisma.SortOrder
+  attachments?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -630,6 +818,8 @@ export type ContentCountOrderByAggregateInput = {
 
 export type ContentAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  wordCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -647,6 +837,11 @@ export type ContentMaxOrderByAggregateInput = {
   workDuration?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   resolution?: Prisma.SortOrder
+  webtoonGenre?: Prisma.SortOrder
+  targetAudience?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  writingGenre?: Prisma.SortOrder
+  wordCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -666,6 +861,11 @@ export type ContentMinOrderByAggregateInput = {
   workDuration?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   resolution?: Prisma.SortOrder
+  webtoonGenre?: Prisma.SortOrder
+  targetAudience?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  writingGenre?: Prisma.SortOrder
+  wordCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -675,6 +875,8 @@ export type ContentMinOrderByAggregateInput = {
 
 export type ContentSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  episodeNumber?: Prisma.SortOrder
+  wordCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -707,6 +909,22 @@ export type ContentCreateprocessImagesInput = {
   set: string[]
 }
 
+export type ContentCreatewebtoonToolsInput = {
+  set: string[]
+}
+
+export type ContentCreatestoryboardImagesInput = {
+  set: string[]
+}
+
+export type ContentCreatereferenceUrlsInput = {
+  set: string[]
+}
+
+export type ContentCreatewritingToolsInput = {
+  set: string[]
+}
+
 export type EnumContentTypeFieldUpdateOperationsInput = {
   set?: $Enums.ContentType
 }
@@ -726,12 +944,32 @@ export type ContentUpdateprocessImagesInput = {
   push?: string | string[]
 }
 
+export type ContentUpdatewebtoonToolsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type ContentUpdatestoryboardImagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ContentUpdatereferenceUrlsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ContentUpdatewritingToolsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type ContentCreateNestedManyWithoutCategoryInput = {
@@ -860,6 +1098,16 @@ export type ContentCreateWithoutCategoryInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -883,6 +1131,16 @@ export type ContentUncheckedCreateWithoutCategoryInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   authorId: number
   createdAt?: Date | string
@@ -935,6 +1193,16 @@ export type ContentScalarWhereInput = {
   difficulty?: Prisma.StringNullableFilter<"Content"> | string | null
   resolution?: Prisma.StringNullableFilter<"Content"> | string | null
   processImages?: Prisma.StringNullableListFilter<"Content">
+  webtoonGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  targetAudience?: Prisma.StringNullableFilter<"Content"> | string | null
+  webtoonTools?: Prisma.StringNullableListFilter<"Content">
+  episodeNumber?: Prisma.IntNullableFilter<"Content"> | number | null
+  storyboardImages?: Prisma.StringNullableListFilter<"Content">
+  writingGenre?: Prisma.StringNullableFilter<"Content"> | string | null
+  wordCount?: Prisma.IntNullableFilter<"Content"> | number | null
+  referenceUrls?: Prisma.StringNullableListFilter<"Content">
+  writingTools?: Prisma.StringNullableListFilter<"Content">
+  attachments?: Prisma.JsonNullableFilter<"Content">
   viewCount?: Prisma.IntFilter<"Content"> | number
   categoryId?: Prisma.IntNullableFilter<"Content"> | number | null
   authorId?: Prisma.IntFilter<"Content"> | number
@@ -956,6 +1224,16 @@ export type ContentCreateWithoutAlbumContentsInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -979,6 +1257,16 @@ export type ContentUncheckedCreateWithoutAlbumContentsInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -1017,6 +1305,16 @@ export type ContentUpdateWithoutAlbumContentsInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1040,6 +1338,16 @@ export type ContentUncheckedUpdateWithoutAlbumContentsInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1062,6 +1370,16 @@ export type ContentCreateWithoutCommentsInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1085,6 +1403,16 @@ export type ContentUncheckedCreateWithoutCommentsInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   authorId: number
@@ -1123,6 +1451,16 @@ export type ContentUpdateWithoutCommentsInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1146,6 +1484,16 @@ export type ContentUncheckedUpdateWithoutCommentsInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1168,6 +1516,16 @@ export type ContentCreateWithoutAuthorInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1191,6 +1549,16 @@ export type ContentUncheckedCreateWithoutAuthorInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
@@ -1240,6 +1608,16 @@ export type ContentCreateManyCategoryInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   authorId: number
   createdAt?: Date | string
@@ -1260,6 +1638,16 @@ export type ContentUpdateWithoutCategoryInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1283,6 +1671,16 @@ export type ContentUncheckedUpdateWithoutCategoryInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1306,6 +1704,16 @@ export type ContentUncheckedUpdateManyWithoutCategoryInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1327,6 +1735,16 @@ export type ContentCreateManyAuthorInput = {
   difficulty?: string | null
   resolution?: string | null
   processImages?: Prisma.ContentCreateprocessImagesInput | string[]
+  webtoonGenre?: string | null
+  targetAudience?: string | null
+  webtoonTools?: Prisma.ContentCreatewebtoonToolsInput | string[]
+  episodeNumber?: number | null
+  storyboardImages?: Prisma.ContentCreatestoryboardImagesInput | string[]
+  writingGenre?: string | null
+  wordCount?: number | null
+  referenceUrls?: Prisma.ContentCreatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentCreatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: number
   categoryId?: number | null
   createdAt?: Date | string
@@ -1347,6 +1765,16 @@ export type ContentUpdateWithoutAuthorInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1370,6 +1798,16 @@ export type ContentUncheckedUpdateWithoutAuthorInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1393,6 +1831,16 @@ export type ContentUncheckedUpdateManyWithoutAuthorInput = {
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processImages?: Prisma.ContentUpdateprocessImagesInput | string[]
+  webtoonGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetAudience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  webtoonTools?: Prisma.ContentUpdatewebtoonToolsInput | string[]
+  episodeNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyboardImages?: Prisma.ContentUpdatestoryboardImagesInput | string[]
+  writingGenre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  referenceUrls?: Prisma.ContentUpdatereferenceUrlsInput | string[]
+  writingTools?: Prisma.ContentUpdatewritingToolsInput | string[]
+  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1454,6 +1902,16 @@ export type ContentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   difficulty?: boolean
   resolution?: boolean
   processImages?: boolean
+  webtoonGenre?: boolean
+  targetAudience?: boolean
+  webtoonTools?: boolean
+  episodeNumber?: boolean
+  storyboardImages?: boolean
+  writingGenre?: boolean
+  wordCount?: boolean
+  referenceUrls?: boolean
+  writingTools?: boolean
+  attachments?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1481,6 +1939,16 @@ export type ContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   difficulty?: boolean
   resolution?: boolean
   processImages?: boolean
+  webtoonGenre?: boolean
+  targetAudience?: boolean
+  webtoonTools?: boolean
+  episodeNumber?: boolean
+  storyboardImages?: boolean
+  writingGenre?: boolean
+  wordCount?: boolean
+  referenceUrls?: boolean
+  writingTools?: boolean
+  attachments?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1505,6 +1973,16 @@ export type ContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   difficulty?: boolean
   resolution?: boolean
   processImages?: boolean
+  webtoonGenre?: boolean
+  targetAudience?: boolean
+  webtoonTools?: boolean
+  episodeNumber?: boolean
+  storyboardImages?: boolean
+  writingGenre?: boolean
+  wordCount?: boolean
+  referenceUrls?: boolean
+  writingTools?: boolean
+  attachments?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1529,6 +2007,16 @@ export type ContentSelectScalar = {
   difficulty?: boolean
   resolution?: boolean
   processImages?: boolean
+  webtoonGenre?: boolean
+  targetAudience?: boolean
+  webtoonTools?: boolean
+  episodeNumber?: boolean
+  storyboardImages?: boolean
+  writingGenre?: boolean
+  wordCount?: boolean
+  referenceUrls?: boolean
+  writingTools?: boolean
+  attachments?: boolean
   viewCount?: boolean
   categoryId?: boolean
   authorId?: boolean
@@ -1536,7 +2024,7 @@ export type ContentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "images" | "artMedium" | "artTools" | "artistNote" | "workDuration" | "difficulty" | "resolution" | "processImages" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
+export type ContentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "type" | "title" | "body" | "thumbnail" | "images" | "artMedium" | "artTools" | "artistNote" | "workDuration" | "difficulty" | "resolution" | "processImages" | "webtoonGenre" | "targetAudience" | "webtoonTools" | "episodeNumber" | "storyboardImages" | "writingGenre" | "wordCount" | "referenceUrls" | "writingTools" | "attachments" | "viewCount" | "categoryId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
 export type ContentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Content$categoryArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1576,6 +2064,16 @@ export type $ContentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     difficulty: string | null
     resolution: string | null
     processImages: string[]
+    webtoonGenre: string | null
+    targetAudience: string | null
+    webtoonTools: string[]
+    episodeNumber: number | null
+    storyboardImages: string[]
+    writingGenre: string | null
+    wordCount: number | null
+    referenceUrls: string[]
+    writingTools: string[]
+    attachments: runtime.JsonValue | null
     viewCount: number
     categoryId: number | null
     authorId: number
@@ -2022,6 +2520,16 @@ export interface ContentFieldRefs {
   readonly difficulty: Prisma.FieldRef<"Content", 'String'>
   readonly resolution: Prisma.FieldRef<"Content", 'String'>
   readonly processImages: Prisma.FieldRef<"Content", 'String[]'>
+  readonly webtoonGenre: Prisma.FieldRef<"Content", 'String'>
+  readonly targetAudience: Prisma.FieldRef<"Content", 'String'>
+  readonly webtoonTools: Prisma.FieldRef<"Content", 'String[]'>
+  readonly episodeNumber: Prisma.FieldRef<"Content", 'Int'>
+  readonly storyboardImages: Prisma.FieldRef<"Content", 'String[]'>
+  readonly writingGenre: Prisma.FieldRef<"Content", 'String'>
+  readonly wordCount: Prisma.FieldRef<"Content", 'Int'>
+  readonly referenceUrls: Prisma.FieldRef<"Content", 'String[]'>
+  readonly writingTools: Prisma.FieldRef<"Content", 'String[]'>
+  readonly attachments: Prisma.FieldRef<"Content", 'Json'>
   readonly viewCount: Prisma.FieldRef<"Content", 'Int'>
   readonly categoryId: Prisma.FieldRef<"Content", 'Int'>
   readonly authorId: Prisma.FieldRef<"Content", 'Int'>

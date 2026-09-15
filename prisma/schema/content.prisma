@@ -15,6 +15,18 @@ model Content {
   difficulty      String?
   resolution      String?
   processImages   String[]     @default([])
+  // 웹툰 전용 필드
+  webtoonGenre      String?
+  targetAudience    String?
+  webtoonTools      String[]     @default([])
+  episodeNumber     Int?
+  storyboardImages  String[]     @default([])
+  // 글 전용 필드
+  writingGenre      String?
+  wordCount         Int?
+  referenceUrls     String[]     @default([])
+  writingTools      String[]     @default([])
+  attachments       Json?
   viewCount  Int              @default(0)
   categoryId Int?
   category   ContentCategory? @relation(fields: [categoryId], references: [id])

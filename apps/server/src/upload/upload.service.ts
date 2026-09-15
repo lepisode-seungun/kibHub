@@ -14,6 +14,10 @@ const DOC_MIME = [
   'application/vnd.hancom.hwp',
   'application/haansofthwpx.hwpx',
   'application/zip',
+  'text/plain',
+  'text/markdown',
+  'text/rtf',
+  'application/rtf',
 ];
 
 const ALLOWED_MIME = [...IMAGE_MIME, ...VIDEO_MIME, ...DOC_MIME];
@@ -95,9 +99,9 @@ export class UploadService {
       return;
     }
 
-    const allowedExts = ['.hwpx'];
+    const allowedExts = ['.hwpx', '.txt', '.md', '.rtf'];
     const mimeAllowed = ALLOWED_MIME.includes(file.mimetype);
-    const extAllowed = file.mimetype === 'application/octet-stream' && allowedExts.includes(ext);
+    const extAllowed = allowedExts.includes(ext);
 
     if (!mimeAllowed && !extAllowed) {
       throw new BadRequestException(

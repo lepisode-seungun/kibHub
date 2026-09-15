@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, Elem
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import { ContentType } from '@kibhub/shared';
+import { ContentType, Attachment } from '@kibhub/shared';
 import Cropper from 'cropperjs';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 
 interface CategoryChip {
   name: string;
@@ -36,7 +37,7 @@ interface ServerAlbumResponse {
 @Component({
   selector: 'app-content-upload',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TextEditorComponent],
   templateUrl: './content-upload.page.html',
   styleUrls: ['./content-upload.page.css'],
 })
@@ -70,10 +71,37 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   imageResolution = signal('');
   processImages = signal<{ id: number; fileName: string; thumbnailUrl: string; status: 'uploading' | 'done' | 'error' }[]>([]);
 
+  // 웹툰 전용 필드
+  selectedGenre = signal<string>('');
+  selectedAudience = signal<string>('');
+  selectedWebtoonTools = signal<string[]>([]);
+  customWebtoonTool = '';
+  episodeNumber = '';
+  storyboardImages = signal<{ id: number; fileName: string; thumbnailUrl: string; status: 'uploading' | 'done' | 'error' }[]>([]);
+
+  // 글 전용 필드
+  selectedWritingGenre = signal<string>('');
+  selectedWritingTools = signal<string[]>([]);
+  customWritingTool = '';
+  referenceUrls = signal<string[]>([]);
+  newReferenceUrl = '';
+  wordCount = signal(0);
+  editorContent = '';
+  attachmentFiles = signal<{ id: number; name: string; url: string; size: number; mimeType: string; status: 'uploading' | 'done' | 'error' }[]>([]);
+
   // 사용 도구 옵션
   toolOptions = ['Photoshop', 'Clip Studio', 'Procreate', 'Illustrator', 'SAI'];
   difficultyOptions = ['초급', '중급', '고급'];
   mediumOptions = ['디지털', '수채화', '유화', '아크릴', '색연필', '연필/목탄'];
+
+  // 웹툰 전용 옵션
+  genreOptions = ['로맨스', '액션', '판타지', '일상', '드라마', '스릴러', '공포', '코미디', 'SF', '스포츠'];
+  audienceOptions = ['전체', '15세 이상', '성인'];
+  webtoonToolOptions = ['Clip Studio', 'Photoshop', 'Procreate', 'Illustrator', 'MediBang', 'SAI'];
+
+  // 글 전용 옵션
+  writingGenreOptions = ['에세이', '시나리오', '리뷰', '비평', '칼럼', '소설', '시', '일기', '기타'];
+  writingToolOptions = ['Google Docs', 'Notion', 'Word', 'Scrivener', 'Pages', '한글'];
 
   // 제출 상태
   isSubmitting = signal(false);
@@ -193,11 +221,91 @@ export class ContentUploadPage implements OnInit, OnDestroy {
           status: 'done' as const,
         })));
       }
+
+      // ===== 그림 전용 필드 복원 =====
+      if (content.artMedium) {
+        this.artMedium = content.artMedium;
+      }
+      if (content.artTools && content.artTools.length > 0) {
+        this.selectedTools.set(content.artTools);
+      }
+      if (content.artistNote) {
+        this.artistNote = content.artistNote;
+      }
+      if (content.workDuration) {
+        this.workDuration = content.workDuration;
+      }
+      if (content.difficulty) {
+        this.selectedDifficulty.set(content.difficulty);
+      }
+      if (content.resolution) {
+        this.imageResolution.set(content.resolution);
+      }
+      if (content.processImages && content.processImages.length > 0) {
+        this.processImages.set(content.processImages.map((url: string, i: number) => ({
+          id: Date.now() + 1000 + i,
+          fileName: `process_${i + 1}`,
+          thumbnailUrl: url,
+          status: 'done' as const,
+        })));
+      }
+
+      // ===== 웹툰 전용 필드 복원 =====
+      if (content.webtoonGenre) {
+        this.selectedGenre.set(content.webtoonGenre);
+      }
+      if (content.targetAudience) {
+        this.selectedAudience.set(content.targetAudience);
+      }
+      if (content.webtoonTools && content.webtoonTools.length > 0) {
+        this.selectedWebtoonTools.set(content.webtoonTools);
+      }
+      if (content.episodeNumber) {
+        this.episodeNumber = String(content.episodeNumber);
+      }
+      if (content.storyboardImages && content.storyboardImages.length > 0) {
+        this.storyboardImages.set(content.storyboardImages.map((url: string, i: number) => ({
+          id: Date.now() + 2000 + i,
+          fileName: `storyboard_${i + 1}`,
+          thumbnailUrl: url,
+          status: 'done' as const,
+        })));
+      }
+
+      // ===== 글 전용 필드 복원 =====
+      if (content.writingGenre) {
+        this.selectedWritingGenre.set(content.writingGenre);
+      }
+      if (content.writingTools && content.writingTools.length > 0) {
+        this.selectedWritingTools.set(content.writingTools);
+      }
+      if (content.referenceUrls && content.referenceUrls.length > 0) {
+        this.referenceUrls.set(content.referenceUrls);
+      }
+      if (content.wordCount) {
+        this.wordCount.set(content.wordCount);
+      }
+      if (content.attachments && Array.isArray(content.attachments)) {
+        this.attachmentFiles.set((content.attachments as Attachment[]).map((a, i) => ({
+          id: Date.now() + 3000 + i,
+          name: a.name,
+          url: a.url,
+          size: a.size,
+          mimeType: a.mimeType,
+          status: 'done' as const,
+        })));
+      }
+      // 글 타입이면 body를 에디터 콘텐츠로 설정
+      if (content.type === 'WRITING') {
+        this.editorContent = content.body || '';
+      }
+
     } catch (e) {
       console.error('콘텐츠 로드 실패:', e);
       this.formError.set('콘텐츠를 불러올 수 없습니다.');
     }
   }
+
 
   private async loadCategories(): Promise<void> {
     try {
@@ -232,7 +340,64 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   }
 
   selectType(name: string): void {
-    this.selectedType.set(this.selectedType() === name ? '' : name);
+    const prev = this.selectedType();
+    if (prev === name) return; // 이미 선택된 타입 → 해제 불가
+    const next = name;
+    this.selectedType.set(next);
+
+    // 탭 변경 시 폼 전체 초기화
+    if (prev !== next) {
+      // 공통 필드 초기화
+      this.title = '';
+      this.subDescription = '';
+      this.description = '';
+      this.selectedCategory.set('');
+      this.selectedAlbumId.set(null);
+      this.selectedAlbumName.set('');
+      this.contentItems.set([]);
+      this.formError.set('');
+      this.categoryError.set('');
+      this.titleError.set('');
+      this.subDescError.set('');
+      this.descError.set('');
+      this.thumbError.set('');
+
+      // 썸네일 초기화
+      this.croppedThumbnailUrl.set('');
+      this.thumbCandidates.set([]);
+      this.selectedThumbId.set(null);
+      this.cropImageSrc.set('');
+      this.selectedFileName.set('');
+      this.selectedFileSize.set('');
+
+      // 그림 전용 초기화
+      this.selectedTools.set([]);
+      this.customTool = '';
+      this.artMedium = '';
+      this.artistNote = '';
+      this.workDuration = '';
+      this.selectedDifficulty.set('');
+      this.imageResolution.set('');
+      this.processImages.set([]);
+
+      // 웹툰 전용 초기화
+      this.selectedGenre.set('');
+      this.selectedAudience.set('');
+      this.selectedWebtoonTools.set([]);
+      this.customWebtoonTool = '';
+      this.episodeNumber = '';
+      this.storyboardImages.set([]);
+
+      // 글 전용 초기화
+      this.selectedWritingGenre.set('');
+      this.selectedWritingTools.set([]);
+      this.customWritingTool = '';
+      this.referenceUrls.set([]);
+      this.newReferenceUrl = '';
+      this.wordCount.set(0);
+      this.editorContent = '';
+      this.attachmentFiles.set([]);
+    }
   }
 
   selectCategory(name: string): void {
@@ -315,7 +480,8 @@ export class ContentUploadPage implements OnInit, OnDestroy {
           this.processImages.update(items => items.map(item =>
             item.id === id ? { ...item, status: 'done' as const, thumbnailUrl: result.url } : item
           ));
-        } catch {
+        } catch (e) {
+          console.error('작업 과정 이미지 업로드 실패:', e);
           this.processImages.update(items => items.map(item =>
             item.id === id ? { ...item, status: 'error' as const } : item
           ));
@@ -325,9 +491,69 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     input.click();
   }
 
+
   removeProcessImage(id: number): void {
     this.processImages.update(items => items.filter(i => i.id !== id));
   }
+
+  // ===== 웹툰 전용 메서드 =====
+  toggleWebtoonTool(tool: string): void {
+    this.selectedWebtoonTools.update(tools =>
+      tools.includes(tool) ? tools.filter(t => t !== tool) : [...tools, tool]
+    );
+  }
+
+  addCustomWebtoonTool(): void {
+    const t = this.customWebtoonTool.trim();
+    if (t && !this.selectedWebtoonTools().includes(t)) {
+      this.selectedWebtoonTools.update(tools => [...tools, t]);
+    }
+    this.customWebtoonTool = '';
+  }
+
+  onCustomWebtoonToolInput(event: Event): void {
+    this.customWebtoonTool = (event.target as HTMLInputElement).value;
+  }
+
+  onEpisodeNumberInput(event: Event): void {
+    this.episodeNumber = (event.target as HTMLInputElement).value;
+  }
+
+  async onStoryboardImageSelect(): Promise<void> {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = async () => {
+      if (!input.files) return;
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const id = Date.now() + i;
+
+        this.storyboardImages.update(items => [...items, {
+          id, fileName: file.name, thumbnailUrl: '', status: 'uploading' as const,
+        }]);
+
+        try {
+          const result = await this.api.upload.single(file, 'storyboard');
+          this.storyboardImages.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'done' as const, thumbnailUrl: result.url } : item
+          ));
+        } catch (e) {
+          console.error('콘티 이미지 업로드 실패:', e);
+          this.storyboardImages.update(items => items.map(item =>
+            item.id === id ? { ...item, status: 'error' as const } : item
+          ));
+        }
+      }
+    };
+    input.click();
+  }
+
+  removeStoryboardImage(id: number): void {
+    this.storyboardImages.update(items => items.filter(i => i.id !== id));
+  }
+
 
   private detectResolution(file: File): void {
     const img = new Image();
@@ -432,7 +658,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     input.value = '';
   }
 
-  private formatFileSize(bytes: number): string {
+  formatFileSize(bytes: number): string {
     if (bytes < 1024) return bytes + 'B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + 'KB';
     return (bytes / (1024 * 1024)).toFixed(2) + 'MB';
@@ -689,7 +915,10 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       hasError = true;
     }
 
-    if (!this.description.trim()) {
+    const bodyEmpty = this.selectedType() === '글'
+      ? !this.editorContent.replace(/<[^>]*>/g, '').trim() && !this.editorContent.includes('<img')
+      : !this.description.trim();
+    if (bodyEmpty) {
       this.descError.set('내용을 입력해주세요.');
       hasError = true;
     }
@@ -733,6 +962,11 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         .filter(item => item.status === 'done' && item.thumbnailUrl)
         .map(item => item.thumbnailUrl);
 
+      // 3-2. 콘티/스토리보드 이미지 URL 수집 (웹툰 전용)
+      const storyboardImageUrls = this.storyboardImages()
+        .filter(item => item.status === 'done' && item.thumbnailUrl)
+        .map(item => item.thumbnailUrl);
+
       // 그림 전용 필드
       const artFields = this.selectedType() === '그림' ? {
         artMedium: this.artMedium || undefined,
@@ -744,17 +978,40 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         processImages: processImageUrls.length > 0 ? processImageUrls : undefined,
       } : {};
 
+      // 웹툰 전용 필드
+      const webtoonFields = this.selectedType() === '웹툰' ? {
+        webtoonGenre: this.selectedGenre() || undefined,
+        targetAudience: this.selectedAudience() || undefined,
+        webtoonTools: this.selectedWebtoonTools().length > 0 ? this.selectedWebtoonTools() : undefined,
+        episodeNumber: this.episodeNumber ? parseInt(this.episodeNumber, 10) : undefined,
+        storyboardImages: storyboardImageUrls.length > 0 ? storyboardImageUrls : undefined,
+      } : {};
+
+      // 글 전용 필드
+      const writingFields = this.selectedType() === '글' ? {
+        writingGenre: this.selectedWritingGenre() || undefined,
+        writingTools: this.selectedWritingTools().length > 0 ? this.selectedWritingTools() : undefined,
+        referenceUrls: this.referenceUrls().length > 0 ? this.referenceUrls() : undefined,
+        wordCount: this.wordCount() || undefined,
+        attachments: this.attachmentFiles().filter(f => f.status === 'done').map(f => ({ name: f.name, url: f.url, size: f.size, mimeType: f.mimeType })),
+      } : {};
+
+      // 글 타입이면 에디터 콘텐츠를 body로 사용
+      const bodyContent = this.selectedType() === '글' ? this.editorContent : this.description.trim();
+
       // 4. 콘텐츠 생성 또는 수정
       if (this.isEditMode) {
         // 수정 모드: update API 사용
         await this.api.contents.update(this.editContentId, {
           title: this.title.trim(),
-          body: this.description.trim(),
+          body: bodyContent,
           type: this.mapTypeToContentType(this.selectedType()),
           thumbnail: thumbnailUrl,
           images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
           categoryId,
           ...artFields,
+          ...webtoonFields,
+          ...writingFields,
         });
         // 수정 완료 → 상세 페이지로 이동
         this.router.navigate(['/content', this.editContentId]);
@@ -762,13 +1019,16 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         // 생성 모드: create API 사용
         const created = await this.api.contents.create({
           title: this.title.trim(),
-          body: this.description.trim(),
+          body: bodyContent,
           type: this.mapTypeToContentType(this.selectedType()),
           thumbnail: thumbnailUrl,
           images: contentImageUrls.length > 0 ? contentImageUrls : undefined,
           categoryId,
           ...artFields,
+          ...webtoonFields,
+          ...writingFields,
         });
+
 
         // 5. 선택된 앨범이 있으면 콘텐츠를 앨범에 추가
         const albumId = this.selectedAlbumId();
@@ -787,12 +1047,105 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       console.error('콘텐츠 업로드 실패:', e);
       const err = e as Record<string, unknown>;
       if (err['status']) console.error('HTTP Status:', err['status']);
-      if (err['error']) console.error('Server Error:', err['error']);
-      this.formError.set('업로드에 실패했습니다. 다시 시도해주세요.');
+      if (err['error']) console.error('Server Error:', JSON.stringify(err['error']));
+      if (err['message']) console.error('Message:', err['message']);
+      const serverMsg = (err['error'] as Record<string, unknown>)?.['message'];
+      this.formError.set(`업로드에 실패했습니다. ${serverMsg || '다시 시도해주세요.'}`);
     } finally {
       this.isSubmitting.set(false);
     }
   }
+
+  // ===== 글 전용 메서드 =====
+  toggleWritingGenre(genre: string): void {
+    this.selectedWritingGenre.set(this.selectedWritingGenre() === genre ? '' : genre);
+  }
+
+  toggleWritingTool(tool: string): void {
+    this.selectedWritingTools.update(tools =>
+      tools.includes(tool) ? tools.filter(t => t !== tool) : [...tools, tool]
+    );
+  }
+
+  addCustomWritingTool(): void {
+    const t = this.customWritingTool.trim();
+    if (t && !this.selectedWritingTools().includes(t)) {
+      this.selectedWritingTools.update(tools => [...tools, t]);
+    }
+    this.customWritingTool = '';
+  }
+
+  onCustomWritingToolInput(event: Event): void {
+    this.customWritingTool = (event.target as HTMLInputElement).value;
+  }
+
+  addReferenceUrl(): void {
+    const url = this.newReferenceUrl.trim();
+    if (url && !this.referenceUrls().includes(url)) {
+      this.referenceUrls.update(urls => [...urls, url]);
+    }
+    this.newReferenceUrl = '';
+  }
+
+  removeReferenceUrl(index: number): void {
+    this.referenceUrls.update(urls => urls.filter((_, i) => i !== index));
+  }
+
+  onReferenceUrlInput(event: Event): void {
+    this.newReferenceUrl = (event.target as HTMLInputElement).value;
+  }
+
+  onReferenceUrlKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addReferenceUrl();
+    }
+  }
+
+  onEditorContentChange(html: string): void {
+    this.editorContent = html;
+  }
+
+  onWordCountChange(count: number): void {
+    this.wordCount.set(count);
+  }
+
+  private attachmentIdCounter = 0;
+
+  async onAttachmentUpload(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const files = Array.from(input.files);
+    for (const file of files) {
+      const id = ++this.attachmentIdCounter;
+      const item = {
+        id,
+        name: file.name,
+        url: '',
+        size: file.size,
+        mimeType: file.type,
+        status: 'uploading' as const,
+      };
+      this.attachmentFiles.update(list => [...list, item]);
+      try {
+        const result = await this.api.upload.single(file, 'attachments');
+        this.attachmentFiles.update(list =>
+          list.map(f => f.id === id ? { ...f, url: result.url, status: 'done' as const } : f)
+        );
+      } catch (err) {
+        console.error('첨부파일 업로드 실패:', file.name, file.type, err);
+        this.attachmentFiles.update(list =>
+          list.map(f => f.id === id ? { ...f, status: 'error' as const } : f)
+        );
+      }
+    }
+    input.value = '';
+  }
+
+  removeAttachment(id: number): void {
+    this.attachmentFiles.update(list => list.filter(f => f.id !== id));
+  }
+
 
   goBack(): void {
     this.router.navigate(['/']);

@@ -1,5 +1,5 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
@@ -8,8 +8,13 @@ import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { Content, ContentCategory, ContentRow } from '../../shared/types';
 
+type ContentTab = '전체' | '웹툰' | '그림' | '글';
+
 const TYPE_MAP: Record<string, string> = {
   WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글',
+};
+const TYPE_MAP_REVERSE: Record<string, string> = {
+  '웹툰': 'WEBTOON', '그림': 'ILLUSTRATION', '글': 'WRITING',
 };
 const STATUS_DISPLAY: Record<string, string> = {
   VISIBLE: '노출', HIDDEN: '숨김',
@@ -26,6 +31,12 @@ function toContentRow(c: Content): ContentRow {
     comments: c._count?.comments || 0,
     views: c.viewCount || 0,
     createdAt: formatDate(c.createdAt),
+    // 그림 전용 필드
+    artMedium: c.artMedium || '-',
+    difficulty: c.difficulty || '-',
+    // 웹툰 전용 필드
+    webtoonGenre: c.webtoonGenre || '-',
+    targetAudience: c.targetAudience || '-',
   };
 }
 
@@ -47,7 +58,28 @@ export class ContentPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
 
-  columns: GridColumn[] = [
+  // ===== 탭 =====
+  tabs: ContentTab[] = ['전체', '웹툰', '그림', '글'];
+  selectedTab = signal<ContentTab>('전체');
+
+  private readonly TAB_TYPE_MAP: Record<string, string> = {
+    '웹툰': 'WEBTOON', '그림': 'ILLUSTRATION', '글': 'WRITING',
+  };
+
+  // ===== 컬럼 (공통) =====
+  private baseColumns: GridColumn[] = [
+    { key: 'id', label: '순번', width: '60px' },
+    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: CONTENT_STATUS_BADGES },
+    { key: 'category', label: '카테고리', width: '120px' },
+    { key: 'title', label: '제목' },
+    { key: 'author', label: '작성자', width: '100px' },
+    { key: 'comments', label: '댓글', width: '80px' },
+    { key: 'views', label: '조회수', width: '80px' },
+    { key: 'createdAt', label: '등록일시', width: '160px', headerColor: 'text-gray-600' },
+  ];
+
+  // 전체 탭에만 타입 컬럼 포함
+  private allColumns: GridColumn[] = [
     { key: 'id', label: '순번', width: '60px' },
     { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: CONTENT_STATUS_BADGES },
     { key: 'type', label: '타입', width: '100px' },
@@ -59,17 +91,67 @@ export class ContentPage implements OnInit {
     { key: 'createdAt', label: '등록일시', width: '160px', headerColor: 'text-gray-600' },
   ];
 
-  contents = signal<ContentRow[]>([]);
+  // 그림 탭 전용 컬럼 (매체, 난이도 추가)
+  private artColumns: GridColumn[] = [
+    { key: 'id', label: '순번', width: '60px' },
+    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: CONTENT_STATUS_BADGES },
+    { key: 'category', label: '카테고리', width: '120px' },
+    { key: 'title', label: '제목' },
+    { key: 'author', label: '작성자', width: '100px' },
+    { key: 'artMedium', label: '매체', width: '100px' },
+    { key: 'difficulty', label: '난이도', width: '80px' },
+    { key: 'comments', label: '댓글', width: '80px' },
+    { key: 'views', label: '조회수', width: '80px' },
+    { key: 'createdAt', label: '등록일시', width: '160px', headerColor: 'text-gray-600' },
+  ];
+
+  // 웹툰 탭 전용 컬럼 (장르, 독자층 추가)
+  private webtoonColumns: GridColumn[] = [
+    { key: 'id', label: '순번', width: '60px' },
+    { key: 'status', label: '상태', width: '80px', badge: 'status', badgeStyles: CONTENT_STATUS_BADGES },
+    { key: 'category', label: '카테고리', width: '120px' },
+    { key: 'title', label: '제목' },
+    { key: 'author', label: '작성자', width: '100px' },
+    { key: 'webtoonGenre', label: '장르', width: '100px' },
+    { key: 'targetAudience', label: '독자층', width: '100px' },
+    { key: 'comments', label: '댓글', width: '80px' },
+    { key: 'views', label: '조회수', width: '80px' },
+    { key: 'createdAt', label: '등록일시', width: '160px', headerColor: 'text-gray-600' },
+  ];
+
+  // 현재 탭에 따른 컬럼
+  columns = computed<GridColumn[]>(() => {
+    switch (this.selectedTab()) {
+      case '그림': return this.artColumns;
+      case '웹툰': return this.webtoonColumns;
+      case '전체': return this.allColumns;
+      default: return this.baseColumns;
+
+    }
+  });
+
+  allContents = signal<ContentRow[]>([]);
+  contents = computed(() => {
+    const tab = this.selectedTab();
+    const all = this.allContents();
+    if (tab === '전체') return all;
+    const typeKey = TYPE_MAP_REVERSE[tab];
+    return typeKey ? all.filter(c => c.type === tab) : all;
+  });
 
   ngOnInit(): void {
     this.loadContents();
     this.loadCategories();
   }
 
+  selectTab(tab: ContentTab): void {
+    this.selectedTab.set(tab);
+  }
+
   async loadContents(): Promise<void> {
     try {
       const data = await this.api.contents.findAll();
-      this.contents.set(data.map(toContentRow));
+      this.allContents.set(data.map(toContentRow));
     } catch (e) {
       console.error('콘텐츠 목록 로드 실패:', e);
     }

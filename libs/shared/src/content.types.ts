@@ -26,6 +26,18 @@ export interface Content {
   difficulty?: string | null;
   resolution?: string | null;
   processImages?: string[];
+  // 웹툰 전용 필드
+  webtoonGenre?: string | null;
+  targetAudience?: string | null;
+  webtoonTools?: string[];
+  episodeNumber?: number | null;
+  storyboardImages?: string[];
+  // 글 전용 필드
+  writingGenre?: string | null;
+  wordCount?: number | null;
+  referenceUrls?: string[];
+  writingTools?: string[];
+  attachments?: Attachment[] | null;
   viewCount: number;
   categoryId: number | null;
   category?: ContentCategory;
@@ -53,6 +65,25 @@ export interface CreateContentDto {
   difficulty?: string;
   resolution?: string;
   processImages?: string[];
+  // 웹툰 전용 필드
+  webtoonGenre?: string;
+  targetAudience?: string;
+  webtoonTools?: string[];
+  episodeNumber?: number;
+  storyboardImages?: string[];
+  // 글 전용 필드
+  writingGenre?: string;
+  wordCount?: number;
+  referenceUrls?: string[];
+  writingTools?: string[];
+  attachments?: Attachment[];
+}
+
+export interface Attachment {
+  name: string;
+  url: string;
+  size: number;
+  mimeType: string;
 }
 
 // ===== Comment =====

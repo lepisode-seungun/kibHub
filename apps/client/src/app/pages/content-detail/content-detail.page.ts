@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect, ChangeDetectorRef, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
 import { ApiService } from '../../services/api.service';
-import { Comment } from '@kibhub/shared';
+import { Comment, Attachment } from '@kibhub/shared';
 
 interface ReplyEntry {
   id: number;
@@ -65,6 +66,8 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   authorId = 0;
   title = '';
   description = '';
+  safeDescription: SafeHtml = '';
+  private sanitizer = inject(DomSanitizer);
   category = '';
   bookmarkCount = 0;
   commentCount = 0;
@@ -79,6 +82,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   difficulty = '';
   resolution = '';
   processImages: string[] = [];
+
+  // 웹툰 전용 필드
+  webtoonGenre = '';
+  targetAudience = '';
+  webtoonTools: string[] = [];
+  episodeNumber: number | null = null;
+  storyboardImages: string[] = [];
+
+  // 글 전용 필드
+  writingGenre = '';
+  writingTools: string[] = [];
+  wordCount: number | null = null;
+  referenceUrls: string[] = [];
+  attachments: Attachment[] = [];
 
   isBookmarked = signal(false);
   isDescOpen = signal(true);
@@ -251,6 +268,7 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         const content = contentResult.value;
         this.title = content.title;
         this.description = content.body || '';
+        this.safeDescription = this.sanitizer.bypassSecurityTrustHtml(this.description);
         this.authorName = content.author?.nickname || content.author?.name || '작성자';
         this.authorRole = content.author?.role || '';
         this.authorProfileImage = content.author?.profileImage || '';
@@ -277,6 +295,20 @@ export class ContentDetailPage implements OnInit, OnDestroy {
         this.difficulty = content.difficulty || '';
         this.resolution = content.resolution || '';
         this.processImages = content.processImages || [];
+
+        // 웹툰 전용 필드 바인딩
+        this.webtoonGenre = content.webtoonGenre || '';
+        this.targetAudience = content.targetAudience || '';
+        this.webtoonTools = content.webtoonTools || [];
+        this.episodeNumber = content.episodeNumber ?? null;
+        this.storyboardImages = content.storyboardImages || [];
+
+        // 글 전용 필드 바인딩
+        this.writingGenre = content.writingGenre || '';
+        this.writingTools = content.writingTools || [];
+        this.wordCount = content.wordCount ?? null;
+        this.referenceUrls = content.referenceUrls || [];
+        this.attachments = (content.attachments as Attachment[] | undefined) || [];
 
         const imageList: typeof this.images = [];
         if (content.thumbnail) {
@@ -436,6 +468,10 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   toggleDesc(): void {
     this.isDescOpen.update(v => !v);
+  }
+
+  onAccordionDone(event: AnimationEvent): void {
+    (event.currentTarget as HTMLElement)?.classList.add('accordion-done');
   }
 
   setCommentTab(tab: 'feedback' | 'general' | 'all'): void {
@@ -834,6 +870,47 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   closeViewer(): void {
     this.isViewerOpen.set(false);
   }
+
+  /* 작업 과정 이미지 뷰어 모달 */
+  isProcessViewerOpen = signal(false);
+  currentProcessPage = signal(1);
+
+  get processViewerImages(): { gradient: string; markers?: never[] }[] {
+    return this.processImages.map(url => ({
+      gradient: `url(${url}) center/cover no-repeat`,
+      markers: [],
+    }));
+  }
+
+  openProcessViewer(index: number): void {
+    this.currentProcessPage.set(index + 1);
+    this.isProcessViewerOpen.set(true);
+  }
+
+  closeProcessViewer(): void {
+    this.isProcessViewerOpen.set(false);
+  }
+
+  /* 콘티/스토리보드 이미지 뷰어 모달 */
+  isStoryboardViewerOpen = signal(false);
+  currentStoryboardPage = signal(1);
+
+  get storyboardViewerImages(): { gradient: string; markers?: never[] }[] {
+    return this.storyboardImages.map(url => ({
+      gradient: `url(${url}) center/cover no-repeat`,
+      markers: [],
+    }));
+  }
+
+  openStoryboardViewer(index: number): void {
+    this.currentStoryboardPage.set(index + 1);
+    this.isStoryboardViewerOpen.set(true);
+  }
+
+  closeStoryboardViewer(): void {
+    this.isStoryboardViewerOpen.set(false);
+  }
+
 
   prevPage(): void {
     this.currentViewerPage.update(p => p > 1 ? p - 1 : this.totalPages);
