@@ -321,4 +321,183 @@ export class UsersService {
     });
     return follows.map(f => f.following);
   }
+
+  /** 학습 대시보드 — 부트캠프 학습 중심 */
+  async getDashboard(userId: number) {
+    const now = new Date();
+    const oneYearAgo = new Date(now);
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    oneYearAgo.setHours(0, 0, 0, 0);
+
+    const sixMonthsAgo = new Date(now);
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    // 유저가 참여한 부트캠프 ID 목록 (합격 지원자 + 강사)
+    const [applicantRecords, instructorRecords] = await Promise.all([
+      this.prisma.applicant.findMany({
+        where: { userId, status: 'ACCEPTED' },
+        select: { bootcampId: true },
+      }),
+      this.prisma.bootcampInstructor.findMany({
+        where: { userId },
+        select: { bootcampId: true },
+      }),
+    ]);
+    const bootcampIds = [...new Set([
+      ...applicantRecords.map(a => a.bootcampId),
+      ...instructorRecords.map(r => r.bootcampId),
+    ])];
+
+    // 참여 부트캠프 정보
+    const bootcamps = bootcampIds.length > 0
+      ? await this.prisma.bootcamp.findMany({
+          where: { id: { in: bootcampIds } },
+          select: { id: true, name: true, status: true, thumbnail: true, startDate: true, endDate: true },
+        })
+      : [];
+
+    // 해당 부트캠프들의 과제 전체
+    const assignments = bootcampIds.length > 0
+      ? await this.prisma.assignment.findMany({
+          where: { course: { bootcampId: { in: bootcampIds } } },
+          select: {
+            id: true,
+            title: true,
+            dueDate: true,
+            dueDateEnd: true,
+            course: { select: { bootcampId: true, bootcamp: { select: { name: true } } } },
+          },
+        })
+      : [];
+
+    // 유저의 제출(SUBMISSION 타입만)
+    const assignmentIds = assignments.map(a => a.id);
+    const submissions = assignmentIds.length > 0
+      ? await this.prisma.submission.findMany({
+          where: { authorId: userId, assignmentId: { in: assignmentIds }, type: 'SUBMISSION' },
+          select: { id: true, assignmentId: true, createdAt: true },
+        })
+      : [];
+
+    const submittedAssignmentIds = new Set(submissions.map(s => s.assignmentId));
+
+    // 과제에 대한 피드백 (FEEDBACK 타입 제출물)
+    const feedbackSubmissions = assignmentIds.length > 0
+      ? await this.prisma.submission.findMany({
+          where: {
+            assignmentId: { in: assignmentIds },
+            type: 'FEEDBACK',
+            parent: { authorId: userId },
+          },
+          select: { assignmentId: true },
+        })
+      : [];
+    const feedbackAssignmentIds = new Set(feedbackSubmissions.map(f => f.assignmentId));
+
+    // 1. 요약 통계
+    const totalAssignments = assignments.length;
+    const submittedCount = submittedAssignmentIds.size;
+    const completionRate = totalAssignments > 0 ? Math.round((submittedCount / totalAssignments) * 100) : 0;
+    const feedbackReceivedCount = feedbackAssignmentIds.size;
+
+    const summary = {
+      bootcampCount: bootcamps.length,
+      completionRate,
+      submittedCount,
+      feedbackReceivedCount,
+    };
+
+    // 2. 과제별 현황
+    const assignmentStatus = assignments.map(a => ({
+      id: a.id,
+      title: a.title,
+      bootcampId: a.course.bootcampId,
+      bootcampName: a.course.bootcamp.name,
+      dueDate: a.dueDate,
+      status: feedbackAssignmentIds.has(a.id) ? 'FEEDBACK_DONE'
+        : submittedAssignmentIds.has(a.id) ? 'SUBMITTED'
+        : 'NOT_SUBMITTED',
+    }));
+
+    // 3. 활동 히트맵 (365일) — 과제 제출 + 콘텐츠 업로드
+    const [submissionDates, contentDates] = await Promise.all([
+      this.prisma.submission.findMany({
+        where: { authorId: userId, type: 'SUBMISSION', createdAt: { gte: oneYearAgo } },
+        select: { createdAt: true },
+      }),
+      this.prisma.content.findMany({
+        where: { authorId: userId, createdAt: { gte: oneYearAgo } },
+        select: { createdAt: true },
+      }),
+    ]);
+
+    const heatmapMap = new Map<string, number>();
+    for (const s of submissionDates) {
+      const key = s.createdAt.toISOString().slice(0, 10);
+      heatmapMap.set(key, (heatmapMap.get(key) || 0) + 1);
+    }
+    for (const c of contentDates) {
+      const key = c.createdAt.toISOString().slice(0, 10);
+      heatmapMap.set(key, (heatmapMap.get(key) || 0) + 1);
+    }
+    const activityHeatmap = Array.from(heatmapMap.entries())
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // 4. 월별 제출 추이 (6개월)
+    const monthlyMap = new Map<string, number>();
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now);
+      d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthlyMap.set(key, 0);
+    }
+    for (const s of submissions) {
+      const key = `${s.createdAt.getFullYear()}-${String(s.createdAt.getMonth() + 1).padStart(2, '0')}`;
+      if (monthlyMap.has(key)) {
+        monthlyMap.set(key, (monthlyMap.get(key) || 0) + 1);
+      }
+    }
+    const monthlySubmissions = Array.from(monthlyMap.entries())
+      .map(([month, count]) => ({ month, count }))
+      .sort((a, b) => a.month.localeCompare(b.month));
+
+    // 5. 최근 받은 과제 피드백
+    const recentFeedbacks = await this.prisma.submission.findMany({
+      where: {
+        type: 'FEEDBACK',
+        parent: { authorId: userId },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        createdAt: true,
+        author: { select: { nickname: true, profileImage: true } },
+        assignment: { select: { id: true, title: true, course: { select: { bootcampId: true } } } },
+      },
+    });
+
+    return {
+      summary,
+      bootcamps,
+      assignmentStatus,
+      activityHeatmap,
+      monthlySubmissions,
+      recentFeedbacks: recentFeedbacks.map(f => ({
+        id: f.id,
+        body: f.content || f.title,
+        assignmentId: f.assignment.id,
+        assignmentTitle: f.assignment.title,
+        bootcampId: f.assignment.course.bootcampId,
+        authorNickname: f.author?.nickname || '익명',
+        authorProfileImage: f.author?.profileImage || null,
+        createdAt: f.createdAt,
+      })),
+    };
+  }
 }

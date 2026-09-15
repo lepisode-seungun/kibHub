@@ -44,6 +44,7 @@
     <!-- 데이터 행 -->
     @for (row of paginatedData(); track $index) {
       <div class="flex items-center w-full bg-white border-b border-gray-200 hover:bg-zinc-50 transition-colors cursor-pointer"
+           [ngClass]="rowClassFn() ? rowClassFn()!(row) : ''"
            [class.opacity-50]="isDragging() && dragOverIndex() !== $index"
            [style.border-top]="dragOverIndex() === $index ? '2px solid #3C8EEE' : 'none'"
            tabindex="0"

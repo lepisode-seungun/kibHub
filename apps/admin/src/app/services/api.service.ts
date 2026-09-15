@@ -436,4 +436,30 @@ export class ApiService {
       this.post(`/assignments/${assignmentId}/files`, data),
     delete: (fileId: number): Promise<void> => this.del(`/assignment-files/${fileId}`),
   };
+
+  // ===== Reviews (어드민) =====
+  readonly reviews = {
+    findAll: (): Promise<any[]> =>
+      this.get('/reviews'),
+    findByBootcamp: (bootcampId: number): Promise<{ reviews: any[]; avgRating: number; totalCount: number; ratingDist: number[] }> =>
+      this.get(`/reviews/bootcamp/${bootcampId}`),
+    markAsRead: (id: number): Promise<any> =>
+      this.patch(`/reviews/${id}/read`, {}),
+    markManyAsRead: (ids: number[]): Promise<any> =>
+      this.patch('/reviews/bulk/read', { ids }),
+    delete: (id: number): Promise<void> =>
+      this.del<void>(`/reviews/${id}`),
+  };
+
+  // ===== Surveys (어드민) =====
+  readonly surveys = {
+    findActive: (bootcampId: number): Promise<any> =>
+      this.get(`/surveys/bootcamp/${bootcampId}`),
+    upsert: (bootcampId: number, data: { title?: string; questions: any[] }): Promise<any> =>
+      this.post(`/surveys/bootcamp/${bootcampId}`, data),
+    delete: (id: number): Promise<void> =>
+      this.del<void>(`/surveys/${id}`),
+    findUserResponse: (surveyId: number, userId: number): Promise<any> =>
+      this.get(`/surveys/${surveyId}/user/${userId}`),
+  };
 }

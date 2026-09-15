@@ -217,13 +217,24 @@
           <span>책갈피</span>
           <span [ngClass]="activeTab() === 'album' ? 'pf-tab-badge pf-tab-badge-active' : 'pf-tab-badge'">{{ categories().length }}</span>
         </button>
+        <button
+          [ngClass]="activeTab() === 'dashboard' ? 'pf-tab pf-tab-active' : 'pf-tab'"
+          (click)="setTab('dashboard')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right:4px">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+                  [attr.fill]="activeTab() === 'dashboard' ? '#956DFF' : '#A1A1AA'" />
+          </svg>
+          <span>대시보드</span>
+        </button>
       </div>
-      <button class="pf-new-album-btn" (click)="openAddModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FAFAFA">
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-        <span>{{ activeTab() === 'album' ? '새 카테고리 추가' : '새 앨범 추가' }}</span>
-      </button>
+      @if (activeTab() !== 'dashboard') {
+        <button class="pf-new-album-btn" (click)="openAddModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#FAFAFA">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          </svg>
+          <span>{{ activeTab() === 'album' ? '새 카테고리 추가' : '새 앨범 추가' }}</span>
+        </button>
+      }
     </div>
   </div>
 
@@ -237,7 +248,124 @@
       <span>{{ activeTab() === 'album' ? '새 카테고리 추가' : '새 앨범 추가' }}</span>
     </button>
     <!-- 앨범 카드 슬라이더 (앨범 탭) -->
-    @if (activeTab() === 'all' && albums().length > 0) {
+    @if (activeTab() === 'dashboard') {
+    <!-- ===== 대시보드 ===== -->
+    <div class="db-container">
+      @if (dashboardLoading()) {
+        <div class="db-loading">데이터를 불러오는 중...</div>
+      } @else if (dashboardData()) {
+        <!-- 요약 카드 -->
+        <div class="db-summary">
+          <div class="db-card">
+            <div class="db-card-icon db-card-icon-content">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 14H9c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm2-4H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z" fill="currentColor"/></svg>
+            </div>
+            <div class="db-card-value">{{ dashboardData().summary.contentCount }}</div>
+            <div class="db-card-label">업로드 작품</div>
+          </div>
+          <div class="db-card">
+            <div class="db-card-icon db-card-icon-feedback">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/></svg>
+            </div>
+            <div class="db-card-value">{{ dashboardData().summary.feedbackCount }}</div>
+            <div class="db-card-label">받은 피드백</div>
+          </div>
+          <div class="db-card">
+            <div class="db-card-icon db-card-icon-like">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg>
+            </div>
+            <div class="db-card-value">{{ dashboardData().summary.likeCount }}</div>
+            <div class="db-card-label">받은 좋아요</div>
+          </div>
+          <div class="db-card">
+            <div class="db-card-icon db-card-icon-follower">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/></svg>
+            </div>
+            <div class="db-card-value">{{ dashboardData().summary.followerCount }}</div>
+            <div class="db-card-label">팔로워</div>
+          </div>
+        </div>
+
+        <!-- 활동 히트맵 -->
+        <div class="db-section">
+          <h3 class="db-section-title">활동 기록</h3>
+          @if (heatmapWeeks().length) {
+            <div class="db-heatmap-wrap">
+              <div class="db-heatmap-months">
+                @for (m of heatmapMonthLabels(); track m.col) {
+                  <span class="db-heatmap-month" [style.grid-column]="m.col + 1">{{ m.text }}</span>
+                }
+              </div>
+              <div class="db-heatmap-grid">
+                @for (week of heatmapWeeks(); track $index) {
+                  <div class="db-heatmap-col">
+                    @for (day of week; track day.date) {
+                      <div class="db-heatmap-cell"
+                           [class.db-heatmap-empty]="day.level === -1"
+                           [class.db-heatmap-0]="day.level === 0"
+                           [class.db-heatmap-1]="day.level === 1"
+                           [class.db-heatmap-2]="day.level === 2"
+                           [class.db-heatmap-3]="day.level === 3"
+                           [class.db-heatmap-4]="day.level === 4"
+                           [title]="day.date ? day.date + ': ' + day.count + '회' : ''"></div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- 콘텐츠 유형 분포 -->
+        @if (dashboardData().contentTypeDist && dashboardData().contentTypeDist!.length) {
+          <div class="db-section">
+            <h3 class="db-section-title">콘텐츠 유형 분포</h3>
+            <div class="db-type-bars">
+              @for (t of dashboardData().contentTypeDist!; track t.type) {
+                <div class="db-type-bar-row">
+                  <span class="db-type-label">{{ t.type }}</span>
+                  <div class="db-type-bar-track">
+                    <div class="db-type-bar-fill" [style.width.%]="(t.count / (dashboardData().summary.contentCount || 1)) * 100"></div>
+                  </div>
+                  <span class="db-type-count">{{ t.count }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 최근 받은 피드백 -->
+        <div class="db-section">
+          <h3 class="db-section-title">최근 받은 피드백</h3>
+          @if (dashboardData().recentFeedbacks.length > 0) {
+            <div class="db-feedback-list">
+              @for (fb of dashboardData().recentFeedbacks; track fb.id) {
+                <div class="db-feedback-item" (click)="goToContentDetail(fb.contentId ?? 0)">
+                  <div class="db-feedback-avatar">
+                    @if (fb.authorProfileImage) {
+                      <img [src]="fb.authorProfileImage" alt="" />
+                    } @else {
+                      <span>{{ fb.authorNickname.charAt(0).toUpperCase() }}</span>
+                    }
+                  </div>
+                  <div class="db-feedback-content">
+                    <div class="db-feedback-meta">
+                      <span class="db-feedback-author">{{ fb.authorNickname }}</span>
+                      <span class="db-feedback-target">{{ fb.contentTitle }}</span>
+                    </div>
+                    <div class="db-feedback-body">{{ fb.body }}</div>
+                  </div>
+                  <svg class="db-feedback-arrow" width="20" height="20" viewBox="0 0 24 24" fill="#71717A"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="db-empty-small">아직 받은 피드백이 없습니다.</div>
+          }
+        </div>
+      }
+    </div>
+    } @else if (activeTab() === 'all' && albums().length > 0) {
     <div class="pf-album-slider-wrap">
       <div class="pf-album-slider" #albumSlider
         (mousedown)="onSliderMouseDown($event)"
@@ -488,7 +616,6 @@
       </div>
     </div>
   </div>
-</div>
 
 <!-- ===== 새 앨범 추가 모달 ===== -->
 @if (isNewAlbumModalOpen()) {

@@ -1,0 +1,284 @@
+<!-- 별점 통계 카드 -->
+<div class="rv-stats-row">
+  <div class="rv-stat-card">
+    <span class="rv-stat-label">평균 별점</span>
+    <span class="rv-stat-value">★ {{ avgRating() }}</span>
+  </div>
+  <div class="rv-stat-card">
+    <span class="rv-stat-label">총 설문조사 수</span>
+    <span class="rv-stat-value">{{ totalCount() }}건</span>
+  </div>
+  @for (count of [5,4,3,2,1]; track count) {
+    <div class="rv-stat-card rv-stat-dist">
+      <span class="rv-stat-label">{{ count }}점</span>
+      <div class="rv-dist-bar">
+        <div class="rv-dist-fill" [style.width]="getRatingBarWidth(ratingDist()[count - 1])"></div>
+      </div>
+      <span class="rv-stat-num">{{ ratingDist()[count - 1] }}</span>
+    </div>
+  }
+</div>
+
+<!-- 설문조사 테이블 -->
+<adm-data-grid
+  [columns]="columns"
+  [data]="reviews()"
+  searchPlaceholder="작성자로 검색해주세요."
+  [showCheckbox]="true"
+  [rowClassFn]="reviewRowClass"
+  [contextMenuItemsFn]="getContextMenuItems"
+  (contextMenuSelect)="onContextMenuSelect($event)"
+  (selectionChange)="onSelectionChange($event)"
+  (rowClick)="openDetailDrawer($event)">
+
+  <!-- 검색바 오른쪽 버튼 -->
+  <div gridActions class="flex items-center gap-2">
+    <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#EBF4FF] transition-colors"
+            style="gap: 10px;"
+            (click)="openSurveyDrawer()">
+      설문 설정
+    </button>
+
+    <!-- 케밥 메뉴 -->
+    <div class="relative">
+      <button class="flex items-center justify-center w-8 h-10 bg-transparent border-none cursor-pointer hover:opacity-70 transition-opacity"
+              (click)="kebabOpen = !kebabOpen">
+        <svg width="4" height="16" viewBox="0 0 4 16" fill="none">
+          <circle cx="2" cy="2" r="2" fill="#6B7280"/>
+          <circle cx="2" cy="8" r="2" fill="#6B7280"/>
+          <circle cx="2" cy="14" r="2" fill="#6B7280"/>
+        </svg>
+      </button>
+      @if (kebabOpen) {
+        <div class="fixed inset-0 z-40" (click)="kebabOpen = false"></div>
+        <div class="absolute right-[-8px] top-[36px] z-50 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          <button class="flex items-center w-full px-3 py-1.5 text-left font-suit text-sm text-gray-700 hover:bg-gray-50 cursor-pointer border-none bg-transparent whitespace-nowrap"
+                  (click)="markSelectedAsRead()">읽음</button>
+          <button class="flex items-center w-full px-3 py-1.5 text-left font-suit text-sm text-red-500 hover:bg-red-50 cursor-pointer border-none bg-transparent whitespace-nowrap"
+                  (click)="deleteSelected()">삭제</button>
+        </div>
+      }
+    </div>
+  </div>
+</adm-data-grid>
+
+<!-- ===== 설문조사 상세 드로어 ===== -->
+@if (detailDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeDetailDrawer()"
+       (keydown.enter)="closeDetailDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-5 bg-white h-full overflow-y-auto"
+       style="width: 480px; border-radius: 6px 0 0 6px; animation: slideIn 0.25s ease-out;">
+
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeDetailDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <span class="font-suit font-bold text-xl text-gray-800">설문조사 상세</span>
+
+    <!-- 작성자 정보 -->
+    <div class="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg">
+      <div class="flex items-center justify-between">
+        <span class="font-suit font-medium text-sm text-gray-500">작성자</span>
+        <span class="font-suit font-semibold text-base text-gray-800">{{ detailReview()?.userName }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="font-suit font-medium text-sm text-gray-500">별점</span>
+        <span class="font-suit font-semibold text-base text-amber-500">{{ detailReview()?.rating }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="font-suit font-medium text-sm text-gray-500">작성일</span>
+        <span class="font-suit font-medium text-sm text-gray-600">{{ detailReview()?.createdAt }}</span>
+      </div>
+    </div>
+
+    <!-- 설문 응답 -->
+    @if (detailSurvey()) {
+      <div class="flex flex-col gap-3">
+        <span class="font-suit font-bold text-base text-gray-700">📋 {{ detailSurvey().title }}</span>
+
+        @if (detailAnswers().length) {
+          @for (q of detailSurvey().questions; track $index; let qIdx = $index) {
+            <div class="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg">
+              <span class="font-suit font-semibold text-sm text-gray-600">Q{{ qIdx + 1 }}. {{ q.text }}</span>
+              @if (detailAnswers()[qIdx]) {
+                @if (q.type === 'rating') {
+                  <div class="flex gap-0.5">
+                    @for (s of [1,2,3,4,5]; track s) {
+                      <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="s <= +detailAnswers()[qIdx].answer ? '#FBBF24' : '#D4D4D8'">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                      </svg>
+                    }
+                  </div>
+                } @else {
+                  <span class="font-suit text-sm text-gray-800">{{ detailAnswers()[qIdx].answer }}</span>
+                }
+              } @else {
+                <span class="font-suit text-sm text-gray-400">-</span>
+              }
+            </div>
+          }
+        } @else {
+          <div class="font-suit text-sm text-gray-400 py-2">설문에 응답하지 않았습니다.</div>
+        }
+      </div>
+    } @else {
+      <div class="font-suit text-sm text-gray-400 py-2">등록된 설문이 없습니다.</div>
+    }
+  </div>
+}
+
+<!-- ===== 설문 설정 사이드 드로어 ===== -->
+@if (surveyDrawerOpen()) {
+  <div class="fixed inset-0 bg-black/30 z-[998]"
+       role="button" tabindex="0" aria-label="드로어 닫기"
+       (click)="closeSurveyDrawer()"
+       (keydown.enter)="closeSurveyDrawer()"></div>
+
+  <div class="fixed top-0 right-0 z-[999] flex flex-col p-6 gap-6 bg-white h-full overflow-y-auto"
+       style="width: 522px; border-radius: 6px 0 0 6px; animation: slideIn 0.25s ease-out;">
+
+    <!-- 닫기 버튼 -->
+    <button class="flex items-center p-1.5 rounded-md bg-transparent border-none cursor-pointer"
+            (click)="closeSurveyDrawer()">
+      <svg width="19" height="16" viewBox="0 0 19 16" fill="none">
+        <path d="M12 1L18 8L12 15M6 1L12 8L6 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- 타이틀 -->
+    <span class="font-suit font-bold text-2xl leading-[150%] tracking-[-0.04em] text-gray-700">설문 질문 설정</span>
+
+    <!-- 힌트 바 -->
+    <div class="flex items-center gap-2 px-2 py-1 bg-[#D9E9FE] rounded-md">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
+        <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="700">i</text>
+      </svg>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">질문을 등록하면 수강생에게 설문 질문이 전달됩니다.</span>
+    </div>
+
+    <!-- 설문 제목 -->
+    <div class="flex flex-col gap-2">
+      <label class="font-suit font-medium text-sm text-gray-600">설문 제목</label>
+      <input class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             [value]="surveyTitle()"
+             (input)="updateSurveyTitle($any($event.target).value)"
+             placeholder="설문 제목을 입력하세요" />
+    </div>
+
+    <!-- 질문 목록 -->
+    <div class="flex flex-col w-full">
+      @for (q of drawerQuestions; track q._id; let idx = $index) {
+        <div class="flex items-center w-full" style="border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+
+          @if (q.editing) {
+            <!-- 편집 모드 -->
+            <div class="flex items-center gap-3 w-full px-0 py-3">
+              <div class="flex flex-col gap-2 flex-1">
+                <textarea class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 placeholder:text-gray-400 outline-none focus:border-[#3C8EEE] transition-colors resize-none box-border"
+                          rows="3"
+                          [value]="q.text"
+                          (input)="updateDrawerQuestion(idx, $any($event.target).value)"
+                          placeholder="질문을 입력하세요"
+                          maxlength="200"></textarea>
+                <div class="flex items-center justify-between">
+                  <select class="px-2 py-1 border border-gray-300 rounded-md font-suit text-sm text-gray-700 outline-none focus:border-[#3C8EEE]"
+                          [value]="q.type"
+                          (change)="updateDrawerQuestionType(idx, $any($event.target).value)">
+                    <option value="text">주관식</option>
+                    <option value="rating">별점</option>
+                    <option value="select">객관식</option>
+                  </select>
+                  <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ q.text.length }} / 200</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+                        (click)="saveDrawerQuestion(idx)">저장</button>
+                <button class="flex items-center justify-center px-3 h-[37px] bg-[#DC2626] border-none rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-white hover:bg-red-700 transition-colors"
+                        (click)="removeDrawerQuestion(idx)">삭제</button>
+              </div>
+            </div>
+          } @else {
+            <!-- 읽기 모드 -->
+            <div class="flex items-center w-full px-4 py-2" style="min-height: 64px;">
+              <div class="flex flex-col flex-1 gap-1">
+                <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ q.text }}</span>
+                <span class="font-suit text-xs text-gray-400">{{ q.type === 'rating' ? '별점' : q.type === 'select' ? '객관식' : '주관식' }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0 shrink-0"
+                     (click)="editDrawerQuestion(idx)">
+                  <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+                    <path d="M0 13.0647V16.5022H3.4375L13.5758 6.36391L10.1383 2.92641L0 13.0647ZM16.2342 2.41307L14.0892 0.268074C14.0044 0.183095 13.9036 0.115677 13.7927 0.0696771C13.6818 0.0236775 13.563 0 13.4429 0C13.3229 0 13.204 0.0236775 13.0931 0.0696771C12.9822 0.115677 12.8815 0.183095 12.7967 0.268074L11.1192 1.94557L14.5567 5.38307L16.2342 3.70557C16.3191 3.62077 16.3866 3.52004 16.4326 3.40915C16.4786 3.29825 16.5022 3.17938 16.5022 3.05932C16.5022 2.93927 16.4786 2.82039 16.4326 2.7095C16.3866 2.59861 16.3191 2.49788 16.2342 2.41307Z" fill="#6B7280"/>
+                  </svg>
+                </button>
+                <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0 shrink-0"
+                     (click)="removeDrawerQuestion(idx)" title="삭제">
+                  <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+                    <path d="M4.25 4.25L12.75 12.75M12.75 4.25L4.25 12.75" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- 추가 + 행 -->
+      <div class="flex items-center w-full px-4 py-2" style="min-height: 64px; border-bottom: 1px solid #E5E7EB;">
+        <button class="flex items-center gap-1 border-none bg-transparent cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:underline p-0"
+                (click)="addDrawerQuestion()">
+          <span>추가</span>
+          <span>+</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 하단 등록 버튼 -->
+    <div class="flex flex-col flex-1 justify-end">
+      <button class="flex items-center justify-center w-full h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              (click)="submitSurveyDrawer()">
+        등록
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ===== 삭제 확인 모달 ===== -->
+@if (deleteModalOpen) {
+  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
+       (click)="closeDeleteModal()" role="button" tabindex="0" aria-label="닫기"
+       (keydown.escape)="closeDeleteModal()">
+    <div class="bg-white rounded-2xl shadow-2xl w-[400px] overflow-hidden"
+         (click)="$event.stopPropagation()" (keydown.escape)="closeDeleteModal()">
+      <!-- 헤더 -->
+      <div class="flex items-center gap-3 px-6 pt-6 pb-2">
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-red-50">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="font-suit font-bold text-lg text-gray-800">삭제 확인</span>
+      </div>
+      <!-- 본문 -->
+      <div class="px-6 py-4">
+        <p class="font-suit text-sm text-gray-600 leading-relaxed">{{ deleteModalMessage }}</p>
+        <p class="font-suit text-xs text-gray-400 mt-2">이 작업은 되돌릴 수 없습니다.</p>
+      </div>
+      <!-- 버튼 -->
+      <div class="flex gap-3 px-6 pb-6">
+        <button class="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 bg-white font-suit font-medium text-sm text-gray-600 cursor-pointer hover:bg-gray-50 transition-colors"
+                (click)="closeDeleteModal()">취소</button>
+        <button class="flex-1 px-4 py-2.5 rounded-lg border-none bg-red-500 font-suit font-medium text-sm text-white cursor-pointer hover:bg-red-600 transition-colors"
+                (click)="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+}

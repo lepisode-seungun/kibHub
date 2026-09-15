@@ -93,8 +93,8 @@
 
 /* ===== 반응형 ===== */
 @media (max-width: 1440px) {
-  .if-hero { padding: 0 100px; }
-  .if-content { padding: 60px 100px; }
+  .if-hero { padding: 0 clamp(20px, 5.2vw, 100px); }
+  .if-content { padding: 60px clamp(20px, 5.2vw, 100px); }
 }
 
 @media (max-width: 1200px) {

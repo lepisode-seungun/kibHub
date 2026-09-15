@@ -589,9 +589,10 @@
   .side-drawer {
     position: fixed;
     top: 64px;
-    right: auto;
+    right: 12px;
     left: auto;
     width: 220px;
+    max-width: calc(100vw - 24px);
     height: auto;
     max-height: calc(100vh - 96px);
     border-radius: 12px;
@@ -606,6 +607,7 @@
   }
 
   .side-drawer.drawer-open {
+    right: 12px;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);

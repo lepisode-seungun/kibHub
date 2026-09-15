@@ -183,6 +183,21 @@ export type PortfolioFile = Prisma.PortfolioFileModel
  */
 export type Poster = Prisma.PosterModel
 /**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
+ * Model Survey
+ * 
+ */
+export type Survey = Prisma.SurveyModel
+/**
+ * Model SurveyResponse
+ * 
+ */
+export type SurveyResponse = Prisma.SurveyResponseModel
+/**
  * Model SiteSetting
  * 
  */

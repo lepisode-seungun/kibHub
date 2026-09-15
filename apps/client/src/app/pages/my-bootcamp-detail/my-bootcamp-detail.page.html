@@ -375,6 +375,111 @@
       </div>
     }
 
+    <!-- ===== 리뷰 탭 ===== -->
+    @if (activeDetailTab() === '설문조사') {
+      @if (reviewLoading()) {
+        <div class="rv-loading">설문조사를 불러오는 중...</div>
+      } @else {
+
+        @if (myReview()) {
+          <!-- 제출 완료 상태 -->
+          <div class="rv-submitted-wrap">
+            <div class="rv-submitted-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="11" stroke="#22C55E" stroke-width="2"/>
+                <path d="M7 12.5L10.5 16L17 9" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="rv-submitted-title">설문조사를 제출해주셔서 감사합니다.</h3>
+            <p class="rv-submitted-sub">소중한 의견이 반영되었습니다.</p>
+          </div>
+        } @else {
+          <!-- 리뷰 미제출 — 중앙 CTA -->
+          <div class="rv-cta-wrap">
+            <button class="rv-cta-btn" (click)="openReviewModal()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              설문조사 작성하기
+            </button>
+          </div>
+        }
+      }
+    }
+
     </div>
+
   </section>
 </main>
+
+<!-- ===== 리뷰 작성 모달 ===== -->
+@if (isReviewModalOpen()) {
+  <div class="rv-modal-overlay" tabindex="-1" (click)="closeReviewModal()" (keydown.escape)="closeReviewModal()">
+    <div class="rv-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeReviewModal()">
+      <div class="rv-modal-header">
+        <h3 class="rv-modal-title">{{ myReview() ? '설문조사 수정' : '설문조사 작성' }}</h3>
+        <button class="rv-modal-close" (click)="closeReviewModal()" aria-label="닫기">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="rv-modal-body">
+        <!-- 별점 -->
+        <div class="rv-modal-rating">
+          <span class="rv-modal-label">별점</span>
+          <div class="rv-modal-stars">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <button class="rv-star-btn" (click)="setRating(i)" (mouseenter)="hoverRating.set(i)" (mouseleave)="hoverRating.set(0)">
+                <svg width="32" height="32" viewBox="0 0 24 24" [attr.fill]="(hoverRating() || reviewForm.rating) >= i ? '#FBBF24' : '#3F3F46'">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- 설문 질문 (활성 설문이 있는 경우) -->
+        @if (activeSurvey()) {
+          <div class="sv-section-in-modal">
+            <div class="sv-divider"></div>
+            <span class="rv-modal-label">📋 {{ activeSurvey().title }}</span>
+            @for (q of activeSurvey().questions; track $index; let qIdx = $index) {
+              <div class="sv-question-modal">
+                <label class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text }}</label>
+                @if (q.type === 'rating') {
+                  <div class="sv-rating-stars">
+                    @for (star of [1,2,3,4,5]; track star) {
+                      <button class="rv-star-btn" (click)="updateSurveyAnswer(qIdx, star)">
+                        <svg width="24" height="24" viewBox="0 0 24 24"
+                             [attr.fill]="+(surveyAnswers()[qIdx] || 0) >= star ? '#FBBF24' : '#D4D4D8'">
+                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                        </svg>
+                      </button>
+                    }
+                  </div>
+                } @else if (q.type === 'select') {
+                  <div class="sv-select-group">
+                    @for (opt of ['매우 불만족', '불만족', '보통', '만족', '매우 만족']; track opt) {
+                      <button class="sv-select-btn"
+                              [class.active]="surveyAnswers()[qIdx] === opt"
+                              (click)="updateSurveyAnswer(qIdx, opt)">
+                        {{ opt }}
+                      </button>
+                    }
+                  </div>
+                } @else {
+                  <textarea class="sv-textarea-sm"
+                            rows="2"
+                            placeholder="답변을 입력해주세요"
+                            [value]="surveyAnswers()[qIdx] || ''"
+                            (input)="updateSurveyAnswer(qIdx, $any($event.target).value)"></textarea>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="rv-modal-footer">
+        <button class="rv-modal-btn-cancel" (click)="closeReviewModal()">취소</button>
+        <button class="rv-modal-btn-submit" (click)="submitReview()">{{ myReview() ? '수정하기' : '제출하기' }}</button>
+      </div>
+    </div>
+  </div>
+}

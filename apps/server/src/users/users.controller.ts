@@ -98,6 +98,11 @@ export class UsersController {
     return this.usersService.getFollowing(id);
   }
 
+  @Get(':id/dashboard')
+  getDashboard(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getDashboard(id);
+  }
+
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);

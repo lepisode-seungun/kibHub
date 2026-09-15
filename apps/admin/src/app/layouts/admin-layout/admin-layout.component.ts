@@ -83,6 +83,7 @@ export class AdminLayoutComponent implements OnInit {
     { label: '모집 페이지 관리', icon: 'recruitment', route: '/bootcamp/home/recruitment' },
     { label: '과정 관리', icon: 'curriculum', route: '/bootcamp/home/curriculum' },
     { label: '공지사항 관리', icon: 'notice', route: '/bootcamp/home/notices' },
+    { label: '설문조사 관리', icon: 'reviews', route: '/bootcamp/home/reviews' },
   ];
 
   private allRoutes: { route: string; label: string; parent?: string }[] = [];

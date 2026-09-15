@@ -459,9 +459,9 @@
 
 /* ===== 반응형 ===== */
 @media (max-width: 1600px) {
-  .mbd-hero { padding: 60px 100px; }
-  .mbd-tab-nav { padding: 0 100px; }
-  .mbd-content { padding: 40px 100px; }
+  .mbd-hero { padding: 60px clamp(20px, 5.2vw, 100px); }
+  .mbd-tab-nav { padding: 0 clamp(20px, 5.2vw, 100px); }
+  .mbd-content { padding: 40px clamp(20px, 5.2vw, 100px); }
 }
 
 @media (max-width: 1200px) {
@@ -494,3 +494,174 @@
   .nt-search-input { width: 100%; }
   .mbd-notice-total { display: none; }
 }
+
+/* ===== 리뷰 탭 ===== */
+.rv-loading { padding: 60px 0; text-align: center; font-family: var(--font-family); font-size: 16px; color: #A1A1AA; width: 100%; }
+
+.rv-summary-compact { display: flex; align-items: center; gap: 24px; padding: 16px 20px; background: #FAFAFA; border-radius: 12px; width: 100%; box-sizing: border-box; }
+.rv-avg-row { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.rv-avg-score { font-family: var(--font-family); font-weight: 800; font-size: 32px; color: #27272A; line-height: 1; }
+.rv-avg-stars { display: flex; gap: 1px; }
+.rv-avg-count { font-family: var(--font-family); font-weight: 500; font-size: 13px; color: #A1A1AA; white-space: nowrap; }
+
+.rv-dist-compact { display: flex; flex-direction: column; gap: 3px; flex: 1; max-width: 200px; }
+.rv-dist-mini { display: flex; align-items: center; gap: 6px; }
+.rv-dist-star { font-family: var(--font-family); font-weight: 600; font-size: 11px; color: #A1A1AA; width: 10px; text-align: right; }
+.rv-dist-bar-sm { flex: 1; height: 6px; background: #E4E4E7; border-radius: 999px; overflow: hidden; }
+.rv-dist-fill-sm { height: 100%; background: #FBBF24; border-radius: 999px; transition: width 0.3s ease; }
+.rv-dist-num { font-family: var(--font-family); font-weight: 500; font-size: 11px; color: #71717A; width: 16px; text-align: right; }
+
+.rv-write-wrap { display: flex; gap: 8px; width: 100%; }
+.rv-write-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 24px; background: #7A48FF; border: none; border-radius: 10px; cursor: pointer; font-family: var(--font-family); font-weight: 600; font-size: 14px; color: #FFFFFF; transition: background 0.15s; }
+.rv-write-btn:hover { background: #6936e6; }
+.rv-write-edit { background: #3F3F46; }
+.rv-write-edit:hover { background: #52525B; }
+.rv-write-del { background: none; border: 1px solid #EF4444; color: #EF4444; }
+.rv-write-del:hover { background: rgba(239, 68, 68, 0.05); }
+
+.rv-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+.rv-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; background: #FFFFFF; border: 1px solid #F4F4F5; border-radius: 14px; }
+.rv-card-header { display: flex; align-items: center; justify-content: space-between; }
+.rv-card-user { display: flex; align-items: center; gap: 10px; }
+.rv-card-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.rv-card-avatar-default { background: #F4F4F5; display: flex; align-items: center; justify-content: center; }
+.rv-card-nickname { font-family: var(--font-family); font-weight: 600; font-size: 15px; color: #27272A; }
+.rv-card-date { font-family: var(--font-family); font-weight: 400; font-size: 13px; color: #A1A1AA; }
+.rv-card-stars { display: flex; gap: 2px; }
+.rv-card-body { font-family: var(--font-family); font-weight: 400; font-size: 15px; line-height: 160%; color: #52525B; margin: 0; }
+.rv-card-images { display: flex; gap: 8px; flex-wrap: wrap; }
+.rv-card-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
+
+.rv-empty { padding: 60px 0; text-align: center; font-family: var(--font-family); font-size: 15px; color: #A1A1AA; width: 100%; }
+
+/* 리뷰 모달 */
+.rv-modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.rv-modal { display: flex; flex-direction: column; width: 500px; max-width: 90vw; max-height: 80vh; background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); }
+.rv-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #F4F4F5; }
+.rv-modal-title { font-family: var(--font-family); font-weight: 700; font-size: 18px; color: #27272A; margin: 0; }
+.rv-modal-close { background: none; border: none; cursor: pointer; padding: 0; display: flex; }
+.rv-modal-body { padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; }
+.rv-modal-rating { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.rv-modal-label { font-family: var(--font-family); font-weight: 600; font-size: 14px; color: #52525B; }
+.rv-modal-stars { display: flex; gap: 4px; }
+.rv-star-btn { background: none; border: none; cursor: pointer; padding: 2px; transition: transform 0.1s; }
+.rv-star-btn:hover { transform: scale(1.2); }
+.rv-modal-field { display: flex; flex-direction: column; gap: 8px; }
+.rv-modal-textarea { width: 100%; min-height: 140px; padding: 14px; border: 1px solid #E4E4E7; border-radius: 10px; font-family: var(--font-family); font-size: 14px; line-height: 160%; color: #27272A; resize: vertical; box-sizing: border-box; outline: none; transition: border-color 0.15s; }
+.rv-modal-textarea:focus { border-color: #7A48FF; }
+.rv-modal-textarea::placeholder { color: #A1A1AA; }
+.rv-modal-charcount { font-family: var(--font-family); font-size: 12px; color: #A1A1AA; text-align: right; }
+.rv-modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid #F4F4F5; }
+.rv-modal-btn-cancel { padding: 10px 20px; background: none; border: 1px solid #E4E4E7; border-radius: 10px; cursor: pointer; font-family: var(--font-family); font-weight: 500; font-size: 14px; color: #71717A; transition: background 0.15s; }
+.rv-modal-btn-cancel:hover { background: #F4F4F5; }
+.rv-modal-btn-submit { padding: 10px 20px; background: #7A48FF; border: none; border-radius: 10px; cursor: pointer; font-family: var(--font-family); font-weight: 600; font-size: 14px; color: #FFFFFF; transition: background 0.15s; }
+.rv-modal-btn-submit:hover { background: #6936e6; }
+
+@media (max-width: 768px) {
+  .rv-summary { flex-direction: column; gap: 20px; padding: 16px; }
+  .rv-modal { width: 100%; max-width: 100%; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; left: 0; right: 0; max-height: 90vh; }
+}
+
+/* ===== 설문 탭 ===== */
+.sv-container { padding: 24px 0; }
+.sv-form { max-width: 640px; }
+.sv-title { font-size: 20px; font-weight: 700; color: #18181B; margin: 0 0 4px; }
+.sv-desc { font-size: 14px; color: #71717A; margin: 0 0 24px; }
+
+.sv-question {
+  padding: 20px 0;
+  border-bottom: 1px solid #F4F4F5;
+}
+.sv-question:first-of-type { border-top: 1px solid #F4F4F5; }
+
+.sv-q-label {
+  display: block; font-size: 15px; font-weight: 600; color: #27272A; margin-bottom: 12px;
+}
+
+.sv-textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid #E4E4E7; border-radius: 10px;
+  font-size: 14px; color: #18181B; background: #FAFAFA; outline: none; resize: vertical;
+  font-family: var(--font-family); transition: border-color 0.2s; box-sizing: border-box;
+}
+.sv-textarea:focus { border-color: #7A48FF; background: #fff; }
+
+.sv-rating-stars { display: flex; gap: 4px; }
+
+.sv-submit-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 14px; margin-top: 28px;
+  background: #7A48FF; color: #fff; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: background 0.2s;
+}
+.sv-submit-btn:hover:not(:disabled) { background: #6936e6; }
+.sv-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.sv-completed {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 0; text-align: center; gap: 12px;
+}
+.sv-completed-title { font-size: 20px; font-weight: 700; color: #18181B; margin: 0; }
+.sv-completed-text { font-size: 14px; color: #71717A; margin: 0; }
+
+/* 리뷰 모달 내 설문 섹션 */
+.sv-section-in-modal { margin-top: 8px; }
+.sv-divider { height: 1px; background: #E4E4E7; margin-bottom: 16px; }
+.sv-question-modal { margin-bottom: 16px; }
+.sv-q-label-sm { display: block; font-size: 13px; font-weight: 600; color: #3F3F46; margin-bottom: 8px; }
+.sv-textarea-sm {
+  width: 100%; padding: 10px 12px; border: 1px solid #E4E4E7; border-radius: 8px;
+  font-size: 13px; color: #18181B; background: #FAFAFA; outline: none; resize: vertical;
+  font-family: var(--font-family); transition: border-color 0.2s; box-sizing: border-box;
+}
+.sv-textarea-sm:focus { border-color: #7A48FF; background: #fff; }
+
+/* 객관식 선택 */
+.sv-select-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.sv-select-btn {
+  padding: 8px 16px; border: 1px solid #E4E4E7; border-radius: 8px; background: #FAFAFA;
+  font-size: 13px; color: #3F3F46; cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-family);
+}
+.sv-select-btn:hover { border-color: #7A48FF; background: #F5F0FF; }
+.sv-select-btn.active { border-color: #7A48FF; background: #7A48FF; color: #fff; }
+
+/* 제출 완료 상태 */
+.rv-submitted-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: calc(100vh - 500px); gap: 16px;
+}
+.rv-submitted-icon { animation: rvCheckPop 0.4s ease-out; }
+@keyframes rvCheckPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.rv-submitted-title {
+  font-size: 20px; font-weight: 700; color: #18181B; margin: 0;
+  font-family: var(--font-family);
+}
+.rv-submitted-sub {
+  font-size: 14px; color: #71717A; margin: 0;
+  font-family: var(--font-family);
+}
+
+/* 중앙 CTA 버튼 */
+.rv-cta-wrap {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: calc(100vh - 500px);
+}
+.rv-cta-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 40px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #7A48FF 0%, #A78BFA 100%);
+  color: #fff; font-size: 18px; font-weight: 700; cursor: pointer;
+  font-family: var(--font-family);
+  box-shadow: 0 4px 14px rgba(122, 72, 255, 0.35);
+  transition: all 0.2s;
+}
+.rv-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(122, 72, 255, 0.45);
+}
+.rv-cta-btn:active { transform: translateY(0); }

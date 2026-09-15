@@ -1095,7 +1095,7 @@
 /* ===== 반응형 ===== */
 /* [TW-KEEP] responsive */
 @media (max-width: 1600px) {
-  .cu-main { padding: 60px 100px; }
+  .cu-main { padding: 60px clamp(20px, 5.2vw, 100px); }
   .cu-columns { width: 100%; }
   .cu-left { width: 60%; }
 }

@@ -84,6 +84,9 @@ export const ModelName = {
   Portfolio: 'Portfolio',
   PortfolioFile: 'PortfolioFile',
   Poster: 'Poster',
+  Review: 'Review',
+  Survey: 'Survey',
+  SurveyResponse: 'SurveyResponse',
   SiteSetting: 'SiteSetting',
   User: 'User',
   UserSns: 'UserSns'
@@ -579,6 +582,44 @@ export const PosterScalarFieldEnum = {
 export type PosterScalarFieldEnum = (typeof PosterScalarFieldEnum)[keyof typeof PosterScalarFieldEnum]
 
 
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  rating: 'rating',
+  body: 'body',
+  images: 'images',
+  isApproved: 'isApproved',
+  userId: 'userId',
+  bootcampId: 'bootcampId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const SurveyScalarFieldEnum = {
+  id: 'id',
+  bootcampId: 'bootcampId',
+  title: 'title',
+  questions: 'questions',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type SurveyScalarFieldEnum = (typeof SurveyScalarFieldEnum)[keyof typeof SurveyScalarFieldEnum]
+
+
+export const SurveyResponseScalarFieldEnum = {
+  id: 'id',
+  surveyId: 'surveyId',
+  userId: 'userId',
+  answers: 'answers',
+  createdAt: 'createdAt'
+} as const
+
+export type SurveyResponseScalarFieldEnum = (typeof SurveyResponseScalarFieldEnum)[keyof typeof SurveyResponseScalarFieldEnum]
+
+
 export const SiteSettingScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -637,6 +678,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

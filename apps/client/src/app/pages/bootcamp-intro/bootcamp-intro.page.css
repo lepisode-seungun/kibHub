@@ -260,7 +260,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  padding: 100px 200px;
+  padding: clamp(20px, 5.2vw, 100px) clamp(20px, 10.4vw, 200px);
   gap: 100px;
   width: 100%;
   box-sizing: border-box;
@@ -644,7 +644,7 @@
   }
 
   .academy-section {
-    padding: 80px 100px;
+    padding: 80px clamp(20px, 5.2vw, 100px);
     gap: 60px;
   }
 }
@@ -1038,7 +1038,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 100px;
+  padding: clamp(20px, 5.2vw, 100px);
   width: 100%;
   min-height: 720px;
   background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
@@ -1148,7 +1148,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  padding: 100px;
+  padding: clamp(20px, 5.2vw, 100px);
   gap: 100px;
   width: 100%;
   min-height: 920px;
@@ -1454,7 +1454,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 100px 200px;
+  padding: clamp(20px, 5.2vw, 100px) clamp(20px, 10.4vw, 200px);
   gap: 100px;
   width: 100%;
   background: #0C0B10;

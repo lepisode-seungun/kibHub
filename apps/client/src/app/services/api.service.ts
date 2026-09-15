@@ -7,6 +7,51 @@ import {
   CreateContentDto, CreateReportDto, UpdateUserDto,
 } from '@kibhub/shared';
 
+interface DashboardResponse {
+  summary: { bootcampCount: number; completionRate: number; submittedCount: number; feedbackReceivedCount: number };
+  bootcamps: { id: number; name: string; status: string; thumbnail: string | null; startDate: string | null; endDate: string | null }[];
+  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; status: string }[];
+  activityHeatmap: { date: string; count: number }[];
+  monthlySubmissions: { month: string; count: number }[];
+  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; authorNickname: string; authorProfileImage: string | null; createdAt: string }[];
+}
+
+interface ReviewItem {
+  id: number;
+  rating: number;
+  body: string;
+  images: string[] | null;
+  isApproved: boolean;
+  userId: number;
+  bootcampId: number;
+  createdAt: string;
+  updatedAt: string;
+  user?: { id: number; nickname: string; profileImage: string | null };
+}
+
+interface ReviewListResponse {
+  reviews: ReviewItem[];
+  avgRating: number;
+  totalCount: number;
+  ratingDist: number[]; // [1점수, 2점수, 3점수, 4점수, 5점수]
+}
+
+interface SurveyQuestion {
+  id: string;
+  type: 'SINGLE' | 'MULTIPLE' | 'TEXT' | 'RATING';
+  title: string;
+  options?: string[];
+  required: boolean;
+}
+
+interface SurveyItem {
+  id: number;
+  bootcampId: number;
+  title: string;
+  questions: SurveyQuestion[];
+  isActive: boolean;
+}
+
 interface Submission {
   id: number;
   title?: string;
@@ -257,6 +302,8 @@ export class ApiService {
       this.get(`/users/${id}/followers`),
     following: (id: number): Promise<{ id: number; nickname: string; profileImage: string | null }[]> =>
       this.get(`/users/${id}/following`),
+    dashboard: (id: number): Promise<DashboardResponse> =>
+      this.get<DashboardResponse>(`/users/${id}/dashboard`),
   };
 
   // ===== Comments =====
@@ -372,5 +419,29 @@ export class ApiService {
     delete: (id: number): Promise<void> => this.del<void>(`/albums/${id}`),
     addContent: (albumId: number, contentId: number): Promise<void> => this.post<void>(`/albums/${albumId}/contents/${contentId}`, {}),
     removeContent: (albumId: number, contentId: number): Promise<void> => this.del<void>(`/albums/${albumId}/contents/${contentId}`),
+  };
+
+  // ===== Reviews =====
+  readonly reviews = {
+    findByBootcamp: (bootcampId: number, approvedOnly = false): Promise<ReviewListResponse> =>
+      this.get<ReviewListResponse>(`/reviews/bootcamp/${bootcampId}${approvedOnly ? '?approvedOnly=true' : ''}`),
+    findMine: (bootcampId: number): Promise<ReviewItem | null> =>
+      this.get(`/reviews/bootcamp/${bootcampId}/mine`),
+    create: (bootcampId: number, data: { rating: number; body: string; images?: string[] }): Promise<ReviewItem> =>
+      this.post(`/reviews/bootcamp/${bootcampId}`, data),
+    update: (id: number, data: { rating?: number; body?: string; images?: string[] }): Promise<ReviewItem> =>
+      this.patch(`/reviews/${id}`, data),
+    delete: (id: number): Promise<void> =>
+      this.del<void>(`/reviews/${id}`),
+  };
+
+  // ===== Surveys =====
+  readonly surveys = {
+    findActive: (bootcampId: number): Promise<SurveyItem | null> =>
+      this.get(`/surveys/bootcamp/${bootcampId}`),
+    respond: (surveyId: number, answers: { questionId: string; answer: string | string[] | number }[]): Promise<unknown> =>
+      this.post(`/surveys/${surveyId}/respond`, { answers }),
+    checkResponse: (surveyId: number): Promise<{ hasResponded: boolean }> =>
+      this.get(`/surveys/${surveyId}/check`),
   };
 }

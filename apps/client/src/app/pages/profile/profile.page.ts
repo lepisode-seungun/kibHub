@@ -13,6 +13,16 @@ interface Album {
   isActive: boolean;
 }
 
+interface DashboardData {
+  summary: { bootcampCount: number; completionRate: number; submittedCount: number; feedbackReceivedCount: number; contentCount?: number; feedbackCount?: number; likeCount?: number; followerCount?: number };
+  bootcamps: { id: number; name: string; status: string; thumbnail: string | null; startDate: string | null; endDate: string | null }[];
+  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; status: string }[];
+  activityHeatmap: { date: string; count: number }[];
+  monthlySubmissions: { month: string; count: number }[];
+  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; authorNickname: string; authorProfileImage: string | null; createdAt: string; contentTitle?: string; contentId?: number }[];
+  contentTypeDist?: { type: string; count: number }[];
+}
+
 interface ContentCard {
   id: number;
   title: string;
@@ -307,7 +317,18 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.router.navigate(['/change-password']);
   }
 
-  activeTab = signal<'all' | 'album'>('all');
+  activeTab = signal<'all' | 'album' | 'dashboard'>('all');
+
+  // 대시보드 데이터
+  _dashboardData = signal<DashboardData | null>(null);
+  dashboardData = computed(() => this._dashboardData() ?? {
+    summary: { bootcampCount: 0, completionRate: 0, submittedCount: 0, feedbackReceivedCount: 0, contentCount: 0, feedbackCount: 0, likeCount: 0, followerCount: 0 },
+    bootcamps: [], assignmentStatus: [], activityHeatmap: [], monthlySubmissions: [], recentFeedbacks: [], contentTypeDist: [],
+  } as DashboardData);
+  isDashboardLoaded = computed(() => this._dashboardData() !== null);
+  dashboardLoading = signal(false);
+  heatmapWeeks = signal<{ date: string; count: number; level: number }[][]>([]);
+  heatmapMonthLabels = signal<{ text: string; col: number }[]>([]);
   selectedAlbumId = signal<number | null>(null);
   hoveredAlbumId = signal<number | null>(null);
   isSortOpen = signal(false);
@@ -411,9 +432,116 @@ export class ProfilePage implements OnInit, OnDestroy {
     return result;
   });
 
-  setTab(tab: 'all' | 'album'): void {
+  setTab(tab: 'all' | 'album' | 'dashboard'): void {
     this.activeTab.set(tab);
     this.searchQuery.set('');
+    if (tab === 'dashboard' && !this._dashboardData()) {
+      this.loadDashboard();
+    }
+  }
+
+  private async loadDashboard(): Promise<void> {
+    const uid = this.userId();
+    if (!uid) return;
+    this.dashboardLoading.set(true);
+    try {
+      const data = await this.api.users.dashboard(uid);
+      this._dashboardData.set(data);
+      this.buildHeatmap(data.activityHeatmap);
+    } catch (e) {
+      console.error('대시보드 로드 실패:', e);
+    }
+    this.dashboardLoading.set(false);
+  }
+
+  private buildHeatmap(activities: { date: string; count: number }[]): void {
+    const actMap = new Map(activities.map(a => [a.date, a.count]));
+    const maxCount = Math.max(1, ...activities.map(a => a.count));
+    const today = new Date();
+    const days: { date: string; count: number; level: number }[] = [];
+
+    // 최근 365일
+    for (let i = 364; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      const count = actMap.get(key) || 0;
+      const level = count === 0 ? 0 : Math.min(4, Math.ceil((count / maxCount) * 4));
+      days.push({ date: key, count, level });
+    }
+
+    // 첫 날의 요일에 맞춰 빈칸 추가 (일요일=0)
+    const firstDay = new Date(days[0].date).getDay();
+    const padded = Array(firstDay).fill({ date: '', count: 0, level: -1 }).concat(days);
+
+    // 7일씩 묶어 주(week) 단위로 나누기
+    const weeks: { date: string; count: number; level: number }[][] = [];
+    for (let i = 0; i < padded.length; i += 7) {
+      weeks.push(padded.slice(i, i + 7));
+    }
+    // 마지막 week가 7일 미만이면 빈칸으로 채움
+    const lastWeek = weeks[weeks.length - 1];
+    while (lastWeek && lastWeek.length < 7) {
+      lastWeek.push({ date: '', count: 0, level: -1 });
+    }
+    this.heatmapWeeks.set(weeks);
+
+    // 월 레이블 생성
+    const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+    const labels: { text: string; col: number }[] = [];
+    let lastMonth = -1;
+    for (let w = 0; w < weeks.length; w++) {
+      const firstValidDay = weeks[w].find(d => d.date !== '');
+      if (firstValidDay) {
+        const month = new Date(firstValidDay.date).getMonth();
+        if (month !== lastMonth) {
+          labels.push({ text: monthNames[month], col: w + 2 }); // +2: 1-indexed + day-label spacer
+          lastMonth = month;
+        }
+      }
+    }
+    this.heatmapMonthLabels.set(labels);
+  }
+
+  getTypeLabel(type: string): string {
+    const map: Record<string, string> = { WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글' };
+    return map[type] || type;
+  }
+
+  getMaxMonthly(): number {
+    const data = this.dashboardData();
+    if (!data?.monthlySubmissions) return 1;
+    return Math.max(1, ...data.monthlySubmissions.map((m: any) => m.count));
+  }
+
+  getMonthLabel(month: string): string {
+    return month.split('-')[1] + '월';
+  }
+
+  getTotalTypeCount(): number {
+    const data = this.dashboardData();
+    if (!data?.contentTypeDist) return 1;
+    return Math.max(1, data.contentTypeDist.reduce((sum: number, t: any) => sum + t.count, 0));
+  }
+
+  /** 대시보드: 과제 클릭 → 과제 상세 페이지 */
+  goToAssignment(bootcampId: number, assignmentId: number): void {
+    this.router.navigate(['/my-bootcamp', bootcampId, 'assignment', assignmentId]);
+  }
+
+  /** 대시보드: 부트캠프 클릭 → 부트캠프 상세 */
+  goToBootcamp(bootcampId: number): void {
+    this.router.navigate(['/my-bootcamp', bootcampId]);
+  }
+
+  /** 대시보드: 마이 부트캠프 목록 */
+  goToMyBootcamp(): void {
+    this.router.navigate(['/my-bootcamp']);
+  }
+
+  /** 대시보드: 피드백 클릭 → 피드백 상세 */
+  goToFeedback(bootcampId: number, feedbackId: number): void {
+    this.router.navigate(['/my-bootcamp', bootcampId, 'feedback', feedbackId]);
   }
 
   onSearchInput(event: Event): void {

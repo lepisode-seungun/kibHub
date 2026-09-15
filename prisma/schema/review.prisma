@@ -1,0 +1,44 @@
+// ===== 리뷰 =====
+model Review {
+  id          Int      @id @default(autoincrement())
+  rating      Int      // 1~5
+  body        String   @default("")
+  images      Json?    // string[] (이미지 URL 배열)
+  isApproved  Boolean  @default(false) // 모집 페이지 노출 승인
+  userId      Int
+  bootcampId  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bootcamp    Bootcamp @relation(fields: [bootcampId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bootcampId]) // 1인 1리뷰
+}
+
+// ===== 설문 =====
+model Survey {
+  id          Int      @id @default(autoincrement())
+  bootcampId  Int
+  title       String   @default("수료 설문")
+  questions   Json     // SurveyQuestion[]
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  bootcamp    Bootcamp @relation(fields: [bootcampId], references: [id], onDelete: Cascade)
+  responses   SurveyResponse[]
+}
+
+// ===== 설문 응답 =====
+model SurveyResponse {
+  id         Int      @id @default(autoincrement())
+  surveyId   Int
+  userId     Int
+  answers    Json     // { questionId: string, answer: string | string[] | number }[]
+  createdAt  DateTime @default(now())
+
+  survey     Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([surveyId, userId]) // 1인 1응답
+}

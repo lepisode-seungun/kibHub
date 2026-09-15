@@ -91,19 +91,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const drawer = document.querySelector<HTMLElement>('.side-drawer');
 
     if (window.innerWidth <= 768) {
-      // 모바일: 스크롤 잠금 + 인라인 left 제거 (데스크톱 잔존 방지)
+      // 모바일: 스크롤 잠금
       document.body.style.overflow = this.isSidebarOpen() ? 'hidden' : '';
       if (drawer) drawer.style.left = '';
     } else {
-      // 데스크톱: 햄버거 버튼 기준 드롭다운 위치 설정
+      // 데스크톱: 햄버거 버튼 기준 드롭다운 위치 (화면 밖 방지)
       if (this.isSidebarOpen()) {
         const btn = document.querySelector<HTMLElement>('.icon-btn');
         if (btn && drawer) {
           const rect = btn.getBoundingClientRect();
-          drawer.style.left = rect.left + 'px';
+          const drawerWidth = 220;
+          const maxLeft = window.innerWidth - drawerWidth - 12;
+          const left = Math.min(rect.left, maxLeft);
+          drawer.style.left = left + 'px';
+          drawer.style.right = 'auto';
         }
       } else if (drawer) {
-        setTimeout(() => { drawer.style.left = ''; }, 250);
+        setTimeout(() => { drawer.style.left = ''; drawer.style.right = ''; }, 250);
       }
     }
   }
@@ -113,7 +117,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     document.body.style.overflow = '';
     const drawer = document.querySelector<HTMLElement>('.side-drawer');
     if (drawer) {
-      setTimeout(() => { drawer.style.left = ''; }, 250);
+      setTimeout(() => { drawer.style.left = ''; drawer.style.right = ''; }, 250);
     }
   }
 

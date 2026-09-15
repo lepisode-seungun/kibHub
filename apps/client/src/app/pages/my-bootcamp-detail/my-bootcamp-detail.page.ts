@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
@@ -86,7 +87,7 @@ interface CourseSection {
 @Component({
   selector: 'app-my-bootcamp-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './my-bootcamp-detail.page.html',
   styleUrls: ['./my-bootcamp-detail.page.css'],
 })
@@ -97,11 +98,12 @@ export class MyBootcampDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
 
   bootcampId = '';
+  Math = Math;
   bootcampTitle = signal('');
   bootcampStatus = signal('');
   dateRange = signal('');
 
-  detailTabs = ['학습목록', '강의', '과제', '공지사항'];
+  detailTabs = ['학습목록', '강의', '과제', '공지사항', '설문조사'];
   activeDetailTab = signal('학습목록');
 
   courseSections = signal<CourseSection[]>([]);
@@ -222,6 +224,10 @@ export class MyBootcampDetailPage implements OnInit {
     }
     if (this.bootcampId) {
       this.loadBootcampData(Number(this.bootcampId));
+      // 설문조사 탭이면 즉시 로드
+      if (this.activeDetailTab() === '설문조사') {
+        this.loadReviews();
+      }
     }
   }
 
@@ -255,11 +261,6 @@ export class MyBootcampDetailPage implements OnInit {
       const user = this.authService.currentUser();
       if (user) {
         if (user.role === 'INSTRUCTOR' || user.role === 'ADMIN') {
-          // 마감/종료 상태면 강사도 진입 차단
-          if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
-            this.router.navigate(['/my-bootcamp']);
-            return;
-          }
           // 강사/관리자는 부트캠프 상태 직접 표시
           this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status || '수강중');
         } else {
@@ -268,11 +269,6 @@ export class MyBootcampDetailPage implements OnInit {
             const myApp = applicants.find((a: { bootcampId: number; status: string }) => a.bootcampId === bootcampId);
             // 수강중(ACCEPTED)이 아닌 상태는 접근 차단
             if (!myApp || myApp.status !== 'ACCEPTED') {
-              this.router.navigate(['/my-bootcamp']);
-              return;
-            }
-            // 부트캠프가 마감/종료 상태면 진입 차단
-            if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
               this.router.navigate(['/my-bootcamp']);
               return;
             }
@@ -398,6 +394,9 @@ export class MyBootcampDetailPage implements OnInit {
 
   selectDetailTab(tab: string): void {
     this.activeDetailTab.set(tab);
+    if (tab === '설문조사') {
+      this.loadReviews(); // 항상 최신 데이터 로드 (어드민 삭제 반영)
+    }
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab },
@@ -578,6 +577,180 @@ export class MyBootcampDetailPage implements OnInit {
   private stripHtml(html: string): string {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || '';
+  }
+
+  /* ===== 리뷰 탭 ===== */
+  _reviewData = signal<{ reviews: any[]; avgRating: number; totalCount: number; ratingDist: number[] } | null>(null);
+  reviewData = computed(() => this._reviewData() ?? { reviews: [], avgRating: 0, totalCount: 0, ratingDist: [0, 0, 0, 0, 0] });
+  myReview = signal<any>(null);
+  reviewLoading = signal(false);
+  isReviewModalOpen = signal(false);
+  reviewForm = { rating: 0, body: '', images: [] as string[] };
+  hoverRating = signal(0);
+
+  async loadReviews(): Promise<void> {
+    if (!this.bootcampId) return;
+    this.reviewLoading.set(true);
+    try {
+      const data = await this.api.reviews.findByBootcamp(Number(this.bootcampId));
+      this._reviewData.set(data);
+      // 내 리뷰 확인
+      try {
+        const mine = await this.api.reviews.findMine(Number(this.bootcampId));
+        this.myReview.set(mine);
+      } catch { this.myReview.set(null); }
+      // 설문 로드
+      this.loadSurvey();
+    } catch (err) {
+      console.error('리뷰 로드 실패:', err);
+    } finally {
+      this.reviewLoading.set(false);
+    }
+  }
+
+  openReviewModal(): void {
+    const mine = this.myReview();
+    if (mine) {
+      this.reviewForm = { rating: mine.rating, body: mine.body, images: mine.images || [] };
+    } else {
+      this.reviewForm = { rating: 0, body: '', images: [] };
+    }
+    this.surveyAnswers.set({});
+    this.loadSurvey(); // 항상 최신 설문 로드
+    this.isReviewModalOpen.set(true);
+  }
+
+  closeReviewModal(): void {
+    this.isReviewModalOpen.set(false);
+  }
+
+  setRating(star: number): void {
+    this.reviewForm.rating = star;
+  }
+
+  async submitReview(): Promise<void> {
+    if (this.reviewForm.rating === 0) { alert('별점을 선택해주세요.'); return; }
+    try {
+      const mine = this.myReview();
+      if (mine) {
+        await this.api.reviews.update(mine.id, this.reviewForm);
+      } else {
+        await this.api.reviews.create(Number(this.bootcampId), this.reviewForm);
+      }
+
+      // 설문 응답 동시 제출 (활성 설문이 있고 미응답인 경우)
+      const survey = this.activeSurvey();
+      if (survey?.id && !this.hasResponded()) {
+        const answerEntries = Object.entries(this.surveyAnswers());
+        if (answerEntries.length > 0) {
+          const answers = answerEntries.map(([idx, answer]) => ({
+            questionId: String(idx),
+            answer,
+          }));
+          try {
+            await this.api.surveys.respond(survey.id, answers as any);
+            this.hasResponded.set(true);
+          } catch { /* 설문 실패해도 리뷰는 성공 */ }
+        }
+      }
+
+      this.isReviewModalOpen.set(false);
+      this.surveyAnswers.set({});
+      await this.loadReviews();
+    } catch (err: any) {
+      alert(err?.error?.message || '설문조사 제출에 실패했습니다.');
+    }
+  }
+
+  async deleteReview(): Promise<void> {
+    const mine = this.myReview();
+    if (!mine) return;
+    if (!confirm('설문조사를 삭제하시겠습니까?')) return;
+    try {
+      await this.api.reviews.delete(mine.id);
+      this.myReview.set(null);
+      await this.loadReviews();
+    } catch (err: any) {
+      alert(err?.error?.message || '설문조사 삭제에 실패했습니다.');
+    }
+  }
+
+  getStarArray(rating: number): boolean[] {
+    return [1, 2, 3, 4, 5].map(i => i <= rating);
+  }
+
+  getRatingBarWidth(count: number): string {
+    const data = this.reviewData();
+    if (!data || data.totalCount === 0) return '0%';
+    return `${(count / data.totalCount) * 100}%`;
+  }
+
+  formatReviewDate(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 60) return `${minutes}분 전`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}시간 전`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}일 전`;
+    return new Date(dateStr).toLocaleDateString('ko-KR');
+  }
+
+  // ===== 설문 =====
+  activeSurvey = signal<any>(null);
+  surveyAnswers = signal<Record<number, string | number>>({});
+  surveyLoading = signal(false);
+  hasResponded = signal(false);
+  surveySubmitting = signal(false);
+
+  async loadSurvey(): Promise<void> {
+    const id = Number(this.bootcampId);
+    console.log('[loadSurvey] bootcampId:', id);
+    if (!id) return;
+    this.surveyLoading.set(true);
+    try {
+      const survey = await this.api.surveys.findActive(id);
+      console.log('[loadSurvey] survey response:', survey);
+      this.activeSurvey.set(survey);
+      if (survey?.id) {
+        const check = await this.api.surveys.checkResponse(survey.id);
+        this.hasResponded.set(check.hasResponded);
+      }
+    } catch (e) {
+      console.error('[loadSurvey] error:', e);
+      this.activeSurvey.set(null);
+    }
+    this.surveyLoading.set(false);
+  }
+
+  updateSurveyAnswer(qIndex: number, value: string | number): void {
+    const current = this.surveyAnswers()[qIndex];
+    if (current === value) {
+      // 토글: 같은 값이면 해제
+      const copy = { ...this.surveyAnswers() };
+      delete copy[qIndex];
+      this.surveyAnswers.set(copy);
+    } else {
+      this.surveyAnswers.update(a => ({ ...a, [qIndex]: value }));
+    }
+  }
+
+  async submitSurvey(): Promise<void> {
+    const survey = this.activeSurvey();
+    if (!survey?.id) return;
+    this.surveySubmitting.set(true);
+    const answers = Object.entries(this.surveyAnswers()).map(([idx, answer]) => ({
+      questionId: String(idx),
+      answer,
+    }));
+    try {
+      await this.api.surveys.respond(survey.id, answers as any);
+      this.hasResponded.set(true);
+      alert('설문이 제출되었습니다. 감사합니다!');
+    } catch (e: any) {
+      alert(e?.error?.message || '설문 제출에 실패했습니다.');
+    }
+    this.surveySubmitting.set(false);
   }
 }
 

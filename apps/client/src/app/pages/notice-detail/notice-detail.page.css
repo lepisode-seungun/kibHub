@@ -93,8 +93,8 @@
 
 /* [TW-KEEP] 이미지 반응형 */
 @media (max-width: 1600px) {
-  .nd-page { padding: 60px 100px; }
-  .nd-tab-nav { padding: 0 100px; }
+  .nd-page { padding: 60px clamp(20px, 5.2vw, 100px); }
+  .nd-tab-nav { padding: 0 clamp(20px, 5.2vw, 100px); }
 }
 
 @media (max-width: 1200px) {

@@ -19,7 +19,7 @@
 
 /* ===== 반응형 ===== */
 @media (max-width: 1440px) {
-  .inq-content { padding: 60px 100px !important; }
+  .inq-content { padding: 60px clamp(20px, 5.2vw, 100px) !important; }
 }
 
 @media (max-width: 1200px) {

@@ -22,6 +22,8 @@ import { AlbumsModule } from './albums/albums.module';
 import { AdminsModule } from './admins/admins.module';
 import { SearchModule } from './search/search.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { SurveysModule } from './surveys/surveys.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     AdminsModule,
     SearchModule,
     NotificationsModule,
+    ReviewsModule,
+    SurveysModule,
   ],
 })
 export class AppModule {}

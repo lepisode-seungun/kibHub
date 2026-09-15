@@ -224,6 +224,13 @@ export const appRoutes: Route[] = [
           ),
       },
       {
+        path: 'bootcamp/home/reviews',
+        loadComponent: () =>
+          import('./pages/reviews/reviews.page').then(
+            (m) => m.ReviewsPage
+          ),
+      },
+      {
         path: 'dashboard',
         redirectTo: 'members',
         pathMatch: 'full',

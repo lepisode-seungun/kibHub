@@ -1,0 +1,79 @@
+:host { display: block; }
+
+.rv-stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rv-stat-card {
+  background: #fff;
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 100px;
+}
+
+.rv-stat-card.rv-stat-dist {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  flex: 1;
+}
+
+.rv-stat-label {
+  font-size: 12px;
+  color: #71717A;
+  font-weight: 500;
+}
+
+.rv-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #18181B;
+}
+
+.rv-dist-bar {
+  flex: 1;
+  height: 6px;
+  background: #F4F4F5;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rv-dist-fill {
+  height: 100%;
+  background: #FBBF24;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.rv-stat-num {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3F3F46;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* 읽음/안읽음 행 스타일 */
+:host ::ng-deep .rv-row-unread {
+  border-left: 3px solid #3C8EEE !important;
+  font-weight: 700 !important;
+  background: #F8FAFF !important;
+}
+:host ::ng-deep .rv-row-unread span {
+  font-weight: 700 !important;
+  color: #18181B !important;
+}
+:host ::ng-deep .rv-row-read {
+  border-left: 3px solid transparent !important;
+}
+:host ::ng-deep .rv-row-read span {
+  color: #9CA3AF !important;
+}

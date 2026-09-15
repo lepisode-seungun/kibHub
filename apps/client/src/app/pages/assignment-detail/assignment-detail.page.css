@@ -1035,10 +1035,10 @@
 /* ===== 반응형 ===== */
 @media (max-width: 1440px) {
   .ad-page {
-    padding: 60px 100px;
+    padding: 60px clamp(20px, 5.2vw, 100px);
   }
   .ad-tab-nav {
-    padding: 0 100px;
+    padding: 0 clamp(20px, 5.2vw, 100px);
   }
 }
 

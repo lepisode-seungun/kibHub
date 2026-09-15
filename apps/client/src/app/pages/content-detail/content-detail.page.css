@@ -1851,7 +1851,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 64px 100px;
+  padding: 64px clamp(20px, 5.2vw, 100px);
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);

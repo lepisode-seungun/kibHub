@@ -316,8 +316,8 @@
 
 /* ===== 반응형 ===== */
 @media (max-width: 1600px) {
-  .sd-tab-nav { padding: 0 100px; }
-  .sd-page { padding: 60px 100px 40px; }
+  .sd-tab-nav { padding: 0 clamp(20px, 5.2vw, 100px); }
+  .sd-page { padding: 60px clamp(20px, 5.2vw, 100px) 40px; }
   .sd-comments-section { padding: 40px 0 0; }
   .sd-comments-section, .sd-comments-list { width: 100%; }
 }

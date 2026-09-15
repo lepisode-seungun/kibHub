@@ -21,6 +21,8 @@ model Bootcamp {
   applicants   Applicant[]
   notices      Notice[]
   instructors  BootcampInstructor[]
+  reviews      Review[]
+  surveys      Survey[]
 }
 
 enum BootcampStatus {

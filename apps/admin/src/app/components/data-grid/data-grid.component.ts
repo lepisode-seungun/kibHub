@@ -56,6 +56,9 @@ export class DataGridComponent {
   /** 행 고유 ID 함수 (기본: row.id) */
   rowIdFn = input<RowIdFn>((row: GridRow) => row['id']);
 
+  /** 행별 CSS 클래스 함수 */
+  rowClassFn = input<((row: GridRow) => string) | null>(null);
+
   /** 행 클릭 이벤트 */
   rowClick = output<GridRow>();
 
