@@ -1,0 +1,61 @@
+.challenges-page {
+  min-height: 100vh; background: #09090B;
+  display: flex; flex-direction: column; gap: 32px;
+  padding: 60px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px)) 80px;
+  width: 100%; box-sizing: border-box;
+}
+@media (max-width: 1440px) { .challenges-page { padding: 48px max(20px, calc(50% - 880px)) 80px; } }
+@media (max-width: 768px) { .challenges-page { padding: 32px 20px 60px; } }
+
+.challenges-header { margin-bottom: 32px; }
+.challenges-title { font-family: var(--font-family); font-size: 32px; font-weight: 800; color: #FFFFFF; margin: 0 0 8px; }
+.challenges-subtitle { font-family: var(--font-family); font-size: 16px; color: #A1A1AA; margin: 0; }
+
+/* 필터 */
+.filter-row { display: flex; gap: 8px; margin-bottom: 32px; }
+.filter-btn {
+  padding: 8px 20px; border-radius: 100px; border: 1px solid #3F3F46; background: transparent;
+  color: #A1A1AA; font-family: var(--font-family); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.filter-btn:hover { border-color: #71717A; color: #E4E4E7; }
+.filter-btn.active { background: #7C3AED; border-color: #7C3AED; color: #FFFFFF; font-weight: 600; }
+
+/* 그리드 */
+.challenges-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; width: 100%; }
+@media (max-width: 1200px) { .challenges-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .challenges-grid { grid-template-columns: 1fr; } }
+
+/* 카드 */
+.challenge-card {
+  display: flex; flex-direction: column; border-radius: 16px; overflow: hidden;
+  background: #18181B; border: 1px solid #27272A; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.challenge-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15); }
+
+.card-thumb {
+  position: relative; width: 100%; height: 180px; background-size: cover; background-position: center;
+}
+.card-badge {
+  position: absolute; top: 12px; left: 12px; padding: 4px 12px; border-radius: 100px;
+  font-family: var(--font-family); font-size: 12px; font-weight: 700; letter-spacing: -0.02em;
+}
+.badge-active { background: #22C55E; color: #FFFFFF; }
+.badge-upcoming { background: #3B82F6; color: #FFFFFF; }
+.badge-ended { background: #DC2626; color: #FFFFFF; }
+
+.card-info { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
+.card-category { font-family: var(--font-family); font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; }
+.card-title { font-family: var(--font-family); font-size: 18px; font-weight: 700; color: #FFFFFF; margin: 0; line-height: 1.4; }
+.card-desc {
+  font-family: var(--font-family); font-size: 14px; color: #A1A1AA; margin: 0; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+.card-date, .card-participants { font-family: var(--font-family); font-size: 13px; color: #71717A; }
+
+/* 빈 상태 */
+.empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 0; }
+.empty-icon { font-size: 48px; }
+.empty-text { font-family: var(--font-family); font-size: 16px; color: #71717A; margin: 0; }

@@ -1,0 +1,190 @@
+<div class="flex flex-col gap-6">
+  <!-- 헤더 -->
+  <div class="flex items-center gap-4">
+    <button class="flex items-center justify-center w-9 h-9 rounded-lg border border-zinc-200 bg-white cursor-pointer hover:bg-zinc-50 transition-colors"
+            (click)="goBack()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="#71717A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <h2 class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800 m-0">
+      {{ isEdit ? '챌린지 수정' : '챌린지 등록' }}
+    </h2>
+  </div>
+
+  <!-- 폼 카드 -->
+  <div class="bg-white rounded-xl border border-zinc-200 p-6 flex flex-col gap-5">
+
+    <!-- 제목 -->
+    <div class="flex flex-col gap-2">
+      <label for="title" class="font-suit font-semibold text-sm text-zinc-700">제목 <span class="text-[#3C8EEE]">*</span></label>
+      <input type="text" id="title" [(ngModel)]="title"
+             class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="챌린지 제목을 입력하세요" />
+    </div>
+
+    <!-- 설명 -->
+    <div class="flex flex-col gap-2">
+      <label for="description" class="font-suit font-semibold text-sm text-zinc-700">설명</label>
+      <textarea id="description" [(ngModel)]="description" rows="4"
+                class="w-full px-4 py-3 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-vertical"
+                placeholder="챌린지 주제와 규칙을 설명하세요"></textarea>
+    </div>
+
+    <!-- 카테고리 + 난이도 -->
+    <div class="flex gap-4">
+      <div class="flex flex-col gap-2 flex-1">
+        <label for="category" class="font-suit font-semibold text-sm text-zinc-700">카테고리 <span class="text-[#3C8EEE]">*</span></label>
+        <input type="text" id="category" [(ngModel)]="category"
+               class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+               placeholder="예: 드로잉, 웹툰, 글 등" />
+      </div>
+      <div class="flex flex-col gap-2 flex-1">
+        <label for="difficulty" class="font-suit font-semibold text-sm text-zinc-700">난이도</label>
+        <select id="difficulty" [(ngModel)]="difficulty"
+                class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] cursor-pointer box-border">
+          <option value="">선택 안함</option>
+          <option value="초급">초급</option>
+          <option value="중급">중급</option>
+          <option value="고급">고급</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 기간 -->
+    <div class="flex gap-4">
+      <div class="flex flex-col gap-2 flex-1">
+        <label for="startDate" class="font-suit font-semibold text-sm text-zinc-700">시작일 <span class="text-[#3C8EEE]">*</span></label>
+        <input type="date" id="startDate" [(ngModel)]="startDate"
+               class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] box-border" />
+      </div>
+      <div class="flex flex-col gap-2 flex-1">
+        <label for="endDate" class="font-suit font-semibold text-sm text-zinc-700">마감일 <span class="text-[#3C8EEE]">*</span></label>
+        <input type="date" id="endDate" [(ngModel)]="endDate"
+               class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] box-border" />
+      </div>
+    </div>
+
+    <!-- 1등 상품 -->
+    <div class="flex flex-col gap-2">
+      <label for="prize" class="font-suit font-semibold text-sm text-zinc-700">상품</label>
+      <input type="text" id="prize" [(ngModel)]="prize"
+             class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+             placeholder="예: 갤럭시 탭, 아이패드, 신세계 상품권 10만원 등" />
+    </div>
+
+    <!-- 썸네일 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-semibold text-sm text-zinc-700">썸네일</span>
+      <div class="relative w-full rounded-lg border-2 border-dashed border-zinc-300 overflow-hidden transition-colors hover:border-[#3C8EEE]"
+           style="height: 200px;">
+        @if (thumbnail()) {
+          <div class="relative w-full h-full cursor-pointer group"
+               tabindex="0" role="button">
+            <img [src]="thumbnail()" alt="썸네일" class="w-full h-full object-cover" />
+            <!-- 변경 오버레이 (hover시 보임) -->
+            <label class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 cursor-pointer">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4v16M4 12h16" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="font-suit font-medium text-sm text-white">변경하기</span>
+              <input type="file" accept="image/*" class="hidden" (change)="onThumbnailUpload($event)" />
+            </label>
+            <!-- 삭제 (우상단) -->
+            <button class="absolute top-2 right-2 flex items-center justify-center w-7 h-7 bg-white/90 rounded-full border-none cursor-pointer hover:bg-white transition-colors z-[2]"
+                    (click)="thumbnail.set(''); $event.stopPropagation()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M3 3l8 8M11 3l-8 8" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        } @else {
+          <label class="absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="font-suit text-sm text-zinc-500">클릭하여 이미지를 업로드하세요</span>
+            <span class="font-suit text-xs text-zinc-400">권장 사이즈: 1200 x 400px</span>
+            <input type="file" accept="image/*" class="hidden" (change)="onThumbnailUpload($event)" />
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- 참고 이미지 -->
+    <div class="flex flex-col gap-2">
+      <span class="font-suit font-semibold text-sm text-zinc-700">참고 이미지</span>
+      <div class="flex flex-wrap gap-3">
+        @for (img of referenceImages(); track $index) {
+          <div class="relative">
+            <img [src]="img" alt="참고" class="w-20 h-20 rounded-lg object-cover border border-zinc-200" />
+            <button class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-none cursor-pointer flex items-center justify-center"
+                    (click)="removeRefImage($index)">
+              <svg width="10" height="10" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        }
+        <label class="w-20 h-20 rounded-lg border-2 border-dashed border-zinc-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#3C8EEE] transition-colors gap-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="font-suit text-[10px] text-zinc-400">추가</span>
+          <input type="file" accept="image/*" multiple class="hidden" (change)="onRefImageUpload($event)" />
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 수상작 선정 (ENDED 상태 편집 시) -->
+  @if (showWinnerSection()) {
+    <div class="bg-white rounded-xl border border-zinc-200 p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-suit font-bold text-lg text-zinc-800 m-0">🏆 수상작 선정</h3>
+        <button class="px-4 py-2 bg-[#3C8EEE] text-white rounded-lg border-none cursor-pointer font-suit font-semibold text-sm hover:bg-blue-600 transition-colors"
+                (click)="saveWinners()">수상작 저장</button>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        @for (entry of entries(); track entry.id) {
+          <div class="flex items-center gap-4 p-3 rounded-lg border transition-colors cursor-pointer"
+               [ngClass]="isWinnerSelected(entry.id) ? 'border-[#3C8EEE] bg-blue-50' : 'border-zinc-200 hover:bg-zinc-50'"
+               tabindex="0"
+               (click)="toggleWinner(entry.id)"
+               (keydown.enter)="toggleWinner(entry.id)">
+            <!-- 순위 뱃지 -->
+            @if (isWinnerSelected(entry.id)) {
+              <div class="w-8 h-8 rounded-full bg-[#3C8EEE] flex items-center justify-center">
+                <span class="font-suit font-bold text-sm text-white">{{ getWinnerRank(entry.id) }}</span>
+              </div>
+            } @else {
+              <div class="w-8 h-8 rounded-full border-2 border-zinc-200"></div>
+            }
+            <!-- 작품 정보 -->
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              @if (entry.images && entry.images.length > 0) {
+                <img [src]="entry.images[0]" alt="" class="w-12 h-12 rounded-lg object-cover" />
+              }
+              <div class="flex flex-col min-w-0">
+                <span class="font-suit font-semibold text-sm text-zinc-800 truncate">{{ entry.title }}</span>
+                <span class="font-suit text-xs text-zinc-500">{{ entry.user?.nickname }} · ❤ {{ entry.likeCount }}</span>
+              </div>
+            </div>
+          </div>
+        }
+        @if (entries().length === 0) {
+          <p class="font-suit text-sm text-zinc-400 text-center py-8 m-0">출품작이 없습니다.</p>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- 하단 버튼 -->
+  <div class="flex justify-end gap-3">
+    <button class="px-6 py-2.5 bg-white border border-zinc-200 rounded-lg cursor-pointer font-suit font-medium text-sm text-zinc-600 hover:bg-zinc-50 transition-colors"
+            (click)="goBack()">취소</button>
+    <button class="px-6 py-2.5 bg-[#3C8EEE] border-none rounded-lg cursor-pointer font-suit font-semibold text-sm text-white hover:bg-blue-600 transition-colors"
+            [disabled]="loading()"
+            (click)="submit()">
+      {{ isEdit ? '수정' : '등록' }}
+    </button>
+  </div>
+</div>

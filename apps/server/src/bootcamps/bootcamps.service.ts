@@ -38,11 +38,14 @@ export class BootcampsService {
   }
 
   async update(id: number, data: Partial<CreateBootcampDto>) {
+    // 현재 상태 확인 (변경 전)
+    const current = await this.prisma.bootcamp.findUnique({ where: { id }, select: { status: true } });
     const updated = await this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
 
     const dataRecord = data as Record<string, unknown>;
     if (dataRecord['status']) {
       const newStatus = dataRecord['status'] as string;
+      const oldStatus = current?.status || '';
 
       if (newStatus === 'ENDED') {
         // 종료 → 합격(ACCEPTED)만 수료(COMPLETED)로 자동 전환
@@ -56,6 +59,23 @@ export class BootcampsService {
           where: { bootcampId: id, status: 'COMPLETED' },
           data: { status: 'ACCEPTED' },
         });
+      }
+
+      // 종료(ENDED) → 다른 상태로 변경 시 설문 응답 & 리뷰 초기화
+      console.log(`[bootcamp ${id}] status change: ${oldStatus} → ${newStatus}`);
+      if (oldStatus === 'ENDED' && newStatus !== 'ENDED') {
+        console.log(`[bootcamp ${id}] 설문 응답 & 리뷰 초기화 시작`);
+        // 해당 부트캠프 설문의 응답 삭제
+        const surveys = await this.prisma.survey.findMany({ where: { bootcampId: id }, select: { id: true } });
+        const surveyIds = surveys.map(s => s.id);
+        console.log(`[bootcamp ${id}] 설문 ID:`, surveyIds);
+        if (surveyIds.length > 0) {
+          const deleted = await this.prisma.surveyResponse.deleteMany({ where: { surveyId: { in: surveyIds } } });
+          console.log(`[bootcamp ${id}] 설문 응답 ${deleted.count}건 삭제`);
+        }
+        // 리뷰(별점/설문) 초기화
+        const reviewDeleted = await this.prisma.review.deleteMany({ where: { bootcampId: id } });
+        console.log(`[bootcamp ${id}] 리뷰 ${reviewDeleted.count}건 삭제`);
       }
     }
 

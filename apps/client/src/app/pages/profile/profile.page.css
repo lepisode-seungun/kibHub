@@ -1918,12 +1918,56 @@
 
 .db-loading {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
   padding: 80px 0;
   color: #71717A;
   font-family: 'SUIT', sans-serif;
   font-size: 16px;
+}
+
+.db-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(122, 72, 255, 0.2);
+  border-top-color: #7A48FF;
+  border-radius: 50%;
+  animation: dbSpin 0.8s linear infinite;
+}
+
+@keyframes dbSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* 섹션 헤더 (타이틀 + 전체보기) */
+.db-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.db-section-more {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #A1A1AA;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.db-section-more:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* 요약 카드 */
@@ -1953,6 +1997,39 @@
 
 .db-card-clickable {
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.db-card-clickable:hover {
+  border-color: rgba(122, 72, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.db-card-active {
+  border-color: rgba(122, 72, 255, 0.6) !important;
+  background: rgba(122, 72, 255, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(122, 72, 255, 0.3);
+}
+
+.db-card-icon-activity {
+  background: rgba(175, 145, 255, 0.12);
+  color: #AF91FF;
+}
+
+/* 섹션 진입 애니메이션 */
+.db-section-animate {
+  animation: dbSlideIn 0.25s ease-out;
+}
+
+@keyframes dbSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .db-card-icon {
@@ -2071,6 +2148,25 @@
   color: #F59E0B;
 }
 
+/* 과제 제출기한 */
+.db-assignment-deadline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: #60A5FA;
+}
+
+.db-assignment-deadline svg {
+  flex-shrink: 0;
+  fill: #60A5FA;
+}
+
 .db-card-label {
   font-family: 'SUIT', sans-serif;
   font-weight: 500;
@@ -2081,8 +2177,8 @@
 /* 부트캠프/과제 카드 그리드 */
 .db-card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 @media (max-width: 900px) {
@@ -2100,13 +2196,16 @@
 .db-item-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
+  gap: 8px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 160px;
+  overflow: hidden;
+  justify-content: flex-start;
 }
 
 .db-item-card:hover {
@@ -2159,6 +2258,44 @@
   font-weight: 400;
   font-size: 11px;
   color: #71717A;
+}
+
+.db-item-card-date {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: #60A5FA;
+}
+
+/* 부트캠프 진행률 바 */
+.db-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.db-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.db-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7A48FF, #AF91FF);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.db-progress-text {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #A1A1AA;
+  white-space: nowrap;
 }
 
 /* 부트캠프 카드 (기존 호환) */
@@ -2239,15 +2376,127 @@
   color: #71717A;
 }
 
+/* 월별 바 차트 */
+.db-barchart-wrap {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.db-barchart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 160px;
+  padding: 0 4px;
+}
+
+.db-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+  cursor: default;
+}
+
+.db-bar {
+  width: 100%;
+  max-width: 40px;
+  min-height: 4px;
+  background: linear-gradient(180deg, #7A48FF 0%, #AF91FF 100%);
+  border-radius: 6px 6px 2px 2px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.db-bar:hover {
+  background: linear-gradient(180deg, #956DFF 0%, #C4ADFF 100%);
+  filter: brightness(1.15);
+}
+
+.db-bar-count {
+  position: absolute;
+  top: -20px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #D4D4D8;
+  white-space: nowrap;
+}
+
+.db-bar-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #71717A;
+}
+
 /* 섹션 */
 .db-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* 피드백 카드 스타일 */
+.db-feedback-avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(122, 72, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #AF91FF;
+}
+
+.db-feedback-avatar-sm img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.db-feedback-author-name {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #D4D4D8;
+}
+
+.db-feedback-body-preview {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #71717A;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.db-feedback-time {
+  margin-top: auto;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: #52525B;
 }
 
 .db-section-title {
@@ -2313,7 +2562,8 @@
   line-height: 12px;
 }
 
-.db-heatmap {
+.db-heatmap,
+.db-heatmap-grid {
   display: flex;
   gap: 3px;
 }
@@ -2450,6 +2700,7 @@
 
 .db-empty-small {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px 0;

@@ -31,18 +31,12 @@ export class SurveysService {
     return this.prisma.survey.delete({ where: { id } });
   }
 
-  /** 설문 응답 제출 */
+  /** 설문 응답 제출 (중복 시 덮어쓰기) */
   async respond(surveyId: number, userId: number, answers: any[]) {
-    // 중복 체크
-    const existing = await this.prisma.surveyResponse.findUnique({
+    return this.prisma.surveyResponse.upsert({
       where: { surveyId_userId: { surveyId, userId } },
-    });
-    if (existing) {
-      throw new ConflictException('이미 설문에 응답하셨습니다.');
-    }
-
-    return this.prisma.surveyResponse.create({
-      data: { surveyId, userId, answers },
+      update: { answers },
+      create: { surveyId, userId, answers },
     });
   }
 

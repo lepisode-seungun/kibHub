@@ -67,6 +67,21 @@ export type Bootcamp = Prisma.BootcampModel
  */
 export type BootcampInstructor = Prisma.BootcampInstructorModel
 /**
+ * Model Challenge
+ * 
+ */
+export type Challenge = Prisma.ChallengeModel
+/**
+ * Model ChallengeEntry
+ * 
+ */
+export type ChallengeEntry = Prisma.ChallengeEntryModel
+/**
+ * Model ChallengeEntryLike
+ * 
+ */
+export type ChallengeEntryLike = Prisma.ChallengeEntryLikeModel
+/**
  * Model Content
  * 
  */

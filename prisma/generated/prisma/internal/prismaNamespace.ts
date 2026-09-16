@@ -402,6 +402,9 @@ export const ModelName = {
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
   BootcampInstructor: 'BootcampInstructor',
+  Challenge: 'Challenge',
+  ChallengeEntry: 'ChallengeEntry',
+  ChallengeEntryLike: 'ChallengeEntryLike',
   Content: 'Content',
   ContentCategory: 'ContentCategory',
   Album: 'Album',
@@ -451,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "follow" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "notification" | "partner" | "portfolio" | "portfolioFile" | "poster" | "review" | "survey" | "surveyResponse" | "siteSetting" | "user" | "userSns"
+    modelProps: "admin" | "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "challenge" | "challengeEntry" | "challengeEntryLike" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "follow" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "notification" | "partner" | "portfolio" | "portfolioFile" | "poster" | "review" | "survey" | "surveyResponse" | "siteSetting" | "user" | "userSns"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -822,6 +825,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BootcampInstructorCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BootcampInstructorCountAggregateOutputType> | number
+        }
+      }
+    }
+    Challenge: {
+      payload: Prisma.$ChallengePayload<ExtArgs>
+      fields: Prisma.ChallengeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChallengeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChallengeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        findFirst: {
+          args: Prisma.ChallengeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChallengeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        findMany: {
+          args: Prisma.ChallengeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>[]
+        }
+        create: {
+          args: Prisma.ChallengeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        createMany: {
+          args: Prisma.ChallengeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChallengeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>[]
+        }
+        delete: {
+          args: Prisma.ChallengeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        update: {
+          args: Prisma.ChallengeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChallengeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChallengeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChallengeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChallengeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengePayload>
+        }
+        aggregate: {
+          args: Prisma.ChallengeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChallenge>
+        }
+        groupBy: {
+          args: Prisma.ChallengeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChallengeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChallengeEntry: {
+      payload: Prisma.$ChallengeEntryPayload<ExtArgs>
+      fields: Prisma.ChallengeEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChallengeEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChallengeEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.ChallengeEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChallengeEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        findMany: {
+          args: Prisma.ChallengeEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>[]
+        }
+        create: {
+          args: Prisma.ChallengeEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        createMany: {
+          args: Prisma.ChallengeEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChallengeEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.ChallengeEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        update: {
+          args: Prisma.ChallengeEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChallengeEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChallengeEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChallengeEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChallengeEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.ChallengeEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChallengeEntry>
+        }
+        groupBy: {
+          args: Prisma.ChallengeEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChallengeEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChallengeEntryLike: {
+      payload: Prisma.$ChallengeEntryLikePayload<ExtArgs>
+      fields: Prisma.ChallengeEntryLikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChallengeEntryLikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChallengeEntryLikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        findFirst: {
+          args: Prisma.ChallengeEntryLikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChallengeEntryLikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        findMany: {
+          args: Prisma.ChallengeEntryLikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>[]
+        }
+        create: {
+          args: Prisma.ChallengeEntryLikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        createMany: {
+          args: Prisma.ChallengeEntryLikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChallengeEntryLikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>[]
+        }
+        delete: {
+          args: Prisma.ChallengeEntryLikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        update: {
+          args: Prisma.ChallengeEntryLikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChallengeEntryLikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChallengeEntryLikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChallengeEntryLikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChallengeEntryLikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChallengeEntryLikePayload>
+        }
+        aggregate: {
+          args: Prisma.ChallengeEntryLikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChallengeEntryLike>
+        }
+        groupBy: {
+          args: Prisma.ChallengeEntryLikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeEntryLikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChallengeEntryLikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChallengeEntryLikeCountAggregateOutputType> | number
         }
       }
     }
@@ -3456,6 +3681,54 @@ export const BootcampInstructorScalarFieldEnum = {
 export type BootcampInstructorScalarFieldEnum = (typeof BootcampInstructorScalarFieldEnum)[keyof typeof BootcampInstructorScalarFieldEnum]
 
 
+export const ChallengeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  thumbnail: 'thumbnail',
+  referenceImages: 'referenceImages',
+  category: 'category',
+  difficulty: 'difficulty',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  maxSubmissions: 'maxSubmissions',
+  isBootcampOnly: 'isBootcampOnly',
+  bootcampId: 'bootcampId',
+  prize: 'prize',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
+
+
+export const ChallengeEntryScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  images: 'images',
+  likeCount: 'likeCount',
+  rank: 'rank',
+  isWinner: 'isWinner',
+  createdAt: 'createdAt'
+} as const
+
+export type ChallengeEntryScalarFieldEnum = (typeof ChallengeEntryScalarFieldEnum)[keyof typeof ChallengeEntryScalarFieldEnum]
+
+
+export const ChallengeEntryLikeScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChallengeEntryLikeScalarFieldEnum = (typeof ChallengeEntryLikeScalarFieldEnum)[keyof typeof ChallengeEntryLikeScalarFieldEnum]
+
+
 export const ContentScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -4117,6 +4390,27 @@ export type ListEnumBootcampStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'ChallengeStatus'
+ */
+export type EnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ChallengeStatus[]'
+ */
+export type ListEnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'ContentType'
  */
 export type EnumContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentType'>
@@ -4225,13 +4519,6 @@ export type EnumNoticeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'NoticeType[]'
  */
 export type ListEnumNoticeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NoticeType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4418,6 +4705,9 @@ export type GlobalOmitConfig = {
   banner?: Prisma.BannerOmit
   bootcamp?: Prisma.BootcampOmit
   bootcampInstructor?: Prisma.BootcampInstructorOmit
+  challenge?: Prisma.ChallengeOmit
+  challengeEntry?: Prisma.ChallengeEntryOmit
+  challengeEntryLike?: Prisma.ChallengeEntryLikeOmit
   content?: Prisma.ContentOmit
   contentCategory?: Prisma.ContentCategoryOmit
   album?: Prisma.AlbumOmit

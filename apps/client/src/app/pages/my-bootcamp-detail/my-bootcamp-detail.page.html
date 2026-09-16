@@ -73,6 +73,7 @@
         <h2 class="font-suit font-bold text-2xl leading-[150%] tracking-tight text-zinc-800 m-0">학습 목록</h2>
       </div>
 
+      @if (courseSections().length > 0) {
       <div class="flex flex-col items-start w-full bg-white">
         @for (section of courseSections(); track section.id) {
           <div class="mbd-course-header" role="button" tabindex="0" (click)="toggleSection(section)" (keydown.enter)="toggleSection(section)">
@@ -160,6 +161,14 @@
           }
         }
       </div>
+      } @else {
+      <div class="mbd-empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="#D4D4D8">
+          <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+        </svg>
+        <p class="mbd-empty-text">등록된 학습 과정이 없습니다.</p>
+      </div>
+      }
     }
 
     <!-- ===== 강의 탭 ===== -->
@@ -201,6 +210,7 @@
       </div>
 
       <!-- 강의 카드 그리드 -->
+      @if (filteredLectures.length > 0) {
       <div class="flex flex-wrap items-start content-start gap-6 w-full">
         @for (card of displayedLectures; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToLecture(card.id)" (keydown.enter)="navigateToLecture(card.id)">
@@ -233,6 +243,14 @@
       @if (hasMoreLectures) {
       <div class="flex justify-center w-full">
         <button class="at-loadmore-btn" (click)="loadMoreLectures()">더보기</button>
+      </div>
+      }
+      } @else {
+      <div class="mbd-empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="#D4D4D8">
+          <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+        </svg>
+        <p class="mbd-empty-text">등록된 강의가 없습니다.</p>
       </div>
       }
     }
@@ -276,6 +294,7 @@
       </div>
 
       <!-- 과제 카드 그리드 -->
+      @if (filteredAssignments.length > 0) {
       <div class="flex flex-wrap items-start content-start gap-6 w-full">
         @for (card of displayedAssignments; track card.id) {
           <div class="at-card" role="button" tabindex="0" (click)="navigateToAssignment(card.id)" (keydown.enter)="navigateToAssignment(card.id)">
@@ -304,6 +323,14 @@
       @if (hasMoreAssignments) {
       <div class="flex justify-center w-full">
         <button class="at-loadmore-btn" (click)="loadMoreAssignments()">더보기</button>
+      </div>
+      }
+      } @else {
+      <div class="mbd-empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="#D4D4D8">
+          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+        </svg>
+        <p class="mbd-empty-text">등록된 과제가 없습니다.</p>
       </div>
       }
     }
@@ -336,6 +363,7 @@
       </div>
 
       <!-- 공지사항 리스트 -->
+      @if (filteredNotices().length > 0) {
       <div class="flex flex-col w-full">
         @for (notice of paginatedNotices(); track notice.id) {
           <div class="nt-item" role="button" tabindex="0" (click)="navigateToNotice(notice.id)" (keydown.enter)="navigateToNotice(notice.id)">
@@ -373,35 +401,13 @@
           </svg>
         </button>
       </div>
-    }
-
-    <!-- ===== 리뷰 탭 ===== -->
-    @if (activeDetailTab() === '설문조사') {
-      @if (reviewLoading()) {
-        <div class="rv-loading">설문조사를 불러오는 중...</div>
       } @else {
-
-        @if (myReview()) {
-          <!-- 제출 완료 상태 -->
-          <div class="rv-submitted-wrap">
-            <div class="rv-submitted-icon">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="11" stroke="#22C55E" stroke-width="2"/>
-                <path d="M7 12.5L10.5 16L17 9" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h3 class="rv-submitted-title">설문조사를 제출해주셔서 감사합니다.</h3>
-            <p class="rv-submitted-sub">소중한 의견이 반영되었습니다.</p>
-          </div>
-        } @else {
-          <!-- 리뷰 미제출 — 중앙 CTA -->
-          <div class="rv-cta-wrap">
-            <button class="rv-cta-btn" (click)="openReviewModal()">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-              설문조사 작성하기
-            </button>
-          </div>
-        }
+      <div class="mbd-empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="#D4D4D8">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+        </svg>
+        <p class="mbd-empty-text">등록된 공지사항이 없습니다.</p>
+      </div>
       }
     }
 
@@ -423,7 +429,7 @@
       <div class="rv-modal-body">
         <!-- 별점 -->
         <div class="rv-modal-rating">
-          <span class="rv-modal-label">별점</span>
+          <span class="rv-modal-label">부트캠프 만족도를 평가해주세요</span>
           <div class="rv-modal-stars">
             @for (i of [1, 2, 3, 4, 5]; track i) {
               <button class="rv-star-btn" (click)="setRating(i)" (mouseenter)="hoverRating.set(i)" (mouseleave)="hoverRating.set(0)">
@@ -439,7 +445,7 @@
         @if (activeSurvey()) {
           <div class="sv-section-in-modal">
             <div class="sv-divider"></div>
-            <span class="rv-modal-label">📋 {{ activeSurvey().title }}</span>
+            <span class="sv-modal-title">📋 {{ activeSurvey().title }}</span>
             @for (q of activeSurvey().questions; track $index; let qIdx = $index) {
               <div class="sv-question-modal">
                 <label class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text }}</label>

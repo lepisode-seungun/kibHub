@@ -276,7 +276,6 @@ export type ReviewOrderByWithRelationInput = {
 
 export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  userId_bootcampId?: Prisma.ReviewUserIdBootcampIdCompoundUniqueInput
   AND?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   OR?: Prisma.ReviewWhereInput[]
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
@@ -290,7 +289,7 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   bootcamp?: Prisma.XOR<Prisma.BootcampScalarRelationFilter, Prisma.BootcampWhereInput>
-}, "id" | "userId_bootcampId">
+}, "id">
 
 export type ReviewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -326,7 +325,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
 
 export type ReviewCreateInput = {
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   createdAt?: Date | string
@@ -338,7 +337,7 @@ export type ReviewCreateInput = {
 export type ReviewUncheckedCreateInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   userId: number
@@ -373,7 +372,7 @@ export type ReviewUncheckedUpdateInput = {
 export type ReviewCreateManyInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   userId: number
@@ -411,11 +410,6 @@ export type ReviewListRelationFilter = {
 
 export type ReviewOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type ReviewUserIdBootcampIdCompoundUniqueInput = {
-  userId: number
-  bootcampId: number
 }
 
 export type ReviewCountOrderByAggregateInput = {
@@ -552,7 +546,7 @@ export type ReviewUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type ReviewCreateWithoutBootcampInput = {
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   createdAt?: Date | string
@@ -563,7 +557,7 @@ export type ReviewCreateWithoutBootcampInput = {
 export type ReviewUncheckedCreateWithoutBootcampInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   userId: number
@@ -614,7 +608,7 @@ export type ReviewScalarWhereInput = {
 
 export type ReviewCreateWithoutUserInput = {
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   createdAt?: Date | string
@@ -625,7 +619,7 @@ export type ReviewCreateWithoutUserInput = {
 export type ReviewUncheckedCreateWithoutUserInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   bootcampId: number
@@ -662,7 +656,7 @@ export type ReviewUpdateManyWithWhereWithoutUserInput = {
 export type ReviewCreateManyBootcampInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   userId: number
@@ -705,7 +699,7 @@ export type ReviewUncheckedUpdateManyWithoutBootcampInput = {
 export type ReviewCreateManyUserInput = {
   id?: number
   rating: number
-  body: string
+  body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
   bootcampId: number

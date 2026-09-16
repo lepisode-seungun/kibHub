@@ -40,10 +40,11 @@ export class ReviewsService {
     return { reviews, avgRating, totalCount, ratingDist };
   }
 
-  /** 내 리뷰 조회 */
+  /** 내 리뷰 조회 (최신 1건) */
   async findMine(bootcampId: number, userId: number) {
-    return this.prisma.review.findUnique({
-      where: { userId_bootcampId: { userId, bootcampId } },
+    return this.prisma.review.findFirst({
+      where: { userId, bootcampId },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -55,14 +56,6 @@ export class ReviewsService {
     });
     if (!applicant || (applicant.status !== 'ACCEPTED' && applicant.status !== 'COMPLETED')) {
       throw new ForbiddenException('부트캠프 참여자만 리뷰를 작성할 수 있습니다.');
-    }
-
-    // 중복 검증
-    const existing = await this.prisma.review.findUnique({
-      where: { userId_bootcampId: { userId, bootcampId } },
-    });
-    if (existing) {
-      throw new ConflictException('이미 리뷰를 작성하셨습니다.');
     }
 
     return this.prisma.review.create({

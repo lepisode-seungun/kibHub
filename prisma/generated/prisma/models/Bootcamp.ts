@@ -302,6 +302,7 @@ export type BootcampWhereInput = {
   instructors?: Prisma.BootcampInstructorListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   surveys?: Prisma.SurveyListRelationFilter
+  challenges?: Prisma.ChallengeListRelationFilter
 }
 
 export type BootcampOrderByWithRelationInput = {
@@ -327,6 +328,7 @@ export type BootcampOrderByWithRelationInput = {
   instructors?: Prisma.BootcampInstructorOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   surveys?: Prisma.SurveyOrderByRelationAggregateInput
+  challenges?: Prisma.ChallengeOrderByRelationAggregateInput
 }
 
 export type BootcampWhereUniqueInput = Prisma.AtLeast<{
@@ -355,6 +357,7 @@ export type BootcampWhereUniqueInput = Prisma.AtLeast<{
   instructors?: Prisma.BootcampInstructorListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   surveys?: Prisma.SurveyListRelationFilter
+  challenges?: Prisma.ChallengeListRelationFilter
 }, "id">
 
 export type BootcampOrderByWithAggregationInput = {
@@ -425,6 +428,7 @@ export type BootcampCreateInput = {
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateInput = {
@@ -450,6 +454,7 @@ export type BootcampUncheckedCreateInput = {
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUpdateInput = {
@@ -474,6 +479,7 @@ export type BootcampUpdateInput = {
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateInput = {
@@ -499,6 +505,7 @@ export type BootcampUncheckedUpdateInput = {
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateManyInput = {
@@ -664,6 +671,22 @@ export type BootcampUpdateOneRequiredWithoutInstructorsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BootcampUpdateToOneWithWhereWithoutInstructorsInput, Prisma.BootcampUpdateWithoutInstructorsInput>, Prisma.BootcampUncheckedUpdateWithoutInstructorsInput>
 }
 
+export type BootcampCreateNestedOneWithoutChallengesInput = {
+  create?: Prisma.XOR<Prisma.BootcampCreateWithoutChallengesInput, Prisma.BootcampUncheckedCreateWithoutChallengesInput>
+  connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutChallengesInput
+  connect?: Prisma.BootcampWhereUniqueInput
+}
+
+export type BootcampUpdateOneWithoutChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.BootcampCreateWithoutChallengesInput, Prisma.BootcampUncheckedCreateWithoutChallengesInput>
+  connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutChallengesInput
+  upsert?: Prisma.BootcampUpsertWithoutChallengesInput
+  disconnect?: Prisma.BootcampWhereInput | boolean
+  delete?: Prisma.BootcampWhereInput | boolean
+  connect?: Prisma.BootcampWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BootcampUpdateToOneWithWhereWithoutChallengesInput, Prisma.BootcampUpdateWithoutChallengesInput>, Prisma.BootcampUncheckedUpdateWithoutChallengesInput>
+}
+
 export type BootcampCreateNestedOneWithoutCoursesInput = {
   create?: Prisma.XOR<Prisma.BootcampCreateWithoutCoursesInput, Prisma.BootcampUncheckedCreateWithoutCoursesInput>
   connectOrCreate?: Prisma.BootcampCreateOrConnectWithoutCoursesInput
@@ -743,6 +766,7 @@ export type BootcampCreateWithoutApplicantsInput = {
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutApplicantsInput = {
@@ -767,6 +791,7 @@ export type BootcampUncheckedCreateWithoutApplicantsInput = {
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutApplicantsInput = {
@@ -806,6 +831,7 @@ export type BootcampUpdateWithoutApplicantsInput = {
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutApplicantsInput = {
@@ -830,6 +856,7 @@ export type BootcampUncheckedUpdateWithoutApplicantsInput = {
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutInstructorsInput = {
@@ -853,6 +880,7 @@ export type BootcampCreateWithoutInstructorsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutInstructorsInput = {
@@ -877,6 +905,7 @@ export type BootcampUncheckedCreateWithoutInstructorsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutInstructorsInput = {
@@ -916,6 +945,7 @@ export type BootcampUpdateWithoutInstructorsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutInstructorsInput = {
@@ -938,6 +968,121 @@ export type BootcampUncheckedUpdateWithoutInstructorsInput = {
   courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
   applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
+  surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
+}
+
+export type BootcampCreateWithoutChallengesInput = {
+  name: string
+  instructorName?: string
+  description?: string
+  thumbnail?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  status?: $Enums.BootcampStatus
+  recruitIntro?: string
+  recruitCurriculum?: string
+  recruitReview?: string
+  recruitReviewVisibility?: string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  courses?: Prisma.CourseCreateNestedManyWithoutBootcampInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutBootcampInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
+  surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+}
+
+export type BootcampUncheckedCreateWithoutChallengesInput = {
+  id?: number
+  name: string
+  instructorName?: string
+  description?: string
+  thumbnail?: string | null
+  startDate?: Date | string | null
+  endDate?: Date | string | null
+  status?: $Enums.BootcampStatus
+  recruitIntro?: string
+  recruitCurriculum?: string
+  recruitReview?: string
+  recruitReviewVisibility?: string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutBootcampInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutBootcampInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
+  instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
+  surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+}
+
+export type BootcampCreateOrConnectWithoutChallengesInput = {
+  where: Prisma.BootcampWhereUniqueInput
+  create: Prisma.XOR<Prisma.BootcampCreateWithoutChallengesInput, Prisma.BootcampUncheckedCreateWithoutChallengesInput>
+}
+
+export type BootcampUpsertWithoutChallengesInput = {
+  update: Prisma.XOR<Prisma.BootcampUpdateWithoutChallengesInput, Prisma.BootcampUncheckedUpdateWithoutChallengesInput>
+  create: Prisma.XOR<Prisma.BootcampCreateWithoutChallengesInput, Prisma.BootcampUncheckedCreateWithoutChallengesInput>
+  where?: Prisma.BootcampWhereInput
+}
+
+export type BootcampUpdateToOneWithWhereWithoutChallengesInput = {
+  where?: Prisma.BootcampWhereInput
+  data: Prisma.XOR<Prisma.BootcampUpdateWithoutChallengesInput, Prisma.BootcampUncheckedUpdateWithoutChallengesInput>
+}
+
+export type BootcampUpdateWithoutChallengesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBootcampStatusFieldUpdateOperationsInput | $Enums.BootcampStatus
+  recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUpdateManyWithoutBootcampNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutBootcampNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
+  surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+}
+
+export type BootcampUncheckedUpdateWithoutChallengesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  instructorName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumBootcampStatusFieldUpdateOperationsInput | $Enums.BootcampStatus
+  recruitIntro?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitCurriculum?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReview?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitReviewVisibility?: Prisma.StringFieldUpdateOperationsInput | string
+  recruitInstructors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  interviewSettings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutBootcampNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutBootcampNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
+  instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
 }
@@ -963,6 +1108,7 @@ export type BootcampCreateWithoutCoursesInput = {
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutCoursesInput = {
@@ -987,6 +1133,7 @@ export type BootcampUncheckedCreateWithoutCoursesInput = {
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutCoursesInput = {
@@ -1026,6 +1173,7 @@ export type BootcampUpdateWithoutCoursesInput = {
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutCoursesInput = {
@@ -1050,6 +1198,7 @@ export type BootcampUncheckedUpdateWithoutCoursesInput = {
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutNoticesInput = {
@@ -1073,6 +1222,7 @@ export type BootcampCreateWithoutNoticesInput = {
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutNoticesInput = {
@@ -1097,6 +1247,7 @@ export type BootcampUncheckedCreateWithoutNoticesInput = {
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutNoticesInput = {
@@ -1136,6 +1287,7 @@ export type BootcampUpdateWithoutNoticesInput = {
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutNoticesInput = {
@@ -1160,6 +1312,7 @@ export type BootcampUncheckedUpdateWithoutNoticesInput = {
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutReviewsInput = {
@@ -1183,6 +1336,7 @@ export type BootcampCreateWithoutReviewsInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutReviewsInput = {
@@ -1207,6 +1361,7 @@ export type BootcampUncheckedCreateWithoutReviewsInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   surveys?: Prisma.SurveyUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutReviewsInput = {
@@ -1246,6 +1401,7 @@ export type BootcampUpdateWithoutReviewsInput = {
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutReviewsInput = {
@@ -1270,6 +1426,7 @@ export type BootcampUncheckedUpdateWithoutReviewsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   surveys?: Prisma.SurveyUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampCreateWithoutSurveysInput = {
@@ -1293,6 +1450,7 @@ export type BootcampCreateWithoutSurveysInput = {
   notices?: Prisma.NoticeCreateNestedManyWithoutBootcampInput
   instructors?: Prisma.BootcampInstructorCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampUncheckedCreateWithoutSurveysInput = {
@@ -1317,6 +1475,7 @@ export type BootcampUncheckedCreateWithoutSurveysInput = {
   notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutBootcampInput
   instructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutBootcampInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBootcampInput
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutBootcampInput
 }
 
 export type BootcampCreateOrConnectWithoutSurveysInput = {
@@ -1356,6 +1515,7 @@ export type BootcampUpdateWithoutSurveysInput = {
   notices?: Prisma.NoticeUpdateManyWithoutBootcampNestedInput
   instructors?: Prisma.BootcampInstructorUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUpdateManyWithoutBootcampNestedInput
 }
 
 export type BootcampUncheckedUpdateWithoutSurveysInput = {
@@ -1380,6 +1540,7 @@ export type BootcampUncheckedUpdateWithoutSurveysInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutBootcampNestedInput
   instructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutBootcampNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBootcampNestedInput
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutBootcampNestedInput
 }
 
 
@@ -1394,6 +1555,7 @@ export type BootcampCountOutputType = {
   instructors: number
   reviews: number
   surveys: number
+  challenges: number
 }
 
 export type BootcampCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1403,6 +1565,7 @@ export type BootcampCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   instructors?: boolean | BootcampCountOutputTypeCountInstructorsArgs
   reviews?: boolean | BootcampCountOutputTypeCountReviewsArgs
   surveys?: boolean | BootcampCountOutputTypeCountSurveysArgs
+  challenges?: boolean | BootcampCountOutputTypeCountChallengesArgs
 }
 
 /**
@@ -1457,6 +1620,13 @@ export type BootcampCountOutputTypeCountSurveysArgs<ExtArgs extends runtime.Type
   where?: Prisma.SurveyWhereInput
 }
 
+/**
+ * BootcampCountOutputType without action
+ */
+export type BootcampCountOutputTypeCountChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeWhereInput
+}
+
 
 export type BootcampSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1481,6 +1651,7 @@ export type BootcampSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   instructors?: boolean | Prisma.Bootcamp$instructorsArgs<ExtArgs>
   reviews?: boolean | Prisma.Bootcamp$reviewsArgs<ExtArgs>
   surveys?: boolean | Prisma.Bootcamp$surveysArgs<ExtArgs>
+  challenges?: boolean | Prisma.Bootcamp$challengesArgs<ExtArgs>
   _count?: boolean | Prisma.BootcampCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bootcamp"]>
 
@@ -1549,6 +1720,7 @@ export type BootcampInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   instructors?: boolean | Prisma.Bootcamp$instructorsArgs<ExtArgs>
   reviews?: boolean | Prisma.Bootcamp$reviewsArgs<ExtArgs>
   surveys?: boolean | Prisma.Bootcamp$surveysArgs<ExtArgs>
+  challenges?: boolean | Prisma.Bootcamp$challengesArgs<ExtArgs>
   _count?: boolean | Prisma.BootcampCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BootcampIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1563,6 +1735,7 @@ export type $BootcampPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     instructors: Prisma.$BootcampInstructorPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     surveys: Prisma.$SurveyPayload<ExtArgs>[]
+    challenges: Prisma.$ChallengePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1981,6 +2154,7 @@ export interface Prisma__BootcampClient<T, Null = never, ExtArgs extends runtime
   instructors<T extends Prisma.Bootcamp$instructorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$instructorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BootcampInstructorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.Bootcamp$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   surveys<T extends Prisma.Bootcamp$surveysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$surveysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  challenges<T extends Prisma.Bootcamp$challengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Bootcamp$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2560,6 +2734,30 @@ export type Bootcamp$surveysArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.SurveyScalarFieldEnum | Prisma.SurveyScalarFieldEnum[]
+}
+
+/**
+ * Bootcamp.challenges
+ */
+export type Bootcamp$challengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Challenge
+   */
+  select?: Prisma.ChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Challenge
+   */
+  omit?: Prisma.ChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeWhereInput
+  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
 }
 
 /**

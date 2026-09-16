@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -20,13 +20,14 @@ interface BootcampItem {
   templateUrl: './my-bootcamp.page.html',
   styleUrls: ['./my-bootcamp.page.css'],
 })
-export class MyBootcampPage implements OnInit {
+export class MyBootcampPage implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private api = inject(ApiService);
   private platformId = inject(PLATFORM_ID);
+  private visibilityHandler = () => this.onVisibilityChange();
 
-  tabs = ['전체', '수강중', '신청 완료', '수강대기', '불합격'];
+  tabs = ['전체', '수강중', '신청 완료', '수강대기', '종료', '불합격'];
   activeTab = signal('전체');
 
   allItems = signal<BootcampItem[]>([]);
@@ -43,6 +44,18 @@ export class MyBootcampPage implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     this.waitAndLoad();
+    document.addEventListener('visibilitychange', this.visibilityHandler);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('visibilitychange', this.visibilityHandler);
+  }
+
+  /** 탭 포커스 시 자동으로 최신 데이터 fetch */
+  private onVisibilityChange(): void {
+    if (document.visibilityState === 'visible' && this.authService.isLoggedIn()) {
+      this.loadMyBootcamps();
+    }
   }
 
   private async waitAndLoad(): Promise<void> {
@@ -72,19 +85,17 @@ export class MyBootcampPage implements OnInit {
       try {
         const bootcamps = await this.api.bootcamps.findByInstructor(user.id);
         const BOOTCAMP_STATUS_MAP: Record<string, string> = {
-          PREPARING: '수강대기', RECRUITING: '수강대기', OPERATING: '수강중', CLOSED: '수료', ENDED: '수료',
+          PREPARING: '수강대기', RECRUITING: '수강대기', OPERATING: '수강중', CLOSED: '수강중', ENDED: '종료',
         };
         for (const bc of bootcamps) {
           instructorBootcampIds.add(bc.id);
-          // 종료된 부트캠프만 목록에서 숨기기
-          if (bc.status === 'ENDED') continue;
           const fmt = (d: string) => d ? d.substring(0, 10) : '';
           items.push({
             id: bc.id,
             bootcampId: bc.id,
             name: bc.name || `부트캠프 #${bc.id}`,
             status: BOOTCAMP_STATUS_MAP[bc.status] || bc.status || '수강중',
-            canEnter: bc.status !== 'CLOSED',
+            canEnter: true,
             dateRange: bc.startDate && bc.endDate
               ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
               : '',
@@ -106,13 +117,26 @@ export class MyBootcampPage implements OnInit {
         const fmt = (d: string) => d ? d.substring(0, 10) : '';
         const mappedStatus = this.STATUS_MAP[a.status] || '신청 완료';
         const bcStatus = bc.status || '';
-        if (bcStatus === 'ENDED') continue;
+
+        // 상태 표시: ENDED만 '종료', PREPARING/RECRUITING은 '준비중'
+        let displayStatus = mappedStatus;
+        if (bcStatus === 'ENDED') displayStatus = '종료';
+        else if (bcStatus === 'PREPARING' || bcStatus === 'RECRUITING') displayStatus = '준비중';
+
+        // 진입 가능 여부: OPERATING/CLOSED는 ACCEPTED만, ENDED는 COMPLETED도 허용
+        let canEnter = false;
+        if (bcStatus === 'OPERATING' || bcStatus === 'CLOSED') {
+          canEnter = a.status === 'ACCEPTED';
+        } else if (bcStatus === 'ENDED') {
+          canEnter = a.status === 'ACCEPTED' || a.status === 'COMPLETED';
+        }
+
         items.push({
           id: a.id,
           bootcampId,
           name: bc.name || `부트캠프 #${a.bootcampId}`,
-          status: mappedStatus,
-          canEnter: mappedStatus === '수강중' && bcStatus !== 'CLOSED',
+          status: displayStatus,
+          canEnter,
           dateRange: bc.startDate && bc.endDate
             ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
             : '',
@@ -146,6 +170,8 @@ export class MyBootcampPage implements OnInit {
       case '신청 완료': return 'mb-badge mb-badge-applied';
       case '수강대기': return 'mb-badge mb-badge-waiting';
       case '수료': return 'mb-badge mb-badge-completed';
+      case '종료': return 'mb-badge mb-badge-closed';
+      case '준비중': return 'mb-badge mb-badge-waiting';
       case '불합격': return 'mb-badge mb-badge-closed';
       default: return 'mb-badge';
     }

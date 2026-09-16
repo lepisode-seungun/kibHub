@@ -10,10 +10,10 @@ import {
 interface DashboardResponse {
   summary: { bootcampCount: number; completionRate: number; submittedCount: number; feedbackReceivedCount: number };
   bootcamps: { id: number; name: string; status: string; thumbnail: string | null; startDate: string | null; endDate: string | null }[];
-  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; status: string }[];
+  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; submissionId: number | null; status: string }[];
   activityHeatmap: { date: string; count: number }[];
   monthlySubmissions: { month: string; count: number }[];
-  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; authorNickname: string; authorProfileImage: string | null; createdAt: string }[];
+  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; submissionId: number | null; authorNickname: string; authorProfileImage: string | null; createdAt: string }[];
 }
 
 interface ReviewItem {
@@ -443,5 +443,27 @@ export class ApiService {
       this.post(`/surveys/${surveyId}/respond`, { answers }),
     checkResponse: (surveyId: number): Promise<{ hasResponded: boolean }> =>
       this.get(`/surveys/${surveyId}/check`),
+  };
+
+  // ===== Challenges =====
+  readonly challenges = {
+    findAll: (status?: string): Promise<any[]> =>
+      this.get(`/challenges${status ? '?status=' + status : ''}`),
+    findOne: (id: number): Promise<any> =>
+      this.get(`/challenges/${id}`),
+    findEntries: (id: number, sort?: string): Promise<any[]> =>
+      this.get(`/challenges/${id}/entries${sort ? '?sort=' + sort : ''}`),
+    findMyEntry: (id: number): Promise<any> =>
+      this.get(`/challenges/${id}/my-entry`),
+    submitEntry: (id: number, data: { title: string; description?: string; images?: string[] }): Promise<any> =>
+      this.post(`/challenges/${id}/entries`, data),
+    toggleLike: (entryId: number): Promise<{ liked: boolean }> =>
+      this.post(`/challenges/entries/${entryId}/like`, {}),
+    checkLike: (entryId: number): Promise<{ liked: boolean }> =>
+      this.get(`/challenges/entries/${entryId}/like`),
+    updateEntry: (entryId: number, data: { title?: string; description?: string; images?: string[] }): Promise<any> =>
+      this.patch(`/challenges/entries/${entryId}`, data),
+    deleteEntry: (entryId: number): Promise<any> =>
+      this.del(`/challenges/entries/${entryId}`),
   };
 }

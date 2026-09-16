@@ -31,6 +31,15 @@ export const BootcampStatus = {
 export type BootcampStatus = (typeof BootcampStatus)[keyof typeof BootcampStatus]
 
 
+export const ChallengeStatus = {
+  UPCOMING: 'UPCOMING',
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED'
+} as const
+
+export type ChallengeStatus = (typeof ChallengeStatus)[keyof typeof ChallengeStatus]
+
+
 export const ContentStatus = {
   VISIBLE: 'VISIBLE',
   HIDDEN: 'HIDDEN',

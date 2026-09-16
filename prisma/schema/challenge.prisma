@@ -1,0 +1,58 @@
+// ===== 챌린지 =====
+model Challenge {
+  id               Int               @id @default(autoincrement())
+  title            String
+  description      String            @default("")
+  thumbnail        String?
+  referenceImages  String[]          @default([])
+  category         String            @default("")
+  difficulty       String?
+  status           ChallengeStatus   @default(UPCOMING)
+  startDate        DateTime
+  endDate          DateTime
+  maxSubmissions   Int               @default(1)
+  isBootcampOnly   Boolean           @default(false)
+  bootcampId       Int?
+  bootcamp         Bootcamp?         @relation(fields: [bootcampId], references: [id])
+  prize            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  entries          ChallengeEntry[]
+}
+
+enum ChallengeStatus {
+  UPCOMING
+  ACTIVE
+  ENDED
+}
+
+// ===== 챌린지 출품작 =====
+model ChallengeEntry {
+  id            Int       @id @default(autoincrement())
+  challengeId   Int
+  challenge     Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  description   String    @default("")
+  images        String[]  @default([])
+  likeCount     Int       @default(0)
+  rank          Int?
+  isWinner      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  likes         ChallengeEntryLike[]
+}
+
+// ===== 챌린지 좋아요 =====
+model ChallengeEntryLike {
+  id        Int            @id @default(autoincrement())
+  entryId   Int
+  entry     ChallengeEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@unique([entryId, userId])
+}

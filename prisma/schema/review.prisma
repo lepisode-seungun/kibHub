@@ -13,7 +13,7 @@ model Review {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   bootcamp    Bootcamp @relation(fields: [bootcampId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, bootcampId]) // 1인 1리뷰
+  // 1인 다중 리뷰 허용 (unique 제약 제거)
 }
 
 // ===== 설문 =====

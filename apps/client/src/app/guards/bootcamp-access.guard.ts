@@ -5,8 +5,13 @@ import { ApiService } from '../services/api.service';
 
 /**
  * 부트캠프 하위 페이지 접근 가드
- * ACCEPTED(수강중) 상태인 수강생만 접근 허용
- * PENDING(신청완료), WAITING(수강대기), COMPLETED(수료), REJECTED(불합격)은 /my-bootcamp로 리다이렉트
+ * 
+ * 부트캠프 상태별 수강생 접근 제어:
+ * - PREPARING / RECRUITING: 수강생 진입 차단 (아직 운영 전)
+ * - OPERATING / CLOSED(모집마감): ACCEPTED 수강생만 진입 허용
+ * - ENDED(종료): ACCEPTED 또는 COMPLETED 수강생 진입 허용 (설문조사)
+ * 
+ * 강사/관리자는 항상 접근 허용
  */
 export const bootcampAccessGuard: CanActivateFn = async (route) => {
   const authService = inject(AuthService);
@@ -29,31 +34,42 @@ export const bootcampAccessGuard: CanActivateFn = async (route) => {
   const bootcampId = Number(route.paramMap.get('bootcampId') || route.paramMap.get('id'));
   if (!bootcampId) return true;
 
-  // 부트캠프 마감/종료 상태면 모든 사용자 진입 차단
-  try {
-    const bootcamp = await api.bootcamps.findOne(bootcampId);
-    if (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED') {
-      router.navigate(['/my-bootcamp']);
-      return false;
-    }
-  } catch {}
-
-  // 강사/관리자는 마감/종료가 아니면 접근 허용
+  // 강사/관리자는 항상 접근 허용
   if (user.role === 'INSTRUCTOR' || user.role === 'ADMIN') {
     return true;
   }
 
   try {
-    const applicants = await api.applicants.findByUser(user.id);
-    const myApp = applicants.find((a) => a.bootcampId === bootcampId);
-    // ACCEPTED 상태만 진입 허용
-    if (!myApp || myApp.status !== 'ACCEPTED') {
+    // 부트캠프 상태 확인
+    const bootcamp = await api.bootcamps.findOne(bootcampId);
+    const bcStatus = bootcamp?.status || '';
+
+    // 준비/모집 상태 → 수강생 진입 차단
+    if (bcStatus === 'PREPARING' || bcStatus === 'RECRUITING') {
       router.navigate(['/my-bootcamp']);
       return false;
     }
-    // 부트캠프가 마감/종료 상태면 진입 차단
-    const bootcamp = myApp.bootcamp;
-    if (bootcamp && (bootcamp.status === 'CLOSED' || bootcamp.status === 'ENDED')) {
+
+    // 수강생 지원 상태 확인
+    const applicants = await api.applicants.findByUser(user.id);
+    const myApp = applicants.find((a) => a.bootcampId === bootcampId);
+
+    if (!myApp) {
+      router.navigate(['/my-bootcamp']);
+      return false;
+    }
+
+    // ENDED(종료) → ACCEPTED 또는 COMPLETED 허용 (설문조사 접근)
+    if (bcStatus === 'ENDED') {
+      if (myApp.status === 'ACCEPTED' || myApp.status === 'COMPLETED') {
+        return true;
+      }
+      router.navigate(['/my-bootcamp']);
+      return false;
+    }
+
+    // OPERATING / CLOSED(모집마감) → ACCEPTED만 허용
+    if (myApp.status !== 'ACCEPTED') {
       router.navigate(['/my-bootcamp']);
       return false;
     }

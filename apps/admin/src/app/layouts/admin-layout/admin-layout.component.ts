@@ -42,6 +42,7 @@ export class AdminLayoutComponent implements OnInit {
       children: [
         { label: '콘텐츠 목록', route: '/content' },
         { label: '신고내역', route: '/content/reports' },
+        { label: '챌린지 관리', route: '/content/challenges' },
       ],
     },
     {

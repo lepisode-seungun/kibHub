@@ -14,13 +14,12 @@ interface Album {
 }
 
 interface DashboardData {
-  summary: { bootcampCount: number; completionRate: number; submittedCount: number; feedbackReceivedCount: number; contentCount?: number; feedbackCount?: number; likeCount?: number; followerCount?: number };
+  summary: { bootcampCount: number; completionRate: number; submittedCount: number; feedbackReceivedCount: number };
   bootcamps: { id: number; name: string; status: string; thumbnail: string | null; startDate: string | null; endDate: string | null }[];
-  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; status: string }[];
+  assignmentStatus: { id: number; title: string; bootcampId: number; bootcampName: string; dueDate: string | null; submissionId: number | null; status: string }[];
   activityHeatmap: { date: string; count: number }[];
   monthlySubmissions: { month: string; count: number }[];
-  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; authorNickname: string; authorProfileImage: string | null; createdAt: string; contentTitle?: string; contentId?: number }[];
-  contentTypeDist?: { type: string; count: number }[];
+  recentFeedbacks: { id: number; body: string; assignmentId: number; assignmentTitle: string; bootcampId: number; submissionId: number | null; authorNickname: string; authorProfileImage: string | null; createdAt: string }[];
 }
 
 interface ContentCard {
@@ -322,13 +321,36 @@ export class ProfilePage implements OnInit, OnDestroy {
   // 대시보드 데이터
   _dashboardData = signal<DashboardData | null>(null);
   dashboardData = computed(() => this._dashboardData() ?? {
-    summary: { bootcampCount: 0, completionRate: 0, submittedCount: 0, feedbackReceivedCount: 0, contentCount: 0, feedbackCount: 0, likeCount: 0, followerCount: 0 },
-    bootcamps: [], assignmentStatus: [], activityHeatmap: [], monthlySubmissions: [], recentFeedbacks: [], contentTypeDist: [],
+    summary: { bootcampCount: 0, completionRate: 0, submittedCount: 0, feedbackReceivedCount: 0 },
+    bootcamps: [], assignmentStatus: [], activityHeatmap: [], monthlySubmissions: [], recentFeedbacks: [],
   } as DashboardData);
   isDashboardLoaded = computed(() => this._dashboardData() !== null);
+
+  /** 대시보드 활성 섹션: 카드 클릭 시 해당 섹션만 표시 */
+  activeDashboardSection = signal<'bootcamp' | 'assignment' | 'feedback' | 'activity' | null>('bootcamp');
+
+  toggleDashboardSection(section: 'bootcamp' | 'assignment' | 'feedback' | 'activity'): void {
+    this.activeDashboardSection.set(
+      this.activeDashboardSection() === section ? null : section
+    );
+  }
+
+  /** 총 활동 수 (히트맵 합산) */
+  totalActivity = computed(() => {
+    const data = this.dashboardData();
+    if (!data?.activityHeatmap) return 0;
+    return data.activityHeatmap.reduce((sum, d) => sum + d.count, 0);
+  });
+
+  /** 과제 현황: 미제출 우선 정렬 */
+  sortedAssignments = computed(() => {
+    const data = this.dashboardData();
+    if (!data?.assignmentStatus) return [];
+    const order: Record<string, number> = { NOT_SUBMITTED: 0, SUBMITTED: 1, FEEDBACK_DONE: 2 };
+    return [...data.assignmentStatus].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+  });
   dashboardLoading = signal(false);
-  heatmapWeeks = signal<{ date: string; count: number; level: number }[][]>([]);
-  heatmapMonthLabels = signal<{ text: string; col: number }[]>([]);
+  monthlyBars = signal<{ month: string; count: number; height: number }[]>([]);
   selectedAlbumId = signal<number | null>(null);
   hoveredAlbumId = signal<number | null>(null);
   isSortOpen = signal(false);
@@ -447,86 +469,114 @@ export class ProfilePage implements OnInit, OnDestroy {
     try {
       const data = await this.api.users.dashboard(uid);
       this._dashboardData.set(data);
-      this.buildHeatmap(data.activityHeatmap);
+      this.buildMonthlyChart(data.activityHeatmap);
     } catch (e) {
       console.error('대시보드 로드 실패:', e);
     }
     this.dashboardLoading.set(false);
   }
 
-  private buildHeatmap(activities: { date: string; count: number }[]): void {
-    const actMap = new Map(activities.map(a => [a.date, a.count]));
-    const maxCount = Math.max(1, ...activities.map(a => a.count));
+  private buildMonthlyChart(activities: { date: string; count: number }[]): void {
     const today = new Date();
-    const days: { date: string; count: number; level: number }[] = [];
-
-    // 최근 365일
-    for (let i = 364; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
-      const count = actMap.get(key) || 0;
-      const level = count === 0 ? 0 : Math.min(4, Math.ceil((count / maxCount) * 4));
-      days.push({ date: key, count, level });
-    }
-
-    // 첫 날의 요일에 맞춰 빈칸 추가 (일요일=0)
-    const firstDay = new Date(days[0].date).getDay();
-    const padded = Array(firstDay).fill({ date: '', count: 0, level: -1 }).concat(days);
-
-    // 7일씩 묶어 주(week) 단위로 나누기
-    const weeks: { date: string; count: number; level: number }[][] = [];
-    for (let i = 0; i < padded.length; i += 7) {
-      weeks.push(padded.slice(i, i + 7));
-    }
-    // 마지막 week가 7일 미만이면 빈칸으로 채움
-    const lastWeek = weeks[weeks.length - 1];
-    while (lastWeek && lastWeek.length < 7) {
-      lastWeek.push({ date: '', count: 0, level: -1 });
-    }
-    this.heatmapWeeks.set(weeks);
-
-    // 월 레이블 생성
+    const currentMonth = today.getMonth(); // 0-indexed
     const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-    const labels: { text: string; col: number }[] = [];
-    let lastMonth = -1;
-    for (let w = 0; w < weeks.length; w++) {
-      const firstValidDay = weeks[w].find(d => d.date !== '');
-      if (firstValidDay) {
-        const month = new Date(firstValidDay.date).getMonth();
-        if (month !== lastMonth) {
-          labels.push({ text: monthNames[month], col: w + 2 }); // +2: 1-indexed + day-label spacer
-          lastMonth = month;
-        }
+    const monthlyCounts = new Array(currentMonth + 1).fill(0);
+
+    for (const a of activities) {
+      const d = new Date(a.date);
+      if (d.getFullYear() === today.getFullYear() && d.getMonth() <= currentMonth) {
+        monthlyCounts[d.getMonth()] += a.count;
       }
     }
-    this.heatmapMonthLabels.set(labels);
+
+    const maxCount = Math.max(10, ...monthlyCounts);
+    const bars = monthlyCounts.map((count, i) => ({
+      month: monthNames[i],
+      count,
+      height: Math.round((count / maxCount) * 100),
+    }));
+    this.monthlyBars.set(bars);
   }
 
-  getTypeLabel(type: string): string {
-    const map: Record<string, string> = { WEBTOON: '웹툰', ILLUSTRATION: '그림', WRITING: '글' };
-    return map[type] || type;
+  /** 과제 상태 라벨 */
+  getAssignmentStatusLabel(status: string): string {
+    const map: Record<string, string> = { NOT_SUBMITTED: '미제출', SUBMITTED: '제출 완료', FEEDBACK_DONE: '제출 완료' };
+    return map[status] || status;
   }
 
-  getMaxMonthly(): number {
-    const data = this.dashboardData();
-    if (!data?.monthlySubmissions) return 1;
-    return Math.max(1, ...data.monthlySubmissions.map((m: any) => m.count));
+  /** 과제 상태 CSS 클래스 */
+  getAssignmentStatusClass(status: string): string {
+    const map: Record<string, string> = { NOT_SUBMITTED: 'db-status-not', SUBMITTED: 'db-status-submitted', FEEDBACK_DONE: 'db-status-submitted' };
+    return map[status] || 'db-status-not';
   }
 
-  getMonthLabel(month: string): string {
-    return month.split('-')[1] + '월';
+  /** 부트캠프 상태 라벨 */
+  getBootcampStatusLabel(status: string): string {
+    const map: Record<string, string> = { OPERATING: '운영중', PREPARING: '준비중', RECRUITING: '모집중', ENDED: '종료', CLOSED: '마감' };
+    return map[status] || status;
   }
 
-  getTotalTypeCount(): number {
-    const data = this.dashboardData();
-    if (!data?.contentTypeDist) return 1;
-    return Math.max(1, data.contentTypeDist.reduce((sum: number, t: any) => sum + t.count, 0));
+  /** 부트캠프 상태 CSS 클래스 */
+  getBootcampStatusClass(status: string): string {
+    const map: Record<string, string> = { OPERATING: 'db-bc-operating', PREPARING: 'db-bc-preparing', RECRUITING: 'db-bc-preparing', ENDED: 'db-bc-ended', CLOSED: 'db-bc-ended' };
+    return map[status] || 'db-bc-ended';
   }
 
-  /** 대시보드: 과제 클릭 → 과제 상세 페이지 */
-  goToAssignment(bootcampId: number, assignmentId: number): void {
-    this.router.navigate(['/my-bootcamp', bootcampId, 'assignment', assignmentId]);
+  /** 날짜 포맷 */
+  formatDate(dateStr: string | null): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  /** 마감일까지 남은 일수 */
+  getDaysLeft(dateStr: string | null): string {
+    if (!dateStr) return '';
+    const diff = Math.ceil((new Date(dateStr).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    if (diff < 0) return '마감';
+    if (diff === 0) return 'D-Day';
+    return `D-${diff}`;
+  }
+
+  /** HTML 태그 제거 (피드백 미리보기용) */
+  stripHtml(html: string): string {
+    if (!html) return '';
+    const text = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    return text.length > 100 ? text.slice(0, 100) + '…' : text;
+  }
+
+  /** 상대 시간 (예: '3일 전') */
+  getTimeAgo(dateStr: string): string {
+    if (!dateStr) return '';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return '방금 전';
+    if (mins < 60) return `${mins}분 전`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}시간 전`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}일 전`;
+    const months = Math.floor(days / 30);
+    return `${months}개월 전`;
+  }
+
+  /** 부트캠프 기간 진행률 (0~100) */
+  getBootcampProgress(startDate: string, endDate: string): number {
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    const now = Date.now();
+    if (now <= start) return 0;
+    if (now >= end) return 100;
+    return Math.round(((now - start) / (end - start)) * 100);
+  }
+
+  /** 대시보드: 과제/피드백 클릭 → 과제제출 상세 페이지 */
+  goToSubmission(bootcampId: number, submissionId: number | null, assignmentId?: number): void {
+    if (submissionId) {
+      this.router.navigate(['/my-bootcamp', bootcampId, 'submission', submissionId]);
+    } else if (assignmentId) {
+      this.router.navigate(['/my-bootcamp', bootcampId, 'assignment', assignmentId]);
+    }
   }
 
   /** 대시보드: 부트캠프 클릭 → 부트캠프 상세 */

@@ -39,6 +39,8 @@ model User {
   actedNotifications Notification[] @relation("notificationActor")
   reviews            Review[]
   surveyResponses    SurveyResponse[]
+  challengeEntries   ChallengeEntry[]
+  challengeEntryLikes ChallengeEntryLike[]
 }
 
 enum UserRole {

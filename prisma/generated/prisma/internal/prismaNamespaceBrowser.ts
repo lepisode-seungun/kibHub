@@ -56,6 +56,9 @@ export const ModelName = {
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
   BootcampInstructor: 'BootcampInstructor',
+  Challenge: 'Challenge',
+  ChallengeEntry: 'ChallengeEntry',
+  ChallengeEntryLike: 'ChallengeEntryLike',
   Content: 'Content',
   ContentCategory: 'ContentCategory',
   Album: 'Album',
@@ -182,6 +185,54 @@ export const BootcampInstructorScalarFieldEnum = {
 } as const
 
 export type BootcampInstructorScalarFieldEnum = (typeof BootcampInstructorScalarFieldEnum)[keyof typeof BootcampInstructorScalarFieldEnum]
+
+
+export const ChallengeScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  thumbnail: 'thumbnail',
+  referenceImages: 'referenceImages',
+  category: 'category',
+  difficulty: 'difficulty',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  maxSubmissions: 'maxSubmissions',
+  isBootcampOnly: 'isBootcampOnly',
+  bootcampId: 'bootcampId',
+  prize: 'prize',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
+
+
+export const ChallengeEntryScalarFieldEnum = {
+  id: 'id',
+  challengeId: 'challengeId',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  images: 'images',
+  likeCount: 'likeCount',
+  rank: 'rank',
+  isWinner: 'isWinner',
+  createdAt: 'createdAt'
+} as const
+
+export type ChallengeEntryScalarFieldEnum = (typeof ChallengeEntryScalarFieldEnum)[keyof typeof ChallengeEntryScalarFieldEnum]
+
+
+export const ChallengeEntryLikeScalarFieldEnum = {
+  id: 'id',
+  entryId: 'entryId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChallengeEntryLikeScalarFieldEnum = (typeof ChallengeEntryLikeScalarFieldEnum)[keyof typeof ChallengeEntryLikeScalarFieldEnum]
 
 
 export const ContentScalarFieldEnum = {

@@ -540,10 +540,6 @@ export type EnumNoticeTypeFieldUpdateOperationsInput = {
   set?: $Enums.NoticeType
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type NoticeCreateNestedOneWithoutFilesInput = {
   create?: Prisma.XOR<Prisma.NoticeCreateWithoutFilesInput, Prisma.NoticeUncheckedCreateWithoutFilesInput>
   connectOrCreate?: Prisma.NoticeCreateOrConnectWithoutFilesInput

@@ -410,12 +410,14 @@ export class UsersService {
     };
 
     // 2. 과제별 현황
+    const submissionMap = new Map(submissions.map(s => [s.assignmentId, s.id]));
     const assignmentStatus = assignments.map(a => ({
       id: a.id,
       title: a.title,
       bootcampId: a.course.bootcampId,
       bootcampName: a.course.bootcamp.name,
       dueDate: a.dueDate,
+      submissionId: submissionMap.get(a.id) || null,
       status: feedbackAssignmentIds.has(a.id) ? 'FEEDBACK_DONE'
         : submittedAssignmentIds.has(a.id) ? 'SUBMITTED'
         : 'NOT_SUBMITTED',
@@ -471,12 +473,13 @@ export class UsersService {
         parent: { authorId: userId },
       },
       orderBy: { createdAt: 'desc' },
-      take: 5,
+      take: 10,
       select: {
         id: true,
         title: true,
         content: true,
         createdAt: true,
+        parentId: true,
         author: { select: { nickname: true, profileImage: true } },
         assignment: { select: { id: true, title: true, course: { select: { bootcampId: true } } } },
       },
@@ -494,6 +497,7 @@ export class UsersService {
         assignmentId: f.assignment.id,
         assignmentTitle: f.assignment.title,
         bootcampId: f.assignment.course.bootcampId,
+        submissionId: f.parentId,
         authorNickname: f.author?.nickname || '익명',
         authorProfileImage: f.author?.profileImage || null,
         createdAt: f.createdAt,

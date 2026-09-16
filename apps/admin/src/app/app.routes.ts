@@ -49,6 +49,34 @@ export const appRoutes: Route[] = [
           ),
       },
       {
+        path: 'content/challenges',
+        loadComponent: () =>
+          import('./pages/challenges/challenges.page').then(
+            (m) => m.ChallengesPage
+          ),
+      },
+      {
+        path: 'content/challenges/new',
+        loadComponent: () =>
+          import('./pages/challenge-form/challenge-form.page').then(
+            (m) => m.ChallengeFormPage
+          ),
+      },
+      {
+        path: 'content/challenges/:id',
+        loadComponent: () =>
+          import('./pages/challenge-detail/challenge-detail.page').then(
+            (m) => m.ChallengeDetailPage
+          ),
+      },
+      {
+        path: 'content/challenges/:id/edit',
+        loadComponent: () =>
+          import('./pages/challenge-form/challenge-form.page').then(
+            (m) => m.ChallengeFormPage
+          ),
+      },
+      {
         path: 'content/:id',
         loadComponent: () =>
           import('./pages/content-detail/content-detail.page').then(

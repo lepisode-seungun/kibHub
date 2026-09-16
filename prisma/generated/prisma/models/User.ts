@@ -332,6 +332,8 @@ export type UserWhereInput = {
   actedNotifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   surveyResponses?: Prisma.SurveyResponseListRelationFilter
+  challengeEntries?: Prisma.ChallengeEntryListRelationFilter
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -372,6 +374,8 @@ export type UserOrderByWithRelationInput = {
   actedNotifications?: Prisma.NotificationOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   surveyResponses?: Prisma.SurveyResponseOrderByRelationAggregateInput
+  challengeEntries?: Prisma.ChallengeEntryOrderByRelationAggregateInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -415,6 +419,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   actedNotifications?: Prisma.NotificationListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   surveyResponses?: Prisma.SurveyResponseListRelationFilter
+  challengeEntries?: Prisma.ChallengeEntryListRelationFilter
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeListRelationFilter
 }, "id" | "email" | "loginId">
 
 export type UserOrderByWithAggregationInput = {
@@ -502,6 +508,8 @@ export type UserCreateInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -542,6 +550,8 @@ export type UserUncheckedCreateInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -581,6 +591,8 @@ export type UserUpdateInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -621,6 +633,8 @@ export type UserUncheckedUpdateInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -786,6 +800,34 @@ export type UserUpdateOneRequiredWithoutBootcampInstructorsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutBootcampInstructorsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBootcampInstructorsInput, Prisma.UserUpdateWithoutBootcampInstructorsInput>, Prisma.UserUncheckedUpdateWithoutBootcampInstructorsInput>
+}
+
+export type UserCreateNestedOneWithoutChallengeEntriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntriesInput, Prisma.UserUncheckedCreateWithoutChallengeEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengeEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChallengeEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntriesInput, Prisma.UserUncheckedCreateWithoutChallengeEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengeEntriesInput
+  upsert?: Prisma.UserUpsertWithoutChallengeEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChallengeEntriesInput, Prisma.UserUpdateWithoutChallengeEntriesInput>, Prisma.UserUncheckedUpdateWithoutChallengeEntriesInput>
+}
+
+export type UserCreateNestedOneWithoutChallengeEntryLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedCreateWithoutChallengeEntryLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengeEntryLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChallengeEntryLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedCreateWithoutChallengeEntryLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengeEntryLikesInput
+  upsert?: Prisma.UserUpsertWithoutChallengeEntryLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChallengeEntryLikesInput, Prisma.UserUpdateWithoutChallengeEntryLikesInput>, Prisma.UserUncheckedUpdateWithoutChallengeEntryLikesInput>
 }
 
 export type UserCreateNestedOneWithoutContentsInput = {
@@ -1088,6 +1130,8 @@ export type UserCreateWithoutApplicantsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApplicantsInput = {
@@ -1127,6 +1171,8 @@ export type UserUncheckedCreateWithoutApplicantsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApplicantsInput = {
@@ -1181,6 +1227,8 @@ export type UserUpdateWithoutApplicantsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicantsInput = {
@@ -1220,6 +1268,8 @@ export type UserUncheckedUpdateWithoutApplicantsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBootcampInstructorsInput = {
@@ -1258,6 +1308,8 @@ export type UserCreateWithoutBootcampInstructorsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBootcampInstructorsInput = {
@@ -1297,6 +1349,8 @@ export type UserUncheckedCreateWithoutBootcampInstructorsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBootcampInstructorsInput = {
@@ -1351,6 +1405,8 @@ export type UserUpdateWithoutBootcampInstructorsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBootcampInstructorsInput = {
@@ -1390,6 +1446,364 @@ export type UserUncheckedUpdateWithoutBootcampInstructorsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChallengeEntriesInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChallengeEntriesInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChallengeEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntriesInput, Prisma.UserUncheckedCreateWithoutChallengeEntriesInput>
+}
+
+export type UserUpsertWithoutChallengeEntriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChallengeEntriesInput, Prisma.UserUncheckedUpdateWithoutChallengeEntriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntriesInput, Prisma.UserUncheckedCreateWithoutChallengeEntriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChallengeEntriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChallengeEntriesInput, Prisma.UserUncheckedUpdateWithoutChallengeEntriesInput>
+}
+
+export type UserUpdateWithoutChallengeEntriesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChallengeEntriesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChallengeEntryLikesInput = {
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowCreateNestedManyWithoutFollowerInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChallengeEntryLikesInput = {
+  id?: number
+  email: string
+  password: string
+  nickname?: string
+  name?: string
+  phone?: string
+  countryCode?: string
+  birthday?: string | null
+  intro?: string
+  profileImage?: string | null
+  coverImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  adminRole?: $Enums.AdminRole | null
+  loginId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sns?: Prisma.UserSnsUncheckedCreateNestedManyWithoutUserInput
+  contents?: Prisma.ContentUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutReporterInput
+  applicants?: Prisma.ApplicantUncheckedCreateNestedManyWithoutUserInput
+  inquiries?: Prisma.InquiryUncheckedCreateNestedManyWithoutAuthorInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutAuthorInput
+  faqs?: Prisma.FaqUncheckedCreateNestedManyWithoutAuthorInput
+  inquiryReplies?: Prisma.InquiryUncheckedCreateNestedManyWithoutRepliedByInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedCreateNestedManyWithoutAuthorInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedCreateNestedManyWithoutUserInput
+  albums?: Prisma.AlbumUncheckedCreateNestedManyWithoutOwnerInput
+  commentLikes?: Prisma.CommentLikeUncheckedCreateNestedManyWithoutUserInput
+  followers?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowingInput
+  following?: Prisma.FollowUncheckedCreateNestedManyWithoutFollowerInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChallengeEntryLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedCreateWithoutChallengeEntryLikesInput>
+}
+
+export type UserUpsertWithoutChallengeEntryLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedUpdateWithoutChallengeEntryLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedCreateWithoutChallengeEntryLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChallengeEntryLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChallengeEntryLikesInput, Prisma.UserUncheckedUpdateWithoutChallengeEntryLikesInput>
+}
+
+export type UserUpdateWithoutChallengeEntryLikesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUpdateManyWithoutFollowerNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChallengeEntryLikesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  nickname?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  birthday?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  intro?: Prisma.StringFieldUpdateOperationsInput | string
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  adminRole?: Prisma.NullableEnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole | null
+  loginId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sns?: Prisma.UserSnsUncheckedUpdateManyWithoutUserNestedInput
+  contents?: Prisma.ContentUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutReporterNestedInput
+  applicants?: Prisma.ApplicantUncheckedUpdateManyWithoutUserNestedInput
+  inquiries?: Prisma.InquiryUncheckedUpdateManyWithoutAuthorNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutAuthorNestedInput
+  faqs?: Prisma.FaqUncheckedUpdateManyWithoutAuthorNestedInput
+  inquiryReplies?: Prisma.InquiryUncheckedUpdateManyWithoutRepliedByNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  submissionComments?: Prisma.SubmissionCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  bootcampInstructors?: Prisma.BootcampInstructorUncheckedUpdateManyWithoutUserNestedInput
+  albums?: Prisma.AlbumUncheckedUpdateManyWithoutOwnerNestedInput
+  commentLikes?: Prisma.CommentLikeUncheckedUpdateManyWithoutUserNestedInput
+  followers?: Prisma.FollowUncheckedUpdateManyWithoutFollowingNestedInput
+  following?: Prisma.FollowUncheckedUpdateManyWithoutFollowerNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutContentsInput = {
@@ -1428,6 +1842,8 @@ export type UserCreateWithoutContentsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutContentsInput = {
@@ -1467,6 +1883,8 @@ export type UserUncheckedCreateWithoutContentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutContentsInput = {
@@ -1521,6 +1939,8 @@ export type UserUpdateWithoutContentsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContentsInput = {
@@ -1560,6 +1980,8 @@ export type UserUncheckedUpdateWithoutContentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAlbumsInput = {
@@ -1598,6 +2020,8 @@ export type UserCreateWithoutAlbumsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAlbumsInput = {
@@ -1637,6 +2061,8 @@ export type UserUncheckedCreateWithoutAlbumsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAlbumsInput = {
@@ -1691,6 +2117,8 @@ export type UserUpdateWithoutAlbumsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAlbumsInput = {
@@ -1730,6 +2158,8 @@ export type UserUncheckedUpdateWithoutAlbumsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1768,6 +2198,8 @@ export type UserCreateWithoutCommentsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1807,6 +2239,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1861,6 +2295,8 @@ export type UserUpdateWithoutCommentsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1900,6 +2336,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentLikesInput = {
@@ -1938,6 +2376,8 @@ export type UserCreateWithoutCommentLikesInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentLikesInput = {
@@ -1977,6 +2417,8 @@ export type UserUncheckedCreateWithoutCommentLikesInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentLikesInput = {
@@ -2031,6 +2473,8 @@ export type UserUpdateWithoutCommentLikesInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentLikesInput = {
@@ -2070,6 +2514,8 @@ export type UserUncheckedUpdateWithoutCommentLikesInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -2108,6 +2554,8 @@ export type UserCreateWithoutReportsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -2147,6 +2595,8 @@ export type UserUncheckedCreateWithoutReportsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -2201,6 +2651,8 @@ export type UserUpdateWithoutReportsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -2240,6 +2692,8 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionsInput = {
@@ -2278,6 +2732,8 @@ export type UserCreateWithoutSubmissionsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionsInput = {
@@ -2317,6 +2773,8 @@ export type UserUncheckedCreateWithoutSubmissionsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionsInput = {
@@ -2371,6 +2829,8 @@ export type UserUpdateWithoutSubmissionsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionsInput = {
@@ -2410,6 +2870,8 @@ export type UserUncheckedUpdateWithoutSubmissionsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionCommentsInput = {
@@ -2448,6 +2910,8 @@ export type UserCreateWithoutSubmissionCommentsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
@@ -2487,6 +2951,8 @@ export type UserUncheckedCreateWithoutSubmissionCommentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionCommentsInput = {
@@ -2541,6 +3007,8 @@ export type UserUpdateWithoutSubmissionCommentsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
@@ -2580,6 +3048,8 @@ export type UserUncheckedUpdateWithoutSubmissionCommentsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFaqsInput = {
@@ -2618,6 +3088,8 @@ export type UserCreateWithoutFaqsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFaqsInput = {
@@ -2657,6 +3129,8 @@ export type UserUncheckedCreateWithoutFaqsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFaqsInput = {
@@ -2711,6 +3185,8 @@ export type UserUpdateWithoutFaqsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFaqsInput = {
@@ -2750,6 +3226,8 @@ export type UserUncheckedUpdateWithoutFaqsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFollowingInput = {
@@ -2788,6 +3266,8 @@ export type UserCreateWithoutFollowingInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFollowingInput = {
@@ -2827,6 +3307,8 @@ export type UserUncheckedCreateWithoutFollowingInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFollowingInput = {
@@ -2870,6 +3352,8 @@ export type UserCreateWithoutFollowersInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFollowersInput = {
@@ -2909,6 +3393,8 @@ export type UserUncheckedCreateWithoutFollowersInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFollowersInput = {
@@ -2963,6 +3449,8 @@ export type UserUpdateWithoutFollowingInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowingInput = {
@@ -3002,6 +3490,8 @@ export type UserUncheckedUpdateWithoutFollowingInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutFollowersInput = {
@@ -3051,6 +3541,8 @@ export type UserUpdateWithoutFollowersInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowersInput = {
@@ -3090,6 +3582,8 @@ export type UserUncheckedUpdateWithoutFollowersInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInquiriesInput = {
@@ -3128,6 +3622,8 @@ export type UserCreateWithoutInquiriesInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInquiriesInput = {
@@ -3167,6 +3663,8 @@ export type UserUncheckedCreateWithoutInquiriesInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInquiriesInput = {
@@ -3210,6 +3708,8 @@ export type UserCreateWithoutInquiryRepliesInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInquiryRepliesInput = {
@@ -3249,6 +3749,8 @@ export type UserUncheckedCreateWithoutInquiryRepliesInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInquiryRepliesInput = {
@@ -3303,6 +3805,8 @@ export type UserUpdateWithoutInquiriesInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiriesInput = {
@@ -3342,6 +3846,8 @@ export type UserUncheckedUpdateWithoutInquiriesInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutInquiryRepliesInput = {
@@ -3391,6 +3897,8 @@ export type UserUpdateWithoutInquiryRepliesInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
@@ -3430,6 +3938,8 @@ export type UserUncheckedUpdateWithoutInquiryRepliesInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNoticesInput = {
@@ -3468,6 +3978,8 @@ export type UserCreateWithoutNoticesInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNoticesInput = {
@@ -3507,6 +4019,8 @@ export type UserUncheckedCreateWithoutNoticesInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNoticesInput = {
@@ -3561,6 +4075,8 @@ export type UserUpdateWithoutNoticesInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNoticesInput = {
@@ -3600,6 +4116,8 @@ export type UserUncheckedUpdateWithoutNoticesInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -3638,6 +4156,8 @@ export type UserCreateWithoutNotificationsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -3677,6 +4197,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -3720,6 +4242,8 @@ export type UserCreateWithoutActedNotificationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActedNotificationsInput = {
@@ -3759,6 +4283,8 @@ export type UserUncheckedCreateWithoutActedNotificationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActedNotificationsInput = {
@@ -3813,6 +4339,8 @@ export type UserUpdateWithoutNotificationsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -3852,6 +4380,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutActedNotificationsInput = {
@@ -3901,6 +4431,8 @@ export type UserUpdateWithoutActedNotificationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActedNotificationsInput = {
@@ -3940,6 +4472,8 @@ export type UserUncheckedUpdateWithoutActedNotificationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -3978,6 +4512,8 @@ export type UserCreateWithoutReviewsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -4017,6 +4553,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -4071,6 +4609,8 @@ export type UserUpdateWithoutReviewsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -4110,6 +4650,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSurveyResponsesInput = {
@@ -4148,6 +4690,8 @@ export type UserCreateWithoutSurveyResponsesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSurveyResponsesInput = {
@@ -4187,6 +4731,8 @@ export type UserUncheckedCreateWithoutSurveyResponsesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSurveyResponsesInput = {
@@ -4241,6 +4787,8 @@ export type UserUpdateWithoutSurveyResponsesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSurveyResponsesInput = {
@@ -4280,6 +4828,8 @@ export type UserUncheckedUpdateWithoutSurveyResponsesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSnsInput = {
@@ -4318,6 +4868,8 @@ export type UserCreateWithoutSnsInput = {
   actedNotifications?: Prisma.NotificationCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSnsInput = {
@@ -4357,6 +4909,8 @@ export type UserUncheckedCreateWithoutSnsInput = {
   actedNotifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutActorInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
   surveyResponses?: Prisma.SurveyResponseUncheckedCreateNestedManyWithoutUserInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedCreateNestedManyWithoutUserInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSnsInput = {
@@ -4411,6 +4965,8 @@ export type UserUpdateWithoutSnsInput = {
   actedNotifications?: Prisma.NotificationUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSnsInput = {
@@ -4450,6 +5006,8 @@ export type UserUncheckedUpdateWithoutSnsInput = {
   actedNotifications?: Prisma.NotificationUncheckedUpdateManyWithoutActorNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
   surveyResponses?: Prisma.SurveyResponseUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntries?: Prisma.ChallengeEntryUncheckedUpdateManyWithoutUserNestedInput
+  challengeEntryLikes?: Prisma.ChallengeEntryLikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -4478,6 +5036,8 @@ export type UserCountOutputType = {
   actedNotifications: number
   reviews: number
   surveyResponses: number
+  challengeEntries: number
+  challengeEntryLikes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4501,6 +5061,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   actedNotifications?: boolean | UserCountOutputTypeCountActedNotificationsArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
   surveyResponses?: boolean | UserCountOutputTypeCountSurveyResponsesArgs
+  challengeEntries?: boolean | UserCountOutputTypeCountChallengeEntriesArgs
+  challengeEntryLikes?: boolean | UserCountOutputTypeCountChallengeEntryLikesArgs
 }
 
 /**
@@ -4653,6 +5215,20 @@ export type UserCountOutputTypeCountSurveyResponsesArgs<ExtArgs extends runtime.
   where?: Prisma.SurveyResponseWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChallengeEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeEntryWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChallengeEntryLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeEntryLikeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4692,6 +5268,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   actedNotifications?: boolean | Prisma.User$actedNotificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   surveyResponses?: boolean | Prisma.User$surveyResponsesArgs<ExtArgs>
+  challengeEntries?: boolean | Prisma.User$challengeEntriesArgs<ExtArgs>
+  challengeEntryLikes?: boolean | Prisma.User$challengeEntryLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4777,6 +5355,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   actedNotifications?: boolean | Prisma.User$actedNotificationsArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   surveyResponses?: boolean | Prisma.User$surveyResponsesArgs<ExtArgs>
+  challengeEntries?: boolean | Prisma.User$challengeEntriesArgs<ExtArgs>
+  challengeEntryLikes?: boolean | Prisma.User$challengeEntryLikesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4805,6 +5385,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     actedNotifications: Prisma.$NotificationPayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     surveyResponses: Prisma.$SurveyResponsePayload<ExtArgs>[]
+    challengeEntries: Prisma.$ChallengeEntryPayload<ExtArgs>[]
+    challengeEntryLikes: Prisma.$ChallengeEntryLikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -5238,6 +5820,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   actedNotifications<T extends Prisma.User$actedNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$actedNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   surveyResponses<T extends Prisma.User$surveyResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$surveyResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SurveyResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  challengeEntries<T extends Prisma.User$challengeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$challengeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  challengeEntryLikes<T extends Prisma.User$challengeEntryLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$challengeEntryLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengeEntryLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6154,6 +6738,54 @@ export type User$surveyResponsesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.SurveyResponseScalarFieldEnum | Prisma.SurveyResponseScalarFieldEnum[]
+}
+
+/**
+ * User.challengeEntries
+ */
+export type User$challengeEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChallengeEntry
+   */
+  select?: Prisma.ChallengeEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChallengeEntry
+   */
+  omit?: Prisma.ChallengeEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeEntryInclude<ExtArgs> | null
+  where?: Prisma.ChallengeEntryWhereInput
+  orderBy?: Prisma.ChallengeEntryOrderByWithRelationInput | Prisma.ChallengeEntryOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeEntryScalarFieldEnum | Prisma.ChallengeEntryScalarFieldEnum[]
+}
+
+/**
+ * User.challengeEntryLikes
+ */
+export type User$challengeEntryLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChallengeEntryLike
+   */
+  select?: Prisma.ChallengeEntryLikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChallengeEntryLike
+   */
+  omit?: Prisma.ChallengeEntryLikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeEntryLikeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeEntryLikeWhereInput
+  orderBy?: Prisma.ChallengeEntryLikeOrderByWithRelationInput | Prisma.ChallengeEntryLikeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeEntryLikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeEntryLikeScalarFieldEnum | Prisma.ChallengeEntryLikeScalarFieldEnum[]
 }
 
 /**

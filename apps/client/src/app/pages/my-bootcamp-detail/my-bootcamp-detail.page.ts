@@ -101,9 +101,14 @@ export class MyBootcampDetailPage implements OnInit {
   Math = Math;
   bootcampTitle = signal('');
   bootcampStatus = signal('');
+  rawBootcampStatus = signal('');
   dateRange = signal('');
 
-  detailTabs = ['학습목록', '강의', '과제', '공지사항', '설문조사'];
+  /** 부트캠프 종료 여부 (ENDED만 — CLOSED(마감)은 설문 안 띄움) */
+  isBootcampEnded = computed(() => this.rawBootcampStatus() === 'ENDED');
+
+  /** 종료 시에도 설문조사 탭은 숨기고 모달로만 처리 */
+  detailTabs = ['학습목록', '강의', '과제', '공지사항'];
   activeDetailTab = signal('학습목록');
 
   courseSections = signal<CourseSection[]>([]);
@@ -219,15 +224,16 @@ export class MyBootcampDetailPage implements OnInit {
   ngOnInit(): void {
     this.bootcampId = this.route.snapshot.paramMap.get('id') || '';
     const tab = this.route.snapshot.queryParamMap.get('tab');
-    if (tab && this.detailTabs.includes(tab)) {
+    if (tab) {
       this.activeDetailTab.set(tab);
     }
     if (this.bootcampId) {
-      this.loadBootcampData(Number(this.bootcampId));
-      // 설문조사 탭이면 즉시 로드
-      if (this.activeDetailTab() === '설문조사') {
-        this.loadReviews();
-      }
+      this.loadBootcampData(Number(this.bootcampId)).then(() => {
+        // 종료된 부트캠프 진입 시 자동으로 설문 모달 처리
+        if (this.isBootcampEnded()) {
+          this.handleSurveyOnEntry();
+        }
+      });
     }
   }
 
@@ -240,7 +246,7 @@ export class MyBootcampDetailPage implements OnInit {
     PREPARING: '준비중',
     RECRUITING: '모집중',
     OPERATING: '수강중',
-    CLOSED: '종료',
+    CLOSED: '마감',
     ENDED: '종료',
   };
 
@@ -262,24 +268,30 @@ export class MyBootcampDetailPage implements OnInit {
       if (user) {
         if (user.role === 'INSTRUCTOR' || user.role === 'ADMIN') {
           // 강사/관리자는 부트캠프 상태 직접 표시
+          this.rawBootcampStatus.set(bootcamp.status || '');
           this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status || '수강중');
         } else {
           try {
             const applicants = await this.api.applicants.findByUser(user.id);
             const myApp = applicants.find((a: { bootcampId: number; status: string }) => a.bootcampId === bootcampId);
-            // 수강중(ACCEPTED)이 아닌 상태는 접근 차단
-            if (!myApp || myApp.status !== 'ACCEPTED') {
+            // 접근 권한 체크: ENDED 시 COMPLETED도 허용
+            const isEnded = bootcamp.status === 'ENDED';
+            const allowed = myApp && (myApp.status === 'ACCEPTED' || (isEnded && myApp.status === 'COMPLETED'));
+            if (!allowed) {
               this.router.navigate(['/my-bootcamp']);
               return;
             }
+            this.rawBootcampStatus.set(bootcamp.status || '');
             this.bootcampStatus.set(myApp
               ? (this.STATUS_LABEL[myApp.status] || myApp.status)
               : (this.STATUS_LABEL[bootcamp.status] || bootcamp.status));
           } catch {
+            this.rawBootcampStatus.set(bootcamp.status || '');
             this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
           }
         }
       } else {
+        this.rawBootcampStatus.set(bootcamp.status || '');
         this.bootcampStatus.set(this.STATUS_LABEL[bootcamp.status] || bootcamp.status);
       }
 
@@ -394,15 +406,29 @@ export class MyBootcampDetailPage implements OnInit {
 
   selectDetailTab(tab: string): void {
     this.activeDetailTab.set(tab);
-    if (tab === '설문조사') {
-      this.loadReviews(); // 항상 최신 데이터 로드 (어드민 삭제 반영)
-    }
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab },
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  /** 종료된 부트캠프 진입 시 자동 설문 처리 */
+  private async handleSurveyOnEntry(): Promise<void> {
+    // 서버에서 설문 응답 여부를 먼저 확인
+    await this.loadSurvey();
+    await this.loadReviews();
+    if (this.hasResponded()) {
+      // 설문 이미 응답 완료
+    } else {
+      // 설문 미응답 — 신규 제출 모드로 모달 오픈
+      this.myReview.set(null);
+      this.reviewForm = { rating: 0, body: '', images: [] };
+      this.surveyAnswers.set({});
+      this.isReviewModalOpen.set(true);
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   toggleSection(section: CourseSection): void {
@@ -618,10 +644,12 @@ export class MyBootcampDetailPage implements OnInit {
     this.surveyAnswers.set({});
     this.loadSurvey(); // 항상 최신 설문 로드
     this.isReviewModalOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   closeReviewModal(): void {
     this.isReviewModalOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   setRating(star: number): void {
@@ -631,12 +659,7 @@ export class MyBootcampDetailPage implements OnInit {
   async submitReview(): Promise<void> {
     if (this.reviewForm.rating === 0) { alert('별점을 선택해주세요.'); return; }
     try {
-      const mine = this.myReview();
-      if (mine) {
-        await this.api.reviews.update(mine.id, this.reviewForm);
-      } else {
-        await this.api.reviews.create(Number(this.bootcampId), this.reviewForm);
-      }
+      await this.api.reviews.create(Number(this.bootcampId), this.reviewForm);
 
       // 설문 응답 동시 제출 (활성 설문이 있고 미응답인 경우)
       const survey = this.activeSurvey();
@@ -705,12 +728,10 @@ export class MyBootcampDetailPage implements OnInit {
 
   async loadSurvey(): Promise<void> {
     const id = Number(this.bootcampId);
-    console.log('[loadSurvey] bootcampId:', id);
     if (!id) return;
     this.surveyLoading.set(true);
     try {
       const survey = await this.api.surveys.findActive(id);
-      console.log('[loadSurvey] survey response:', survey);
       this.activeSurvey.set(survey);
       if (survey?.id) {
         const check = await this.api.surveys.checkResponse(survey.id);
@@ -724,9 +745,14 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   updateSurveyAnswer(qIndex: number, value: string | number): void {
+    // 텍스트 입력은 토글하지 않고 직접 업데이트
+    if (typeof value === 'string') {
+      this.surveyAnswers.update(a => ({ ...a, [qIndex]: value }));
+      return;
+    }
+    // rating/select: 같은 값이면 토글 해제
     const current = this.surveyAnswers()[qIndex];
     if (current === value) {
-      // 토글: 같은 값이면 해제
       const copy = { ...this.surveyAnswers() };
       delete copy[qIndex];
       this.surveyAnswers.set(copy);

@@ -55,7 +55,8 @@ export class App {
         const url = e.urlAfterRedirects.split('?')[0];
         return url.startsWith('/change-email')
           || url.startsWith('/change-password')
-          || /^\/my-bootcamp\/\d+/.test(url);
+          || /^\/my-bootcamp\/\d+/.test(url)
+          || /^\/challenges\/\d+/.test(url);
       })
     ),
     { initialValue: false }
@@ -77,5 +78,14 @@ export class App {
       map((e) => e.urlAfterRedirects.split('?')[0].startsWith('/my-bootcamp'))
     ),
     { initialValue: window.location.pathname.startsWith('/my-bootcamp') }
+  );
+
+  /** 현재 라우트가 챌린지 페이지인지 추적 */
+  isChallenge = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects.split('?')[0].startsWith('/challenges'))
+    ),
+    { initialValue: window.location.pathname.startsWith('/challenges') }
   );
 }

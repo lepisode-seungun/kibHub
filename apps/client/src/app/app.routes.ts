@@ -182,6 +182,27 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'challenges',
+    loadComponent: () =>
+      import('./pages/challenges/challenges.page').then(
+        (m) => m.ChallengesPage
+      ),
+  },
+  {
+    path: 'challenges/:id',
+    loadComponent: () =>
+      import('./pages/challenge-detail/challenge-detail.page').then(
+        (m) => m.ChallengeDetailPage
+      ),
+  },
+  {
+    path: 'challenges/:id/submit',
+    loadComponent: () =>
+      import('./pages/challenge-submit/challenge-submit.page').then(
+        (m) => m.ChallengeSubmitPage
+      ),
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./pages/login/login.page').then((m) => m.LoginPage),

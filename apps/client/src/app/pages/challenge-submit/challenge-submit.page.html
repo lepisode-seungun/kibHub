@@ -1,0 +1,63 @@
+@if (challenge(); as c) {
+<main class="cs-page">
+  <div class="cs-inner">
+    <button class="cs-back" (click)="router.navigate(['/challenges', challengeId])">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      뒤로가기
+    </button>
+
+    <div class="cs-header">
+      <h1 class="cs-title">🖌️ 작품 제출</h1>
+      <p class="cs-challenge-name">{{ c.title }}</p>
+    </div>
+
+    <!-- 폼 -->
+    <div class="cs-form">
+      <!-- 작품 제목 -->
+      <div class="cs-field">
+        <label class="cs-label">작품 제목 <span class="cs-required">*</span></label>
+        <input type="text" class="cs-input" [(ngModel)]="title" placeholder="작품 제목을 입력하세요" />
+      </div>
+
+      <!-- 작품 설명 -->
+      <div class="cs-field">
+        <label class="cs-label">작품 설명</label>
+        <textarea class="cs-textarea" [(ngModel)]="description" rows="4" placeholder="작품에 대해 설명해주세요 (선택)"></textarea>
+      </div>
+
+      <!-- 이미지 업로드 -->
+      <div class="cs-field">
+        <label class="cs-label">작품 이미지 <span class="cs-required">*</span> <span class="cs-hint">(최대 5장)</span></label>
+        <div class="cs-images">
+          @for (preview of imagePreviews; track $index) {
+            <div class="cs-img-wrap">
+              <img [src]="preview" alt="미리보기" class="cs-img-preview" />
+              <button class="cs-img-remove" (click)="removeImage($index)">
+                <svg width="12" height="12" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          }
+          @if (imagePreviews.length < 5) {
+            <label class="cs-img-add">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>이미지 추가</span>
+              <input type="file" accept="image/*" multiple class="cs-file-input" (change)="onFileSelect($event)" />
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- 제출 버튼 -->
+      <button class="cs-submit-btn" [disabled]="loading()" (click)="submit()">
+        @if (loading()) {
+          제출 중...
+        } @else {
+          🎉 작품 제출하기
+        }
+      </button>
+    </div>
+  </div>
+</main>
+}

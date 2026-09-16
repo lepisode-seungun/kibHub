@@ -1,0 +1,60 @@
+.cs-page { min-height: 100vh; background: #09090B; padding: 40px 0 80px; }
+.cs-inner { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+
+.cs-back {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 0; margin-bottom: 24px;
+  background: none; border: none; color: #A1A1AA; font-family: var(--font-family); font-size: 14px;
+  cursor: pointer; transition: color 0.2s;
+}
+.cs-back:hover { color: #FFF; }
+
+.cs-header { margin-bottom: 32px; }
+.cs-title { font-family: var(--font-family); font-size: 28px; font-weight: 800; color: #FFF; margin: 0 0 8px; }
+.cs-challenge-name { font-family: var(--font-family); font-size: 15px; color: #7C3AED; font-weight: 600; margin: 0; }
+
+/* 폼 */
+.cs-form { display: flex; flex-direction: column; gap: 24px; }
+.cs-field { display: flex; flex-direction: column; gap: 8px; }
+.cs-label { font-family: var(--font-family); font-size: 14px; font-weight: 600; color: #E4E4E7; }
+.cs-required { color: #EF4444; }
+.cs-hint { color: #71717A; font-weight: 400; font-size: 12px; }
+
+.cs-input {
+  width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #3F3F46;
+  background: #18181B; color: #FFF; font-family: var(--font-family); font-size: 15px;
+  outline: none; transition: border-color 0.2s; box-sizing: border-box;
+}
+.cs-input:focus { border-color: #7C3AED; }
+
+.cs-textarea {
+  width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #3F3F46;
+  background: #18181B; color: #FFF; font-family: var(--font-family); font-size: 15px;
+  outline: none; resize: vertical; transition: border-color 0.2s; box-sizing: border-box;
+}
+.cs-textarea:focus { border-color: #7C3AED; }
+
+/* 이미지 */
+.cs-images { display: flex; flex-wrap: wrap; gap: 12px; }
+.cs-img-wrap { position: relative; width: 100px; height: 100px; }
+.cs-img-preview { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 1px solid #27272A; }
+.cs-img-remove {
+  position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%;
+  background: #EF4444; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.cs-img-add {
+  width: 100px; height: 100px; border-radius: 12px; border: 2px dashed #3F3F46;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; transition: border-color 0.2s; color: #71717A; font-family: var(--font-family); font-size: 11px;
+}
+.cs-img-add:hover { border-color: #7C3AED; }
+.cs-file-input { display: none; }
+
+/* 제출 버튼 */
+.cs-submit-btn {
+  width: 100%; padding: 14px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, #7C3AED, #A855F7); color: #FFF;
+  font-family: var(--font-family); font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.cs-submit-btn:hover { opacity: 0.9; }
+.cs-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }

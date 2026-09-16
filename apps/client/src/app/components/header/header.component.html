@@ -16,6 +16,7 @@
       <nav class="nav" aria-label="주 메뉴">
         <a routerLink="/" [ngClass]="isHomeRoute() ? 'nav-item nav-item--active' : 'nav-item'">홈</a>
         <a routerLink="/bootcamp-intro" [ngClass]="isBootcampRoute() ? 'nav-item nav-item--active' : 'nav-item'">부트캠프</a>
+        <a routerLink="/challenges" [ngClass]="currentUrl().startsWith('/challenges') ? 'nav-item nav-item--active' : 'nav-item'">챌린지</a>
       </nav>
     </div>
 
@@ -168,10 +169,12 @@
        [ngClass]="isHomeRoute() ? 'text-white border-b-2 border-white' : 'text-zinc-500'">홈</a>
     <a routerLink="/bootcamp-intro" class="flex justify-center items-center px-3 h-12 font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] no-underline"
        [ngClass]="isBootcampRoute() ? 'text-white border-b-2 border-white' : 'text-zinc-500'">부트캠프</a>
+    <a routerLink="/challenges" class="flex justify-center items-center px-3 h-12 font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] no-underline"
+       [ngClass]="currentUrl().startsWith('/challenges') ? 'text-white border-b-2 border-white' : 'text-zinc-500'">챌린지</a>
   </div>
 
   <!-- 3줄: 서브헤더 탭 (60px) - 부트캠프 라우트일 때만 표시 -->
-  @if (isBootcampRoute()) {
+  @if (isBootcampRoute() && !currentUrl().startsWith('/challenges')) {
     <div class="flex items-center px-5 h-[60px] bg-[#18181B] border-b border-[#27272A] mobile-sub-scroll">
       <a routerLink="/bootcamp-intro" class="flex justify-center items-center px-3 h-[60px] font-suit font-semibold text-base leading-[18px] tracking-[-0.4px] whitespace-nowrap no-underline"
          [ngClass]="currentUrl().startsWith('/bootcamp-intro') ? 'text-white' : 'text-zinc-500'">부트캠프 소개</a>
@@ -289,6 +292,7 @@
             <a class="drawer-submenu-item" routerLink="/k-digital" (click)="closeSidebar()">부트캠프 목록</a>
             <a class="drawer-submenu-item" routerLink="/student-portfolio" (click)="closeSidebar()">수강생 포트폴리오</a>
             <a class="drawer-submenu-item" routerLink="/hall-of-fame" (click)="closeSidebar()">명예의 전당</a>
+            <a class="drawer-submenu-item" routerLink="/challenges" (click)="closeSidebar()">챌린지</a>
           </div>
         }
       </div>
@@ -378,6 +382,7 @@
             <a class="drawer-submenu-item" routerLink="/k-digital" (click)="closeSidebar()">부트캠프 목록</a>
             <a class="drawer-submenu-item" routerLink="/student-portfolio" (click)="closeSidebar()">수강생 포트폴리오</a>
             <a class="drawer-submenu-item" routerLink="/hall-of-fame" (click)="closeSidebar()">명예의 전당</a>
+            <a class="drawer-submenu-item" routerLink="/challenges" (click)="closeSidebar()">챌린지</a>
           </div>
         }
       </div>

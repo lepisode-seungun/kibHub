@@ -1,0 +1,94 @@
+<div class="flex flex-col gap-6">
+  <!-- 페이지 타이틀 -->
+  <div class="flex items-center gap-[10px]">
+    <h2 class="font-suit font-bold text-xl leading-[150%] tracking-[-0.04em] text-gray-800 m-0">챌린지 관리</h2>
+  </div>
+
+  <!-- 필터 탭 -->
+  <div class="flex items-center" style="border-bottom: 2px solid #E5E7EB;">
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeFilter() === '' ? 'text-[#3C8EEE] bg-white font-semibold' : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeFilter() === '' ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' } : { 'border': 'none' }"
+            (click)="setFilter('')">전체</button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeFilter() === 'UPCOMING' ? 'text-[#3C8EEE] bg-white font-semibold' : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeFilter() === 'UPCOMING' ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' } : { 'border': 'none' }"
+            (click)="setFilter('UPCOMING')">예정</button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeFilter() === 'ACTIVE' ? 'text-[#3C8EEE] bg-white font-semibold' : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeFilter() === 'ACTIVE' ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' } : { 'border': 'none' }"
+            (click)="setFilter('ACTIVE')">진행중</button>
+    <button class="flex items-center justify-center px-4 py-3 font-suit font-medium text-base leading-[150%] tracking-[-0.04em] cursor-pointer transition-colors"
+            [ngClass]="activeFilter() === 'ENDED' ? 'text-[#3C8EEE] bg-white font-semibold' : 'text-[#71717A] bg-[#F9FAFB] hover:text-gray-600'"
+            [ngStyle]="activeFilter() === 'ENDED' ? { 'border-bottom': '2px solid #3C8EEE', 'margin-bottom': '-2px', 'border-top': 'none', 'border-left': 'none', 'border-right': 'none' } : { 'border': 'none' }"
+            (click)="setFilter('ENDED')">종료</button>
+  </div>
+
+  <!-- 데이터 그리드 -->
+  <adm-data-grid
+    [columns]="columns"
+    [data]="filteredChallenges()"
+    searchPlaceholder="챌린지 제목으로 검색하세요."
+    [contextMenuItems]="['수정', '시작', '종료', '삭제']"
+    (rowClick)="onRowClick($event)"
+    (contextMenuSelect)="onContextMenuSelect($event)">
+    <button gridActions
+            class="flex items-center gap-2 px-4 py-2 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-semibold text-sm text-white hover:bg-blue-600 transition-colors whitespace-nowrap"
+            (click)="goToNew()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      챌린지 등록
+    </button>
+  </adm-data-grid>
+</div>
+
+<!-- ===== 순위 결정 모달 ===== -->
+@if (rankModalOpen()) {
+  <div class="rank-overlay" (click)="closeRankModal()"></div>
+  <div class="rank-modal">
+    <div class="rank-header">
+      <h3 class="font-suit font-bold text-lg text-zinc-800 m-0">🏆 순위 결정</h3>
+      <button class="rank-close" (click)="closeRankModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#71717A" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <p class="font-suit text-sm text-zinc-500 m-0">좋아요순으로 자동 정렬되었습니다. 화살표로 순위를 조정하세요.</p>
+
+    <div class="rank-list">
+      @for (entry of rankEntries(); track entry.id; let i = $index) {
+        <div class="rank-item">
+          <div class="rank-number" [ngClass]="i < 3 ? 'rank-top' : ''">{{ entry.rank }}</div>
+          @if (entry.images.length > 0) {
+            <img [src]="entry.images[0]" alt="" class="rank-thumb" />
+          } @else {
+            <div class="rank-thumb rank-thumb-empty">🖼️</div>
+          }
+          <div class="rank-info">
+            <span class="font-suit font-semibold text-sm text-zinc-800">{{ entry.title }}</span>
+            <span class="font-suit text-xs text-zinc-500">{{ entry.nickname }} · ❤ {{ entry.likeCount }}</span>
+          </div>
+          <div class="rank-arrows">
+            <button class="rank-arrow" [disabled]="i === 0" (click)="moveRankUp(i)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6" stroke="#71717A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="rank-arrow" [disabled]="i === rankEntries().length - 1" (click)="moveRankDown(i)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#71717A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (rankEntries().length === 0) {
+      <p class="font-suit text-sm text-zinc-400 text-center py-8 m-0">출품작이 없습니다.</p>
+    }
+
+    <div class="rank-footer">
+      <button class="rank-cancel" (click)="closeRankModal()">취소</button>
+      <button class="rank-confirm" (click)="confirmEndWithRanks()">종료 및 순위 저장</button>
+    </div>
+  </div>
+}

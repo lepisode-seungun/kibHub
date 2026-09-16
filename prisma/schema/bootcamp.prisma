@@ -23,6 +23,7 @@ model Bootcamp {
   instructors  BootcampInstructor[]
   reviews      Review[]
   surveys      Survey[]
+  challenges   Challenge[]
 }
 
 enum BootcampStatus {

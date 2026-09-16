@@ -1,0 +1,53 @@
+<main class="challenges-page">
+    <!-- 헤더 -->
+    <div class="challenges-header">
+      <div class="challenges-title-row">
+        <h1 class="challenges-title">🎨 드로잉 챌린지</h1>
+        <p class="challenges-subtitle">주제에 맞는 작품을 제출하고, 다른 참여자들의 작품에 ❤️를 눌러보세요!</p>
+      </div>
+    </div>
+
+    <!-- 필터 -->
+    <div class="filter-row">
+      <button class="filter-btn" [class.active]="activeFilter() === ''" (click)="setFilter('')">전체</button>
+      <button class="filter-btn" [class.active]="activeFilter() === 'ACTIVE'" (click)="setFilter('ACTIVE')">진행중</button>
+      <button class="filter-btn" [class.active]="activeFilter() === 'UPCOMING'" (click)="setFilter('UPCOMING')">예정</button>
+      <button class="filter-btn" [class.active]="activeFilter() === 'ENDED'" (click)="setFilter('ENDED')">종료</button>
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="challenges-grid">
+      @for (c of filtered(); track c.id) {
+        <a class="challenge-card" [routerLink]="['/challenges', c.id]">
+          <!-- 썸네일 -->
+          <div class="card-thumb" [style.background]="c.thumbnail ? 'url(' + c.thumbnail + ') center/cover no-repeat' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'">
+            <!-- 상태 뱃지 -->
+            <span class="card-badge" [ngClass]="getStatusClass(c.status)">
+              @if (c.daysLeft !== null) {
+                D-{{ c.daysLeft }}
+              } @else {
+                {{ getStatusLabel(c.status) }}
+              }
+            </span>
+          </div>
+          <!-- 정보 -->
+          <div class="card-info">
+            <span class="card-category">{{ c.category }}</span>
+            <h3 class="card-title">{{ c.title }}</h3>
+            <p class="card-desc">{{ c.description }}</p>
+            <div class="card-meta">
+              <span class="card-date">📅 {{ formatDate(c.startDate) }} ~ {{ formatDate(c.endDate) }}</span>
+              <span class="card-participants">👥 {{ c.entryCount }}명 참여</span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+
+    @if (filtered().length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">🎨</span>
+        <p class="empty-text">등록된 챌린지가 없습니다.</p>
+      </div>
+    }
+</main>

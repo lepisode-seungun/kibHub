@@ -462,4 +462,24 @@ export class ApiService {
     findUserResponse: (surveyId: number, userId: number): Promise<any> =>
       this.get(`/surveys/${surveyId}/user/${userId}`),
   };
+
+  // ===== Challenges (어드민) =====
+  readonly challenges = {
+    findAll: (status?: string): Promise<any[]> =>
+      this.get(`/challenges${status ? '?status=' + status : ''}`),
+    findOne: (id: number): Promise<any> =>
+      this.get(`/challenges/${id}`),
+    create: (data: any): Promise<any> =>
+      this.post('/challenges', data),
+    update: (id: number, data: any): Promise<any> =>
+      this.patch(`/challenges/${id}`, data),
+    delete: (id: number): Promise<void> =>
+      this.del<void>(`/challenges/${id}`),
+    updateStatus: (id: number, status: string): Promise<any> =>
+      this.patch(`/challenges/${id}/status`, { status }),
+    setWinners: (id: number, winners: { entryId: number; rank: number }[]): Promise<any> =>
+      this.patch(`/challenges/${id}/winners`, { winners }),
+    getStats: (id: number): Promise<any> =>
+      this.get(`/challenges/${id}/stats`),
+  };
 }

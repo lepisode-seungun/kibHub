@@ -1,0 +1,75 @@
+/* ===== 순위 모달 ===== */
+.rank-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 998;
+}
+.rank-modal {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 999; width: 520px; max-height: 80vh;
+  background: #FFF; border-radius: 16px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  overflow-y: auto;
+}
+.rank-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.rank-close {
+  width: 32px; height: 32px; border: none; background: none;
+  cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+}
+.rank-close:hover { background: #F4F4F5; }
+
+.rank-list { display: flex; flex-direction: column; gap: 8px; }
+.rank-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border: 1px solid #E4E4E7; border-radius: 10px;
+  transition: background 0.15s;
+}
+.rank-item:hover { background: #FAFAFA; }
+
+.rank-number {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #F4F4F5; color: #71717A;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'SUIT', sans-serif; font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+.rank-top { background: #3C8EEE; color: #FFF; }
+
+.rank-thumb {
+  width: 44px; height: 44px; border-radius: 8px; object-fit: cover;
+  flex-shrink: 0; border: 1px solid #E4E4E7;
+}
+.rank-thumb-empty {
+  display: flex; align-items: center; justify-content: center;
+  background: #F4F4F5; font-size: 20px;
+}
+
+.rank-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rank-info span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.rank-arrows { display: flex; flex-direction: column; gap: 2px; }
+.rank-arrow {
+  width: 28px; height: 20px; border: 1px solid #E4E4E7; background: #FFF;
+  border-radius: 4px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.rank-arrow:hover { background: #F4F4F5; }
+.rank-arrow:disabled { opacity: 0.3; cursor: default; }
+
+.rank-footer { display: flex; justify-content: flex-end; gap: 10px; padding-top: 8px; border-top: 1px solid #F4F4F5; }
+.rank-cancel {
+  padding: 8px 20px; border: 1px solid #E4E4E7; background: #FFF;
+  border-radius: 8px; cursor: pointer;
+  font-family: 'SUIT', sans-serif; font-size: 14px; font-weight: 600; color: #71717A;
+  transition: background 0.15s;
+}
+.rank-cancel:hover { background: #F9FAFB; }
+.rank-confirm {
+  padding: 8px 20px; border: none; background: #3C8EEE;
+  border-radius: 8px; cursor: pointer;
+  font-family: 'SUIT', sans-serif; font-size: 14px; font-weight: 600; color: #FFF;
+  transition: background 0.15s;
+}
+.rank-confirm:hover { background: #2563EB; }
