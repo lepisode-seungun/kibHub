@@ -1,11 +1,32 @@
 .challenges-page {
-  min-height: 100vh; background: #09090B;
-  display: flex; flex-direction: column; gap: 32px;
-  padding: 60px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px)) 80px;
+  min-height: 100vh; background: #0C0B10;
+  display: flex; flex-direction: column;
   width: 100%; box-sizing: border-box;
 }
-@media (max-width: 1440px) { .challenges-page { padding: 48px max(20px, calc(50% - 880px)) 80px; } }
-@media (max-width: 768px) { .challenges-page { padding: 32px 20px 60px; } }
+
+/* 헤더 섹션 — 그래디언트 배경 */
+.challenges-header-section {
+  background: linear-gradient(126.4deg, #0C0B10 13.56%, #1E1D22 86.99%, #0A090E 135.94%);
+  padding: 60px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px)) 40px;
+  box-sizing: border-box; width: 100%;
+}
+
+/* 필터 + 그리드 섹션 — 살짝 밝은 배경 */
+.challenges-body-section {
+  background: #151419;
+  padding: 40px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px)) 80px;
+  box-sizing: border-box; width: 100%;
+  display: flex; flex-direction: column; gap: 32px;
+}
+
+@media (max-width: 1440px) {
+  .challenges-header-section { padding: 48px max(20px, calc(50% - 880px)) 32px; }
+  .challenges-body-section { padding: 32px max(20px, calc(50% - 880px)) 80px; }
+}
+@media (max-width: 768px) {
+  .challenges-header-section { padding: 32px 20px 24px; }
+  .challenges-body-section { padding: 24px 20px 60px; }
+}
 
 .challenges-header { margin-bottom: 32px; }
 .challenges-title { font-family: var(--font-family); font-size: 32px; font-weight: 800; color: #FFFFFF; margin: 0 0 8px; }
@@ -50,7 +71,7 @@
 .card-title { font-family: var(--font-family); font-size: 18px; font-weight: 700; color: #FFFFFF; margin: 0; line-height: 1.4; }
 .card-desc {
   font-family: var(--font-family); font-size: 14px; color: #A1A1AA; margin: 0; line-height: 1.5;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
 .card-date, .card-participants { font-family: var(--font-family); font-size: 13px; color: #71717A; }

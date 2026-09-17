@@ -225,14 +225,16 @@ export class BootcampDashboardPage implements OnInit {
     const name = this.editBootcampName().trim();
     if (!name) { this.toast.error('부트캠프명을 입력해주세요.'); return; }
     try {
-      const payload: BootcampEditPayload = { name };
-      if (this.editBootcampStartDate()) payload.startDate = this.editBootcampStartDate();
-      if (this.editBootcampEndDate()) payload.endDate = this.editBootcampEndDate();
+      const payload: Record<string, unknown> = { name };
+      if (this.editBootcampStartDate()) payload['startDate'] = new Date(this.editBootcampStartDate()).toISOString();
+      if (this.editBootcampEndDate()) payload['endDate'] = new Date(this.editBootcampEndDate()).toISOString();
+      console.log('[submitBootcampEdit] payload:', payload);
       await this.api.bootcamps.update(this.bootcampId, payload);
       this.toast.success('수정 완료 되었습니다.');
       this.bootcampEditOpen.set(false);
       await this.loadBootcamp(this.bootcampId);
-    } catch {
+    } catch (err) {
+      console.error('[submitBootcampEdit] error:', err);
       this.toast.error('수정에 실패했습니다.');
     }
   }

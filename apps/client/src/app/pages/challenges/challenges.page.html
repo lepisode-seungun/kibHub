@@ -1,12 +1,16 @@
 <main class="challenges-page">
-    <!-- 헤더 -->
+  <!-- 헤더 섹션 -->
+  <div class="challenges-header-section">
     <div class="challenges-header">
       <div class="challenges-title-row">
         <h1 class="challenges-title">🎨 드로잉 챌린지</h1>
         <p class="challenges-subtitle">주제에 맞는 작품을 제출하고, 다른 참여자들의 작품에 ❤️를 눌러보세요!</p>
       </div>
     </div>
+  </div>
 
+  <!-- 필터 + 그리드 섹션 -->
+  <div class="challenges-body-section">
     <!-- 필터 -->
     <div class="filter-row">
       <button class="filter-btn" [class.active]="activeFilter() === ''" (click)="setFilter('')">전체</button>
@@ -45,4 +49,5 @@
         <p class="empty-text">등록된 챌린지가 없습니다.</p>
       </div>
     }
+  </div>
 </main>

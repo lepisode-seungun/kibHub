@@ -191,9 +191,9 @@
                   <select class="px-2 py-1 border border-gray-300 rounded-md font-suit text-sm text-gray-700 outline-none focus:border-[#3C8EEE]"
                           [value]="q.type"
                           (change)="updateDrawerQuestionType(idx, $any($event.target).value)">
+                    <option value="select">객관식</option>
                     <option value="text">주관식</option>
                     <option value="rating">별점</option>
-                    <option value="select">객관식</option>
                   </select>
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ q.text.length }} / 200</span>
                 </div>

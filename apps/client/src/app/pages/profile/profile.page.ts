@@ -326,13 +326,29 @@ export class ProfilePage implements OnInit, OnDestroy {
   } as DashboardData);
   isDashboardLoaded = computed(() => this._dashboardData() !== null);
 
-  /** 대시보드 활성 섹션: 카드 클릭 시 해당 섹션만 표시 */
-  activeDashboardSection = signal<'bootcamp' | 'assignment' | 'feedback' | 'activity' | null>('bootcamp');
+  /** 대시보드 활성 섹션: 부트캠프 / 활동 */
+  activeDashboardSection = signal<'bootcamp' | 'activity' | null>('bootcamp');
 
-  toggleDashboardSection(section: 'bootcamp' | 'assignment' | 'feedback' | 'activity'): void {
+  toggleDashboardSection(section: 'bootcamp' | 'activity'): void {
     this.activeDashboardSection.set(
       this.activeDashboardSection() === section ? null : section
     );
+  }
+
+  /** 선택된 부트캠프 ID (카드 클릭 시) */
+  selectedDashboardBootcamp = signal<number | null>(null);
+
+  /** 부트캠프 카드 선택 내부 서브탭: assignment / feedback */
+  bootcampSubTab = signal<'assignment' | 'feedback'>('assignment');
+
+  selectDashboardBootcamp(bcId: number): void {
+    if (this.selectedDashboardBootcamp() === bcId) {
+      this.selectedDashboardBootcamp.set(null);
+    } else {
+      this.selectedDashboardBootcamp.set(bcId);
+      this.bootcampSubTab.set('assignment');
+      this.assignmentFilter.set('all');
+    }
   }
 
   /** 총 활동 수 (히트맵 합산) */
@@ -349,6 +365,43 @@ export class ProfilePage implements OnInit, OnDestroy {
     const order: Record<string, number> = { NOT_SUBMITTED: 0, SUBMITTED: 1, FEEDBACK_DONE: 2 };
     return [...data.assignmentStatus].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
   });
+
+  /** 과제 필터 */
+  assignmentFilter = signal<'all' | 'not_submitted' | 'in_progress' | 'submitted' | 'overdue'>('all');
+
+  setAssignmentFilter(filter: 'all' | 'not_submitted' | 'in_progress' | 'submitted' | 'overdue'): void {
+    this.assignmentFilter.set(filter);
+  }
+
+  /** 선택된 부트캠프의 과제만 필터링 */
+  filteredAssignments = computed(() => {
+    const bcId = this.selectedDashboardBootcamp();
+    let list = this.sortedAssignments();
+    if (bcId) list = list.filter(a => Number(a.bootcampId) === Number(bcId));
+    const filter = this.assignmentFilter();
+    if (filter === 'all') return list;
+    const now = Date.now();
+    return list.filter(asn => {
+      const isOverdue = asn.dueDate ? new Date(asn.dueDate).getTime() < now : false;
+      switch (filter) {
+        case 'not_submitted': return asn.status === 'NOT_SUBMITTED';
+        case 'in_progress': return !isOverdue && asn.status === 'NOT_SUBMITTED';
+        case 'submitted': return asn.status === 'SUBMITTED' || asn.status === 'FEEDBACK_DONE';
+        case 'overdue': return isOverdue && asn.status === 'NOT_SUBMITTED';
+        default: return true;
+      }
+    });
+  });
+
+  /** 선택된 부트캠프의 피드백 */
+  filteredFeedbacks = computed(() => {
+    const bcId = this.selectedDashboardBootcamp();
+    const data = this.dashboardData();
+    if (!data?.recentFeedbacks) return [];
+    if (!bcId) return data.recentFeedbacks;
+    return data.recentFeedbacks.filter(f => Number(f.bootcampId) === Number(bcId));
+  });
+
   dashboardLoading = signal(false);
   monthlyBars = signal<{ month: string; count: number; height: number }[]>([]);
   selectedAlbumId = signal<number | null>(null);
@@ -457,7 +510,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   setTab(tab: 'all' | 'album' | 'dashboard'): void {
     this.activeTab.set(tab);
     this.searchQuery.set('');
-    if (tab === 'dashboard' && !this._dashboardData()) {
+    if (tab === 'dashboard') {
       this.loadDashboard();
     }
   }
@@ -560,14 +613,14 @@ export class ProfilePage implements OnInit, OnDestroy {
     return `${months}개월 전`;
   }
 
-  /** 부트캠프 기간 진행률 (0~100) */
-  getBootcampProgress(startDate: string, endDate: string): number {
-    const start = new Date(startDate).getTime();
-    const end = new Date(endDate).getTime();
-    const now = Date.now();
-    if (now <= start) return 0;
-    if (now >= end) return 100;
-    return Math.round(((now - start) / (end - start)) * 100);
+  /** 부트캠프 과제 제출 진행률 (0~100) */
+  getBootcampProgress(bootcampId: number): number {
+    const data = this.dashboardData();
+    if (!data?.assignmentStatus) return 0;
+    const bcAssignments = data.assignmentStatus.filter(a => Number(a.bootcampId) === Number(bootcampId));
+    if (bcAssignments.length === 0) return 0;
+    const submitted = bcAssignments.filter(a => a.status === 'SUBMITTED' || a.status === 'FEEDBACK_DONE').length;
+    return Math.round((submitted / bcAssignments.length) * 100);
   }
 
   /** 대시보드: 과제/피드백 클릭 → 과제제출 상세 페이지 */

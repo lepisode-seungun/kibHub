@@ -493,7 +493,7 @@
       <input type="date"
              class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
              [value]="editBootcampStartDate()"
-             (input)="editBootcampStartDate.set($any($event.target).value)" />
+             (change)="editBootcampStartDate.set($any($event.target).value)" />
     </div>
 
     <!-- 교육기간 종료 -->
@@ -502,7 +502,7 @@
       <input type="date"
              class="w-full h-10 px-4 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
              [value]="editBootcampEndDate()"
-             (input)="editBootcampEndDate.set($any($event.target).value)" />
+             (change)="editBootcampEndDate.set($any($event.target).value)" />
     </div>
 
     <div class="flex flex-col flex-1 justify-end">

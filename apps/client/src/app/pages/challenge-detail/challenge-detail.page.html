@@ -35,8 +35,8 @@
     </div>
   </div>
 
-  <div class="cd-inner">
-
+  <!-- 안내 + 참고 이미지 섹션 -->
+  <div class="cd-guide-wrap">
     <!-- 챌린지 안내 -->
     @if (c.description) {
       <section class="cd-guide-section">
@@ -51,14 +51,15 @@
         <h2 class="cd-section-title">📌 참고 이미지</h2>
         <div class="cd-ref-images">
           @for (img of c.referenceImages; track $index) {
-            <img [src]="img" alt="참고 이미지" class="cd-ref-img" (click)="openRefViewer($index)" />
+            <img [src]="img" alt="참고 이미지" class="cd-ref-img" (click)="openRefViewer($index)" (keydown.enter)="openRefViewer($index)" role="button" tabindex="0" />
           }
         </div>
       </section>
     }
+  </div>
 
-
-    <!-- 출품작 갤러리 -->
+  <!-- 출품작 갤러리 섹션 -->
+  <div class="cd-gallery-wrap">
     <section class="cd-section">
       <div class="cd-gallery-header">
         <h2 class="cd-section-title">출품작 갤러리</h2>
@@ -90,36 +91,39 @@
 
       <div class="cd-entries-grid">
         @for (entry of entries(); track entry.id) {
-          <div class="cd-entry-card">
-            @if (entry.images && entry.images.length > 0) {
-              <div class="cd-entry-thumb" [style.background-image]="'url(' + entry.images[0] + ')'" (click)="openModal(entry)" style="cursor:pointer"></div>
-            } @else {
-              <div class="cd-entry-thumb cd-entry-thumb--empty">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="#52525B" stroke-width="1.5"/>
-                  <circle cx="8.5" cy="8.5" r="1.5" fill="#52525B"/>
-                  <path d="M21 15l-5-5L5 21" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            }
-            <div class="cd-entry-info">
-              <span class="cd-entry-title">{{ entry.title }}</span>
-              <div class="cd-entry-bottom">
+          <div class="cd-entry-card"
+               [class.cd-entry-card--empty]="!entry.images || entry.images.length === 0"
+               [style.background]="entry.images && entry.images.length > 0 ? 'url(' + entry.images[0] + ')' : ''"
+               [style.background-size]="'cover'" [style.background-position]="'center'"
+               (click)="openModal(entry)" (keydown.enter)="openModal(entry)" role="button" tabindex="0">
+            <div class="cd-entry-card-inner">
+              <!-- 상단: 유저 정보 -->
+              <div class="cd-entry-top">
                 <div class="cd-entry-user">
                   @if (entry.user?.profileImage) {
                     <img [src]="entry.user.profileImage" alt="" class="cd-entry-avatar" />
                   } @else {
-                    <div class="cd-entry-avatar cd-entry-avatar--default">{{ (entry.user?.nickname || '?')[0] }}</div>
+                    <div class="cd-entry-avatar--default">{{ (entry.user?.nickname || '?')[0] }}</div>
                   }
                   <span>{{ entry.user?.nickname }}</span>
                 </div>
-                <button class="cd-like-btn" [class.liked]="entry.isLiked" [class.has-likes]="entry.likeCount > 0" [class.own]="myEntry()?.id === entry.id" [disabled]="myEntry()?.id === entry.id" (click)="toggleLike(entry); $event.stopPropagation()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="entry.isLiked ? 'currentColor' : 'none'">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                          stroke="currentColor" stroke-width="1.5"/>
-                  </svg>
-                  <span>{{ entry.likeCount }}</span>
-                </button>
+              </div>
+              <!-- 하단: 제목 + 내용 + 좋아요 -->
+              <div class="cd-entry-bottom">
+                <span class="cd-entry-title">{{ entry.title }}</span>
+                @if (entry.description) {
+                  <p class="cd-entry-desc">{{ entry.description }}</p>
+                }
+                <div class="flex justify-between items-center w-full">
+                  <span class="font-suit font-medium text-xs text-zinc-400">{{ entry.images?.length || 0 }}장</span>
+                  <button class="cd-like-btn" [class.liked]="entry.isLiked" [class.has-likes]="entry.likeCount > 0" [class.own]="myEntry()?.id === entry.id" [disabled]="myEntry()?.id === entry.id" (click)="toggleLike(entry); $event.stopPropagation()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="entry.isLiked ? 'currentColor' : 'none'">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                    <span>{{ entry.likeCount }}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -138,15 +142,14 @@
         </div>
       }
     </section>
-
   </div>
 </main>
 }
 
 <!-- ===== 작품 제출 모달 ===== -->
 @if (showSubmitForm()) {
-  <div class="cd-submit-overlay" (click)="closeSubmitForm()">
-    <div class="cd-submit-modal" (click)="$event.stopPropagation()">
+  <div class="cd-submit-overlay" (click)="closeSubmitForm()" (keydown.escape)="closeSubmitForm()" role="button" tabindex="0" aria-label="닫기">
+    <div class="cd-submit-modal" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()" tabindex="-1">
       <div class="cd-submit-header">
         <h2 class="cd-submit-modal-title">🖌️ {{ isEditMode() ? '작품 수정' : '작품 제출' }}</h2>
         <button class="cd-submit-close" (click)="closeSubmitForm()">
@@ -195,8 +198,8 @@
 
 <!-- 출품작 이미지 뷰어 -->
 @if (modalEntry(); as me) {
-  <div class="cd-entry-viewer-overlay" (click)="closeModal()">
-    <div class="cd-entry-viewer" (click)="$event.stopPropagation()">
+  <div class="cd-entry-viewer-overlay" (click)="closeModal()" (keydown.escape)="closeModal()" role="button" tabindex="0" aria-label="닫기">
+    <div class="cd-entry-viewer" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="-1">
       <!-- 닫기 -->
       <button class="cd-entry-viewer-close" (click)="closeModal()">
         <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
@@ -243,8 +246,8 @@
 }
 <!-- ===== 수상작 모달 ===== -->
 @if (winnerModalOpen()) {
-  <div class="cd-modal-overlay" (click)="closeWinnerModal()">
-    <div class="winner-modal-wrap" (click)="$event.stopPropagation()">
+  <div class="cd-modal-overlay" (click)="closeWinnerModal()" (keydown.escape)="closeWinnerModal()" role="button" tabindex="0" aria-label="닫기">
+    <div class="winner-modal-wrap" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="-1">
       <button class="winner-modal-external-close" (click)="closeWinnerModal()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M18 6L6 18M6 6l12 12" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
@@ -290,8 +293,8 @@
 
 <!-- ===== 삭제 확인 모달 ===== -->
 @if (showDeleteModal()) {
-<div class="cd-del-overlay" (click)="closeDeleteModal()">
-  <div class="cd-del-modal" (click)="$event.stopPropagation()">
+<div class="cd-del-overlay" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()" role="button" tabindex="0" aria-label="닫기">
+  <div class="cd-del-modal" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="-1">
     <!-- 경고 아이콘 -->
     <div class="cd-del-icon">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">

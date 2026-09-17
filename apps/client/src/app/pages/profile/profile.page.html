@@ -261,30 +261,16 @@
           <span>데이터를 불러오는 중...</span>
         </div>
       } @else if (dashboardData()) {
-        <!-- 요약 카드 4장: 클릭 시 해당 섹션 토글 -->
-        <div class="db-summary">
-          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'bootcamp'" (click)="toggleDashboardSection('bootcamp')">
+        <!-- 요약 카드 2장 -->
+        <div class="db-summary db-summary-2col">
+          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'bootcamp'" (click)="toggleDashboardSection('bootcamp')" (keydown.enter)="toggleDashboardSection('bootcamp')" role="button" tabindex="0">
             <div class="db-card-icon db-card-icon-content">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" fill="currentColor"/></svg>
             </div>
             <div class="db-card-value">{{ dashboardData().summary.bootcampCount }}</div>
             <div class="db-card-label">참여 부트캠프</div>
           </div>
-          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'assignment'" (click)="toggleDashboardSection('assignment')">
-            <div class="db-card-icon db-card-icon-rate">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/></svg>
-            </div>
-            <div class="db-card-value">{{ dashboardData().summary.completionRate }}<span class="db-card-unit">%</span></div>
-            <div class="db-card-label">과제 현황</div>
-          </div>
-          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'feedback'" (click)="toggleDashboardSection('feedback')">
-            <div class="db-card-icon db-card-icon-feedback">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/></svg>
-            </div>
-            <div class="db-card-value">{{ dashboardData().summary.feedbackReceivedCount }}</div>
-            <div class="db-card-label">받은 피드백</div>
-          </div>
-          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'activity'" (click)="toggleDashboardSection('activity')">
+          <div class="db-card db-card-clickable" [class.db-card-active]="activeDashboardSection() === 'activity'" (click)="toggleDashboardSection('activity')" (keydown.enter)="toggleDashboardSection('activity')" role="button" tabindex="0">
             <div class="db-card-icon db-card-icon-activity">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" fill="currentColor"/></svg>
             </div>
@@ -299,7 +285,7 @@
           @if (dashboardData().bootcamps.length > 0) {
             <div class="db-card-grid">
               @for (bc of dashboardData().bootcamps; track bc.id) {
-                <div class="db-item-card" (click)="goToBootcamp(bc.id)" role="button" tabindex="0" (keydown.enter)="goToBootcamp(bc.id)">
+                <div class="db-item-card" [class.db-item-card-selected]="selectedDashboardBootcamp() === bc.id" (click)="selectDashboardBootcamp(bc.id)" role="button" tabindex="0" (keydown.enter)="selectDashboardBootcamp(bc.id)">
                   <div class="db-item-card-header">
                     <div class="db-bootcamp-thumb">
                       @if (bc.thumbnail) {
@@ -314,78 +300,98 @@
                   @if (bc.startDate || bc.endDate) {
                     <span class="db-item-card-date">{{ formatDate(bc.startDate) }} ~ {{ formatDate(bc.endDate) }}</span>
                   }
-                  @if (bc.startDate && bc.endDate) {
-                    <div class="db-progress-wrap">
-                      <div class="db-progress-bar">
-                        <div class="db-progress-fill" [style.width.%]="getBootcampProgress(bc.startDate, bc.endDate)"></div>
-                      </div>
-                      <span class="db-progress-text">{{ getBootcampProgress(bc.startDate, bc.endDate) }}% 진행</span>
+                  <div class="db-progress-wrap">
+                    <div class="db-progress-bar">
+                      <div class="db-progress-fill" [style.width.%]="getBootcampProgress(bc.id)"></div>
                     </div>
-                  }
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="db-empty-small">참여 중인 부트캠프가 없습니다.</div>
-          }
-        </div>
-        }
-
-        <!-- 과제 현황 섹션 -->
-        @if (activeDashboardSection() === 'assignment') {
-        <div class="db-section db-section-animate">
-          @if (sortedAssignments().length > 0) {
-            <div class="db-card-grid">
-              @for (asn of sortedAssignments(); track asn.id) {
-                <div class="db-item-card" (click)="goToSubmission(asn.bootcampId, asn.submissionId, asn.id)" role="button" tabindex="0" (keydown.enter)="goToSubmission(asn.bootcampId, asn.submissionId, asn.id)">
-                  <div class="db-item-card-header">
-                    <span class="db-assignment-status-badge" [ngClass]="getAssignmentStatusClass(asn.status)">{{ getAssignmentStatusLabel(asn.status) }}</span>
-                    @if (asn.dueDate) {
-                      <span class="db-assignment-due">{{ getDaysLeft(asn.dueDate) }}</span>
-                    }
+                    <span class="db-progress-text">{{ getBootcampProgress(bc.id) }}% 제출</span>
                   </div>
-                  <span class="db-item-card-title">{{ asn.title }}</span>
-                  <span class="db-item-card-sub">{{ asn.bootcampName }}</span>
-                  @if (asn.dueDate) {
-                    <div class="db-assignment-deadline">
-                      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-                      <span>제출기한 {{ formatDate(asn.dueDate) }}</span>
-                    </div>
-                  }
                 </div>
               }
             </div>
-          } @else {
-            <div class="db-empty-small">등록된 과제가 없습니다.</div>
-          }
-        </div>
-        }
 
-        <!-- 받은 피드백 섹션 -->
-        @if (activeDashboardSection() === 'feedback') {
-        <div class="db-section db-section-animate">
-          @if (dashboardData().recentFeedbacks.length > 0) {
-            <div class="db-card-grid">
-              @for (fb of dashboardData().recentFeedbacks; track fb.id) {
-                <div class="db-item-card" (click)="goToFeedback(fb.bootcampId, fb.id)" role="button" tabindex="0" (keydown.enter)="goToFeedback(fb.bootcampId, fb.id)">
-                  <div class="db-item-card-header">
-                    <div class="db-feedback-avatar-sm">
-                      @if (fb.authorProfileImage) {
-                        <img [src]="fb.authorProfileImage" alt="" />
-                      } @else {
-                        <span>{{ fb.authorNickname.charAt(0).toUpperCase() }}</span>
+            <!-- 선택된 부트캠프의 과제/피드백 -->
+            @if (selectedDashboardBootcamp()) {
+              <div class="db-sub-section db-section-animate">
+                <!-- 서브탭: 과제 | 피드백 -->
+                <div class="db-sub-tabs">
+                  <button class="db-sub-tab" [class.db-sub-tab-active]="bootcampSubTab() === 'assignment'" (click)="bootcampSubTab.set('assignment')">
+                    과제 <span class="db-sub-tab-count">{{ filteredAssignments().length }}</span>
+                  </button>
+                  <button class="db-sub-tab" [class.db-sub-tab-active]="bootcampSubTab() === 'feedback'" (click)="bootcampSubTab.set('feedback')">
+                    피드백 <span class="db-sub-tab-count">{{ filteredFeedbacks().length }}</span>
+                  </button>
+                  <!-- 부트캠프 상세 바로가기 -->
+                  <button class="db-sub-go-btn" (click)="goToBootcamp(selectedDashboardBootcamp()!); $event.stopPropagation()">
+                    부트캠프 바로가기 →
+                  </button>
+                </div>
+
+                <!-- 과제 탭 -->
+                @if (bootcampSubTab() === 'assignment') {
+                  <div class="db-filter-row">
+                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'all'" (click)="setAssignmentFilter('all')">전체</button>
+                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'not_submitted'" (click)="setAssignmentFilter('not_submitted')">미제출</button>
+                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'in_progress'" (click)="setAssignmentFilter('in_progress')">진행중</button>
+                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'submitted'" (click)="setAssignmentFilter('submitted')">제출완료</button>
+                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'overdue'" (click)="setAssignmentFilter('overdue')">마감</button>
+                  </div>
+                  @if (filteredAssignments().length > 0) {
+                    <div class="db-card-grid">
+                      @for (asn of filteredAssignments(); track asn.id) {
+                        <div class="db-item-card" (click)="goToSubmission(asn.bootcampId, asn.submissionId, asn.id); $event.stopPropagation()" role="button" tabindex="0">
+                          <div class="db-item-card-header">
+                            <span class="db-assignment-status-badge" [ngClass]="getAssignmentStatusClass(asn.status)">{{ getAssignmentStatusLabel(asn.status) }}</span>
+                            @if (asn.dueDate) {
+                              <span class="db-assignment-due">{{ getDaysLeft(asn.dueDate) }}</span>
+                            }
+                          </div>
+                          <span class="db-item-card-title">{{ asn.title }}</span>
+                          @if (asn.dueDate) {
+                            <div class="db-assignment-deadline">
+                              <svg width="14" height="14" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                              <span>제출기한 {{ formatDate(asn.dueDate) }}</span>
+                            </div>
+                          }
+                        </div>
                       }
                     </div>
-                    <span class="db-feedback-author-name">{{ fb.authorNickname }}</span>
-                  </div>
-                  <span class="db-item-card-title">{{ fb.assignmentTitle }}</span>
-                  <div class="db-feedback-body-preview">{{ stripHtml(fb.body) }}</div>
-                  <span class="db-feedback-time">{{ getTimeAgo(fb.createdAt) }}</span>
-                </div>
-              }
-            </div>
+                  } @else {
+                    <div class="db-empty-small">{{ assignmentFilter() === 'all' ? '등록된 과제가 없습니다.' : '해당하는 과제가 없습니다.' }}</div>
+                  }
+                }
+
+                <!-- 피드백 탭 -->
+                @if (bootcampSubTab() === 'feedback') {
+                  @if (filteredFeedbacks().length > 0) {
+                    <div class="db-card-grid">
+                      @for (fb of filteredFeedbacks(); track fb.id) {
+                        <div class="db-item-card" (click)="goToFeedback(fb.bootcampId, fb.id); $event.stopPropagation()" role="button" tabindex="0">
+                          <div class="db-item-card-header">
+                            <div class="db-feedback-avatar-sm">
+                              @if (fb.authorProfileImage) {
+                                <img [src]="fb.authorProfileImage" alt="" />
+                              } @else {
+                                <span>{{ fb.authorNickname.charAt(0).toUpperCase() }}</span>
+                              }
+                            </div>
+                            <span class="db-feedback-author-name">{{ fb.authorNickname }}</span>
+                          </div>
+                          <span class="db-item-card-title">{{ fb.assignmentTitle }}</span>
+                          <div class="db-feedback-body-preview">{{ stripHtml(fb.body) }}</div>
+                          <span class="db-feedback-time">{{ getTimeAgo(fb.createdAt) }}</span>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <div class="db-empty-small">아직 받은 피드백이 없습니다.</div>
+                  }
+                }
+              </div>
+            }
+
           } @else {
-            <div class="db-empty-small">아직 받은 피드백이 없습니다.</div>
+            <div class="db-empty-small">참여 중인 부트캠프가 없습니다.</div>
           }
         </div>
         }

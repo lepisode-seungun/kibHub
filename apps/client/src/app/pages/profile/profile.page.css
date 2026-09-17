@@ -1977,6 +1977,94 @@
   gap: 16px;
 }
 
+.db-summary-2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 선택된 부트캠프 카드 */
+.db-item-card-selected {
+  border-color: rgba(122, 72, 255, 0.6) !important;
+  background: rgba(122, 72, 255, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(122, 72, 255, 0.3);
+}
+
+/* 부트캠프 하위 섹션 */
+.db-sub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+/* 서브 탭 */
+.db-sub-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.db-sub-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #71717A;
+  font-family: 'SUIT', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.db-sub-tab:hover {
+  color: #E4E4E7;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.db-sub-tab-active {
+  color: #FFFFFF;
+  background: rgba(122, 72, 255, 0.12);
+}
+
+.db-sub-tab-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7A48FF;
+  background: rgba(122, 72, 255, 0.15);
+  padding: 1px 8px;
+  border-radius: 100px;
+}
+
+.db-sub-go-btn {
+  margin-left: auto;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #A1A1AA;
+  font-family: 'SUIT', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.db-sub-go-btn:hover {
+  color: #FFFFFF;
+  border-color: rgba(122, 72, 255, 0.4);
+  background: rgba(122, 72, 255, 0.08);
+}
+
 .db-card {
   display: flex;
   flex-direction: column;
@@ -2030,6 +2118,46 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* 과제 필터 */
+.db-filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.db-filter-btn {
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: #A1A1AA;
+  font-family: 'SUIT', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.db-filter-btn:hover {
+  border-color: rgba(122, 72, 255, 0.4);
+  color: #E4E4E7;
+}
+
+.db-filter-active {
+  background: #7A48FF;
+  border-color: #7A48FF;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.db-filter-active:hover {
+  background: #6B3CE6;
+  border-color: #6B3CE6;
+  color: #FFFFFF;
 }
 
 .db-card-icon {
@@ -2488,6 +2616,7 @@
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
 }
 
