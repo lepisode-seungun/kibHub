@@ -15,6 +15,12 @@ export class ChallengesController {
 
   // ===== 클라이언트 =====
 
+  /** 챌린지 목록 (어드민: 숨김 포함 전체) — :id 보다 먼저 정의 */
+  @Get('admin/list')
+  findAllAdmin(@Query('status') status?: string) {
+    return this.svc.findAll(status, true);
+  }
+
   /** 챌린지 목록 */
   @Get()
   findAll(@Query('status') status?: string) {
@@ -96,22 +102,16 @@ export class ChallengesController {
     return this.svc.create(body);
   }
 
-  /** 챌린지 수정 */
-  @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
-    return this.svc.update(id, body);
-  }
-
-  /** 챌린지 삭제 */
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.svc.remove(id);
-  }
-
-  /** 상태 변경 */
+  /** 상태 변경 — :id 보다 먼저 정의 */
   @Patch(':id/status')
   updateStatus(@Param('id', ParseIntPipe) id: number, @Body() body: { status: string }) {
     return this.svc.updateStatus(id, body.status);
+  }
+
+  /** 노출/숨김 토글 */
+  @Patch(':id/visibility')
+  toggleVisibility(@Param('id', ParseIntPipe) id: number, @Body() body: { isVisible: boolean }) {
+    return this.svc.updateVisibility(id, body.isVisible);
   }
 
   /** 수상작 선정 */
@@ -121,6 +121,24 @@ export class ChallengesController {
     @Body() body: { winners: { entryId: number; rank: number }[] },
   ) {
     return this.svc.setWinners(id, body.winners);
+  }
+
+  /** 챌린지 수정 */
+  @Patch(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
+    return this.svc.update(id, body);
+  }
+
+  /** 출품작 삭제 (어드민) — :id 보다 먼저 정의 */
+  @Delete('entries/:entryId')
+  removeEntry(@Param('entryId', ParseIntPipe) entryId: number) {
+    return this.svc.removeEntry(entryId);
+  }
+
+  /** 챌린지 삭제 */
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.svc.remove(id);
   }
 
   /** 챌린지 통계 (어드민) */

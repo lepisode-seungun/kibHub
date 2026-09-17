@@ -11,7 +11,6 @@
     <div class="filter-row">
       <button class="filter-btn" [class.active]="activeFilter() === ''" (click)="setFilter('')">전체</button>
       <button class="filter-btn" [class.active]="activeFilter() === 'ACTIVE'" (click)="setFilter('ACTIVE')">진행중</button>
-      <button class="filter-btn" [class.active]="activeFilter() === 'UPCOMING'" (click)="setFilter('UPCOMING')">예정</button>
       <button class="filter-btn" [class.active]="activeFilter() === 'ENDED'" (click)="setFilter('ENDED')">종료</button>
     </div>
 
@@ -23,11 +22,7 @@
           <div class="card-thumb" [style.background]="c.thumbnail ? 'url(' + c.thumbnail + ') center/cover no-repeat' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'">
             <!-- 상태 뱃지 -->
             <span class="card-badge" [ngClass]="getStatusClass(c.status)">
-              @if (c.daysLeft !== null) {
-                D-{{ c.daysLeft }}
-              } @else {
-                {{ getStatusLabel(c.status) }}
-              }
+              {{ getStatusLabel(c.status) }}
             </span>
           </div>
           <!-- 정보 -->

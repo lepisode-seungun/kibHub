@@ -13,13 +13,14 @@ interface ChallengeRow {
   category: string;
   status: string;
   statusLabel: string;
+  isVisible: boolean;
+  visibilityLabel: string;
   period: string;
   entryCount: number;
   createdAt: string;
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  UPCOMING: '예정',
   ACTIVE: '진행중',
   ENDED: '종료',
 };
@@ -51,16 +52,23 @@ export class ChallengesPage implements OnInit {
   rankChallengeId = signal(0);
   rankEntries = signal<{ id: number; title: string; nickname: string; likeCount: number; images: string[]; rank: number }[]>([]);
 
+  // 삭제 모달
+  deleteModalOpen = signal(false);
+  deleteTarget = signal<{ id: number; title: string } | null>(null);
+
   columns: GridColumn[] = [
     { key: 'id', label: '번호', width: '60px' },
     { key: 'title', label: '제목' },
     { key: 'category', label: '카테고리', width: '90px' },
     { key: 'statusLabel', label: '상태', width: '80px', badge: 'status', badgeStyles: {
-      '예정': 'bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold',
       '진행중': 'bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold',
       '종료': 'bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full text-xs font-semibold',
     } },
     { key: 'period', label: '기간', width: '200px' },
+    { key: 'visibilityLabel', label: '노출', width: '70px', badge: 'visibilityLabel', badgeStyles: {
+      '노출': 'bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold',
+      '숨김': 'bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold',
+    } },
     { key: 'entryCount', label: '참여', width: '60px' },
     { key: 'createdAt', label: '생성일', width: '120px' },
   ];
@@ -78,6 +86,8 @@ export class ChallengesPage implements OnInit {
         category: CATEGORY_LABELS[c.category] || c.category,
         status: c.status,
         statusLabel: STATUS_LABELS[c.status] || c.status,
+        isVisible: c.isVisible ?? true,
+        visibilityLabel: (c.isVisible ?? true) ? '노출' : '숨김',
         period: `${formatDate(c.startDate, 'date')} ~ ${formatDate(c.endDate, 'date')}`,
         entryCount: c.entryCount || 0,
         createdAt: formatDate(c.createdAt, 'date'),
@@ -111,11 +121,23 @@ export class ChallengesPage implements OnInit {
     this.router.navigate(['/content/challenges/new']);
   }
 
+  contextMenuItemsFn = (row: any): string[] => {
+    const visibilityAction = row.isVisible ? '숨김' : '노출';
+    const statusAction = row.status === 'ACTIVE' ? '종료' : '시작';
+    return ['수정', visibilityAction, statusAction, '삭제'];
+  };
+
   onContextMenuSelect(event: { action: string; row: any }): void {
     const row = event.row as ChallengeRow;
     switch (event.action) {
       case '수정':
         this.router.navigate(['/content/challenges', row.id, 'edit']);
+        break;
+      case '노출':
+        this.toggleVisibility(row.id, false);
+        break;
+      case '숨김':
+        this.toggleVisibility(row.id, true);
         break;
       case '시작':
         this.updateStatus(row.id, 'ACTIVE');
@@ -123,9 +145,12 @@ export class ChallengesPage implements OnInit {
       case '종료':
         this.openRankModal(row.id);
         break;
-      case '삭제':
-        this.deleteChallenge(row.id);
+      case '삭제': {
+        const c = this.challenges().find(ch => ch.id === row.id);
+        this.deleteTarget.set({ id: row.id, title: (c?.title as string) || '' });
+        this.deleteModalOpen.set(true);
         break;
+      }
     }
   }
 
@@ -177,24 +202,34 @@ export class ChallengesPage implements OnInit {
     const id = this.rankChallengeId();
     const entries = this.rankEntries();
     try {
-      // 수상작 저장
-      const winners = entries.map(e => ({ entryId: e.id, rank: e.rank }));
-      await this.api.challenges.setWinners(id, winners);
+      // 출품작이 있으면 수상작 저장
+      if (entries.length > 0) {
+        const winners = entries.map(e => ({ entryId: e.id, rank: e.rank }));
+        await this.api.challenges.setWinners(id, winners);
+      }
       // 상태 변경
       await this.api.challenges.updateStatus(id, 'ENDED');
-      this.toast.success('챌린지가 종료되고 순위가 저장되었습니다.');
+      this.toast.success('챌린지가 종료되었습니다.');
       this.rankModalOpen.set(false);
       this.loadChallenges();
-    } catch {
+    } catch (e) {
+      console.error('종료 처리 실패:', e);
       this.toast.error('종료 처리 실패');
     }
   }
 
-  async deleteChallenge(id: number): Promise<void> {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
+  closeDeleteModal(): void {
+    this.deleteModalOpen.set(false);
+    this.deleteTarget.set(null);
+  }
+
+  async confirmDelete(): Promise<void> {
+    const target = this.deleteTarget();
+    if (!target) return;
     try {
-      await this.api.challenges.delete(id);
+      await this.api.challenges.delete(target.id);
       this.toast.success('챌린지가 삭제되었습니다.');
+      this.closeDeleteModal();
       this.loadChallenges();
     } catch {
       this.toast.error('삭제 실패');
@@ -208,6 +243,16 @@ export class ChallengesPage implements OnInit {
       this.loadChallenges();
     } catch {
       this.toast.error('상태 변경 실패');
+    }
+  }
+
+  async toggleVisibility(id: number, currentVisible: boolean): Promise<void> {
+    try {
+      await this.api.challenges.toggleVisibility(id, !currentVisible);
+      this.toast.success(!currentVisible ? '챌린지가 노출 상태로 변경되었습니다.' : '챌린지가 숨김 상태로 변경되었습니다.');
+      this.loadChallenges();
+    } catch {
+      this.toast.error('노출 상태 변경 실패');
     }
   }
 }

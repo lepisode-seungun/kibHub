@@ -7,9 +7,10 @@ export class ChallengesService {
 
   // ===== 클라이언트 API =====
 
-  /** 챌린지 목록 */
-  async findAll(status?: string) {
+  /** 챌린지 목록 (클라이언트: isVisible=true만) */
+  async findAll(status?: string, includeHidden = false) {
     const where: any = {};
+    if (!includeHidden) where.isVisible = true;
     if (status) where.status = status;
 
     const challenges = await this.prisma.challenge.findMany({
@@ -36,6 +37,7 @@ export class ChallengesService {
       },
     });
     if (!challenge) throw new NotFoundException('챌린지를 찾을 수 없습니다.');
+
     return {
       ...challenge,
       entryCount: (challenge as any)._count.entries,
@@ -232,11 +234,24 @@ export class ChallengesService {
     return this.prisma.challenge.delete({ where: { id } });
   }
 
+  /** 출품작 삭제 (어드민) */
+  async removeEntry(entryId: number) {
+    return this.prisma.challengeEntry.delete({ where: { id: entryId } });
+  }
+
   /** 상태 변경 */
   async updateStatus(id: number, status: string) {
     return this.prisma.challenge.update({
       where: { id },
       data: { status: status as any },
+    });
+  }
+
+  /** 노출/숨김 변경 */
+  async updateVisibility(id: number, isVisible: boolean) {
+    return this.prisma.challenge.update({
+      where: { id },
+      data: { isVisible },
     });
   }
 

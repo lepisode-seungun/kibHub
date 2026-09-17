@@ -9,11 +9,11 @@ import { formatDate } from '../../shared/format-date';
 interface ChallengeEntry {
   id: number;
   title: string;
-  description: string;
+  description?: string;
   images: string[];
   likeCount: number;
   isWinner: boolean;
-  rank: number | null;
+  rank?: number;
   createdAt: string;
   user?: { id: number; nickname: string; profileImage?: string };
 }
@@ -121,5 +121,38 @@ export class ChallengeDetailPage implements OnInit {
 
   goEdit(): void {
     this.router.navigate(['/content/challenges', this.challengeId, 'edit']);
+  }
+
+  // 삭제 모달
+  deleteModalOpen = signal(false);
+  deleteTargetEntry = signal<{ id: number; title: string; nickname: string } | null>(null);
+
+  onEntryContextMenu(event: { action: string; row: any }): void {
+    if (event.action === '삭제') {
+      this.deleteTargetEntry.set({
+        id: event.row.id,
+        title: event.row.title,
+        nickname: event.row.nickname,
+      });
+      this.deleteModalOpen.set(true);
+    }
+  }
+
+  closeDeleteModal(): void {
+    this.deleteModalOpen.set(false);
+    this.deleteTargetEntry.set(null);
+  }
+
+  async confirmDeleteEntry(): Promise<void> {
+    const target = this.deleteTargetEntry();
+    if (!target) return;
+    try {
+      await this.api.challenges.deleteEntry(target.id);
+      this.toast.success('출품작이 삭제되었습니다.');
+      this.closeDeleteModal();
+      this.load();
+    } catch {
+      this.toast.error('출품작 삭제 실패');
+    }
   }
 }

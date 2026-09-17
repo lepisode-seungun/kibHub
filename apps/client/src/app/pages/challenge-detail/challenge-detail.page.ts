@@ -1,15 +1,16 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { ImageViewerComponent, ViewerImage } from '../../components/image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-challenge-detail-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ImageViewerComponent],
   templateUrl: './challenge-detail.page.html',
   styleUrl: './challenge-detail.page.css',
 })
@@ -31,10 +32,12 @@ export class ChallengeDetailPage implements OnInit {
 
   // 제출 폼
   showSubmitForm = signal(false);
+  isEditMode = signal(false);
   submitTitle = '';
   submitDesc = '';
   submitFiles = signal<File[]>([]);
   submitPreviews = signal<string[]>([]);
+  existingImages = signal<string[]>([]);
   submitting = signal(false);
 
   ngOnInit(): void {
@@ -126,6 +129,11 @@ export class ChallengeDetailPage implements OnInit {
   // ===== 이미지 모달 =====
   modalEntry = signal<any>(null);
   modalImageIndex = signal(0);
+  entryViewerImages = computed<ViewerImage[]>(() => {
+    const entry = this.modalEntry();
+    if (!entry?.images) return [];
+    return entry.images.map((url: string) => ({ gradient: '', url }));
+  });
 
   openModal(entry: any): void {
     this.modalEntry.set(entry);
@@ -148,18 +156,52 @@ export class ChallengeDetailPage implements OnInit {
     this.modalImageIndex.update(i => Math.min(entry.images.length - 1, i + 1));
   }
 
+  // ===== 참고 이미지 뷰어 =====
+  refViewerOpen = signal(false);
+  refViewerIndex = signal(0);
+  refViewerImages = computed<ViewerImage[]>(() => {
+    const c = this.challenge();
+    if (!c?.referenceImages) return [];
+    return c.referenceImages.map((url: string) => ({ gradient: '', url }));
+  });
+
+  openRefViewer(index: number): void {
+    this.refViewerIndex.set(index);
+    this.refViewerOpen.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeRefViewer(): void {
+    this.refViewerOpen.set(false);
+    document.body.style.overflow = '';
+  }
+
+  prevRefImage(): void {
+    this.refViewerIndex.update(i => Math.max(0, i - 1));
+  }
+
+  nextRefImage(): void {
+    const c = this.challenge();
+    if (!c?.referenceImages) return;
+    this.refViewerIndex.update(i => Math.min(c.referenceImages.length - 1, i + 1));
+  }
+
   // ===== 제출 폼 =====
 
   openSubmitForm(): void {
+    this.isEditMode.set(false);
+    this.existingImages.set([]);
     this.showSubmitForm.set(true);
   }
 
   closeSubmitForm(): void {
     this.showSubmitForm.set(false);
+    this.isEditMode.set(false);
     this.submitTitle = '';
     this.submitDesc = '';
     this.submitFiles.set([]);
     this.submitPreviews.set([]);
+    this.existingImages.set([]);
   }
 
   onSubmitFileSelect(event: Event): void {
@@ -179,29 +221,55 @@ export class ChallengeDetailPage implements OnInit {
   }
 
   removeSubmitImage(index: number): void {
-    this.submitFiles.update(f => f.filter((_, i) => i !== index));
+    const existingCount = this.existingImages().length;
+    if (index < existingCount) {
+      // 기존 이미지 삭제
+      this.existingImages.update(imgs => imgs.filter((_, i) => i !== index));
+    } else {
+      // 새로 추가한 파일 삭제
+      const fileIndex = index - existingCount;
+      this.submitFiles.update(f => f.filter((_, i) => i !== fileIndex));
+    }
     this.submitPreviews.update(p => p.filter((_, i) => i !== index));
   }
 
   async submitEntry(): Promise<void> {
     if (!this.submitTitle.trim()) { alert('작품 제목을 입력하세요.'); return; }
-    if (this.submitFiles().length === 0) { alert('이미지를 최소 1장 업로드하세요.'); return; }
+
+    const hasNewFiles = this.submitFiles().length > 0;
+    const hasExisting = this.existingImages().length > 0;
+    if (!hasNewFiles && !hasExisting) { alert('이미지를 최소 1장 업로드하세요.'); return; }
 
     this.submitting.set(true);
     try {
-      const uploadResults = await this.api.upload.multiple(this.submitFiles(), 'challenges');
-      const imageUrls = uploadResults.map((r: any) => r.url);
+      let imageUrls = [...this.existingImages()];
 
-      await this.api.challenges.submitEntry(this.challengeId, {
-        title: this.submitTitle,
-        description: this.submitDesc,
-        images: imageUrls,
-      });
+      if (hasNewFiles) {
+        const uploadResults = await this.api.upload.multiple(this.submitFiles(), 'challenges');
+        imageUrls = [...imageUrls, ...uploadResults.map((r: any) => r.url)];
+      }
+
+      if (this.isEditMode()) {
+        const my = this.myEntry();
+        if (my) {
+          await this.api.challenges.updateEntry(my.id, {
+            title: this.submitTitle,
+            description: this.submitDesc,
+            images: imageUrls,
+          });
+        }
+      } else {
+        await this.api.challenges.submitEntry(this.challengeId, {
+          title: this.submitTitle,
+          description: this.submitDesc,
+          images: imageUrls,
+        });
+      }
 
       this.closeSubmitForm();
       await this.loadData();
     } catch (e: any) {
-      alert(e?.error?.message || '제출 실패');
+      alert(e?.error?.message || (this.isEditMode() ? '수정 실패' : '제출 실패'));
     }
     this.submitting.set(false);
   }
@@ -209,20 +277,32 @@ export class ChallengeDetailPage implements OnInit {
   openEditForm(): void {
     const my = this.myEntry();
     if (!my) return;
+    this.isEditMode.set(true);
     this.submitTitle = my.title;
     this.submitDesc = my.description || '';
+    this.existingImages.set(my.images || []);
     this.submitPreviews.set(my.images || []);
     this.submitFiles.set([]);
     this.showSubmitForm.set(true);
   }
+  // 삭제 모달
+  showDeleteModal = signal(false);
 
-  async deleteMyEntry(): Promise<void> {
+  openDeleteModal(): void {
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+  }
+
+  async confirmDeleteEntry(): Promise<void> {
     const my = this.myEntry();
     if (!my) return;
-    if (!confirm('정말 작품을 삭제하시겠습니까?')) return;
     try {
       await this.api.challenges.deleteEntry(my.id);
       this.myEntry.set(null);
+      this.closeDeleteModal();
       await this.loadData();
     } catch (e: any) {
       alert(e?.error?.message || '삭제 실패');

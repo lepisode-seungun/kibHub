@@ -74,11 +74,11 @@ export class ChallengesPage implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    return status === 'UPCOMING' ? '예정' : status === 'ACTIVE' ? '진행중' : '종료';
+    return status === 'ACTIVE' ? '진행중' : '종료';
   }
 
   getStatusClass(status: string): string {
-    return status === 'UPCOMING' ? 'badge-upcoming' : status === 'ACTIVE' ? 'badge-active' : 'badge-ended';
+    return status === 'ACTIVE' ? 'badge-active' : 'badge-ended';
   }
 
   formatDate(date: string): string {

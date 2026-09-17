@@ -103,6 +103,57 @@ interface FileRecord {
   mimeType?: string;
 }
 
+interface ReviewResponse {
+  id: number;
+  rating: number;
+  content: string;
+  isRead: boolean;
+  createdAt: string;
+  user?: { id: number; nickname: string; profileImage?: string };
+  bootcamp?: { id: number; title: string };
+}
+
+interface SurveyResponse {
+  id: number;
+  title?: string;
+  bootcampId: number;
+  questions: { text: string; type: string; options?: string[] }[];
+  createdAt?: string;
+}
+
+interface SurveyUserResponse {
+  id: number;
+  surveyId: number;
+  userId: number;
+  answers: { questionIndex: number; answer: string }[];
+  createdAt?: string;
+}
+
+interface ChallengeResponse {
+  id: number;
+  title: string;
+  description?: string;
+  thumbnail?: string;
+  referenceImages?: string[];
+  category: string;
+  difficulty?: string;
+  status: string;
+  isVisible: boolean;
+  startDate: string;
+  endDate: string;
+  maxSubmissions?: number;
+  isBootcampOnly?: boolean;
+  bootcampId?: number;
+  prize?: string;
+  entryCount?: number;
+  createdAt?: string;
+}
+
+interface ChallengeStatsResponse extends ChallengeResponse {
+  entries: { id: number; title: string; description?: string; images: string[]; likeCount: number; isWinner: boolean; rank?: number; createdAt: string; user?: { id: number; nickname: string; profileImage?: string } }[];
+  totalLikes: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
@@ -439,13 +490,13 @@ export class ApiService {
 
   // ===== Reviews (어드민) =====
   readonly reviews = {
-    findAll: (): Promise<any[]> =>
+    findAll: (): Promise<ReviewResponse[]> =>
       this.get('/reviews'),
-    findByBootcamp: (bootcampId: number): Promise<{ reviews: any[]; avgRating: number; totalCount: number; ratingDist: number[] }> =>
+    findByBootcamp: (bootcampId: number): Promise<{ reviews: ReviewResponse[]; avgRating: number; totalCount: number; ratingDist: number[] }> =>
       this.get(`/reviews/bootcamp/${bootcampId}`),
-    markAsRead: (id: number): Promise<any> =>
+    markAsRead: (id: number): Promise<{ id: number; isRead: boolean }> =>
       this.patch(`/reviews/${id}/read`, {}),
-    markManyAsRead: (ids: number[]): Promise<any> =>
+    markManyAsRead: (ids: number[]): Promise<{ count: number }> =>
       this.patch('/reviews/bulk/read', { ids }),
     delete: (id: number): Promise<void> =>
       this.del<void>(`/reviews/${id}`),
@@ -453,33 +504,37 @@ export class ApiService {
 
   // ===== Surveys (어드민) =====
   readonly surveys = {
-    findActive: (bootcampId: number): Promise<any> =>
+    findActive: (bootcampId: number): Promise<SurveyResponse | null> =>
       this.get(`/surveys/bootcamp/${bootcampId}`),
-    upsert: (bootcampId: number, data: { title?: string; questions: any[] }): Promise<any> =>
+    upsert: (bootcampId: number, data: { title?: string; questions: { text: string; type: string; options?: string[] }[] }): Promise<{ id: number }> =>
       this.post(`/surveys/bootcamp/${bootcampId}`, data),
     delete: (id: number): Promise<void> =>
       this.del<void>(`/surveys/${id}`),
-    findUserResponse: (surveyId: number, userId: number): Promise<any> =>
+    findUserResponse: (surveyId: number, userId: number): Promise<SurveyUserResponse | null> =>
       this.get(`/surveys/${surveyId}/user/${userId}`),
   };
 
   // ===== Challenges (어드민) =====
   readonly challenges = {
-    findAll: (status?: string): Promise<any[]> =>
-      this.get(`/challenges${status ? '?status=' + status : ''}`),
-    findOne: (id: number): Promise<any> =>
+    findAll: (status?: string): Promise<ChallengeResponse[]> =>
+      this.get(`/challenges/admin/list${status ? '?status=' + status : ''}`),
+    findOne: (id: number): Promise<ChallengeResponse> =>
       this.get(`/challenges/${id}`),
-    create: (data: any): Promise<any> =>
+    create: (data: Record<string, unknown>): Promise<ChallengeResponse> =>
       this.post('/challenges', data),
-    update: (id: number, data: any): Promise<any> =>
+    update: (id: number, data: Record<string, unknown>): Promise<ChallengeResponse> =>
       this.patch(`/challenges/${id}`, data),
     delete: (id: number): Promise<void> =>
       this.del<void>(`/challenges/${id}`),
-    updateStatus: (id: number, status: string): Promise<any> =>
+    updateStatus: (id: number, status: string): Promise<ChallengeResponse> =>
       this.patch(`/challenges/${id}/status`, { status }),
-    setWinners: (id: number, winners: { entryId: number; rank: number }[]): Promise<any> =>
+    toggleVisibility: (id: number, isVisible: boolean): Promise<ChallengeResponse> =>
+      this.patch(`/challenges/${id}/visibility`, { isVisible }),
+    setWinners: (id: number, winners: { entryId: number; rank: number }[]): Promise<{ success: boolean }> =>
       this.patch(`/challenges/${id}/winners`, { winners }),
-    getStats: (id: number): Promise<any> =>
+    getStats: (id: number): Promise<ChallengeStatsResponse> =>
       this.get(`/challenges/${id}/stats`),
+    deleteEntry: (entryId: number): Promise<void> =>
+      this.del<void>(`/challenges/entries/${entryId}`),
   };
 }

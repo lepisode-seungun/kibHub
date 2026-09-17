@@ -44,8 +44,8 @@ export const bootcampAccessGuard: CanActivateFn = async (route) => {
     const bootcamp = await api.bootcamps.findOne(bootcampId);
     const bcStatus = bootcamp?.status || '';
 
-    // 준비/모집 상태 → 수강생 진입 차단
-    if (bcStatus === 'PREPARING' || bcStatus === 'RECRUITING') {
+    // 준비 상태 → 수강생 진입 차단
+    if (bcStatus === 'PREPARING') {
       router.navigate(['/my-bootcamp']);
       return false;
     }

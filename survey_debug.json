@@ -1,0 +1,21 @@
+﻿{
+    "id":  6,
+    "bootcampId":  15,
+    "title":  "수료 설문",
+    "questions":  [
+                      {
+                          "text":  "이제까지 제일 재밌었던 강의는 무엇인가요",
+                          "type":  "text"
+                      },
+                      {
+                          "text":  "앞으로 보완해야할점이 있다면?",
+                          "type":  "text"
+                      },
+                      {
+                          "text":  "다른사람에게 추천할 의향이 있다.",
+                          "type":  "select"
+                      }
+                  ],
+    "isActive":  true,
+    "createdAt":  "2026-09-16T09:58:49.183Z"
+}

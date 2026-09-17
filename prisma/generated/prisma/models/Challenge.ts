@@ -46,6 +46,7 @@ export type ChallengeMinAggregateOutputType = {
   category: string | null
   difficulty: string | null
   status: $Enums.ChallengeStatus | null
+  isVisible: boolean | null
   startDate: Date | null
   endDate: Date | null
   maxSubmissions: number | null
@@ -64,6 +65,7 @@ export type ChallengeMaxAggregateOutputType = {
   category: string | null
   difficulty: string | null
   status: $Enums.ChallengeStatus | null
+  isVisible: boolean | null
   startDate: Date | null
   endDate: Date | null
   maxSubmissions: number | null
@@ -83,6 +85,7 @@ export type ChallengeCountAggregateOutputType = {
   category: number
   difficulty: number
   status: number
+  isVisible: number
   startDate: number
   endDate: number
   maxSubmissions: number
@@ -115,6 +118,7 @@ export type ChallengeMinAggregateInputType = {
   category?: true
   difficulty?: true
   status?: true
+  isVisible?: true
   startDate?: true
   endDate?: true
   maxSubmissions?: true
@@ -133,6 +137,7 @@ export type ChallengeMaxAggregateInputType = {
   category?: true
   difficulty?: true
   status?: true
+  isVisible?: true
   startDate?: true
   endDate?: true
   maxSubmissions?: true
@@ -152,6 +157,7 @@ export type ChallengeCountAggregateInputType = {
   category?: true
   difficulty?: true
   status?: true
+  isVisible?: true
   startDate?: true
   endDate?: true
   maxSubmissions?: true
@@ -258,6 +264,7 @@ export type ChallengeGroupByOutputType = {
   category: string
   difficulty: string | null
   status: $Enums.ChallengeStatus
+  isVisible: boolean
   startDate: Date
   endDate: Date
   maxSubmissions: number
@@ -300,6 +307,7 @@ export type ChallengeWhereInput = {
   category?: Prisma.StringFilter<"Challenge"> | string
   difficulty?: Prisma.StringNullableFilter<"Challenge"> | string | null
   status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFilter<"Challenge"> | boolean
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   maxSubmissions?: Prisma.IntFilter<"Challenge"> | number
@@ -321,6 +329,7 @@ export type ChallengeOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  isVisible?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   maxSubmissions?: Prisma.SortOrder
@@ -345,6 +354,7 @@ export type ChallengeWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringFilter<"Challenge"> | string
   difficulty?: Prisma.StringNullableFilter<"Challenge"> | string | null
   status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFilter<"Challenge"> | boolean
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   maxSubmissions?: Prisma.IntFilter<"Challenge"> | number
@@ -366,6 +376,7 @@ export type ChallengeOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   difficulty?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  isVisible?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   maxSubmissions?: Prisma.SortOrder
@@ -393,6 +404,7 @@ export type ChallengeScalarWhereWithAggregatesInput = {
   category?: Prisma.StringWithAggregatesFilter<"Challenge"> | string
   difficulty?: Prisma.StringNullableWithAggregatesFilter<"Challenge"> | string | null
   status?: Prisma.EnumChallengeStatusWithAggregatesFilter<"Challenge"> | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolWithAggregatesFilter<"Challenge"> | boolean
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"Challenge"> | Date | string
   maxSubmissions?: Prisma.IntWithAggregatesFilter<"Challenge"> | number
@@ -411,6 +423,7 @@ export type ChallengeCreateInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -431,6 +444,7 @@ export type ChallengeUncheckedCreateInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -450,6 +464,7 @@ export type ChallengeUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -470,6 +485,7 @@ export type ChallengeUncheckedUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -490,6 +506,7 @@ export type ChallengeCreateManyInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -508,6 +525,7 @@ export type ChallengeUpdateManyMutationInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -526,6 +544,7 @@ export type ChallengeUncheckedUpdateManyInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -563,6 +582,7 @@ export type ChallengeCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isVisible?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   maxSubmissions?: Prisma.SortOrder
@@ -587,6 +607,7 @@ export type ChallengeMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isVisible?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   maxSubmissions?: Prisma.SortOrder
@@ -605,6 +626,7 @@ export type ChallengeMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   difficulty?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isVisible?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   maxSubmissions?: Prisma.SortOrder
@@ -715,6 +737,7 @@ export type ChallengeCreateWithoutBootcampInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -734,6 +757,7 @@ export type ChallengeUncheckedCreateWithoutBootcampInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -782,6 +806,7 @@ export type ChallengeScalarWhereInput = {
   category?: Prisma.StringFilter<"Challenge"> | string
   difficulty?: Prisma.StringNullableFilter<"Challenge"> | string | null
   status?: Prisma.EnumChallengeStatusFilter<"Challenge"> | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFilter<"Challenge"> | boolean
   startDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   endDate?: Prisma.DateTimeFilter<"Challenge"> | Date | string
   maxSubmissions?: Prisma.IntFilter<"Challenge"> | number
@@ -800,6 +825,7 @@ export type ChallengeCreateWithoutEntriesInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -819,6 +845,7 @@ export type ChallengeUncheckedCreateWithoutEntriesInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -853,6 +880,7 @@ export type ChallengeUpdateWithoutEntriesInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -872,6 +900,7 @@ export type ChallengeUncheckedUpdateWithoutEntriesInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -891,6 +920,7 @@ export type ChallengeCreateManyBootcampInput = {
   category?: string
   difficulty?: string | null
   status?: $Enums.ChallengeStatus
+  isVisible?: boolean
   startDate: Date | string
   endDate: Date | string
   maxSubmissions?: number
@@ -908,6 +938,7 @@ export type ChallengeUpdateWithoutBootcampInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -927,6 +958,7 @@ export type ChallengeUncheckedUpdateWithoutBootcampInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -946,6 +978,7 @@ export type ChallengeUncheckedUpdateManyWithoutBootcampInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   difficulty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumChallengeStatusFieldUpdateOperationsInput | $Enums.ChallengeStatus
+  isVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maxSubmissions?: Prisma.IntFieldUpdateOperationsInput | number
@@ -995,6 +1028,7 @@ export type ChallengeSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   category?: boolean
   difficulty?: boolean
   status?: boolean
+  isVisible?: boolean
   startDate?: boolean
   endDate?: boolean
   maxSubmissions?: boolean
@@ -1017,6 +1051,7 @@ export type ChallengeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   category?: boolean
   difficulty?: boolean
   status?: boolean
+  isVisible?: boolean
   startDate?: boolean
   endDate?: boolean
   maxSubmissions?: boolean
@@ -1037,6 +1072,7 @@ export type ChallengeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   category?: boolean
   difficulty?: boolean
   status?: boolean
+  isVisible?: boolean
   startDate?: boolean
   endDate?: boolean
   maxSubmissions?: boolean
@@ -1057,6 +1093,7 @@ export type ChallengeSelectScalar = {
   category?: boolean
   difficulty?: boolean
   status?: boolean
+  isVisible?: boolean
   startDate?: boolean
   endDate?: boolean
   maxSubmissions?: boolean
@@ -1067,7 +1104,7 @@ export type ChallengeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "thumbnail" | "referenceImages" | "category" | "difficulty" | "status" | "startDate" | "endDate" | "maxSubmissions" | "isBootcampOnly" | "bootcampId" | "prize" | "createdAt" | "updatedAt", ExtArgs["result"]["challenge"]>
+export type ChallengeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "thumbnail" | "referenceImages" | "category" | "difficulty" | "status" | "isVisible" | "startDate" | "endDate" | "maxSubmissions" | "isBootcampOnly" | "bootcampId" | "prize" | "createdAt" | "updatedAt", ExtArgs["result"]["challenge"]>
 export type ChallengeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bootcamp?: boolean | Prisma.Challenge$bootcampArgs<ExtArgs>
   entries?: boolean | Prisma.Challenge$entriesArgs<ExtArgs>
@@ -1095,6 +1132,7 @@ export type $ChallengePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     category: string
     difficulty: string | null
     status: $Enums.ChallengeStatus
+    isVisible: boolean
     startDate: Date
     endDate: Date
     maxSubmissions: number
@@ -1536,6 +1574,7 @@ export interface ChallengeFieldRefs {
   readonly category: Prisma.FieldRef<"Challenge", 'String'>
   readonly difficulty: Prisma.FieldRef<"Challenge", 'String'>
   readonly status: Prisma.FieldRef<"Challenge", 'ChallengeStatus'>
+  readonly isVisible: Prisma.FieldRef<"Challenge", 'Boolean'>
   readonly startDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Challenge", 'DateTime'>
   readonly maxSubmissions: Prisma.FieldRef<"Challenge", 'Int'>

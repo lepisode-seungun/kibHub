@@ -7,7 +7,8 @@ model Challenge {
   referenceImages  String[]          @default([])
   category         String            @default("")
   difficulty       String?
-  status           ChallengeStatus   @default(UPCOMING)
+  status           ChallengeStatus   @default(ACTIVE)
+  isVisible        Boolean           @default(true)
   startDate        DateTime
   endDate          DateTime
   maxSubmissions   Int               @default(1)

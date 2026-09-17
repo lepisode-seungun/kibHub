@@ -196,6 +196,7 @@ export const ChallengeScalarFieldEnum = {
   category: 'category',
   difficulty: 'difficulty',
   status: 'status',
+  isVisible: 'isVisible',
   startDate: 'startDate',
   endDate: 'endDate',
   maxSubmissions: 'maxSubmissions',

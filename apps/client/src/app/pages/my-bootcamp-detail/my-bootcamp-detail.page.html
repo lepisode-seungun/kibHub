@@ -445,11 +445,11 @@
         @if (activeSurvey()) {
           <div class="sv-section-in-modal">
             <div class="sv-divider"></div>
-            <span class="sv-modal-title">📋 {{ activeSurvey().title }}</span>
-            @for (q of activeSurvey().questions; track $index; let qIdx = $index) {
+            <span class="sv-modal-title">📋 {{ activeSurvey()!.title }}</span>
+            @for (q of activeSurvey()!.questions; track $index; let qIdx = $index) {
               <div class="sv-question-modal">
-                <label class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text }}</label>
-                @if (q.type === 'rating') {
+                <span class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text || q.title }}</span>
+                @if (q.type === 'rating' || q.type === 'RATING') {
                   <div class="sv-rating-stars">
                     @for (star of [1,2,3,4,5]; track star) {
                       <button class="rv-star-btn" (click)="updateSurveyAnswer(qIdx, star)">
@@ -460,9 +460,19 @@
                       </button>
                     }
                   </div>
-                } @else if (q.type === 'select') {
+                } @else if (q.type === 'select' || q.type === 'SINGLE') {
                   <div class="sv-select-group">
-                    @for (opt of ['매우 불만족', '불만족', '보통', '만족', '매우 만족']; track opt) {
+                    @for (opt of (q.options || ['매우 불만족', '불만족', '보통', '만족', '매우 만족']); track opt) {
+                      <button class="sv-select-btn"
+                              [class.active]="surveyAnswers()[qIdx] === opt"
+                              (click)="updateSurveyAnswer(qIdx, opt)">
+                        {{ opt }}
+                      </button>
+                    }
+                  </div>
+                } @else if (q.type === 'MULTIPLE' && q.options) {
+                  <div class="sv-select-group">
+                    @for (opt of q.options; track opt) {
                       <button class="sv-select-btn"
                               [class.active]="surveyAnswers()[qIdx] === opt"
                               (click)="updateSurveyAnswer(qIdx, opt)">

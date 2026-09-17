@@ -43,6 +43,36 @@ interface BootcampDetail {
   status: string;
 }
 
+interface ReviewItem {
+  id: number;
+  rating: number;
+  body: string;
+  images: string[] | null;
+  isApproved: boolean;
+  userId: number;
+  bootcampId: number;
+  createdAt: string;
+  updatedAt: string;
+  user?: { id: number; nickname: string; profileImage: string | null };
+}
+
+interface SurveyQuestion {
+  id?: string;
+  type: string;
+  text?: string;
+  title?: string;
+  options?: string[];
+  required?: boolean;
+}
+
+interface SurveyItem {
+  id: number;
+  bootcampId: number;
+  title: string;
+  questions: SurveyQuestion[];
+  isActive: boolean;
+}
+
 interface CourseResponse {
   id: number;
   name?: string;
@@ -229,6 +259,8 @@ export class MyBootcampDetailPage implements OnInit {
     }
     if (this.bootcampId) {
       this.loadBootcampData(Number(this.bootcampId)).then(() => {
+        // 설문 데이터 항상 로드
+        this.loadSurvey();
         // 종료된 부트캠프 진입 시 자동으로 설문 모달 처리
         if (this.isBootcampEnded()) {
           this.handleSurveyOnEntry();
@@ -606,9 +638,9 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   /* ===== 리뷰 탭 ===== */
-  _reviewData = signal<{ reviews: any[]; avgRating: number; totalCount: number; ratingDist: number[] } | null>(null);
-  reviewData = computed(() => this._reviewData() ?? { reviews: [], avgRating: 0, totalCount: 0, ratingDist: [0, 0, 0, 0, 0] });
-  myReview = signal<any>(null);
+  _reviewData = signal<{ reviews: ReviewItem[]; avgRating: number; totalCount: number; ratingDist: number[] } | null>(null);
+  reviewData = computed(() => this._reviewData() ?? { reviews: [] as ReviewItem[], avgRating: 0, totalCount: 0, ratingDist: [0, 0, 0, 0, 0] });
+  myReview = signal<ReviewItem | null>(null);
   reviewLoading = signal(false);
   isReviewModalOpen = signal(false);
   reviewForm = { rating: 0, body: '', images: [] as string[] };
@@ -666,12 +698,12 @@ export class MyBootcampDetailPage implements OnInit {
       if (survey?.id && !this.hasResponded()) {
         const answerEntries = Object.entries(this.surveyAnswers());
         if (answerEntries.length > 0) {
-          const answers = answerEntries.map(([idx, answer]) => ({
+          const answers: { questionId: string; answer: string | string[] | number }[] = answerEntries.map(([idx, answer]) => ({
             questionId: String(idx),
             answer,
           }));
           try {
-            await this.api.surveys.respond(survey.id, answers as any);
+            await this.api.surveys.respond(survey.id, answers);
             this.hasResponded.set(true);
           } catch { /* 설문 실패해도 리뷰는 성공 */ }
         }
@@ -680,8 +712,9 @@ export class MyBootcampDetailPage implements OnInit {
       this.isReviewModalOpen.set(false);
       this.surveyAnswers.set({});
       await this.loadReviews();
-    } catch (err: any) {
-      alert(err?.error?.message || '설문조사 제출에 실패했습니다.');
+    } catch (err: unknown) {
+      const e = err as { error?: { message?: string } };
+      alert(e?.error?.message || '설문조사 제출에 실패했습니다.');
     }
   }
 
@@ -693,8 +726,9 @@ export class MyBootcampDetailPage implements OnInit {
       await this.api.reviews.delete(mine.id);
       this.myReview.set(null);
       await this.loadReviews();
-    } catch (err: any) {
-      alert(err?.error?.message || '설문조사 삭제에 실패했습니다.');
+    } catch (err: unknown) {
+      const e = err as { error?: { message?: string } };
+      alert(e?.error?.message || '설문조사 삭제에 실패했습니다.');
     }
   }
 
@@ -720,7 +754,7 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   // ===== 설문 =====
-  activeSurvey = signal<any>(null);
+  activeSurvey = signal<SurveyItem | null>(null);
   surveyAnswers = signal<Record<number, string | number>>({});
   surveyLoading = signal(false);
   hasResponded = signal(false);
@@ -765,15 +799,16 @@ export class MyBootcampDetailPage implements OnInit {
     const survey = this.activeSurvey();
     if (!survey?.id) return;
     this.surveySubmitting.set(true);
-    const answers = Object.entries(this.surveyAnswers()).map(([idx, answer]) => ({
+    const answers: { questionId: string; answer: string | string[] | number }[] = Object.entries(this.surveyAnswers()).map(([idx, answer]) => ({
       questionId: String(idx),
       answer,
     }));
     try {
-      await this.api.surveys.respond(survey.id, answers as any);
+      await this.api.surveys.respond(survey.id, answers);
       this.hasResponded.set(true);
       alert('설문이 제출되었습니다. 감사합니다!');
-    } catch (e: any) {
+    } catch (err: unknown) {
+      const e = err as { error?: { message?: string } };
       alert(e?.error?.message || '설문 제출에 실패했습니다.');
     }
     this.surveySubmitting.set(false);

@@ -17,15 +17,14 @@
         @if (c.difficulty) {
           <span class="cd-badge cd-badge--diff">{{ c.difficulty }}</span>
         }
-        @if (c.status === 'ACTIVE' && getDaysLeft() !== null) {
-          <span class="cd-badge cd-badge--dday">D-{{ getDaysLeft() }}</span>
+        @if (c.status === 'ACTIVE') {
+          <span class="cd-badge cd-badge--active">진행중</span>
         }
         @if (c.status === 'ENDED') {
           <span class="cd-badge cd-badge--ended">종료됨</span>
         }
       </div>
       <h1 class="cd-hero-title">{{ c.title }}</h1>
-      <p class="cd-hero-desc">{{ c.description }}</p>
       <div class="cd-hero-meta">
         <span>📅 {{ formatDate(c.startDate) }} ~ {{ formatDate(c.endDate) }}</span>
         <span>👥 {{ c.entryCount }}명 참여</span>
@@ -38,87 +37,45 @@
 
   <div class="cd-inner">
 
+    <!-- 챌린지 안내 -->
+    @if (c.description) {
+      <section class="cd-guide-section">
+        <h2 class="cd-guide-label">📝 챌린지 안내</h2>
+        <p class="cd-guide-text">{{ c.description }}</p>
+      </section>
+    }
+
     <!-- 참고 이미지 -->
     @if (c.referenceImages && c.referenceImages.length > 0) {
       <section class="cd-section">
         <h2 class="cd-section-title">📌 참고 이미지</h2>
         <div class="cd-ref-images">
           @for (img of c.referenceImages; track $index) {
-            <img [src]="img" alt="참고 이미지" class="cd-ref-img" />
+            <img [src]="img" alt="참고 이미지" class="cd-ref-img" (click)="openRefViewer($index)" />
           }
         </div>
       </section>
     }
 
-
-
-    <!-- 작품 제출 폼 (ACTIVE + 로그인 + 미제출 시) -->
-    @if (c.status !== 'ENDED' && showSubmitForm()) {
-      <section class="cd-submit-section">
-        <div class="cd-submit-card">
-          <div class="cd-submit-header">
-            <h2 class="cd-section-title" style="margin:0">🖌️ 작품 제출</h2>
-            <button class="cd-submit-close" (click)="closeSubmitForm()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
-          </div>
-
-          <!-- 이미지 업로드 -->
-          <div class="cd-submit-images">
-            @for (preview of submitPreviews(); track $index) {
-              <div class="cd-submit-img-wrap">
-                <img [src]="preview" alt="" class="cd-submit-img" />
-                <button class="cd-submit-img-remove" (click)="removeSubmitImage($index)">
-                  <svg width="12" height="12" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
-                </button>
-              </div>
-            }
-            @if (submitPreviews().length < 5) {
-              <label class="cd-submit-img-add">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
-                <span>이미지 추가</span>
-                <input type="file" accept="image/*" multiple class="hidden" style="display:none" (change)="onSubmitFileSelect($event)" />
-              </label>
-            }
-          </div>
-
-          <!-- 제목 -->
-          <input type="text" [(ngModel)]="submitTitle" placeholder="작품 제목"
-                 class="cd-submit-input" />
-
-          <!-- 설명 -->
-          <textarea [(ngModel)]="submitDesc" placeholder="작품 설명 (선택)" rows="3"
-                    class="cd-submit-textarea"></textarea>
-
-          <!-- 제출 버튼 -->
-          <div class="cd-submit-actions">
-            <button class="cd-submit-cancel" (click)="closeSubmitForm()">취소</button>
-            <button class="cd-submit-confirm" [disabled]="submitting()" (click)="submitEntry()">
-              {{ submitting() ? '제출 중...' : '제출하기' }}
-            </button>
-          </div>
-        </div>
-      </section>
-    }
 
     <!-- 출품작 갤러리 -->
     <section class="cd-section">
       <div class="cd-gallery-header">
         <h2 class="cd-section-title">출품작 갤러리</h2>
         <div class="cd-gallery-actions">
-          @if (c.status !== 'ENDED' && !myEntry() && !showSubmitForm()) {
+          @if (c.status === 'ACTIVE' && !myEntry() && !showSubmitForm()) {
             <button class="cd-gallery-submit-btn" (click)="openSubmitForm()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
               작품 제출
             </button>
           }
-          @if (c.status !== 'ENDED' && myEntry()) {
+          @if (c.status === 'ACTIVE' && myEntry()) {
             <div class="cd-my-entry-actions">
               <button class="cd-entry-edit-btn" (click)="openEditForm()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 작품 수정
               </button>
-              <button class="cd-entry-delete-btn" (click)="deleteMyEntry()">
+              <button class="cd-entry-delete-btn" (click)="openDeleteModal()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 삭제
               </button>
@@ -137,7 +94,13 @@
             @if (entry.images && entry.images.length > 0) {
               <div class="cd-entry-thumb" [style.background-image]="'url(' + entry.images[0] + ')'" (click)="openModal(entry)" style="cursor:pointer"></div>
             } @else {
-              <div class="cd-entry-thumb cd-entry-thumb--empty">🖼️</div>
+              <div class="cd-entry-thumb cd-entry-thumb--empty">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="#52525B" stroke-width="1.5"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="#52525B"/>
+                  <path d="M21 15l-5-5L5 21" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             }
             <div class="cd-entry-info">
               <span class="cd-entry-title">{{ entry.title }}</span>
@@ -150,10 +113,10 @@
                   }
                   <span>{{ entry.user?.nickname }}</span>
                 </div>
-                <button class="cd-like-btn" [class.liked]="entry.isLiked" (click)="toggleLike(entry); $event.stopPropagation()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="entry.isLiked ? '#EF4444' : 'none'">
+                <button class="cd-like-btn" [class.liked]="entry.isLiked" [class.has-likes]="entry.likeCount > 0" [class.own]="myEntry()?.id === entry.id" [disabled]="myEntry()?.id === entry.id" (click)="toggleLike(entry); $event.stopPropagation()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="entry.isLiked ? 'currentColor' : 'none'">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                          [attr.stroke]="entry.isLiked ? '#EF4444' : '#71717A'" stroke-width="1.5"/>
+                          stroke="currentColor" stroke-width="1.5"/>
                   </svg>
                   <span>{{ entry.likeCount }}</span>
                 </button>
@@ -165,7 +128,12 @@
 
       @if (entries().length === 0) {
         <div class="cd-empty">
-          <span class="cd-empty-icon">🎨</span>
+          <svg class="cd-empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path d="M12 19l7-7 3 3-7 7-3-3z" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 2l7.586 7.586" stroke="#52525B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="2" stroke="#52525B" stroke-width="1.5"/>
+          </svg>
           <p>아직 출품작이 없습니다. 첫 번째로 참여해보세요!</p>
         </div>
       }
@@ -175,58 +143,101 @@
 </main>
 }
 
-<!-- 이미지 뷰어 모달 -->
+<!-- ===== 작품 제출 모달 ===== -->
+@if (showSubmitForm()) {
+  <div class="cd-submit-overlay" (click)="closeSubmitForm()">
+    <div class="cd-submit-modal" (click)="$event.stopPropagation()">
+      <div class="cd-submit-header">
+        <h2 class="cd-submit-modal-title">🖌️ {{ isEditMode() ? '작품 수정' : '작품 제출' }}</h2>
+        <button class="cd-submit-close" (click)="closeSubmitForm()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="cd-submit-body">
+        <!-- 이미지 업로드 -->
+        <div class="cd-submit-images">
+          @for (preview of submitPreviews(); track $index) {
+            <div class="cd-submit-img-wrap">
+              <img [src]="preview" alt="" class="cd-submit-img" />
+              <button class="cd-submit-img-remove" (click)="removeSubmitImage($index)">
+                <svg width="12" height="12" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          }
+          @if (submitPreviews().length < 5) {
+            <label class="cd-submit-img-add">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#71717A" stroke-width="2" stroke-linecap="round"/></svg>
+              <span>이미지 추가</span>
+              <input type="file" accept="image/*" multiple class="hidden" style="display:none" (change)="onSubmitFileSelect($event)" />
+            </label>
+          }
+        </div>
+
+        <!-- 제목 -->
+        <input type="text" [(ngModel)]="submitTitle" placeholder="작품 제목"
+               class="cd-submit-input" />
+
+        <!-- 설명 -->
+        <textarea [(ngModel)]="submitDesc" placeholder="작품 설명 (선택)" rows="3"
+                  class="cd-submit-textarea"></textarea>
+      </div>
+
+      <div class="cd-submit-footer">
+        <button class="cd-submit-cancel" (click)="closeSubmitForm()">취소</button>
+        <button class="cd-submit-confirm" [disabled]="submitting()" (click)="submitEntry()">
+          {{ submitting() ? '제출 중...' : (isEditMode() ? '수정하기' : '제출하기') }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- 출품작 이미지 뷰어 -->
 @if (modalEntry(); as me) {
-  <div class="cd-modal-overlay" (click)="closeModal()">
-    <div class="cd-modal" (click)="$event.stopPropagation()">
+  <div class="cd-entry-viewer-overlay" (click)="closeModal()">
+    <div class="cd-entry-viewer" (click)="$event.stopPropagation()">
       <!-- 닫기 -->
-      <button class="cd-modal-close" (click)="closeModal()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      <button class="cd-entry-viewer-close" (click)="closeModal()">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><path d="M12 12L28 28M28 12L12 28" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
 
-      <!-- 이미지 -->
-      <div class="cd-modal-img-wrap">
-        @if (me.images && me.images.length > 0) {
-          <img [src]="me.images[modalImageIndex()]" alt="" class="cd-modal-img" />
-        }
-        <!-- 좌우 화살표 -->
+      <!-- 이미지 영역 -->
+      <div class="cd-entry-viewer-content">
         @if (me.images && me.images.length > 1) {
-          <button class="cd-modal-arrow cd-modal-arrow--left" [disabled]="modalImageIndex() === 0" (click)="prevImage()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button class="cd-modal-arrow cd-modal-arrow--right" [disabled]="modalImageIndex() === me.images.length - 1" (click)="nextImage()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="cd-modal-counter">{{ modalImageIndex() + 1 }} / {{ me.images.length }}</div>
+          <div class="cd-entry-viewer-counter">{{ modalImageIndex() + 1 }}장 / {{ me.images.length }}장</div>
         }
-
-        <!-- 오버레이 정보 -->
-        <div class="cd-modal-overlay-info">
-          <div class="cd-modal-overlay-top">
-            <h3 class="cd-modal-title">{{ me.title }}</h3>
-            @if (me.description) {
-              <p class="cd-modal-desc">{{ me.description }}</p>
-            }
-          </div>
-          <div class="cd-modal-overlay-bottom">
-            <div class="cd-entry-user">
-              @if (me.user?.profileImage) {
-                <img [src]="me.user.profileImage" alt="" class="cd-entry-avatar" />
-              } @else {
-                <div class="cd-entry-avatar cd-entry-avatar--default">{{ (me.user?.nickname || '?')[0] }}</div>
-              }
-              <span>{{ me.user?.nickname }}</span>
-            </div>
-            <button class="cd-like-btn" [class.liked]="me.isLiked" (click)="toggleLike(me)">
-              <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="me.isLiked ? '#EF4444' : 'none'">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                      [attr.stroke]="me.isLiked ? '#EF4444' : '#FFF'" stroke-width="1.5"/>
-              </svg>
-              <span>{{ me.likeCount }}</span>
-            </button>
-          </div>
+        <div class="cd-entry-viewer-img-area">
+          @if (me.images && me.images.length > 0) {
+            <img [src]="me.images[modalImageIndex()]" alt="" class="cd-entry-viewer-img" />
+          }
         </div>
       </div>
+
+      <!-- 프레임 하단: 좋아요 -->
+      <div class="cd-entry-viewer-footer">
+        <button class="cd-entry-like-btn" [class.liked]="me.isLiked" (click)="toggleLike(me)">
+          <svg width="20" height="20" viewBox="0 0 24 24" [attr.fill]="me.isLiked ? '#EF4444' : 'none'">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  [attr.stroke]="me.isLiked ? '#EF4444' : '#FFF'" stroke-width="1.5"/>
+          </svg>
+          <span>{{ me.likeCount }}</span>
+        </button>
+      </div>
+
+      <!-- 좌우 화살표 -->
+      @if (me.images && me.images.length > 1) {
+        @if (modalImageIndex() > 0) {
+          <button class="cd-entry-viewer-arrow cd-entry-viewer-arrow--left" (click)="prevImage()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
+          </button>
+        }
+        @if (modalImageIndex() < me.images.length - 1) {
+          <button class="cd-entry-viewer-arrow cd-entry-viewer-arrow--right" (click)="nextImage()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
+          </button>
+        }
+      }
     </div>
   </div>
 }
@@ -267,4 +278,36 @@
       </div>
     </div>
   </div>
+}
+<!-- ===== 참고 이미지 뷰어 ===== -->
+<app-image-viewer
+  [images]="refViewerImages()"
+  [isOpen]="refViewerOpen()"
+  [startPage]="refViewerIndex() + 1"
+  [pageLabel]="'장'"
+  (closed)="closeRefViewer()"
+/>
+
+<!-- ===== 삭제 확인 모달 ===== -->
+@if (showDeleteModal()) {
+<div class="cd-del-overlay" (click)="closeDeleteModal()">
+  <div class="cd-del-modal" (click)="$event.stopPropagation()">
+    <!-- 경고 아이콘 -->
+    <div class="cd-del-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V8h2v6z" fill="#EF4444"/>
+      </svg>
+    </div>
+
+    <!-- 제목 -->
+    <span class="cd-del-title">정말 작품을 삭제하시겠습니까?</span>
+    <span class="cd-del-desc">삭제된 작품은 복구할 수 없으며,<br/>좋아요 및 수상 기록도 함께 삭제됩니다.</span>
+
+    <!-- 버튼 -->
+    <div class="cd-del-actions">
+      <button class="cd-del-btn-cancel" (click)="closeDeleteModal()">취소</button>
+      <button class="cd-del-btn-confirm" (click)="confirmDeleteEntry()">삭제</button>
+    </div>
+  </div>
+</div>
 }

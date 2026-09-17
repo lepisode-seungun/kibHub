@@ -25,7 +25,7 @@ export class ChallengeFormPage implements OnInit {
   // 폼 필드
   title = '';
   description = '';
-  category = 'DRAWING';
+  category = '';
   difficulty = '';
   startDate = '';
   endDate = '';
@@ -35,6 +35,7 @@ export class ChallengeFormPage implements OnInit {
   thumbnail = signal('');  
   referenceImages = signal<string[]>([]);
   prize = '';
+  isVisible = true;
 
   // 수상작 관리 (편집 시)
   showWinnerSection = signal(false);
@@ -66,6 +67,7 @@ export class ChallengeFormPage implements OnInit {
       this.thumbnail.set(c.thumbnail || '');
       this.referenceImages.set(c.referenceImages || []);
       this.prize = c.prize || '';
+      this.isVisible = c.isVisible ?? true;
 
       if (c.status === 'ENDED') {
         this.showWinnerSection.set(true);
@@ -151,6 +153,10 @@ export class ChallengeFormPage implements OnInit {
       this.toast.error('제목을 입력하세요.');
       return;
     }
+    if (!this.category) {
+      this.toast.error('카테고리를 선택하세요.');
+      return;
+    }
     if (!this.startDate || !this.endDate) {
       this.toast.error('기간을 설정하세요.');
       return;
@@ -170,6 +176,7 @@ export class ChallengeFormPage implements OnInit {
       thumbnail: this.thumbnail() || undefined,
       referenceImages: this.referenceImages(),
       prize: this.prize || undefined,
+      isVisible: this.isVisible,
     };
 
     try {

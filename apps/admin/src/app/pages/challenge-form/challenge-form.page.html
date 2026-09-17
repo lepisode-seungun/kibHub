@@ -37,7 +37,7 @@
         <label for="category" class="font-suit font-semibold text-sm text-zinc-700">카테고리 <span class="text-[#3C8EEE]">*</span></label>
         <input type="text" id="category" [(ngModel)]="category"
                class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
-               placeholder="예: 드로잉, 웹툰, 글 등" />
+               placeholder="카테고리를 입력하세요" />
       </div>
       <div class="flex flex-col gap-2 flex-1">
         <label for="difficulty" class="font-suit font-semibold text-sm text-zinc-700">난이도</label>
@@ -65,12 +65,22 @@
       </div>
     </div>
 
-    <!-- 1등 상품 -->
-    <div class="flex flex-col gap-2">
-      <label for="prize" class="font-suit font-semibold text-sm text-zinc-700">상품</label>
-      <input type="text" id="prize" [(ngModel)]="prize"
-             class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
-             placeholder="예: 갤럭시 탭, 아이패드, 신세계 상품권 10만원 등" />
+    <!-- 상품 + 노출 -->
+    <div class="flex gap-4">
+      <div class="flex flex-col gap-2 flex-1">
+        <label for="prize" class="font-suit font-semibold text-sm text-zinc-700">상품 <span class="font-normal text-zinc-400">(선택)</span></label>
+        <textarea id="prize" [(ngModel)]="prize" rows="3"
+               class="w-full px-4 py-3 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] transition-colors box-border resize-vertical"
+               placeholder="미입력 시 상품 없이 진행됩니다"></textarea>
+      </div>
+      <div class="flex flex-col gap-2" style="width: 140px;">
+        <label for="visibility" class="font-suit font-semibold text-sm text-zinc-700">노출</label>
+        <select id="visibility" [(ngModel)]="isVisible"
+                class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] cursor-pointer box-border">
+          <option [ngValue]="true">노출</option>
+          <option [ngValue]="false">숨김</option>
+        </select>
+      </div>
     </div>
 
     <!-- 썸네일 -->

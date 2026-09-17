@@ -139,6 +139,7 @@
 .mb-badge-waiting { background: #EFF6FF; color: #3B82F6; }
 .mb-badge-completed { background: #FAFAFA; border: 1px solid #F4F4F5; color: #52525B; }
 .mb-badge-closed { background: #FEF2F2; color: #EF4444; }
+.mb-badge-recruiting { background: #ECFDF5; color: #10B981; }
 
 /* 반응형 */
 @media (max-width: 1200px) {

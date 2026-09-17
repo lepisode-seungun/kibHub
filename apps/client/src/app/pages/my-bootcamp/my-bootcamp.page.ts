@@ -121,11 +121,12 @@ export class MyBootcampPage implements OnInit, OnDestroy {
         // 상태 표시: ENDED만 '종료', PREPARING/RECRUITING은 '준비중'
         let displayStatus = mappedStatus;
         if (bcStatus === 'ENDED') displayStatus = '종료';
-        else if (bcStatus === 'PREPARING' || bcStatus === 'RECRUITING') displayStatus = '준비중';
+        else if (bcStatus === 'PREPARING') displayStatus = '준비중';
+        else if (bcStatus === 'RECRUITING') displayStatus = '수강중';
 
         // 진입 가능 여부: OPERATING/CLOSED는 ACCEPTED만, ENDED는 COMPLETED도 허용
         let canEnter = false;
-        if (bcStatus === 'OPERATING' || bcStatus === 'CLOSED') {
+        if (bcStatus === 'OPERATING' || bcStatus === 'CLOSED' || bcStatus === 'RECRUITING') {
           canEnter = a.status === 'ACCEPTED';
         } else if (bcStatus === 'ENDED') {
           canEnter = a.status === 'ACCEPTED' || a.status === 'COMPLETED';
