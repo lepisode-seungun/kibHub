@@ -45,6 +45,7 @@ export type ReviewMinAggregateOutputType = {
   rating: number | null
   body: string | null
   isApproved: boolean | null
+  isRead: boolean | null
   userId: number | null
   bootcampId: number | null
   createdAt: Date | null
@@ -56,6 +57,7 @@ export type ReviewMaxAggregateOutputType = {
   rating: number | null
   body: string | null
   isApproved: boolean | null
+  isRead: boolean | null
   userId: number | null
   bootcampId: number | null
   createdAt: Date | null
@@ -68,6 +70,7 @@ export type ReviewCountAggregateOutputType = {
   body: number
   images: number
   isApproved: number
+  isRead: number
   userId: number
   bootcampId: number
   createdAt: number
@@ -95,6 +98,7 @@ export type ReviewMinAggregateInputType = {
   rating?: true
   body?: true
   isApproved?: true
+  isRead?: true
   userId?: true
   bootcampId?: true
   createdAt?: true
@@ -106,6 +110,7 @@ export type ReviewMaxAggregateInputType = {
   rating?: true
   body?: true
   isApproved?: true
+  isRead?: true
   userId?: true
   bootcampId?: true
   createdAt?: true
@@ -118,6 +123,7 @@ export type ReviewCountAggregateInputType = {
   body?: true
   images?: true
   isApproved?: true
+  isRead?: true
   userId?: true
   bootcampId?: true
   createdAt?: true
@@ -217,6 +223,7 @@ export type ReviewGroupByOutputType = {
   body: string
   images: runtime.JsonValue | null
   isApproved: boolean
+  isRead: boolean
   userId: number
   bootcampId: number
   createdAt: Date
@@ -252,6 +259,7 @@ export type ReviewWhereInput = {
   body?: Prisma.StringFilter<"Review"> | string
   images?: Prisma.JsonNullableFilter<"Review">
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
+  isRead?: Prisma.BoolFilter<"Review"> | boolean
   userId?: Prisma.IntFilter<"Review"> | number
   bootcampId?: Prisma.IntFilter<"Review"> | number
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -266,6 +274,7 @@ export type ReviewOrderByWithRelationInput = {
   body?: Prisma.SortOrder
   images?: Prisma.SortOrderInput | Prisma.SortOrder
   isApproved?: Prisma.SortOrder
+  isRead?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   bootcampId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -283,6 +292,7 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   body?: Prisma.StringFilter<"Review"> | string
   images?: Prisma.JsonNullableFilter<"Review">
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
+  isRead?: Prisma.BoolFilter<"Review"> | boolean
   userId?: Prisma.IntFilter<"Review"> | number
   bootcampId?: Prisma.IntFilter<"Review"> | number
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -297,6 +307,7 @@ export type ReviewOrderByWithAggregationInput = {
   body?: Prisma.SortOrder
   images?: Prisma.SortOrderInput | Prisma.SortOrder
   isApproved?: Prisma.SortOrder
+  isRead?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   bootcampId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -317,6 +328,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
   body?: Prisma.StringWithAggregatesFilter<"Review"> | string
   images?: Prisma.JsonNullableWithAggregatesFilter<"Review">
   isApproved?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
+  isRead?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
   userId?: Prisma.IntWithAggregatesFilter<"Review"> | number
   bootcampId?: Prisma.IntWithAggregatesFilter<"Review"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Review"> | Date | string
@@ -328,6 +340,7 @@ export type ReviewCreateInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReviewsInput
@@ -340,6 +353,7 @@ export type ReviewUncheckedCreateInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   userId: number
   bootcampId: number
   createdAt?: Date | string
@@ -351,6 +365,7 @@ export type ReviewUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReviewsNestedInput
@@ -363,6 +378,7 @@ export type ReviewUncheckedUpdateInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   bootcampId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -375,6 +391,7 @@ export type ReviewCreateManyInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   userId: number
   bootcampId: number
   createdAt?: Date | string
@@ -386,6 +403,7 @@ export type ReviewUpdateManyMutationInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -396,6 +414,7 @@ export type ReviewUncheckedUpdateManyInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   bootcampId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,6 +437,7 @@ export type ReviewCountOrderByAggregateInput = {
   body?: Prisma.SortOrder
   images?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
+  isRead?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   bootcampId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -436,6 +456,7 @@ export type ReviewMaxOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
+  isRead?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   bootcampId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -447,6 +468,7 @@ export type ReviewMinOrderByAggregateInput = {
   rating?: Prisma.SortOrder
   body?: Prisma.SortOrder
   isApproved?: Prisma.SortOrder
+  isRead?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   bootcampId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -549,6 +571,7 @@ export type ReviewCreateWithoutBootcampInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReviewsInput
@@ -560,6 +583,7 @@ export type ReviewUncheckedCreateWithoutBootcampInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   userId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -600,6 +624,7 @@ export type ReviewScalarWhereInput = {
   body?: Prisma.StringFilter<"Review"> | string
   images?: Prisma.JsonNullableFilter<"Review">
   isApproved?: Prisma.BoolFilter<"Review"> | boolean
+  isRead?: Prisma.BoolFilter<"Review"> | boolean
   userId?: Prisma.IntFilter<"Review"> | number
   bootcampId?: Prisma.IntFilter<"Review"> | number
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
@@ -611,6 +636,7 @@ export type ReviewCreateWithoutUserInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bootcamp: Prisma.BootcampCreateNestedOneWithoutReviewsInput
@@ -622,6 +648,7 @@ export type ReviewUncheckedCreateWithoutUserInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   bootcampId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -659,6 +686,7 @@ export type ReviewCreateManyBootcampInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   userId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -669,6 +697,7 @@ export type ReviewUpdateWithoutBootcampInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReviewsNestedInput
@@ -680,6 +709,7 @@ export type ReviewUncheckedUpdateWithoutBootcampInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -691,6 +721,7 @@ export type ReviewUncheckedUpdateManyWithoutBootcampInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -702,6 +733,7 @@ export type ReviewCreateManyUserInput = {
   body?: string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: boolean
+  isRead?: boolean
   bootcampId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -712,6 +744,7 @@ export type ReviewUpdateWithoutUserInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bootcamp?: Prisma.BootcampUpdateOneRequiredWithoutReviewsNestedInput
@@ -723,6 +756,7 @@ export type ReviewUncheckedUpdateWithoutUserInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bootcampId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +768,7 @@ export type ReviewUncheckedUpdateManyWithoutUserInput = {
   body?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isRead?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bootcampId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,6 +782,7 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   body?: boolean
   images?: boolean
   isApproved?: boolean
+  isRead?: boolean
   userId?: boolean
   bootcampId?: boolean
   createdAt?: boolean
@@ -761,6 +797,7 @@ export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   body?: boolean
   images?: boolean
   isApproved?: boolean
+  isRead?: boolean
   userId?: boolean
   bootcampId?: boolean
   createdAt?: boolean
@@ -775,6 +812,7 @@ export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   body?: boolean
   images?: boolean
   isApproved?: boolean
+  isRead?: boolean
   userId?: boolean
   bootcampId?: boolean
   createdAt?: boolean
@@ -789,13 +827,14 @@ export type ReviewSelectScalar = {
   body?: boolean
   images?: boolean
   isApproved?: boolean
+  isRead?: boolean
   userId?: boolean
   bootcampId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rating" | "body" | "images" | "isApproved" | "userId" | "bootcampId" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "rating" | "body" | "images" | "isApproved" | "isRead" | "userId" | "bootcampId" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
 export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   bootcamp?: boolean | Prisma.BootcampDefaultArgs<ExtArgs>
@@ -821,6 +860,7 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     body: string
     images: runtime.JsonValue | null
     isApproved: boolean
+    isRead: boolean
     userId: number
     bootcampId: number
     createdAt: Date
@@ -1255,6 +1295,7 @@ export interface ReviewFieldRefs {
   readonly body: Prisma.FieldRef<"Review", 'String'>
   readonly images: Prisma.FieldRef<"Review", 'Json'>
   readonly isApproved: Prisma.FieldRef<"Review", 'Boolean'>
+  readonly isRead: Prisma.FieldRef<"Review", 'Boolean'>
   readonly userId: Prisma.FieldRef<"Review", 'Int'>
   readonly bootcampId: Prisma.FieldRef<"Review", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Review", 'DateTime'>

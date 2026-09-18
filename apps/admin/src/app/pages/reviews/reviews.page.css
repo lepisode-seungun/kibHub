@@ -38,27 +38,129 @@
   color: #18181B;
 }
 
-.rv-dist-bar {
+.rv-stat-card.rv-stat-split {
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+.rv-split-half {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+}
+
+.rv-split-divider {
+  height: 1px;
+  background: #E4E4E7;
+}
+
+/* 평균 별점 카드 */
+.rv-stat-card.rv-stat-rating {
+  align-items: center;
+  padding: 20px 28px;
+}
+
+.rv-rating-big {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  color: #18181B;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.rv-rating-stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.rv-star {
+  font-size: 16px;
+  color: #E4E4E7;
+}
+
+.rv-star-filled {
+  color: #FBBF24;
+}
+
+.rv-rating-count {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #A1A1AA;
+}
+
+/* 별점 분포 카드 */
+.rv-stat-card.rv-stat-chart {
   flex: 1;
-  height: 6px;
-  background: #F4F4F5;
-  border-radius: 3px;
+  min-width: 280px;
+  padding: 16px 20px;
+}
+
+.rv-vbar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 150px;
+  margin-top: 10px;
+}
+
+.rv-vbar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.rv-vbar-track {
+  width: 100%;
+  max-width: 36px;
+  height: 110px;
+  border-radius: 5px 5px 3px 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent calc(25% - 1px),
+      rgba(0,0,0,0.06) calc(25% - 1px),
+      rgba(0,0,0,0.06) 25%
+    ),
+    #F4F4F5;
 }
 
-.rv-dist-fill {
-  height: 100%;
-  background: #FBBF24;
-  border-radius: 3px;
-  transition: width 0.3s ease;
+.rv-vbar-col:hover .rv-vbar-track {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent calc(25% - 1px),
+      rgba(0,0,0,0.08) calc(25% - 1px),
+      rgba(0,0,0,0.08) 25%
+    ),
+    #EBEBED;
 }
 
-.rv-stat-num {
-  font-size: 13px;
+.rv-vbar-fill {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  min-height: 3px;
+  transition: height 0.4s ease;
+}
+
+.rv-vbar-label {
+  font-family: 'SUIT', sans-serif;
   font-weight: 600;
-  color: #3F3F46;
-  min-width: 20px;
-  text-align: right;
+  font-size: 11px;
+  color: #A1A1AA;
+  line-height: 1;
 }
 
 /* 읽음/안읽음 행 스타일 */
@@ -76,4 +178,308 @@
 }
 :host ::ng-deep .rv-row-read span {
   color: #9CA3AF !important;
+}
+
+/* ===== 설문 통계 시각화 ===== */
+.sv-stats-section {
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid #E4E4E7;
+  border-radius: 16px;
+  padding: 24px;
+  animation: svFadeIn 0.25s ease-out;
+}
+
+@keyframes svFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sv-stats-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sv-stats-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid #E4E4E7;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #71717A;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.sv-stats-back:hover { background: #F4F4F5; color: #3F3F46; }
+
+.sv-stats-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #27272A;
+  margin: 0;
+  letter-spacing: -0.04em;
+  flex: 1;
+}
+
+.sv-stats-meta {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #3B82F6;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sv-questions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sv-question-card {
+  border: 1px solid #F4F4F5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.sv-question-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sv-q-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #EFF6FF;
+  color: #3B82F6;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.sv-q-title {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #27272A;
+  flex: 1;
+  letter-spacing: -0.04em;
+}
+
+.sv-q-type {
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: #F4F4F5;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #71717A;
+  flex-shrink: 0;
+}
+
+/* 객관식 - 도넛 차트 */
+.sv-choice-layout {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.sv-donut-canvas {
+  flex-shrink: 0;
+  width: 140px;
+  height: 140px;
+}
+
+.sv-choice-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.sv-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sv-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.sv-legend-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #3F3F46;
+  flex: 1;
+}
+
+.sv-legend-value {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #27272A;
+  white-space: nowrap;
+}
+
+.sv-legend-sub {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  color: #A1A1AA;
+  white-space: nowrap;
+}
+
+/* 별점 */
+.sv-rating-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.sv-rating-vbar {
+  flex: 1;
+  height: 130px;
+  margin-top: 0;
+}
+
+.sv-rating-avg {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.rv-vbar-pct {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #27272A;
+  line-height: 1;
+}
+
+.rv-vbar-label {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #71717A;
+  line-height: 1;
+}
+
+.rv-vbar-sub {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  color: #A1A1AA;
+  line-height: 1;
+}
+
+.sv-rating-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sv-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sv-rating-label {
+  width: 32px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #71717A;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.sv-bar-track {
+  flex: 1;
+  height: 18px;
+  background: #F4F4F5;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.sv-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.sv-bar-count {
+  width: 40px;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #3F3F46;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 주관식 */
+.sv-text-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #FAFAFA;
+  border-radius: 8px;
+}
+
+.sv-text-count {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #27272A;
+}
+
+.sv-text-hint {
+  font-family: 'SUIT', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #A1A1AA;
+}
+
+.sv-reset-btn {
+  margin-left: 12px;
+  padding: 3px 10px;
+  border: 1px solid #EF4444;
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'SUIT', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: #EF4444;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sv-reset-btn:hover {
+  background: #EF4444;
+  color: #fff;
 }

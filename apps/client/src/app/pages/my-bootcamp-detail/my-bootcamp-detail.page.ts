@@ -701,8 +701,9 @@ export class MyBootcampDetailPage implements OnInit {
       if (survey?.id && !this.hasResponded()) {
         const answerEntries = Object.entries(this.surveyAnswers());
         if (answerEntries.length > 0) {
+          const surveyQuestions = survey.questions || [];
           const answers: { questionId: string; answer: string | string[] | number }[] = answerEntries.map(([idx, answer]) => ({
-            questionId: String(idx),
+            questionId: surveyQuestions[Number(idx)]?.id || String(idx),
             answer,
           }));
           try {
@@ -802,8 +803,9 @@ export class MyBootcampDetailPage implements OnInit {
     const survey = this.activeSurvey();
     if (!survey?.id) return;
     this.surveySubmitting.set(true);
+    const surveyQuestions = this.activeSurvey()?.questions || [];
     const answers: { questionId: string; answer: string | string[] | number }[] = Object.entries(this.surveyAnswers()).map(([idx, answer]) => ({
-      questionId: String(idx),
+      questionId: surveyQuestions[Number(idx)]?.id || String(idx),
       answer,
     }));
     try {

@@ -664,6 +664,7 @@ export const ReviewScalarFieldEnum = {
   body: 'body',
   images: 'images',
   isApproved: 'isApproved',
+  isRead: 'isRead',
   userId: 'userId',
   bootcampId: 'bootcampId',
   createdAt: 'createdAt',

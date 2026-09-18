@@ -47,6 +47,12 @@ export class SurveysController {
     return this.surveysService.remove(id);
   }
 
+  /** 설문 응답 초기화 (관리자) */
+  @Delete(':id/responses')
+  resetResponses(@Param('id', ParseIntPipe) id: number) {
+    return this.surveysService.resetResponses(id);
+  }
+
   /** 설문 응답 제출 */
   @Post(':id/respond')
   @UseGuards(AuthGuard)

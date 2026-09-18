@@ -5,6 +5,7 @@ model Review {
   body        String   @default("")
   images      Json?    // string[] (이미지 URL 배열)
   isApproved  Boolean  @default(false) // 모집 페이지 노출 승인
+  isRead      Boolean  @default(false) // 어드민 읽음 상태
   userId      Int
   bootcampId  Int
   createdAt   DateTime @default(now())

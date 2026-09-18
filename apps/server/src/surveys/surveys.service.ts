@@ -93,6 +93,12 @@ export class SurveysService {
     return this.prisma.survey.delete({ where: { id } });
   }
 
+  /** 설문 응답 초기화 (전체 삭제) */
+  async resetResponses(surveyId: number) {
+    const result = await this.prisma.surveyResponse.deleteMany({ where: { surveyId } });
+    return { deleted: result.count };
+  }
+
   /** 설문 응답 제출 (중복 시 덮어쓰기) */
   async respond(surveyId: number, userId: number, answers: SurveyAnswerEntry[]) {
     return this.prisma.surveyResponse.upsert({
@@ -153,16 +159,50 @@ export class SurveysService {
     const responses = survey.responses;
 
     // 질문별 통계
+    const normalizeType = (t: string): SurveyQuestionType => {
+      const upper = t.toUpperCase().trim();
+      if (upper === 'SELECT' || upper === 'SINGLE' || upper === 'RADIO') return 'SINGLE';
+      if (upper === 'MULTIPLE' || upper === 'CHECKBOX' || upper === 'MULTI') return 'MULTIPLE';
+      if (upper === 'RATING' || upper === 'STAR') return 'RATING';
+      return 'TEXT';
+    };
+
     const questionStats: QuestionStat[] = questions.map((q, qIdx) => {
+      let qType = normalizeType(q.type);
+
       const answers = responses
         .map(r => {
           const ans = r.answers as unknown as SurveyAnswerEntry[];
-          const found = ans.find(a => a.questionId === q.id || a.questionIndex === qIdx);
+          let found;
+          // 1) q.id 기반 매칭 (새로운 방식)
+          if (q.id) {
+            found = ans.find(a =>
+              a.questionId === q.id ||
+              a.questionId === String(q.id)
+            );
+          }
+          // 2) q.id가 없는 레거시 데이터 → 인덱스 기반 폴백
+          if (!found && !q.id) {
+            found = ans.find(a =>
+              a.questionIndex === qIdx ||
+              a.questionId === String(qIdx)
+            );
+          }
           return found?.answer;
         })
         .filter((a): a is string | number | string[] => a !== undefined && a !== null);
 
-      if (q.type === 'SINGLE' || q.type === 'MULTIPLE') {
+      // options 없는 SINGLE/MULTIPLE → 답변에서 자동 추출, 고유값 10개 초과면 TEXT 처리
+      if ((qType === 'SINGLE' || qType === 'MULTIPLE') && (!q.options || q.options.length === 0)) {
+        const uniqueAnswers = [...new Set(answers.map(a => Array.isArray(a) ? a : [String(a)]).flat())];
+        if (uniqueAnswers.length > 10) {
+          qType = 'TEXT';
+        } else {
+          q.options = uniqueAnswers;
+        }
+      }
+
+      if (qType === 'SINGLE' || qType === 'MULTIPLE') {
         const optionCounts: Record<string, number> = {};
         (q.options || []).forEach(opt => { optionCounts[opt] = 0; });
         answers.forEach(a => {
@@ -174,8 +214,8 @@ export class SurveysService {
         });
         return {
           questionId: q.id,
-          title: q.title,
-          type: q.type,
+          title: q.title || q.text || '',
+          type: qType,
           totalAnswers: answers.length,
           distribution: Object.entries(optionCounts).map(([option, count]) => ({
             option,
@@ -183,15 +223,15 @@ export class SurveysService {
             percentage: answers.length > 0 ? Math.round((count / answers.length) * 100) : 0,
           })),
         } satisfies ChoiceQuestionStat;
-      } else if (q.type === 'RATING') {
+      } else if (qType === 'RATING') {
         const nums = answers.map(a => Number(a)).filter(n => !isNaN(n));
         const avg = nums.length > 0 ? nums.reduce((s, n) => s + n, 0) / nums.length : 0;
         const dist: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
         nums.forEach(n => { dist[n] = (dist[n] || 0) + 1; });
         return {
           questionId: q.id,
-          title: q.title,
-          type: q.type,
+          title: q.title || q.text || '',
+          type: qType,
           totalAnswers: nums.length,
           average: Math.round(avg * 10) / 10,
           distribution: Object.entries(dist).map(([rating, count]) => ({
@@ -204,8 +244,8 @@ export class SurveysService {
         // TEXT
         return {
           questionId: q.id,
-          title: q.title,
-          type: q.type,
+          title: q.title || q.text || '',
+          type: qType,
           totalAnswers: answers.length,
           answers: answers.slice(0, 50), // 최대 50개
         } satisfies TextQuestionStat;
@@ -240,11 +280,15 @@ export class SurveysService {
 
     // BOM for Excel UTF-8 compat
     const BOM = '\uFEFF';
-    const headers = ['닉네임', '이메일', ...questions.map(q => q.title)];
+    const headers = ['닉네임', '이메일', ...questions.map(q => q.title || q.text || '')];
     const rows = responses.map(r => {
       const answers = r.answers as unknown as SurveyAnswerEntry[];
       const cells = questions.map((q, qIdx) => {
-        const found = answers.find(a => a.questionId === q.id || a.questionIndex === qIdx);
+        const found = answers.find(a =>
+          a.questionId === q.id ||
+          a.questionIndex === qIdx ||
+          a.questionId === String(qIdx)
+        );
         if (!found) return '';
         const val = found.answer;
         if (Array.isArray(val)) return val.join(', ');

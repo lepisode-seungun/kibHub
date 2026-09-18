@@ -51,11 +51,17 @@ export class ReviewsController {
     return this.reviewsService.update(id, req.userId, data);
   }
 
-  /** 리뷰 삭제 */
+  /** 리뷰 삭제 (본인) */
   @Delete(':id')
   @UseGuards(AuthGuard)
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.reviewsService.remove(id, req.userId);
+  }
+
+  /** 리뷰 삭제 (어드민) */
+  @Delete(':id/admin')
+  adminRemove(@Param('id', ParseIntPipe) id: number) {
+    return this.reviewsService.adminRemove(id);
   }
 
   /** 리뷰 읽음 처리 */

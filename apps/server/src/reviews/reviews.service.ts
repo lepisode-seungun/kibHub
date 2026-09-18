@@ -87,11 +87,29 @@ export class ReviewsService {
     return this.prisma.review.delete({ where: { id } });
   }
 
+  /** 리뷰 삭제 (어드민 — 본인 확인 없음) */
+  async adminRemove(id: number) {
+    const review = await this.prisma.review.findUnique({ where: { id } });
+    if (!review) throw new NotFoundException('리뷰를 찾을 수 없습니다.');
+
+    // 해당 부트캠프의 설문 응답도 함께 삭제
+    const survey = await this.prisma.survey.findFirst({
+      where: { bootcampId: review.bootcampId },
+    });
+    if (survey) {
+      await this.prisma.surveyResponse.deleteMany({
+        where: { surveyId: survey.id, userId: review.userId },
+      });
+    }
+
+    return this.prisma.review.delete({ where: { id } });
+  }
+
   /** 리뷰 읽음 처리 */
   async markAsRead(id: number) {
     return this.prisma.review.update({
       where: { id },
-      data: { isApproved: true },
+      data: { isRead: true },
     });
   }
 
@@ -99,7 +117,7 @@ export class ReviewsService {
   async markManyAsRead(ids: number[]) {
     return this.prisma.review.updateMany({
       where: { id: { in: ids } },
-      data: { isApproved: true },
+      data: { isRead: true },
     });
   }
 }

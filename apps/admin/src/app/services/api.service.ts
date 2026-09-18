@@ -513,7 +513,7 @@ export class ApiService {
     markManyAsRead: (ids: number[]): Promise<{ count: number }> =>
       this.patch('/reviews/bulk/read', { ids }),
     delete: (id: number): Promise<void> =>
-      this.del<void>(`/reviews/${id}`),
+      this.del<void>(`/reviews/${id}/admin`),
   };
 
   // ===== Surveys (어드민) =====
@@ -528,6 +528,8 @@ export class ApiService {
       this.get(`/surveys/${surveyId}/user/${userId}`),
     getStats: (surveyId: number): Promise<unknown> =>
       this.get(`/surveys/${surveyId}/stats`),
+    resetResponses: (surveyId: number): Promise<{ deleted: number }> =>
+      this.del(`/surveys/${surveyId}/responses`),
     exportCsvUrl: (surveyId: number): string =>
       `${BASE}/surveys/${surveyId}/export`,
   };

@@ -1,25 +1,52 @@
-<!-- 별점 통계 카드 -->
+<!-- 통계 카드 -->
 <div class="rv-stats-row">
-  <div class="rv-stat-card">
+  <!-- 평균 별점 카드 -->
+  <div class="rv-stat-card rv-stat-rating">
     <span class="rv-stat-label">평균 별점</span>
-    <span class="rv-stat-value">★ {{ avgRating() }}</span>
+    <span class="rv-rating-big">{{ avgRating() }}</span>
+    <div class="rv-rating-stars">
+      @for (s of [1,2,3,4,5]; track s) {
+        <span class="rv-star" [class.rv-star-filled]="s <= roundRating()">★</span>
+      }
+    </div>
+    <span class="rv-rating-count">총 {{ totalCount() }}건</span>
   </div>
-  <div class="rv-stat-card">
-    <span class="rv-stat-label">총 설문조사 수</span>
-    <span class="rv-stat-value">{{ totalCount() }}건</span>
+
+  <!-- 별점 분포 카드 -->
+  <div class="rv-stat-card rv-stat-chart">
+    <span class="rv-stat-label">별점 분포</span>
+    <div class="rv-vbar-chart">
+      @for (score of [1,2,3,4,5]; track score) {
+        <div class="rv-vbar-col">
+          <span class="rv-vbar-pct">{{ getRatingPctValue(score) }}%</span>
+          <div class="rv-vbar-track">
+            <div class="rv-vbar-fill" [style.height]="getRatingPercent(score)" [style.background]="getRatingBarColor(score)"></div>
+          </div>
+          <span class="rv-vbar-label">{{ score }}★</span>
+          <span class="rv-vbar-sub">{{ ratingDist()[score - 1] }}건</span>
+        </div>
+      }
+    </div>
   </div>
-  @for (count of [5,4,3,2,1]; track count) {
-    <div class="rv-stat-card rv-stat-dist">
-      <span class="rv-stat-label">{{ count }}점</span>
-      <div class="rv-dist-bar">
-        <div class="rv-dist-fill" [style.width]="getRatingBarWidth(ratingDist()[count - 1])"></div>
+
+  <!-- 설문 응답률 / 응답자 -->
+  @if (surveyStats(); as ss) {
+    <div class="rv-stat-card rv-stat-split">
+      <div class="rv-split-half">
+        <span class="rv-stat-label">설문 응답률</span>
+        <span class="rv-stat-value" style="color: #3B82F6;">{{ ss.responseRate }}%</span>
       </div>
-      <span class="rv-stat-num">{{ ratingDist()[count - 1] }}</span>
+      <div class="rv-split-divider"></div>
+      <div class="rv-split-half">
+        <span class="rv-stat-label">응답자</span>
+        <span class="rv-stat-value">{{ ss.totalResponses }}/{{ ss.totalStudents }}명</span>
+      </div>
     </div>
   }
 </div>
 
 <!-- 설문조사 테이블 -->
+@if (!showStats()) {
 <adm-data-grid
   [columns]="columns"
   [data]="reviews()"
@@ -33,6 +60,20 @@
 
   <!-- 검색바 오른쪽 버튼 -->
   <div gridActions class="flex items-center gap-2">
+    @if (activeSurveyId()) {
+      <button class="flex items-center justify-center px-3 h-10 bg-[#3C8EEE] border-none rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-white hover:bg-blue-600 transition-colors"
+              style="gap: 6px;"
+              (click)="loadSurveyStats()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18M7 16l4-4 3 3 5-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        설문 통계
+      </button>
+      <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#D4D4D8] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3F3F46] hover:bg-[#F4F4F5] transition-colors"
+              style="gap: 6px;"
+              (click)="downloadExcel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 12l-4-4m4 4l4-4M4 20h16" stroke="#3F3F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        내보내기
+      </button>
+    }
     <button class="flex items-center justify-center px-3 h-10 bg-white border border-[#3C8EEE] rounded-md cursor-pointer font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-[#3C8EEE] hover:bg-[#EBF4FF] transition-colors"
             style="gap: 10px;"
             (click)="openSurveyDrawer()">
@@ -61,6 +102,79 @@
     </div>
   </div>
 </adm-data-grid>
+}
+
+<!-- ===== 설문 통계 시각화 ===== -->
+@if (showStats() && surveyStats(); as ss) {
+  <div class="sv-stats-section">
+    <div class="sv-stats-header">
+      <button class="sv-stats-back" (click)="closeStats()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7-7m-7 7l7 7" stroke="#71717A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        목록으로
+      </button>
+      <h3 class="sv-stats-title">📊 {{ ss.title }} 통계</h3>
+      <div class="sv-stats-meta">응답률 {{ ss.responseRate }}% · {{ ss.totalResponses }}/{{ ss.totalStudents }}명</div>
+    </div>
+
+    <div class="sv-questions-grid">
+      @for (q of ss.questionStats; track q.questionId; let i = $index) {
+        <div class="sv-question-card">
+          <div class="sv-question-head">
+            <span class="sv-q-num">Q{{ i + 1 }}</span>
+            <span class="sv-q-title">{{ q.title }}</span>
+            <span class="sv-q-type">{{ q.type === 'SINGLE' || q.type === 'MULTIPLE' ? '객관식' : q.type === 'RATING' ? '별점' : '주관식' }}</span>
+          </div>
+
+          <!-- 객관식 (SINGLE / MULTIPLE) → 도넛 차트 -->
+          @if (q.type === 'SINGLE' || q.type === 'MULTIPLE') {
+            <div class="sv-choice-layout">
+              <canvas #donutCanvas class="sv-donut-canvas" width="140" height="140"></canvas>
+              <div class="sv-choice-legend">
+                @for (d of q.distribution; track d.option; let j = $index) {
+                  <div class="sv-legend-item">
+                    <span class="sv-legend-dot" [style.background]="['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#EC4899','#06B6D4','#84CC16'][j % 8]"></span>
+                    <span class="sv-legend-label">{{ d.option }}</span>
+                    <span class="sv-legend-value">{{ d.percentage }}%</span>
+                    <span class="sv-legend-sub">({{ d.count }}명)</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+          <!-- 별점 (RATING) -->
+          } @else if (q.type === 'RATING') {
+            <div class="sv-rating-layout">
+              <div class="sv-rating-avg">
+                <span class="sv-rating-num">{{ q.average }}</span>
+                <span class="sv-rating-star">/ 5.0</span>
+              </div>
+              <div class="rv-vbar-chart sv-rating-vbar">
+                @for (d of q.distribution; track d.rating) {
+                  <div class="rv-vbar-col">
+                    <span class="rv-vbar-pct">{{ d.percentage }}%</span>
+                    <div class="rv-vbar-track">
+                      <div class="rv-vbar-fill" [style.height]="getBarWidth(d.percentage)" [style.background]="getRatingBarColor(d.rating || 0)"></div>
+                    </div>
+                    <span class="rv-vbar-label">{{ d.rating }}★</span>
+                    <span class="rv-vbar-sub">{{ d.count }}건</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+          <!-- 주관식 (TEXT / 기타) -->
+          } @else {
+            <div class="sv-text-summary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="sv-text-count">{{ q.totalAnswers }}건 응답</span>
+              <span class="sv-text-hint">내보내기로 상세 확인</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
 
 <!-- ===== 설문조사 상세 드로어 ===== -->
 @if (detailDrawerOpen()) {
@@ -85,38 +199,38 @@
     <div class="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg">
       <div class="flex items-center justify-between">
         <span class="font-suit font-medium text-sm text-gray-500">작성자</span>
-        <span class="font-suit font-semibold text-base text-gray-800">{{ detailReview()?.userName }}</span>
+        <span class="font-suit font-semibold text-base text-gray-800">{{ detailReview()?.['userName'] }}</span>
       </div>
       <div class="flex items-center justify-between">
         <span class="font-suit font-medium text-sm text-gray-500">별점</span>
-        <span class="font-suit font-semibold text-base text-amber-500">{{ detailReview()?.rating }}</span>
+        <span class="font-suit font-semibold text-base text-amber-500">{{ detailReview()?.['rating'] }}</span>
       </div>
       <div class="flex items-center justify-between">
         <span class="font-suit font-medium text-sm text-gray-500">작성일</span>
-        <span class="font-suit font-medium text-sm text-gray-600">{{ detailReview()?.createdAt }}</span>
+        <span class="font-suit font-medium text-sm text-gray-600">{{ detailReview()?.['createdAt'] }}</span>
       </div>
     </div>
 
     <!-- 설문 응답 -->
     @if (detailSurvey()) {
       <div class="flex flex-col gap-3">
-        <span class="font-suit font-bold text-base text-gray-700">📋 {{ detailSurvey().title }}</span>
+        <span class="font-suit font-bold text-base text-gray-700">📋 {{ detailSurvey()?.['title'] }}</span>
 
         @if (detailAnswers().length) {
-          @for (q of detailSurvey().questions; track $index; let qIdx = $index) {
+          @for (q of detailSurvey()?.['questions'] || []; track $index; let qIdx = $index) {
             <div class="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg">
               <span class="font-suit font-semibold text-sm text-gray-600">Q{{ qIdx + 1 }}. {{ q.text }}</span>
               @if (detailAnswers()[qIdx]) {
                 @if (q.type === 'rating') {
                   <div class="flex gap-0.5">
                     @for (s of [1,2,3,4,5]; track s) {
-                      <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="s <= +detailAnswers()[qIdx].answer ? '#FBBF24' : '#D4D4D8'">
+                      <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="s <= +$any(detailAnswers()[qIdx])['answer'] ? '#FBBF24' : '#D4D4D8'">
                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                       </svg>
                     }
                   </div>
                 } @else {
-                  <span class="font-suit text-sm text-gray-800">{{ detailAnswers()[qIdx].answer }}</span>
+                  <span class="font-suit text-sm text-gray-800">{{ $any(detailAnswers()[qIdx])['answer'] }}</span>
                 }
               } @else {
                 <span class="font-suit text-sm text-gray-400">-</span>
