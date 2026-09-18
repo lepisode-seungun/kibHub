@@ -138,7 +138,7 @@ export class MyBootcampDetailPage implements OnInit {
   isBootcampEnded = computed(() => this.rawBootcampStatus() === 'ENDED');
 
   /** 종료 시에도 설문조사 탭은 숨기고 모달로만 처리 */
-  detailTabs = ['학습목록', '강의', '과제', '공지사항'];
+  detailTabs = ['학습목록', '강의', '과제', '출석/진도', '공지사항'];
   activeDetailTab = signal('학습목록');
 
   courseSections = signal<CourseSection[]>([]);
@@ -261,6 +261,9 @@ export class MyBootcampDetailPage implements OnInit {
       this.loadBootcampData(Number(this.bootcampId)).then(() => {
         // 설문 데이터 항상 로드
         this.loadSurvey();
+        // 출석 & 진도 데이터 로드
+        this.loadAttendance();
+        this.loadProgress();
         // 종료된 부트캠프 진입 시 자동으로 설문 모달 처리
         if (this.isBootcampEnded()) {
           this.handleSurveyOnEntry();
@@ -812,6 +815,113 @@ export class MyBootcampDetailPage implements OnInit {
       alert(e?.error?.message || '설문 제출에 실패했습니다.');
     }
     this.surveySubmitting.set(false);
+  }
+
+  // ===== 출석 체크 =====
+  todayCheckedIn = signal(false);
+  attendanceDates = signal<string[]>([]);
+  attendanceRate = signal(0);
+  attendanceDays = signal(0);
+  attendanceTotalDays = signal(0);
+  attendanceLoading = signal(false);
+
+  async loadAttendance(): Promise<void> {
+    const id = Number(this.bootcampId);
+    if (!id) return;
+    try {
+      const [today, records, rate] = await Promise.all([
+        this.api.attendance.checkToday(id),
+        this.api.attendance.getMyAttendance(id),
+        this.api.attendance.getRate(id),
+      ]);
+      this.todayCheckedIn.set(today.checkedIn);
+      this.attendanceDates.set(records.map(r => r.date));
+      this.attendanceRate.set(rate.rate);
+      this.attendanceDays.set(rate.attendanceDays);
+      this.attendanceTotalDays.set(rate.totalDays);
+    } catch (e) {
+      console.error('출석 데이터 로드 실패:', e);
+    }
+  }
+
+  async doCheckIn(): Promise<void> {
+    const id = Number(this.bootcampId);
+    if (!id || this.todayCheckedIn()) return;
+    this.attendanceLoading.set(true);
+    try {
+      await this.api.attendance.checkIn(id);
+      this.todayCheckedIn.set(true);
+      await this.loadAttendance();
+    } catch (e: any) {
+      if (e?.status === 409) {
+        this.todayCheckedIn.set(true);
+      } else {
+        alert('출석 체크에 실패했습니다.');
+      }
+    } finally {
+      this.attendanceLoading.set(false);
+    }
+  }
+
+  // 캘린더 헬퍼
+  calendarMonth = signal(new Date());
+
+  get calendarDays(): (number | null)[] {
+    const month = this.calendarMonth();
+    const year = month.getFullYear();
+    const m = month.getMonth();
+    const firstDay = new Date(year, m, 1).getDay();
+    const daysInMonth = new Date(year, m + 1, 0).getDate();
+    const days: (number | null)[] = [];
+    for (let i = 0; i < firstDay; i++) days.push(null);
+    for (let d = 1; d <= daysInMonth; d++) days.push(d);
+    return days;
+  }
+
+  get calendarLabel(): string {
+    const m = this.calendarMonth();
+    return `${m.getFullYear()}년 ${m.getMonth() + 1}월`;
+  }
+
+  prevMonth(): void {
+    const m = this.calendarMonth();
+    this.calendarMonth.set(new Date(m.getFullYear(), m.getMonth() - 1, 1));
+  }
+
+  nextMonth(): void {
+    const m = this.calendarMonth();
+    this.calendarMonth.set(new Date(m.getFullYear(), m.getMonth() + 1, 1));
+  }
+
+  isAttendanceDay(day: number): boolean {
+    const m = this.calendarMonth();
+    const dateStr = `${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return this.attendanceDates().includes(dateStr);
+  }
+
+  isToday(day: number): boolean {
+    const m = this.calendarMonth();
+    const now = new Date();
+    return m.getFullYear() === now.getFullYear() && m.getMonth() === now.getMonth() && day === now.getDate();
+  }
+
+  // ===== 학습 진도 =====
+  progressData = signal<{
+    totalLectures: number;
+    totalCompleted: number;
+    totalRate: number;
+    courses: { courseId: number; courseTitle: string; totalLectures: number; completedLectures: number; rate: number }[];
+  } | null>(null);
+
+  async loadProgress(): Promise<void> {
+    const id = Number(this.bootcampId);
+    if (!id) return;
+    try {
+      const data = await this.api.progress.getMyProgress(id);
+      this.progressData.set(data);
+    } catch (e) {
+      console.error('진도 데이터 로드 실패:', e);
+    }
   }
 }
 

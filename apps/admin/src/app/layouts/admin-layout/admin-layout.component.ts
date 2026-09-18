@@ -35,6 +35,7 @@ export class AdminLayoutComponent implements OnInit {
   breadcrumb = '홈';
 
   navItems: NavItem[] = [
+    { label: '대시보드', icon: 'dashboard', route: '/dashboard' },
     { label: '회원관리', icon: 'people', route: '/members' },
     {
       label: '콘텐츠 관리',
@@ -111,7 +112,12 @@ export class AdminLayoutComponent implements OnInit {
     this.syncFromUrl(this.router.url);
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd)
-    ).subscribe(e => this.syncFromUrl(e.urlAfterRedirects));
+    ).subscribe(e => {
+      this.syncFromUrl(e.urlAfterRedirects);
+      // 라우트 변경 시 콘텐츠 영역 최상단으로 스크롤
+      const content = document.querySelector('.overflow-y-auto');
+      content?.scrollTo({ top: 0 });
+    });
   }
 
   private findBestMatch(url: string): { route: string; label: string; parent?: string } | null {

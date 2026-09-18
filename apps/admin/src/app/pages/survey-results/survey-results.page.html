@@ -1,0 +1,105 @@
+@if (isLoading()) {
+  <div class="loading">로딩 중...</div>
+} @else if (stats(); as s) {
+  <div class="results-container">
+    <!-- 헤더 -->
+    <div class="results-header">
+      <div>
+        <h2 class="results-title">{{ s.title }}</h2>
+        <p class="results-subtitle">{{ s.bootcamp.name }}</p>
+      </div>
+      <button class="csv-btn" (click)="downloadCsv()">
+        <span class="material-symbols-outlined" style="font-size:18px">download</span>
+        CSV 다운로드
+      </button>
+    </div>
+
+    <!-- 응답률 -->
+    <div class="response-summary">
+      <div class="response-card">
+        <span class="response-label">전체 수강생</span>
+        <span class="response-value">{{ s.totalStudents }}명</span>
+      </div>
+      <div class="response-card">
+        <span class="response-label">응답자</span>
+        <span class="response-value">{{ s.totalResponses }}명</span>
+      </div>
+      <div class="response-card">
+        <span class="response-label">응답률</span>
+        <span class="response-value highlight">{{ s.responseRate }}%</span>
+      </div>
+      <div class="response-progress-wrapper">
+        <div class="response-progress">
+          <div class="response-progress-bar" [style.width.%]="s.responseRate"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 질문별 통계 -->
+    @for (q of s.questionStats; track q.questionId; let i = $index) {
+      <div class="question-card">
+        <div class="question-header">
+          <span class="question-number">Q{{ i + 1 }}</span>
+          <h3 class="question-title">{{ q.title }}</h3>
+          <span class="question-type">{{ q.type === 'SINGLE' ? '단일선택' : q.type === 'MULTIPLE' ? '복수선택' : q.type === 'RATING' ? '별점' : '서술형' }}</span>
+        </div>
+        <p class="question-answers-count">응답 {{ q.totalAnswers }}건</p>
+
+        <!-- SINGLE / MULTIPLE -->
+        @if (q.type === 'SINGLE' || q.type === 'MULTIPLE') {
+          <div class="distribution-list">
+            @for (d of q.distribution; track d.option; let j = $index) {
+              <div class="dist-row">
+                <span class="dist-label">{{ d.option }}</span>
+                <div class="dist-bar-wrapper">
+                  <div class="dist-bar" [style.width]="getBarWidth(d.percentage)" [style.background]="getBarColor(j)"></div>
+                </div>
+                <span class="dist-count">{{ d.count }}명</span>
+                <span class="dist-pct">{{ d.percentage }}%</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- RATING -->
+        @if (q.type === 'RATING') {
+          <div class="rating-summary">
+            <div class="rating-avg">
+              <span class="rating-avg-value">{{ q.average }}</span>
+              <span class="rating-stars">{{ getStars(q.average || 0) }}</span>
+            </div>
+            <div class="distribution-list">
+              @for (d of q.distribution; track d.rating) {
+                <div class="dist-row">
+                  <span class="dist-label">{{ d.rating }}점</span>
+                  <div class="dist-bar-wrapper">
+                    <div class="dist-bar" [style.width]="getBarWidth(d.percentage)" [style.background]="getRatingBarColor(d.rating || 0)"></div>
+                  </div>
+                  <span class="dist-count">{{ d.count }}명</span>
+                  <span class="dist-pct">{{ d.percentage }}%</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- TEXT -->
+        @if (q.type === 'TEXT') {
+          <div class="text-answers">
+            @for (a of q.answers; track $index) {
+              <div class="text-answer-item">
+                <span class="text-answer-num">{{ $index + 1 }}</span>
+                <p class="text-answer-body">{{ a }}</p>
+              </div>
+            }
+            @if (!q.answers || q.answers.length === 0) {
+              <p class="empty-text">응답이 없습니다</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <div class="loading">설문 데이터를 불러올 수 없습니다</div>
+}

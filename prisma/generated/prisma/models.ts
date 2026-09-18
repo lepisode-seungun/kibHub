@@ -10,6 +10,8 @@
  */
 export type * from './models/Admin.ts'
 export type * from './models/Applicant.ts'
+export type * from './models/Attendance.ts'
+export type * from './models/LectureProgress.ts'
 export type * from './models/Banner.ts'
 export type * from './models/Bootcamp.ts'
 export type * from './models/BootcampInstructor.ts'

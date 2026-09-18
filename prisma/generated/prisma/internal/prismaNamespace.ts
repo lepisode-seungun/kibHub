@@ -399,6 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Admin: 'Admin',
   Applicant: 'Applicant',
+  Attendance: 'Attendance',
+  LectureProgress: 'LectureProgress',
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
   BootcampInstructor: 'BootcampInstructor',
@@ -454,7 +456,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "applicant" | "banner" | "bootcamp" | "bootcampInstructor" | "challenge" | "challengeEntry" | "challengeEntryLike" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "follow" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "notification" | "partner" | "portfolio" | "portfolioFile" | "poster" | "review" | "survey" | "surveyResponse" | "siteSetting" | "user" | "userSns"
+    modelProps: "admin" | "applicant" | "attendance" | "lectureProgress" | "banner" | "bootcamp" | "bootcampInstructor" | "challenge" | "challengeEntry" | "challengeEntryLike" | "content" | "contentCategory" | "album" | "albumContent" | "comment" | "commentLike" | "report" | "course" | "lecture" | "lectureFile" | "assignment" | "assignmentFile" | "submission" | "submissionFile" | "submissionComment" | "faq" | "faqFile" | "follow" | "history" | "inquiry" | "inquiryFile" | "notice" | "noticeFile" | "notification" | "partner" | "portfolio" | "portfolioFile" | "poster" | "review" | "survey" | "surveyResponse" | "siteSetting" | "user" | "userSns"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -603,6 +605,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ApplicantCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ApplicantCountAggregateOutputType> | number
+        }
+      }
+    }
+    Attendance: {
+      payload: Prisma.$AttendancePayload<ExtArgs>
+      fields: Prisma.AttendanceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AttendanceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AttendanceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        findFirst: {
+          args: Prisma.AttendanceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AttendanceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        findMany: {
+          args: Prisma.AttendanceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+        }
+        create: {
+          args: Prisma.AttendanceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        createMany: {
+          args: Prisma.AttendanceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AttendanceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+        }
+        delete: {
+          args: Prisma.AttendanceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        update: {
+          args: Prisma.AttendanceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        deleteMany: {
+          args: Prisma.AttendanceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AttendanceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AttendanceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>[]
+        }
+        upsert: {
+          args: Prisma.AttendanceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AttendancePayload>
+        }
+        aggregate: {
+          args: Prisma.AttendanceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAttendance>
+        }
+        groupBy: {
+          args: Prisma.AttendanceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttendanceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AttendanceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AttendanceCountAggregateOutputType> | number
+        }
+      }
+    }
+    LectureProgress: {
+      payload: Prisma.$LectureProgressPayload<ExtArgs>
+      fields: Prisma.LectureProgressFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LectureProgressFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LectureProgressFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        findFirst: {
+          args: Prisma.LectureProgressFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LectureProgressFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        findMany: {
+          args: Prisma.LectureProgressFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>[]
+        }
+        create: {
+          args: Prisma.LectureProgressCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        createMany: {
+          args: Prisma.LectureProgressCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LectureProgressCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>[]
+        }
+        delete: {
+          args: Prisma.LectureProgressDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        update: {
+          args: Prisma.LectureProgressUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        deleteMany: {
+          args: Prisma.LectureProgressDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LectureProgressUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LectureProgressUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>[]
+        }
+        upsert: {
+          args: Prisma.LectureProgressUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LectureProgressPayload>
+        }
+        aggregate: {
+          args: Prisma.LectureProgressAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLectureProgress>
+        }
+        groupBy: {
+          args: Prisma.LectureProgressGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LectureProgressGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LectureProgressCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LectureProgressCountAggregateOutputType> | number
         }
       }
     }
@@ -3631,6 +3781,28 @@ export const ApplicantScalarFieldEnum = {
 export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
 
 
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bootcampId: 'bootcampId',
+  date: 'date',
+  checkedAt: 'checkedAt'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+export const LectureProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  lectureId: 'lectureId',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type LectureProgressScalarFieldEnum = (typeof LectureProgressScalarFieldEnum)[keyof typeof LectureProgressScalarFieldEnum]
+
+
 export const BannerScalarFieldEnum = {
   id: 'id',
   status: 'status',
@@ -4363,6 +4535,13 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'ContentStatus'
  */
 export type EnumContentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentStatus'>
@@ -4401,13 +4580,6 @@ export type EnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'ChallengeStatus[]'
  */
 export type ListEnumChallengeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4703,6 +4875,8 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   admin?: Prisma.AdminOmit
   applicant?: Prisma.ApplicantOmit
+  attendance?: Prisma.AttendanceOmit
+  lectureProgress?: Prisma.LectureProgressOmit
   banner?: Prisma.BannerOmit
   bootcamp?: Prisma.BootcampOmit
   bootcampInstructor?: Prisma.BootcampInstructorOmit

@@ -88,6 +88,7 @@ export class BootcampDashboardPage implements OnInit {
       this.loadBootcamp(id);
       this.loadApplicants(id);
       this.loadInstructors(id);
+      this.loadAttendance(id);
     }
   }
 
@@ -480,6 +481,80 @@ export class BootcampDashboardPage implements OnInit {
       console.error('수강생 초대 실패:', e);
       const err = e as { error?: { message?: string } };
       this.studentSearchMessage.set({ text: err?.error?.message || '수강생 초대에 실패했습니다.', type: 'error' });
+    }
+  }
+
+  // ===== 출석 현황 섹션 =====
+  attendanceSectionOpen = signal(true);
+  attendanceDate = signal(new Date().toISOString().substring(0, 10));
+  attendanceSummary = signal({ totalStudents: 0, todayAttended: 0 });
+  attendanceRawData = signal<GridRow[]>([]);
+  attendanceFilter = signal<'전체' | '출석' | '미출석'>('전체');
+  attendanceSortDir = signal<'none' | 'asc' | 'desc'>('none');
+
+  attendanceColumns: GridColumn[] = [
+    { key: 'name', label: '이름' },
+    { key: 'email', label: '이메일' },
+    { key: 'todayStatus', label: '출석 여부', width: '100px', badge: 'status', badgeStyles: {
+      '출석': 'bg-emerald-50 text-emerald-600 border border-emerald-200',
+      '미출석': 'bg-zinc-100 text-zinc-500',
+    }},
+    { key: 'totalAttendanceLabel', label: '누적 출석일', width: '120px', sortable: true },
+  ];
+
+  attendanceData = computed(() => {
+    let data = [...this.attendanceRawData()];
+    // 필터
+    const filter = this.attendanceFilter();
+    if (filter !== '전체') {
+      data = data.filter(d => d['todayStatus'] === filter);
+    }
+    // 정렬
+    const dir = this.attendanceSortDir();
+    if (dir !== 'none') {
+      data.sort((a, b) => {
+        const aVal = parseInt(String(a['totalAttendanceLabel']).replace('일', '')) || 0;
+        const bVal = parseInt(String(b['totalAttendanceLabel']).replace('일', '')) || 0;
+        return dir === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    }
+    return data;
+  });
+
+  toggleAttendanceSection(): void { this.attendanceSectionOpen.update(v => !v); }
+
+  onAttendanceDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.attendanceDate.set(input.value);
+    this.loadAttendance(this.bootcampId, input.value);
+  }
+
+  setAttendanceFilter(filter: '전체' | '출석' | '미출석'): void {
+    this.attendanceFilter.set(filter);
+  }
+
+  onAttendanceHeaderSort(event: { key: string; direction: 'asc' | 'desc' | 'none' }): void {
+    this.attendanceSortDir.set(event.direction);
+  }
+
+  async loadAttendance(bootcampId: number, date?: string): Promise<void> {
+    try {
+      const result = await this.api.attendance.getBootcampAttendance(bootcampId, date) as {
+        date: string;
+        totalStudents: number;
+        todayAttended: number;
+        students: { userId: number; name: string; email: string; todayChecked: boolean; totalAttendance: number }[];
+      };
+      this.attendanceSummary.set({ totalStudents: result.totalStudents, todayAttended: result.todayAttended });
+      this.attendanceRawData.set(result.students.map(s => ({
+        userId: s.userId,
+        name: s.name,
+        email: s.email,
+        todayStatus: s.todayChecked ? '출석' : '미출석',
+        totalAttendanceLabel: `${s.totalAttendance}일`,
+      })));
+    } catch (e) {
+      console.error('출석 현황 로드 실패:', e);
     }
   }
 }

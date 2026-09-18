@@ -401,6 +401,20 @@ export class ApiService {
   readonly dashboard = {
     stats: (): Promise<{ users: number; bootcamps: number; contents: number; inquiries: number }> =>
       this.get('/dashboard/stats'),
+    summary: (): Promise<{ users: number; contents: number; activeBootcamps: number; pendingInquiries: number }> =>
+      this.get('/admin/dashboard/summary'),
+    signupTrend: (period: 'daily' | 'weekly' | 'monthly' = 'daily', days = 30): Promise<{ date: string; count: number }[]> =>
+      this.get(`/admin/dashboard/signup-trend?period=${period}&days=${days}`),
+    contentTrend: (months = 12): Promise<{ date: string; WEBTOON: number; ILLUSTRATION: number; WRITING: number }[]> =>
+      this.get(`/admin/dashboard/content-trend?months=${months}`),
+    bootcampOverview: (): Promise<{ id: number; name: string; status: string; startDate: string | null; endDate: string | null; applicantCount: number; studentCount: number; courseCount: number }[]> =>
+      this.get('/admin/dashboard/bootcamp-overview'),
+    recentActivity: (): Promise<{
+      recentUsers: { id: number; nickname: string; email: string; createdAt: string; profileImage: string | null }[];
+      recentContents: { id: number; title: string; type: string; thumbnail: string | null; createdAt: string; author: { nickname: string } }[];
+      recentInquiries: { id: number; title: string; status: string; createdAt: string; author: { nickname: string } }[];
+    }> =>
+      this.get('/admin/dashboard/recent-activity'),
   };
 
   // ===== Upload =====
@@ -512,6 +526,10 @@ export class ApiService {
       this.del<void>(`/surveys/${id}`),
     findUserResponse: (surveyId: number, userId: number): Promise<SurveyUserResponse | null> =>
       this.get(`/surveys/${surveyId}/user/${userId}`),
+    getStats: (surveyId: number): Promise<unknown> =>
+      this.get(`/surveys/${surveyId}/stats`),
+    exportCsvUrl: (surveyId: number): string =>
+      `${BASE}/surveys/${surveyId}/export`,
   };
 
   // ===== Challenges (어드민) =====
@@ -536,5 +554,11 @@ export class ApiService {
       this.get(`/challenges/${id}/stats`),
     deleteEntry: (entryId: number): Promise<void> =>
       this.del<void>(`/challenges/entries/${entryId}`),
+  };
+
+  // ===== Attendance (관리자) =====
+  readonly attendance = {
+    getBootcampAttendance: (bootcampId: number, date?: string): Promise<unknown> =>
+      this.get(`/bootcamps/${bootcampId}/attendance/all${date ? `?date=${date}` : ''}`),
   };
 }

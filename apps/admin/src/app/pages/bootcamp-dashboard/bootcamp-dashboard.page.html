@@ -161,6 +161,47 @@
     }
   </div>
 
+  <!-- ===== 출석 현황 섹션 ===== -->
+  <div class="info-card">
+    <div class="info-header">
+      <div class="info-header-left">
+        <button class="section-toggle" (click)="toggleAttendanceSection()">
+          <span class="info-title">출석 현황</span>
+          <span class="data-count">({{ attendanceSummary().todayAttended }}/{{ attendanceSummary().totalStudents }})</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               class="toggle-arrow"
+               [class.collapsed]="!attendanceSectionOpen()">
+            <path d="M7 14l5-5 5 5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 날짜 선택 -->
+      <input type="date"
+             class="att-date-input"
+             [value]="attendanceDate()"
+             (change)="onAttendanceDateChange($event)" />
+    </div>
+
+    @if (attendanceSectionOpen()) {
+      <!-- 필터 바 -->
+      <div class="att-toolbar">
+        <div class="att-filter-group">
+          <button class="att-filter-btn" [class.active]="attendanceFilter() === '전체'" (click)="setAttendanceFilter('전체')">전체</button>
+          <button class="att-filter-btn" [class.active]="attendanceFilter() === '출석'" (click)="setAttendanceFilter('출석')">출석</button>
+          <button class="att-filter-btn" [class.active]="attendanceFilter() === '미출석'" (click)="setAttendanceFilter('미출석')">미출석</button>
+        </div>
+      </div>
+
+      <adm-data-grid
+        [columns]="attendanceColumns"
+        [data]="attendanceData()"
+        [showSearch]="false"
+        (headerSort)="onAttendanceHeaderSort($event)">
+      </adm-data-grid>
+    }
+  </div>
+
 </div>
 
 <!-- ===== 강사 초대 사이드 드로어 ===== -->

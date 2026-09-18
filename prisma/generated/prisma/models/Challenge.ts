@@ -703,10 +703,6 @@ export type EnumChallengeStatusFieldUpdateOperationsInput = {
   set?: $Enums.ChallengeStatus
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number

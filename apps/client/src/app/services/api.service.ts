@@ -466,4 +466,35 @@ export class ApiService {
     deleteEntry: (entryId: number): Promise<any> =>
       this.del(`/challenges/entries/${entryId}`),
   };
+
+  // ===== Attendance (출석 체크) =====
+  readonly attendance = {
+    checkIn: (bootcampId: number): Promise<any> =>
+      this.post(`/bootcamps/${bootcampId}/attendance/check-in`, {}),
+    getMyAttendance: (bootcampId: number): Promise<{ date: string; checkedAt: string }[]> =>
+      this.get(`/bootcamps/${bootcampId}/attendance/mine`),
+    getRate: (bootcampId: number): Promise<{ attendanceDays: number; totalDays: number; rate: number }> =>
+      this.get(`/bootcamps/${bootcampId}/attendance/rate`),
+    checkToday: (bootcampId: number): Promise<{ checkedIn: boolean }> =>
+      this.get(`/bootcamps/${bootcampId}/attendance/today`),
+  };
+
+  // ===== Progress (학습 진도) =====
+  readonly progress = {
+    markComplete: (lectureId: number): Promise<any> =>
+      this.post(`/lectures/${lectureId}/progress/complete`, {}),
+    unmarkComplete: (lectureId: number): Promise<any> =>
+      this.del(`/lectures/${lectureId}/progress/complete`),
+    isComplete: (lectureId: number): Promise<{ completed: boolean }> =>
+      this.get(`/lectures/${lectureId}/progress/status`),
+    getMyProgress: (bootcampId: number): Promise<{
+      totalLectures: number;
+      totalCompleted: number;
+      totalRate: number;
+      courses: { courseId: number; courseTitle: string; totalLectures: number; completedLectures: number; rate: number }[];
+    }> =>
+      this.get(`/bootcamps/${bootcampId}/progress/mine`),
+    getCourseProgress: (courseId: number): Promise<any> =>
+      this.get(`/courses/${courseId}/progress/mine`),
+  };
 }

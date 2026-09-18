@@ -16,6 +16,7 @@ export interface GridColumn {
   badgeStyles?: Record<string, string>; // 값별 Tailwind 클래스
   headerColor?: string;  // 헤더 텍스트 색상 오버라이드
   type?: 'text' | 'image' | 'action' | 'drag'; // 셀 렌더링 타입 (기본: text)
+  sortable?: boolean;    // 헤더 클릭으로 정렬 가능 여부
 }
 
 export type GridRow = Record<string, unknown>;
@@ -77,6 +78,13 @@ export class DataGridComponent {
   /** 체크박스 선택 변경 이벤트 */
   selectionChange = output<GridRow[]>();
 
+  /** 헤더 정렬 클릭 이벤트 */
+  headerSort = output<{ key: string; direction: 'asc' | 'desc' | 'none' }>();
+
+  /** 현재 정렬 상태 */
+  sortKey = signal<string>('');
+  sortDirection = signal<'asc' | 'desc' | 'none'>('none');
+
   /** 행 순서 변경 이벤트 (드래그앤드롭) */
   rowReorder = output<GridRow[]>();
 
@@ -127,6 +135,19 @@ export class DataGridComponent {
     }
     this.selectedIds.set(ids);
     this.emitSelection();
+  }
+
+  onHeaderClick(col: GridColumn): void {
+    if (!col.sortable) return;
+    let dir: 'asc' | 'desc';
+    if (this.sortKey() === col.key && this.sortDirection() === 'desc') {
+      dir = 'asc';
+    } else {
+      dir = 'desc';
+    }
+    this.sortKey.set(col.key);
+    this.sortDirection.set(dir);
+    this.headerSort.emit({ key: col.key, direction: dir });
   }
 
   private emitSelection(): void {

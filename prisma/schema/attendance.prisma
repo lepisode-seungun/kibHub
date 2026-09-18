@@ -1,0 +1,21 @@
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  bootcampId Int
+  date       String   // "YYYY-MM-DD" 형식 (일자별 1회)
+  checkedAt  DateTime @default(now())
+
+  @@unique([userId, bootcampId, date])
+  @@map("attendances")
+}
+
+model LectureProgress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  lectureId   Int
+  completed   Boolean  @default(true)
+  completedAt DateTime @default(now())
+
+  @@unique([userId, lectureId])
+  @@map("lecture_progresses")
+}

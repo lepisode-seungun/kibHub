@@ -685,3 +685,290 @@
   color: #A1A1AA;
   margin: 0;
 }
+
+/* ===== 출석 & 진도 섹션 ===== */
+.att-section {
+  background: #F8F7FC;
+  padding: 24px 0;
+  width: 100%;
+}
+
+.att-section-inner {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5.2vw, 40px) 0 calc(clamp(20px, 5.2vw, 40px) + 154px);
+  display: flex;
+  gap: 20px;
+}
+
+.att-card {
+  background: #fff;
+  border: 1px solid #E4E4E7;
+  border-radius: 14px;
+  padding: 20px;
+  flex: none;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.att-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.att-card-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 16px;
+  color: #27272A;
+  margin: 0;
+}
+
+.att-rate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.att-rate-label {
+  font-family: var(--font-family);
+  font-size: 12px;
+  color: #A1A1AA;
+}
+
+.att-rate-value {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 20px;
+  color: #7A48FF;
+  line-height: 1;
+}
+
+.att-checkin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7A48FF 0%, #A78BFA 100%);
+  color: #fff;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(122, 72, 255, 0.25);
+}
+
+.att-checkin-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(122, 72, 255, 0.35);
+}
+
+.att-checkin-btn:disabled { opacity: 0.7; cursor: default; transform: none; }
+
+.att-checked {
+  background: #ECFDF5;
+  color: #10B981;
+  box-shadow: none;
+}
+
+/* 미니 캘린더 */
+.att-calendar {
+  border: 1px solid #F4F4F5;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.att-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.att-cal-label {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 13px;
+  color: #27272A;
+}
+
+.att-cal-nav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.att-cal-nav:hover { background: #F4F4F5; }
+
+.att-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.att-cal-weekdays span {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 11px;
+  color: #A1A1AA;
+  padding: 4px 0;
+}
+
+.att-cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.att-cal-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  border-radius: 50%;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  color: #52525B;
+  transition: all 0.15s;
+}
+
+.att-cal-empty { visibility: hidden; }
+
+.att-cal-checked {
+  background: #7A48FF !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.att-cal-today {
+  border: 2px solid #7A48FF;
+  font-weight: 700;
+}
+
+.att-stats {
+  display: flex;
+  justify-content: center;
+}
+
+.att-stat-item {
+  font-family: var(--font-family);
+  font-size: 12px;
+  color: #71717A;
+}
+
+/* 출석 캘린더 반응형 */
+@media (min-width: 1280px) {
+  .att-card { max-width: 620px; padding: 24px; gap: 16px; }
+  .att-calendar { padding: 16px; }
+  .att-cal-day { width: 56px; height: 56px; font-size: 14px; }
+  .att-cal-weekdays span { font-size: 12px; }
+  .att-cal-label { font-size: 14px; }
+  .att-checkin-btn { padding: 10px; font-size: 14px; }
+}
+
+@media (min-width: 1600px) {
+  .att-card { max-width: 720px; padding: 28px; gap: 18px; }
+  .att-calendar { padding: 20px; }
+  .att-cal-day { width: 64px; height: 64px; font-size: 15px; }
+  .att-cal-weekdays span { font-size: 13px; padding: 6px 0; }
+  .att-cal-label { font-size: 15px; }
+  .att-checkin-btn { padding: 12px; font-size: 15px; }
+}
+
+/* 학습 진도 */
+.att-total-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.att-progress-bar {
+  flex: 1;
+  height: 12px;
+  background: #F4F4F5;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.att-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7A48FF, #A78BFA);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.att-progress-label {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  color: #71717A;
+  white-space: nowrap;
+}
+
+.att-course-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.att-course-name {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 13px;
+  color: #3F3F46;
+}
+
+.att-course-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.att-course-bar {
+  flex: 1;
+  height: 8px;
+  background: #F4F4F5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.att-course-fill {
+  height: 100%;
+  background: #8B5CF6;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.att-course-count {
+  font-family: var(--font-family);
+  font-size: 12px;
+  color: #A1A1AA;
+  white-space: nowrap;
+}
+
+@media (max-width: 1600px) {
+  .att-section-inner { padding: 0 clamp(20px, 5.2vw, 100px); }
+}
+@media (max-width: 1200px) {
+  .att-section-inner { padding: 0 40px; }
+}
+@media (max-width: 768px) {
+  .att-section-inner { padding: 0 20px; flex-direction: column; }
+}
+

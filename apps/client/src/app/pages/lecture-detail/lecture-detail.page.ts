@@ -74,6 +74,7 @@ export class LectureDetailPage implements OnInit, OnDestroy {
       this.navItems = [];
       if (this.lectureId) {
         await this.loadLecture(Number(this.lectureId));
+        this.checkCompletionStatus();
       }
     });
     this.route.queryParamMap.subscribe((qp) => {
@@ -271,5 +272,37 @@ export class LectureDetailPage implements OnInit, OnDestroy {
 
   downloadFile(file: LearningFile): void {
     _downloadFile(file.url, file.name);
+  }
+
+  // ===== 수강 완료 체크 =====
+  isCompleted = signal(false);
+  completionLoading = signal(false);
+
+  private async checkCompletionStatus(): Promise<void> {
+    const id = Number(this.lectureId);
+    if (!id) return;
+    try {
+      const status = await this.api.progress.isComplete(id);
+      this.isCompleted.set(status.completed);
+    } catch { /* ignore */ }
+  }
+
+  async toggleComplete(): Promise<void> {
+    const id = Number(this.lectureId);
+    if (!id) return;
+    this.completionLoading.set(true);
+    try {
+      if (this.isCompleted()) {
+        await this.api.progress.unmarkComplete(id);
+        this.isCompleted.set(false);
+      } else {
+        await this.api.progress.markComplete(id);
+        this.isCompleted.set(true);
+      }
+    } catch {
+      alert('수강 완료 처리에 실패했습니다.');
+    } finally {
+      this.completionLoading.set(false);
+    }
   }
 }

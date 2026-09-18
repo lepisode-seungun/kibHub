@@ -1,0 +1,201 @@
+<div class="dashboard-container">
+  <!-- 요약 카드 -->
+  <div class="summary-grid">
+    @for (card of summaryCards(); track card.label; let i = $index) {
+      <div class="summary-card" (click)="navigateCard(card)">
+        <div class="summary-card-accent" [style.background]="card.color"></div>
+        <div class="summary-card-body">
+          <div class="summary-top">
+            <div class="summary-icon-mono">
+              @if (i === 0) {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="#71717A"/></svg>
+              } @else if (i === 1) {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" fill="#71717A"/></svg>
+              } @else if (i === 2) {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#71717A"/></svg>
+              } @else {
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z" fill="#71717A"/></svg>
+              }
+            </div>
+            <svg class="summary-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="#D4D4D8"/>
+            </svg>
+          </div>
+          <div class="summary-bottom">
+            <span class="summary-value">{{ card.value | number }}</span>
+            <span class="summary-label">{{ card.label }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- 차트 영역 -->
+  <div class="charts-grid">
+    <!-- 가입자 추이 -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">가입자 추이</h3>
+        <div class="period-tabs">
+          <button
+            class="period-tab"
+            [class.active]="signupPeriod() === 'daily'"
+            (click)="changeSignupPeriod('daily')"
+          >일별</button>
+          <button
+            class="period-tab"
+            [class.active]="signupPeriod() === 'weekly'"
+            (click)="changeSignupPeriod('weekly')"
+          >주별</button>
+          <button
+            class="period-tab"
+            [class.active]="signupPeriod() === 'monthly'"
+            (click)="changeSignupPeriod('monthly')"
+          >월별</button>
+        </div>
+      </div>
+      <div class="chart-body">
+        @if (signupData().length === 0 && !isLoading()) {
+          <div class="chart-empty">데이터가 없습니다</div>
+        }
+        <canvas #signupChart class="chart-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- 콘텐츠 업로드 추이 -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">콘텐츠 업로드 추이</h3>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#38C4D1"></span>웹툰</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#D37FC8"></span>그림</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#7B7EDF"></span>글</span>
+        </div>
+      </div>
+      <div class="chart-body" style="position:relative;">
+        @if (contentData().length === 0 && !isLoading()) {
+          <div class="chart-empty">데이터가 없습니다</div>
+        }
+        <canvas #contentChart class="chart-canvas"
+          (mousemove)="onContentChartHover($event)"
+          (mouseleave)="hideContentTooltip()"
+        ></canvas>
+        @if (contentTooltip().visible) {
+          <div class="chart-tooltip"
+            [style.left.px]="contentTooltip().x"
+            [style.top.px]="contentTooltip().y"
+          >
+            <div class="tooltip-date">{{ contentTooltip().date }}</div>
+            <div class="tooltip-row"><span class="tooltip-dot" style="background:#38C4D1"></span>웹툰: {{ contentTooltip().webtoon }}건</div>
+            <div class="tooltip-row"><span class="tooltip-dot" style="background:#D37FC8"></span>그림: {{ contentTooltip().illustration }}건</div>
+            <div class="tooltip-row"><span class="tooltip-dot" style="background:#7B7EDF"></span>글: {{ contentTooltip().writing }}건</div>
+            <div class="tooltip-total">합계: {{ contentTooltip().total }}건</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- 부트캠프 현황 -->
+  <div class="bootcamp-section">
+    <h3 class="section-title" style="padding: 24px 24px 0;">부트캠프 현황</h3>
+    <adm-data-grid
+      [columns]="bootcampGridColumns"
+      [data]="bootcampGridData()"
+      [showSearch]="false"
+      [pageSizeOptions]="[5, 10]"
+      (rowClick)="onBootcampRowClick($event)"
+    ></adm-data-grid>
+  </div>
+
+  <!-- 최근 활동 -->
+  <div class="section-card">
+    <div class="recent-header">
+      <h3 class="section-title">최근 활동</h3>
+      <div class="recent-tabs">
+        <button
+          class="recent-tab"
+          [class.active]="activeRecentTab() === 'users'"
+          (click)="selectRecentTab('users')"
+        >최근 가입자</button>
+        <button
+          class="recent-tab"
+          [class.active]="activeRecentTab() === 'contents'"
+          (click)="selectRecentTab('contents')"
+        >최근 콘텐츠</button>
+        <button
+          class="recent-tab"
+          [class.active]="activeRecentTab() === 'inquiries'"
+          (click)="selectRecentTab('inquiries')"
+        >최근 문의</button>
+      </div>
+    </div>
+
+    <!-- 최근 가입자 -->
+    @if (activeRecentTab() === 'users') {
+      <div class="recent-list">
+        @for (u of recentUsers(); track u.id) {
+          <div class="recent-item clickable" (click)="navigateToDetail('members', u.id)">
+            <div class="recent-avatar" [style.background]="u.profileImage ? 'transparent' : '#E4E4E7'">
+              @if (u.profileImage) {
+                <img [src]="u.profileImage" alt="" class="avatar-img" />
+              } @else {
+                <span class="avatar-initial">{{ getInitial(u.nickname) }}</span>
+              }
+            </div>
+            <div class="recent-info">
+              <span class="recent-name">{{ u.nickname || '(닉네임 없음)' }}</span>
+              <span class="recent-sub">{{ u.email }}</span>
+            </div>
+            <span class="recent-date">{{ formatDate(u.createdAt) }}</span>
+          </div>
+        }
+        @if (recentUsers().length === 0) {
+          <div class="empty-recent">최근 가입자가 없습니다</div>
+        }
+      </div>
+    }
+
+    <!-- 최근 콘텐츠 -->
+    @if (activeRecentTab() === 'contents') {
+      <div class="recent-list">
+        @for (c of recentContents(); track c.id) {
+          <div class="recent-item clickable" (click)="navigateToDetail('content', c.id)">
+            <span class="type-badge" [ngClass]="{
+              'type-webtoon': c.type === 'WEBTOON',
+              'type-illustration': c.type === 'ILLUSTRATION',
+              'type-writing': c.type === 'WRITING'
+            }">{{ getTypeLabel(c.type) }}</span>
+            <div class="recent-info">
+              <span class="recent-name">{{ c.title }}</span>
+              <span class="recent-sub">{{ c.author.nickname }}</span>
+            </div>
+            <span class="recent-date">{{ formatDate(c.createdAt) }}</span>
+          </div>
+        }
+        @if (recentContents().length === 0) {
+          <div class="empty-recent">최근 콘텐츠가 없습니다</div>
+        }
+      </div>
+    }
+
+    <!-- 최근 문의 -->
+    @if (activeRecentTab() === 'inquiries') {
+      <div class="recent-list">
+        @for (q of recentInquiries(); track q.id) {
+          <div class="recent-item clickable" (click)="navigateToInquiry(q.id)">
+            <span class="status-badge text-xs" [ngClass]="getInquiryStatusClass(q.status)">{{ getInquiryStatusLabel(q.status) }}</span>
+            <div class="recent-info">
+              <span class="recent-name">{{ q.title }}</span>
+              <span class="recent-sub">{{ q.author.nickname }}</span>
+            </div>
+            <span class="recent-date">{{ formatDate(q.createdAt) }}</span>
+          </div>
+        }
+        @if (recentInquiries().length === 0) {
+          <div class="empty-recent">최근 문의가 없습니다</div>
+        }
+      </div>
+    }
+  </div>
+</div>

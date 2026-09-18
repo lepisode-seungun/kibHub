@@ -28,6 +28,16 @@ export type Admin = Prisma.AdminModel
  */
 export type Applicant = Prisma.ApplicantModel
 /**
+ * Model Attendance
+ * 
+ */
+export type Attendance = Prisma.AttendanceModel
+/**
+ * Model LectureProgress
+ * 
+ */
+export type LectureProgress = Prisma.LectureProgressModel
+/**
  * Model Banner
  * 
  */

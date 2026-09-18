@@ -50,6 +50,8 @@
     </div>
   </section>
 
+
+
   <!-- ===== 탭 네비게이션 ===== -->
   <nav class="mbd-tab-nav">
     <div class="mbd-tab-nav-inner w-full">
@@ -409,6 +411,93 @@
         <p class="mbd-empty-text">등록된 공지사항이 없습니다.</p>
       </div>
       }
+    }
+
+    <!-- ===== 출석/진도 탭 ===== -->
+    @if (activeDetailTab() === '출석/진도') {
+      <div class="flex md:flex-row flex-col gap-4 w-full items-start">
+        <!-- 출석 체크 -->
+        <div class="att-card">
+          <div class="att-card-header">
+            <h3 class="att-card-title">출석 체크</h3>
+            <div class="att-rate">
+              <span class="att-rate-label">출석률</span>
+              <span class="att-rate-value">{{ attendanceRate() }}%</span>
+            </div>
+          </div>
+          <button
+            class="att-checkin-btn"
+            [class.att-checked]="todayCheckedIn()"
+            [disabled]="todayCheckedIn() || attendanceLoading()"
+            (click)="doCheckIn()"
+          >
+            @if (todayCheckedIn()) {
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#10B981"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              출석 완료
+            } @else {
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              출석하기
+            }
+          </button>
+          <!-- 미니 캘린더 -->
+          <div class="att-calendar">
+            <div class="att-cal-header">
+              <button class="att-cal-nav" (click)="prevMonth()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+              </button>
+              <span class="att-cal-label">{{ calendarLabel }}</span>
+              <button class="att-cal-nav" (click)="nextMonth()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+              </button>
+            </div>
+            <div class="att-cal-weekdays">
+              <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+            <div class="att-cal-days">
+              @for (day of calendarDays; track $index) {
+                @if (day === null) {
+                  <span class="att-cal-day att-cal-empty"></span>
+                } @else {
+                  <span class="att-cal-day"
+                    [class.att-cal-checked]="isAttendanceDay(day)"
+                    [class.att-cal-today]="isToday(day)"
+                  >{{ day }}</span>
+                }
+              }
+            </div>
+          </div>
+          <div class="att-stats">
+            <span class="att-stat-item">출석 {{ attendanceDays() }}일 / {{ attendanceTotalDays() }}일</span>
+          </div>
+        </div>
+
+        <!-- 학습 진도 -->
+        @if (progressData(); as pd) {
+          <div class="att-card att-progress-card">
+            <div class="att-card-header">
+              <h3 class="att-card-title">학습 진도</h3>
+              <span class="att-rate-value">{{ pd.totalRate }}%</span>
+            </div>
+            <div class="att-total-progress">
+              <div class="att-progress-bar">
+                <div class="att-progress-fill" [style.width.%]="pd.totalRate"></div>
+              </div>
+              <span class="att-progress-label">{{ pd.totalCompleted }}/{{ pd.totalLectures }} 완료</span>
+            </div>
+            @for (course of pd.courses; track course.courseId) {
+              <div class="att-course-row">
+                <span class="att-course-name">{{ course.courseTitle }}</span>
+                <div class="att-course-bar-wrap">
+                  <div class="att-course-bar">
+                    <div class="att-course-fill" [style.width.%]="course.rate"></div>
+                  </div>
+                  <span class="att-course-count">{{ course.completedLectures }}/{{ course.totalLectures }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
     }
 
     </div>

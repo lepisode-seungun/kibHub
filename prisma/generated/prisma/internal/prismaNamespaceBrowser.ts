@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Admin: 'Admin',
   Applicant: 'Applicant',
+  Attendance: 'Attendance',
+  LectureProgress: 'LectureProgress',
   Banner: 'Banner',
   Bootcamp: 'Bootcamp',
   BootcampInstructor: 'BootcampInstructor',
@@ -135,6 +137,28 @@ export const ApplicantScalarFieldEnum = {
 } as const
 
 export type ApplicantScalarFieldEnum = (typeof ApplicantScalarFieldEnum)[keyof typeof ApplicantScalarFieldEnum]
+
+
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bootcampId: 'bootcampId',
+  date: 'date',
+  checkedAt: 'checkedAt'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+export const LectureProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  lectureId: 'lectureId',
+  completed: 'completed',
+  completedAt: 'completedAt'
+} as const
+
+export type LectureProgressScalarFieldEnum = (typeof LectureProgressScalarFieldEnum)[keyof typeof LectureProgressScalarFieldEnum]
 
 
 export const BannerScalarFieldEnum = {

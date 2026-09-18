@@ -1,5 +1,6 @@
 import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ConfirmDialogComponent, DialogDetailRow } from '../../components/confirm-dialog/confirm-dialog.component';
@@ -46,6 +47,7 @@ function toInquiryRow(i: Inquiry): InquiryRow {
 export class SupportInquiriesPage implements OnInit {
   private toast = inject(ToastService);
   private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
 
   columns: GridColumn[] = [
     { key: 'id', label: '순번', width: '72px' },
@@ -73,6 +75,13 @@ export class SupportInquiriesPage implements OnInit {
     try {
       const data = await this.api.inquiries.findAll();
       this.inquiries.set(data.map(toInquiryRow));
+
+      // query param으로 드로어 자동 오픈
+      const openId = this.route.snapshot.queryParamMap.get('open');
+      if (openId) {
+        const target = this.inquiries().find(i => i.id === Number(openId));
+        if (target) this.openReplyDrawer(target);
+      }
     } catch (e) {
       console.error('문의 로드 실패:', e);
     }

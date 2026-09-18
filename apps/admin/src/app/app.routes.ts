@@ -259,13 +259,22 @@ export const appRoutes: Route[] = [
           ),
       },
       {
+        path: 'bootcamp/home/surveys/:surveyId/results',
+        loadComponent: () =>
+          import('./pages/survey-results/survey-results.page').then(
+            (m) => m.SurveyResultsPage
+          ),
+      },
+      {
         path: 'dashboard',
-        redirectTo: 'members',
-        pathMatch: 'full',
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard.page').then(
+            (m) => m.DashboardPage
+          ),
       },
       {
         path: '',
-        redirectTo: 'members',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
     ],

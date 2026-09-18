@@ -25,6 +25,9 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { ChallengesModule } from './challenges/challenges.module';
+import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { ProgressModule } from './progress/progress.module';
 
 @Module({
   imports: [
@@ -54,6 +57,9 @@ import { ChallengesModule } from './challenges/challenges.module';
     ReviewsModule,
     SurveysModule,
     ChallengesModule,
+    AdminDashboardModule,
+    AttendanceModule,
+    ProgressModule,
   ],
 })
 export class AppModule {}
