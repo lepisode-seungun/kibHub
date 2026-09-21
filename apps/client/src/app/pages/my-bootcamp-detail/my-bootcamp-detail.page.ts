@@ -137,6 +137,39 @@ export class MyBootcampDetailPage implements OnInit {
   /** 부트캠프 종료 여부 (ENDED만 — CLOSED(마감)은 설문 안 띄움) */
   isBootcampEnded = computed(() => this.rawBootcampStatus() === 'ENDED');
 
+  /** 부트캠프 기간 (날짜 기반 출석 제한) */
+  bootcampStartDate = signal<string | null>(null);
+  bootcampEndDate = signal<string | null>(null);
+
+  /**
+   * 출석 가능 상태:
+   * 'before' = 시작일 이전
+   * 'active' = 기간 내
+   * 'after'  = 종료일 이후
+   * 'ended'  = status ENDED
+   */
+  attendanceStatus = computed<'before' | 'active' | 'after' | 'ended'>(() => {
+    if (this.isBootcampEnded()) return 'ended';
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const start = this.bootcampStartDate();
+    if (start) {
+      const s = new Date(start);
+      s.setHours(0, 0, 0, 0);
+      if (now < s) return 'before';
+    }
+    const end = this.bootcampEndDate();
+    if (end) {
+      const e = new Date(end);
+      e.setHours(23, 59, 59, 999);
+      if (now > e) return 'after';
+    }
+    return 'active';
+  });
+
+  /** 출석 가능 여부 */
+  canCheckIn = computed(() => this.attendanceStatus() === 'active');
+
   /** 종료 시에도 설문조사 탭은 숨기고 모달로만 처리 */
   detailTabs = ['학습목록', '강의', '과제', '출석/진도', '공지사항'];
   activeDetailTab = signal('학습목록');
@@ -297,6 +330,10 @@ export class MyBootcampDetailPage implements OnInit {
       };
       this.dateRange.set(bootcamp.startDate && bootcamp.endDate
         ? `${fmt(bootcamp.startDate)} ~ ${fmt(bootcamp.endDate)}` : '');
+
+      // 출석 기간 검증용 날짜 저장
+      this.bootcampStartDate.set(bootcamp.startDate || null);
+      this.bootcampEndDate.set(bootcamp.endDate || null);
 
       // 유저의 지원 상태 가져오기 (강사/관리자는 스킵)
       const user = this.authService.currentUser();
@@ -825,6 +862,7 @@ export class MyBootcampDetailPage implements OnInit {
   attendanceRate = signal(0);
   attendanceDays = signal(0);
   attendanceTotalDays = signal(0);
+  attendanceElapsedDays = signal(0);
   attendanceLoading = signal(false);
 
   async loadAttendance(): Promise<void> {
@@ -841,6 +879,7 @@ export class MyBootcampDetailPage implements OnInit {
       this.attendanceRate.set(rate.rate);
       this.attendanceDays.set(rate.attendanceDays);
       this.attendanceTotalDays.set(rate.totalDays);
+      this.attendanceElapsedDays.set(rate.elapsedDays || rate.totalDays);
     } catch (e) {
       console.error('출석 데이터 로드 실패:', e);
     }

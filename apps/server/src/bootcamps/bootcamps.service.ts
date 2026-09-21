@@ -39,7 +39,10 @@ export class BootcampsService {
 
   async update(id: number, data: Partial<CreateBootcampDto>) {
     // 현재 상태 확인 (변경 전)
-    const current = await this.prisma.bootcamp.findUnique({ where: { id }, select: { status: true } });
+    const current = await this.prisma.bootcamp.findUnique({
+      where: { id },
+      select: { status: true, startDate: true, endDate: true },
+    });
     const updated = await this.prisma.bootcamp.update({ where: { id }, data: data as Prisma.BootcampUpdateInput });
 
     const dataRecord = data as Record<string, unknown>;
@@ -76,6 +79,40 @@ export class BootcampsService {
         // 리뷰(별점/설문) 초기화
         const reviewDeleted = await this.prisma.review.deleteMany({ where: { bootcampId: id } });
         console.log(`[bootcamp ${id}] 리뷰 ${reviewDeleted.count}건 삭제`);
+      }
+    }
+
+    // 날짜 변경 시 범위 밖 출석 기록 자동 정리
+    const newStart = dataRecord['startDate'] as string | undefined;
+    const newEnd = dataRecord['endDate'] as string | undefined;
+    const startChanged = newStart && newStart !== current?.startDate?.toISOString();
+    const endChanged = newEnd && newEnd !== current?.endDate?.toISOString();
+
+    if (startChanged || endChanged) {
+      const effectiveStart = newStart ? new Date(newStart) : current?.startDate;
+      const effectiveEnd = newEnd ? new Date(newEnd) : current?.endDate;
+
+      if (effectiveStart || effectiveEnd) {
+        const outOfRangeFilter: Prisma.AttendanceWhereInput = {
+          bootcampId: id,
+          OR: [],
+        };
+
+        if (effectiveStart) {
+          const startStr = effectiveStart.toISOString().substring(0, 10);
+          (outOfRangeFilter.OR as Prisma.AttendanceWhereInput[]).push({ date: { lt: startStr } });
+        }
+        if (effectiveEnd) {
+          const endStr = effectiveEnd.toISOString().substring(0, 10);
+          (outOfRangeFilter.OR as Prisma.AttendanceWhereInput[]).push({ date: { gt: endStr } });
+        }
+
+        if ((outOfRangeFilter.OR as Prisma.AttendanceWhereInput[]).length > 0) {
+          const cleaned = await this.prisma.attendance.deleteMany({ where: outOfRangeFilter });
+          if (cleaned.count > 0) {
+            console.log(`[bootcamp ${id}] 범위 밖 출석 ${cleaned.count}건 정리 완료`);
+          }
+        }
       }
     }
 

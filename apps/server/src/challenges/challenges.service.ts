@@ -241,6 +241,31 @@ export class ChallengesService {
 
   /** 상태 변경 */
   async updateStatus(id: number, status: string) {
+    // ENDED → ACTIVE 전환 시 출품작 + 좋아요 전부 초기화 (빈 상태)
+    console.log(`[updateStatus] id=${id}, newStatus=${status}`);
+    if (status === 'ACTIVE') {
+      const challenge = await this.prisma.challenge.findUnique({ where: { id }, select: { status: true } });
+      if (challenge?.status === 'ENDED') {
+        // 해당 챌린지의 entry ID 목록 조회
+        const entries = await this.prisma.challengeEntry.findMany({
+          where: { challengeId: id },
+          select: { id: true },
+        });
+        const entryIds = entries.map(e => e.id);
+
+        if (entryIds.length > 0) {
+          // 좋아요 먼저 삭제
+          await this.prisma.challengeEntryLike.deleteMany({
+            where: { entryId: { in: entryIds } },
+          });
+          // 출품작 삭제
+          await this.prisma.challengeEntry.deleteMany({
+            where: { id: { in: entryIds } },
+          });
+        }
+      }
+    }
+
     return this.prisma.challenge.update({
       where: { id },
       data: { status: status as any },

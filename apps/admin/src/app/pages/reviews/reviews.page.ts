@@ -163,7 +163,7 @@ export class ReviewsPage implements OnInit {
   }
 
   // ===== 도넛 차트 =====
-  private readonly CHART_COLORS = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#06B6D4', '#84CC16'];
+  private readonly CHART_COLORS = ['#EF4444', '#F97316', '#FBBF24', '#34D399', '#3B82F6', '#8B5CF6', '#06B6D4', '#84CC16'];
   private canvasDataMap = new Map<HTMLCanvasElement, { slices: { start: number; end: number; idx: number }[]; distribution: { option: string; count: number; percentage: number }[]; total: number }>();
   private boundCanvases = new Set<HTMLCanvasElement>();
 

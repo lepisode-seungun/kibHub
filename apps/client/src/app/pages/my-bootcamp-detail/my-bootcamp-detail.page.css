@@ -687,6 +687,63 @@
 }
 
 /* ===== 출석 & 진도 섹션 ===== */
+
+/* 종료 안내 배너 */
+.att-ended-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  width: 100%;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.att-ended-banner span {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  color: #92400E;
+}
+
+.att-ended-banner svg {
+  flex-shrink: 0;
+}
+
+/* 시작 전 안내 배너 (파란색) */
+.att-before-banner {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+}
+.att-before-banner span {
+  color: #1E40AF;
+}
+
+/* 종료된 부트캠프 출석 체크 불가 */
+.att-ended-checkin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #F4F4F5;
+}
+
+.att-ended-checkin span {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 13px;
+  color: #A1A1AA;
+}
+
+.att-ended-checkin svg {
+  flex-shrink: 0;
+}
+
 .att-section {
   background: #F8F7FC;
   padding: 24px 0;
@@ -864,12 +921,17 @@
 .att-stats {
   display: flex;
   justify-content: center;
+  gap: 12px;
 }
 
 .att-stat-item {
   font-family: var(--font-family);
   font-size: 12px;
   color: #71717A;
+}
+
+.att-stat-elapsed {
+  color: #3B82F6;
 }
 
 /* 출석 캘린더 반응형 */

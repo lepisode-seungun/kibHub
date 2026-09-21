@@ -7,6 +7,41 @@ import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
 import { ImageViewerComponent, ViewerImage } from '../../components/image-viewer/image-viewer.component';
 
+interface Challenge {
+  id: number;
+  title: string;
+  description?: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  thumbnail?: string;
+  bannerImage?: string;
+  referenceImages?: string[];
+  rules?: string;
+  category?: string;
+  difficulty?: string;
+  prize?: string;
+  entryCount?: number;
+  _count?: { entries: number };
+}
+
+interface ChallengeEntry {
+  id: number;
+  title: string;
+  description?: string;
+  images: string[];
+  likeCount: number;
+  isLiked?: boolean;
+  isWinner?: boolean;
+  rank?: number;
+  user?: { id: number; nickname: string; profileImage?: string };
+  createdAt: string;
+}
+
+interface UploadResult {
+  url: string;
+}
+
 @Component({
   selector: 'app-challenge-detail-page',
   standalone: true,
@@ -22,10 +57,10 @@ export class ChallengeDetailPage implements OnInit {
   private location = inject(Location);
 
   challengeId = 0;
-  challenge = signal<any>(null);
-  entries = signal<any[]>([]);
-  winners = signal<any[]>([]);
-  myEntry = signal<any>(null);
+  challenge = signal<Challenge | null>(null);
+  entries = signal<ChallengeEntry[]>([]);
+  winners = signal<ChallengeEntry[]>([]);
+  myEntry = signal<ChallengeEntry | null>(null);
   sortMode = signal<string>('latest');
   loading = signal(true);
   winnerModalOpen = signal(false);
@@ -54,7 +89,7 @@ export class ChallengeDetailPage implements OnInit {
       ]);
       this.challenge.set(challenge);
       this.entries.set(entries);
-      const w = entries.filter((e: any) => e.isWinner).sort((a: any, b: any) => (a.rank || 99) - (b.rank || 99));
+      const w = entries.filter((e: ChallengeEntry) => e.isWinner).sort((a: ChallengeEntry, b: ChallengeEntry) => (a.rank || 99) - (b.rank || 99));
       this.winners.set(w);
       if (challenge.status === 'ENDED' && w.length > 0) {
         this.openWinnerModal();
@@ -71,7 +106,7 @@ export class ChallengeDetailPage implements OnInit {
     this.loading.set(false);
   }
 
-  async toggleLike(entry: any): Promise<void> {
+  async toggleLike(entry: ChallengeEntry): Promise<void> {
     const c = this.challenge();
     if (c?.status === 'ENDED') return;
     if (!this.authService.isLoggedIn()) {
@@ -127,7 +162,7 @@ export class ChallengeDetailPage implements OnInit {
   }
 
   // ===== 이미지 모달 =====
-  modalEntry = signal<any>(null);
+  modalEntry = signal<ChallengeEntry | null>(null);
   modalImageIndex = signal(0);
   entryViewerImages = computed<ViewerImage[]>(() => {
     const entry = this.modalEntry();
@@ -135,7 +170,7 @@ export class ChallengeDetailPage implements OnInit {
     return entry.images.map((url: string) => ({ gradient: '', url }));
   });
 
-  openModal(entry: any): void {
+  openModal(entry: ChallengeEntry): void {
     this.modalEntry.set(entry);
     this.modalImageIndex.set(0);
     document.body.style.overflow = 'hidden';
@@ -183,7 +218,8 @@ export class ChallengeDetailPage implements OnInit {
   nextRefImage(): void {
     const c = this.challenge();
     if (!c?.referenceImages) return;
-    this.refViewerIndex.update(i => Math.min(c.referenceImages.length - 1, i + 1));
+    const imgs = c.referenceImages;
+    this.refViewerIndex.update(i => Math.min(imgs.length - 1, i + 1));
   }
 
   // ===== 제출 폼 =====
@@ -246,7 +282,7 @@ export class ChallengeDetailPage implements OnInit {
 
       if (hasNewFiles) {
         const uploadResults = await this.api.upload.multiple(this.submitFiles(), 'challenges');
-        imageUrls = [...imageUrls, ...uploadResults.map((r: any) => r.url)];
+        imageUrls = [...imageUrls, ...uploadResults.map((r: UploadResult) => r.url)];
       }
 
       if (this.isEditMode()) {
@@ -268,8 +304,9 @@ export class ChallengeDetailPage implements OnInit {
 
       this.closeSubmitForm();
       await this.loadData();
-    } catch (e: any) {
-      alert(e?.error?.message || (this.isEditMode() ? '수정 실패' : '제출 실패'));
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      alert(err?.error?.message || (this.isEditMode() ? '수정 실패' : '제출 실패'));
     }
     this.submitting.set(false);
   }
@@ -304,8 +341,9 @@ export class ChallengeDetailPage implements OnInit {
       this.myEntry.set(null);
       this.closeDeleteModal();
       await this.loadData();
-    } catch (e: any) {
-      alert(e?.error?.message || '삭제 실패');
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      alert(err?.error?.message || '삭제 실패');
     }
   }
 }

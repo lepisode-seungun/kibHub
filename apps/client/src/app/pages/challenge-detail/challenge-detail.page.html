@@ -26,11 +26,15 @@
       </div>
       <h1 class="cd-hero-title">{{ c.title }}</h1>
       <div class="cd-hero-meta">
-        <span>📅 {{ formatDate(c.startDate) }} ~ {{ formatDate(c.endDate) }}</span>
-        <span>👥 {{ c.entryCount }}명 참여</span>
-        @if (c.prize) {
-          <span>상품: {{ c.prize }}</span>
-        }
+        <div class="cd-hero-meta-row">
+          <span>📅 {{ formatDate(c.startDate) }} ~ {{ formatDate(c.endDate) }}</span>
+        </div>
+        <div class="cd-hero-meta-row">
+          <span>👥 {{ c.entryCount }}명 참여</span>
+          @if (c.prize) {
+            <span>🏆 {{ c.prize }}</span>
+          }
+        </div>
       </div>
     </div>
   </div>
@@ -115,7 +119,7 @@
                   <p class="cd-entry-desc">{{ entry.description }}</p>
                 }
                 <div class="flex justify-between items-center w-full">
-                  <span class="font-suit font-medium text-xs text-zinc-400">{{ entry.images?.length || 0 }}장</span>
+                  <span class="font-suit font-medium text-xs text-zinc-400">{{ entry.images.length || 0 }}장</span>
                   <button class="cd-like-btn" [class.liked]="entry.isLiked" [class.has-likes]="entry.likeCount > 0" [class.own]="myEntry()?.id === entry.id" [disabled]="myEntry()?.id === entry.id" (click)="toggleLike(entry); $event.stopPropagation()">
                     <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="entry.isLiked ? 'currentColor' : 'none'">
                       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
@@ -259,7 +263,7 @@
           @for (w of winners(); track w.id) {
             <div class="winner-modal-card" [class.winner-gold]="w.rank === 1"
                  [class.winner-silver]="w.rank === 2" [class.winner-bronze]="w.rank === 3">
-              <div class="winner-modal-rank">{{ getRankEmoji(w.rank) }}</div>
+              <div class="winner-modal-rank">{{ getRankEmoji(w.rank || 0) }}</div>
               <div class="winner-modal-content">
                 @if (w.images && w.images.length > 0) {
                   <img [src]="w.images[0]" alt="" class="winner-modal-img" />

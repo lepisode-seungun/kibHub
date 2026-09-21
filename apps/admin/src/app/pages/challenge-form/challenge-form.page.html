@@ -56,11 +56,13 @@
       <div class="flex flex-col gap-2 flex-1">
         <label for="startDate" class="font-suit font-semibold text-sm text-zinc-700">시작일 <span class="text-[#3C8EEE]">*</span></label>
         <input type="date" id="startDate" [(ngModel)]="startDate"
+               [max]="endDate || ''"
                class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] box-border" />
       </div>
       <div class="flex flex-col gap-2 flex-1">
         <label for="endDate" class="font-suit font-semibold text-sm text-zinc-700">마감일 <span class="text-[#3C8EEE]">*</span></label>
         <input type="date" id="endDate" [(ngModel)]="endDate"
+               [min]="startDate || ''"
                class="w-full h-10 px-4 bg-white border-2 border-zinc-200 rounded-lg font-suit text-sm text-zinc-800 outline-none focus:border-[#3C8EEE] box-border" />
       </div>
     </div>

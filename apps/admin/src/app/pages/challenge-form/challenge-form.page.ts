@@ -161,6 +161,10 @@ export class ChallengeFormPage implements OnInit {
       this.toast.error('기간을 설정하세요.');
       return;
     }
+    if (this.startDate > this.endDate) {
+      this.toast.error('시작일은 마감일보다 이후일 수 없습니다.');
+      return;
+    }
 
     this.loading.set(true);
     const data = {

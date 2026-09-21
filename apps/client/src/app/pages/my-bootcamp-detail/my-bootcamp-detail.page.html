@@ -415,6 +415,25 @@
 
     <!-- ===== 출석/진도 탭 ===== -->
     @if (activeDetailTab() === '출석/진도') {
+      <!-- 상태별 안내 배너 -->
+      @if (attendanceStatus() === 'ended') {
+        <div class="att-ended-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          <span>종료된 부트캠프입니다. 출석 기록과 학습 진도를 확인할 수 있습니다.</span>
+        </div>
+      }
+      @if (attendanceStatus() === 'before') {
+        <div class="att-ended-banner att-before-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#3B82F6"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          <span>부트캠프 시작 전입니다. 출석 체크는 시작일부터 가능합니다.</span>
+        </div>
+      }
+      @if (attendanceStatus() === 'after') {
+        <div class="att-ended-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          <span>부트캠프 기간이 종료되었습니다. 출석 기록과 학습 진도를 확인할 수 있습니다.</span>
+        </div>
+      }
       <div class="flex md:flex-row flex-col gap-4 w-full items-start">
         <!-- 출석 체크 -->
         <div class="att-card">
@@ -425,20 +444,32 @@
               <span class="att-rate-value">{{ attendanceRate() }}%</span>
             </div>
           </div>
-          <button
-            class="att-checkin-btn"
-            [class.att-checked]="todayCheckedIn()"
-            [disabled]="todayCheckedIn() || attendanceLoading()"
-            (click)="doCheckIn()"
-          >
-            @if (todayCheckedIn()) {
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#10B981"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-              출석 완료
-            } @else {
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-              출석하기
-            }
-          </button>
+          @if (!canCheckIn()) {
+            <!-- 출석 불가 안내 -->
+            <div class="att-ended-checkin">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#A1A1AA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              @if (attendanceStatus() === 'before') {
+                <span>부트캠프 시작 전입니다.</span>
+              } @else {
+                <span>부트캠프가 종료되어 출석 체크가 마감되었습니다.</span>
+              }
+            </div>
+          } @else {
+            <button
+              class="att-checkin-btn"
+              [class.att-checked]="todayCheckedIn()"
+              [disabled]="todayCheckedIn() || attendanceLoading()"
+              (click)="doCheckIn()"
+            >
+              @if (todayCheckedIn()) {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#10B981"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                출석 완료
+              } @else {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                출석하기
+              }
+            </button>
+          }
           <!-- 미니 캘린더 -->
           <div class="att-calendar">
             <div class="att-cal-header">
@@ -468,6 +499,9 @@
           </div>
           <div class="att-stats">
             <span class="att-stat-item">출석 {{ attendanceDays() }}일 / {{ attendanceTotalDays() }}일</span>
+            @if (attendanceElapsedDays() < attendanceTotalDays()) {
+              <span class="att-stat-item att-stat-elapsed">경과 {{ attendanceElapsedDays() }}일</span>
+            }
           </div>
         </div>
 

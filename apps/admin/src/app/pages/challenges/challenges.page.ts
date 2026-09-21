@@ -52,6 +52,10 @@ export class ChallengesPage implements OnInit {
   rankChallengeId = signal(0);
   rankEntries = signal<{ id: number; title: string; nickname: string; likeCount: number; images: string[]; rank: number }[]>([]);
 
+  // 재시작 확인 모달
+  reactivateModalOpen = signal(false);
+  reactivateTarget = signal<{ id: number; title: string } | null>(null);
+
   // 삭제 모달
   deleteModalOpen = signal(false);
   deleteTarget = signal<{ id: number; title: string } | null>(null);
@@ -139,9 +143,17 @@ export class ChallengesPage implements OnInit {
       case '숨김':
         this.toggleVisibility(row.id, true);
         break;
-      case '시작':
-        this.updateStatus(row.id, 'ACTIVE');
+      case '시작': {
+        // 종료된 챌린지는 등수 초기화 확인 모달 표시
+        if (row.status === 'ENDED') {
+          const c = this.challenges().find(ch => ch.id === row.id);
+          this.reactivateTarget.set({ id: row.id, title: c?.title || '' });
+          this.reactivateModalOpen.set(true);
+        } else {
+          this.updateStatus(row.id, 'ACTIVE');
+        }
         break;
+      }
       case '종료':
         this.openRankModal(row.id);
         break;
@@ -243,6 +255,25 @@ export class ChallengesPage implements OnInit {
       this.loadChallenges();
     } catch {
       this.toast.error('상태 변경 실패');
+    }
+  }
+
+  // 재시작 확인 모달
+  closeReactivateModal(): void {
+    this.reactivateModalOpen.set(false);
+    this.reactivateTarget.set(null);
+  }
+
+  async confirmReactivate(): Promise<void> {
+    const target = this.reactivateTarget();
+    if (!target) return;
+    try {
+      await this.api.challenges.updateStatus(target.id, 'ACTIVE');
+      this.toast.success('챌린지가 재시작되었습니다. 기존 데이터가 초기화되었습니다.');
+      this.closeReactivateModal();
+      this.loadChallenges();
+    } catch {
+      this.toast.error('재시작 실패');
     }
   }
 

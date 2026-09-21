@@ -111,10 +111,11 @@ export class AssignmentDetailPage implements OnInit {
       // Reverse parent order but keep children after their parent
       const parents = all.filter(s => !s.isReply);
       const childrenMap = new Map<number, Submission[]>();
-      all.filter(s => s.isReply).forEach(s => {
-        const arr = childrenMap.get(s.parentId!) || [];
+    all.filter(s => s.isReply).forEach(s => {
+        const pid = s.parentId ?? 0;
+        const arr = childrenMap.get(pid) || [];
         arr.push(s);
-        childrenMap.set(s.parentId!, arr);
+        childrenMap.set(pid, arr);
       });
       const reversed: Submission[] = [];
       for (const p of [...parents].reverse()) {
@@ -323,19 +324,19 @@ export class AssignmentDetailPage implements OnInit {
     try {
       if (this.returnTab === '학습목록' && this.courseId) {
         // 학습목록 탭: 같은 과정 내 강의+과제 통합 순서
-        const lectures: any[] = await this.api.lectures.findByCourse(this.courseId);
-        const assignments: any[] = await this.api.assignments.findByCourse(this.courseId);
+        const lectures = await this.api.lectures.findByCourse(this.courseId) as { id: number }[];
+        const assignments = await this.api.assignments.findByCourse(this.courseId) as { id: number }[];
         this.navItems = [
-          ...lectures.map((l: any) => ({ type: 'lecture' as const, id: l.id })),
-          ...assignments.map((a: any) => ({ type: 'assignment' as const, id: a.id })),
+          ...lectures.map((l) => ({ type: 'lecture' as const, id: l.id })),
+          ...assignments.map((a) => ({ type: 'assignment' as const, id: a.id })),
         ];
       } else {
         // 과제 탭 등: 부트캠프 전체 과제만
-        const courses: any[] = await this.api.courses.findByBootcamp(Number(this.bootcampId));
+        const courses = await this.api.courses.findByBootcamp(Number(this.bootcampId)) as { id: number }[];
         const allItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
         for (const course of courses) {
-          const assignments: any[] = await this.api.assignments.findByCourse(course.id);
-          assignments.forEach((a: any) => allItems.push({ type: 'assignment', id: a.id }));
+          const assignments = await this.api.assignments.findByCourse(course.id) as { id: number }[];
+          assignments.forEach((a) => allItems.push({ type: 'assignment', id: a.id }));
         }
         this.navItems = allItems;
       }

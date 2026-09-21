@@ -16,6 +16,18 @@ interface ChallengeCard {
   daysLeft: number | null;
 }
 
+interface ChallengeListItem {
+  id: number;
+  title: string;
+  description?: string;
+  thumbnail?: string;
+  category: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  entryCount?: number;
+}
+
 const CATEGORY_LABELS: Record<string, string> = { DRAWING: '드로잉', WEBTOON: '웹툰', WRITING: '글' };
 
 @Component({
@@ -39,7 +51,7 @@ export class ChallengesPage implements OnInit {
   async loadChallenges(): Promise<void> {
     try {
       const data = await this.api.challenges.findAll();
-      const cards: ChallengeCard[] = data.map((c: any) => {
+      const cards: ChallengeCard[] = (data as ChallengeListItem[]).map((c) => {
         const end = new Date(c.endDate);
         const now = new Date();
         const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -47,7 +59,7 @@ export class ChallengesPage implements OnInit {
           id: c.id,
           title: c.title,
           description: c.description || '',
-          thumbnail: c.thumbnail,
+          thumbnail: c.thumbnail ?? null,
           category: CATEGORY_LABELS[c.category] || c.category,
           status: c.status,
           startDate: c.startDate,

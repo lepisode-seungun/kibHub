@@ -473,7 +473,7 @@ export class ApiService {
       this.post(`/bootcamps/${bootcampId}/attendance/check-in`, {}),
     getMyAttendance: (bootcampId: number): Promise<{ date: string; checkedAt: string }[]> =>
       this.get(`/bootcamps/${bootcampId}/attendance/mine`),
-    getRate: (bootcampId: number): Promise<{ attendanceDays: number; totalDays: number; rate: number }> =>
+    getRate: (bootcampId: number): Promise<{ attendanceDays: number; totalDays: number; elapsedDays: number; rate: number }> =>
       this.get(`/bootcamps/${bootcampId}/attendance/rate`),
     checkToday: (bootcampId: number): Promise<{ checkedIn: boolean }> =>
       this.get(`/bootcamps/${bootcampId}/attendance/today`),

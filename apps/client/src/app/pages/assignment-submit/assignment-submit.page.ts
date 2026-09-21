@@ -67,7 +67,7 @@ export class AssignmentSubmitPage implements AfterViewInit {
       if (s.files?.length) {
         this.uploadedFiles.set(s.files.map(f => {
           const parts = f.name.split('.');
-          const ext = parts.length > 1 ? parts.pop()! : '';
+          const ext = parts.length > 1 ? (parts.pop() ?? '') : '';
           const name = parts.join('.');
           return { name, extension: ext, size: '', status: 'done' as const, url: f.url || '' };
         }));

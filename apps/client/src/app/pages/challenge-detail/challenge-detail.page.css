@@ -33,7 +33,8 @@
 @keyframes cd-pulse-ended { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 .cd-hero-title { font-family: var(--font-family); font-size: 36px; font-weight: 800; color: #FFF; margin: 0; }
 .cd-hero-desc { font-family: var(--font-family); font-size: 16px; color: #D4D4D8; margin: 0; max-width: 600px; line-height: 1.6; }
-.cd-hero-meta { display: flex; gap: 16px; font-family: var(--font-family); font-size: 14px; color: #A1A1AA; }
+.cd-hero-meta { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-family); font-size: 18px; font-weight: 500; color: #D4D4D8; }
+.cd-hero-meta-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
 .cd-submit-btn {
   display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 12px;
   background: linear-gradient(135deg, #7C3AED, #A855F7); color: #FFF; text-decoration: none;
@@ -437,7 +438,7 @@
   .cd-hero-content { padding: 24px 16px; }
   .cd-hero-title { font-size: 26px; }
   .cd-hero-desc { font-size: 14px; }
-  .cd-hero-meta { flex-wrap: wrap; gap: 8px; font-size: 13px; }
+  .cd-hero-meta { font-size: 15px; }
   .cd-section { margin-top: 32px; }
   .cd-section-title { font-size: 18px; margin-bottom: 14px; }
 
@@ -479,7 +480,7 @@
   .cd-hero-content { padding: 20px 12px; gap: 8px; }
   .cd-hero-title { font-size: 22px; }
   .cd-hero-desc { font-size: 13px; }
-  .cd-hero-meta { font-size: 12px; gap: 6px; }
+  .cd-hero-meta { font-size: 14px; }
   .cd-badge { font-size: 11px; padding: 3px 10px; }
 
   .cd-section { margin-top: 24px; }
