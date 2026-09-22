@@ -91,7 +91,7 @@
         </svg>
       </button>
       @if (kebabOpen) {
-        <div class="fixed inset-0 z-40" (click)="kebabOpen = false"></div>
+        <div class="fixed inset-0 z-40" role="none" (click)="kebabOpen = false" (keydown.escape)="kebabOpen = false"></div>
         <div class="absolute right-[-8px] top-[36px] z-50 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           <button class="flex items-center w-full px-3 py-1.5 text-left font-suit text-sm text-gray-700 hover:bg-gray-50 cursor-pointer border-none bg-transparent whitespace-nowrap"
                   (click)="markSelectedAsRead()">읽음</button>
@@ -132,7 +132,7 @@
               <div class="sv-choice-legend">
                 @for (d of q.distribution; track d.option; let j = $index) {
                   <div class="sv-legend-item">
-                    <span class="sv-legend-dot" [style.background]="['#3B82F6','#8B5CF6','#10B981','#F59E0B','#EF4444','#EC4899','#06B6D4','#84CC16'][j % 8]"></span>
+                    <span class="sv-legend-dot" [style.background]="getOptionColor(d.option, j)"></span>
                     <span class="sv-legend-label">{{ d.option }}</span>
                     <span class="sv-legend-value">{{ d.percentage }}%</span>
                     <span class="sv-legend-sub">({{ d.count }}명)</span>
@@ -143,7 +143,7 @@
 
           <!-- 별점 (RATING) -->
           } @else if (q.type === 'RATING') {
-            <div class="sv-rating-layout">
+            <div class="sv-rating-wrapper">
               <div class="sv-rating-avg">
                 <span class="sv-rating-num">{{ q.average }}</span>
                 <span class="sv-rating-star">/ 5.0</span>
@@ -274,13 +274,27 @@
         <circle cx="8" cy="8" r="8" fill="#3C8EEE"/>
         <text x="8" y="12" text-anchor="middle" fill="white" font-size="11" font-weight="700">i</text>
       </svg>
-      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">질문을 등록하면 수강생에게 설문 질문이 전달됩니다.</span>
+      <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-700">설문을 활성화하면 수강생 부트캠프 진입 시 자동으로 설문 팝업이 표시됩니다.</span>
+    </div>
+
+    <!-- 설문 활성화 토글 -->
+    <div class="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="flex flex-col gap-0.5">
+        <span class="font-suit font-semibold text-sm text-gray-800">설문 활성화</span>
+        <span class="font-suit text-xs text-gray-400">{{ surveyIsActive() ? '수강생에게 설문이 노출됩니다' : '설문이 비공개 상태입니다' }}</span>
+      </div>
+      <button class="relative w-11 h-6 rounded-full cursor-pointer border-none transition-colors duration-200"
+              [style.background]="surveyIsActive() ? '#3B82F6' : '#D4D4D8'"
+              (click)="toggleSurveyActive()">
+        <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+              [style.transform]="surveyIsActive() ? 'translateX(20px)' : 'translateX(0)'"></span>
+      </button>
     </div>
 
     <!-- 설문 제목 -->
     <div class="flex flex-col gap-2">
-      <label class="font-suit font-medium text-sm text-gray-600">설문 제목</label>
-      <input class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
+      <label for="survey-title-input" class="font-suit font-medium text-sm text-gray-600">설문 제목</label>
+      <input id="survey-title-input" class="w-full px-4 py-2 bg-white border-2 border-gray-300 rounded-md font-suit font-medium text-base text-gray-800 outline-none focus:border-[#3C8EEE] transition-colors box-border"
              [value]="surveyTitle()"
              (input)="updateSurveyTitle($any($event.target).value)"
              placeholder="설문 제목을 입력하세요" />
@@ -302,13 +316,22 @@
                           placeholder="질문을 입력하세요"
                           maxlength="200"></textarea>
                 <div class="flex items-center justify-between">
-                  <select class="px-2 py-1 border border-gray-300 rounded-md font-suit text-sm text-gray-700 outline-none focus:border-[#3C8EEE]"
-                          [value]="q.type"
-                          (change)="updateDrawerQuestionType(idx, $any($event.target).value)">
-                    <option value="select">객관식</option>
-                    <option value="text">주관식</option>
-                    <option value="rating">별점</option>
-                  </select>
+                  <div class="flex items-center gap-2">
+                    <select class="px-2 py-1 border border-gray-300 rounded-md font-suit text-sm text-gray-700 outline-none focus:border-[#3C8EEE]"
+                            [value]="q.type"
+                            (change)="updateDrawerQuestionType(idx, $any($event.target).value)">
+                      <option value="select">객관식</option>
+                      <option value="text">주관식</option>
+                      <option value="rating">별점</option>
+                    </select>
+                    <button class="px-2 py-1 rounded-md font-suit text-xs font-medium border cursor-pointer transition-colors"
+                            [style.background]="q.required ? '#DBEAFE' : '#F3F4F6'"
+                            [style.color]="q.required ? '#2563EB' : '#9CA3AF'"
+                            [style.borderColor]="q.required ? '#93C5FD' : '#D1D5DB'"
+                            (click)="toggleDrawerQuestionRequired(idx)">
+                      {{ q.required ? '필수' : '선택' }}
+                    </button>
+                  </div>
                   <span class="font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-gray-400">{{ q.text.length }} / 200</span>
                 </div>
               </div>
@@ -324,7 +347,12 @@
             <div class="flex items-center w-full px-4 py-2" style="min-height: 64px;">
               <div class="flex flex-col flex-1 gap-1">
                 <span class="font-suit font-medium text-base leading-[150%] tracking-[-0.04em] text-gray-700">{{ q.text }}</span>
-                <span class="font-suit text-xs text-gray-400">{{ q.type === 'rating' ? '별점' : q.type === 'select' ? '객관식' : '주관식' }}</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-suit text-xs text-gray-400">{{ q.type === 'rating' ? '별점' : q.type === 'select' ? '객관식' : '주관식' }}</span>
+                  <span class="font-suit text-xs px-1.5 py-0.5 rounded"
+                        [style.background]="q.required ? '#DBEAFE' : '#F3F4F6'"
+                        [style.color]="q.required ? '#2563EB' : '#9CA3AF'">{{ q.required ? '필수' : '선택' }}</span>
+                </div>
               </div>
               <div class="flex items-center gap-2">
                 <button class="flex items-center justify-center border-none bg-transparent cursor-pointer p-0 shrink-0"
@@ -371,6 +399,7 @@
        (click)="closeDeleteModal()" role="button" tabindex="0" aria-label="닫기"
        (keydown.escape)="closeDeleteModal()">
     <div class="bg-white rounded-2xl shadow-2xl w-[400px] overflow-hidden"
+         role="dialog" tabindex="-1" aria-label="삭제 확인"
          (click)="$event.stopPropagation()" (keydown.escape)="closeDeleteModal()">
       <!-- 헤더 -->
       <div class="flex items-center gap-3 px-6 pt-6 pb-2">

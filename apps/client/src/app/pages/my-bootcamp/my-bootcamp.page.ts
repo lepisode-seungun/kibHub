@@ -97,7 +97,7 @@ export class MyBootcampPage implements OnInit, OnDestroy {
             status: BOOTCAMP_STATUS_MAP[bc.status] || bc.status || '수강중',
             canEnter: true,
             dateRange: bc.startDate && bc.endDate
-              ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
+              ? `${fmt(bc.startDate)} ~ ${fmt(bc.endDate)}`
               : '',
           });
         }
@@ -139,7 +139,7 @@ export class MyBootcampPage implements OnInit, OnDestroy {
           status: displayStatus,
           canEnter,
           dateRange: bc.startDate && bc.endDate
-            ? `${fmt(bc.startDate)} - ${fmt(bc.endDate)}`
+            ? `${fmt(bc.startDate)} ~ ${fmt(bc.endDate)}`
             : '',
         });
       }

@@ -171,7 +171,7 @@ export class MyBootcampDetailPage implements OnInit {
   canCheckIn = computed(() => this.attendanceStatus() === 'active');
 
   /** 종료 시에도 설문조사 탭은 숨기고 모달로만 처리 */
-  detailTabs = ['학습목록', '강의', '과제', '출석/진도', '공지사항'];
+  detailTabs = ['학습목록', '강의', '과제', '출석', '공지사항'];
   activeDetailTab = signal('학습목록');
 
   courseSections = signal<CourseSection[]>([]);
@@ -292,15 +292,11 @@ export class MyBootcampDetailPage implements OnInit {
     }
     if (this.bootcampId) {
       this.loadBootcampData(Number(this.bootcampId)).then(() => {
-        // 설문 데이터 항상 로드
-        this.loadSurvey();
+        // 설문 데이터 항상 로드 → isActive 기반 자동 팝업
+        this.loadSurvey().then(() => this.handleSurveyOnEntry());
         // 출석 & 진도 데이터 로드
         this.loadAttendance();
         this.loadProgress();
-        // 종료된 부트캠프 진입 시 자동으로 설문 모달 처리
-        if (this.isBootcampEnded()) {
-          this.handleSurveyOnEntry();
-        }
       });
     }
   }
@@ -486,21 +482,19 @@ export class MyBootcampDetailPage implements OnInit {
     });
   }
 
-  /** 종료된 부트캠프 진입 시 자동 설문 처리 */
+  /** 설문이 활성화(isActive)되어 있고 미응답이면 자동 팝업 */
   private async handleSurveyOnEntry(): Promise<void> {
-    // 서버에서 설문 응답 여부를 먼저 확인
-    await this.loadSurvey();
+    const survey = this.activeSurvey();
+    if (!survey) return; // 설문 없거나 isActive=false면 findActive에서 null 반환됨
+    if (this.hasResponded()) return; // 이미 응답 완료
+
+    // 리뷰 데이터 로드 후 신규 제출 모드로 모달 오픈
     await this.loadReviews();
-    if (this.hasResponded()) {
-      // 설문 이미 응답 완료
-    } else {
-      // 설문 미응답 — 신규 제출 모드로 모달 오픈
-      this.myReview.set(null);
-      this.reviewForm = { rating: 0, body: '', images: [] };
-      this.surveyAnswers.set({});
-      this.isReviewModalOpen.set(true);
-      document.body.style.overflow = 'hidden';
-    }
+    this.myReview.set(null);
+    this.reviewForm = { rating: 0, body: '', images: [] };
+    this.surveyAnswers.set({});
+    this.isReviewModalOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   toggleSection(section: CourseSection): void {
@@ -725,20 +719,44 @@ export class MyBootcampDetailPage implements OnInit {
   }
 
   setRating(star: number): void {
-    this.reviewForm.rating = star;
+    const newRating = this.reviewForm.rating === star ? 0 : star;
+    this.reviewForm = { ...this.reviewForm, rating: newRating };
+    if (newRating === 0) this.hoverRating.set(0);
   }
 
   async submitReview(): Promise<void> {
     if (this.reviewForm.rating === 0) { alert('별점을 선택해주세요.'); return; }
+
+    // 설문 필수 항목 검증 (활성 설문이 있고 미응답인 경우)
+    const survey = this.activeSurvey();
+    if (survey?.id && !this.hasResponded()) {
+      const surveyQuestions = survey.questions || [];
+      const currentAnswers = this.surveyAnswers();
+      const missingRequired = surveyQuestions
+        .map((q, i) => ({ ...q, index: i }))
+        .filter(q => q.required !== false)
+        .filter(q => {
+          const answer = currentAnswers[q.index];
+          if (answer === undefined || answer === null) return true;
+          if (typeof answer === 'string' && answer.trim() === '') return true;
+          return false;
+        });
+
+      if (missingRequired.length > 0) {
+        alert('설문 필수 항목을 모두 작성해주세요.');
+        return;
+      }
+    }
+
     try {
       await this.api.reviews.create(Number(this.bootcampId), this.reviewForm);
 
       // 설문 응답 동시 제출 (활성 설문이 있고 미응답인 경우)
-      const survey = this.activeSurvey();
       if (survey?.id && !this.hasResponded()) {
-        const answerEntries = Object.entries(this.surveyAnswers());
+        const surveyQuestions = survey.questions || [];
+        const answerEntries = Object.entries(this.surveyAnswers())
+          .filter(([, v]) => v !== undefined && v !== null && v !== '');
         if (answerEntries.length > 0) {
-          const surveyQuestions = survey.questions || [];
           const answers: { questionId: string; answer: string | string[] | number }[] = answerEntries.map(([idx, answer]) => ({
             questionId: surveyQuestions[Number(idx)]?.id || String(idx),
             answer,
@@ -807,25 +825,35 @@ export class MyBootcampDetailPage implements OnInit {
     this.surveyLoading.set(true);
     try {
       const survey = await this.api.surveys.findActive(id);
+      console.log('[loadSurvey] findActive result:', survey);
       this.activeSurvey.set(survey);
       if (survey?.id) {
-        const check = await this.api.surveys.checkResponse(survey.id);
-        this.hasResponded.set(check.hasResponded);
+        try {
+          const check = await this.api.surveys.checkResponse(survey.id);
+          console.log('[loadSurvey] checkResponse:', check);
+          this.hasResponded.set(check.hasResponded);
+        } catch (checkErr) {
+          console.warn('[loadSurvey] checkResponse failed, treating as not responded:', checkErr);
+          this.hasResponded.set(false);
+        }
+      } else {
+        console.log('[loadSurvey] No active survey found');
+        this.hasResponded.set(false);
       }
     } catch (e) {
-      console.error('[loadSurvey] error:', e);
+      console.error('[loadSurvey] findActive error:', e);
       this.activeSurvey.set(null);
     }
     this.surveyLoading.set(false);
   }
 
-  updateSurveyAnswer(qIndex: number, value: string | number): void {
-    // 텍스트 입력은 토글하지 않고 직접 업데이트
-    if (typeof value === 'string') {
+  updateSurveyAnswer(qIndex: number, value: string | number, isTextInput = false): void {
+    // 텍스트 입력(textarea)은 토글하지 않고 직접 업데이트
+    if (isTextInput) {
       this.surveyAnswers.update(a => ({ ...a, [qIndex]: value }));
       return;
     }
-    // rating/select: 같은 값이면 토글 해제
+    // 객관식/별점: 같은 값이면 토글 해제
     const current = this.surveyAnswers()[qIndex];
     if (current === value) {
       const copy = { ...this.surveyAnswers() };
@@ -839,9 +867,27 @@ export class MyBootcampDetailPage implements OnInit {
   async submitSurvey(): Promise<void> {
     const survey = this.activeSurvey();
     if (!survey?.id) return;
+
+    // 필수 항목 검증
+    const surveyQuestions = survey.questions || [];
+    const currentAnswers = this.surveyAnswers();
+    const missingRequired = surveyQuestions
+      .map((q, i) => ({ ...q, index: i }))
+      .filter(q => q.required !== false)
+      .filter(q => {
+        const answer = currentAnswers[q.index];
+        if (answer === undefined || answer === null) return true;
+        if (typeof answer === 'string' && answer.trim() === '') return true;
+        return false;
+      });
+
+    if (missingRequired.length > 0) {
+      alert('설문 필수 항목을 모두 작성해주세요.');
+      return;
+    }
+
     this.surveySubmitting.set(true);
-    const surveyQuestions = this.activeSurvey()?.questions || [];
-    const answers: { questionId: string; answer: string | string[] | number }[] = Object.entries(this.surveyAnswers()).map(([idx, answer]) => ({
+    const answers: { questionId: string; answer: string | string[] | number }[] = Object.entries(currentAnswers).map(([idx, answer]) => ({
       questionId: surveyQuestions[Number(idx)]?.id || String(idx),
       answer,
     }));
@@ -893,8 +939,9 @@ export class MyBootcampDetailPage implements OnInit {
       await this.api.attendance.checkIn(id);
       this.todayCheckedIn.set(true);
       await this.loadAttendance();
-    } catch (e: any) {
-      if (e?.status === 409) {
+    } catch (e: unknown) {
+      const err = e as { status?: number };
+      if (err?.status === 409) {
         this.todayCheckedIn.set(true);
       } else {
         alert('출석 체크에 실패했습니다.');

@@ -37,11 +37,6 @@ export class ChallengeFormPage implements OnInit {
   prize = '';
   isVisible = true;
 
-  // 수상작 관리 (편집 시)
-  showWinnerSection = signal(false);
-  entries = signal<{ id: number; title: string; images?: string[]; isWinner: boolean; rank?: number; likeCount: number; user?: { nickname: string } }[]>([]);
-  selectedWinners = signal<{ entryId: number; rank: number }[]>([]);
-
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -69,30 +64,13 @@ export class ChallengeFormPage implements OnInit {
       this.prize = c.prize || '';
       this.isVisible = c.isVisible ?? true;
 
-      if (c.status === 'ENDED') {
-        this.showWinnerSection.set(true);
-        this.loadEntries();
-      }
+
     } catch (e) {
       this.toast.error('챌린지 로드 실패');
       console.error(e);
     }
   }
 
-  async loadEntries(): Promise<void> {
-    if (!this.challengeId) return;
-    try {
-      const stats = await this.api.challenges.getStats(this.challengeId);
-      this.entries.set(stats.entries || []);
-      // 기존 수상작 복원
-      const winners = (stats.entries || [])
-        .filter((e: { isWinner: boolean }) => e.isWinner)
-        .map((e: { id: number; rank?: number }) => ({ entryId: e.id, rank: e.rank || 0 }));
-      this.selectedWinners.set(winners);
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   async onThumbnailUpload(event: Event): Promise<void> {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -118,34 +96,6 @@ export class ChallengeFormPage implements OnInit {
 
   removeRefImage(index: number): void {
     this.referenceImages.update(imgs => imgs.filter((_, i) => i !== index));
-  }
-
-  toggleWinner(entryId: number): void {
-    const current = this.selectedWinners();
-    const exists = current.find(w => w.entryId === entryId);
-    if (exists) {
-      this.selectedWinners.set(current.filter(w => w.entryId !== entryId));
-    } else {
-      this.selectedWinners.set([...current, { entryId, rank: current.length + 1 }]);
-    }
-  }
-
-  isWinnerSelected(entryId: number): boolean {
-    return this.selectedWinners().some(w => w.entryId === entryId);
-  }
-
-  getWinnerRank(entryId: number): number | null {
-    return this.selectedWinners().find(w => w.entryId === entryId)?.rank || null;
-  }
-
-  async saveWinners(): Promise<void> {
-    if (!this.challengeId) return;
-    try {
-      await this.api.challenges.setWinners(this.challengeId, this.selectedWinners());
-      this.toast.success('수상작이 저장되었습니다.');
-    } catch {
-      this.toast.error('수상작 저장 실패');
-    }
   }
 
   async submit(): Promise<void> {

@@ -69,9 +69,11 @@ export class ReviewsPage implements OnInit {
 
   // ===== 설문 설정 드로어 =====
   surveyDrawerOpen = signal(false);
-  drawerQuestions: { _id: number; text: string; type: string; editing: boolean }[] = [];
+  drawerQuestions: { _id: number; text: string; type: string; editing: boolean; required: boolean }[] = [];
   private _qIdSeq = 0;
   surveyTitle = signal('수료 설문');
+  surveyId = signal(0);
+  surveyIsActive = signal(false);
 
   get bootcampId(): number {
     return this.bootcampCtx.currentBootcampId() || 0;
@@ -163,7 +165,20 @@ export class ReviewsPage implements OnInit {
   }
 
   // ===== 도넛 차트 =====
-  private readonly CHART_COLORS = ['#EF4444', '#F97316', '#FBBF24', '#34D399', '#3B82F6', '#8B5CF6', '#06B6D4', '#84CC16'];
+  readonly CHART_COLORS = ['#FBBF24', '#F59E0B', '#F97316', '#DC2626', '#B91C1C', '#991B1B', '#D946EF', '#A855F7'];
+
+  /** 선택지 텍스트에 따른 의미 기반 색상 매핑 */
+  private readonly OPTION_COLOR_MAP: Record<string, string> = {
+    '매우 만족': '#22C55E',
+    '만족': '#84CC16',
+    '보통': '#FBBF24',
+    '불만족': '#F97316',
+    '매우 불만족': '#DC2626',
+  };
+
+  getOptionColor(option: string, idx: number): string {
+    return this.OPTION_COLOR_MAP[option] ?? this.CHART_COLORS[idx % this.CHART_COLORS.length];
+  }
   private canvasDataMap = new Map<HTMLCanvasElement, { slices: { start: number; end: number; idx: number }[]; distribution: { option: string; count: number; percentage: number }[]; total: number }>();
   private boundCanvases = new Set<HTMLCanvasElement>();
 
@@ -212,7 +227,7 @@ export class ReviewsPage implements OnInit {
       ctx.arc(cx, cy, r, startAngle, endAngle);
       ctx.arc(cx, cy, inner, endAngle, startAngle, true);
       ctx.closePath();
-      ctx.fillStyle = this.CHART_COLORS[i % this.CHART_COLORS.length];
+      ctx.fillStyle = this.getOptionColor(d.option, i);
       ctx.fill();
       startAngle = endAngle;
     });
@@ -300,7 +315,7 @@ export class ReviewsPage implements OnInit {
       ctx.arc(cx, cy, outerR, s.start, s.end);
       ctx.arc(cx, cy, inner, s.end, s.start, true);
       ctx.closePath();
-      const baseColor = this.CHART_COLORS[s.idx % this.CHART_COLORS.length];
+      const baseColor = this.getOptionColor(data.distribution[s.idx]?.option ?? '', s.idx);
       ctx.fillStyle = (highlightIdx >= 0 && !isHover) ? this.dimColor(baseColor) : baseColor;
       ctx.fill();
     });
@@ -486,21 +501,28 @@ export class ReviewsPage implements OnInit {
   // ===== 설문 드로어 =====
   async openSurveyDrawer(): Promise<void> {
     try {
-      const existing = await this.api.surveys.findActive(this.bootcampId);
+      const existing = await this.api.surveys.findByBootcamp(this.bootcampId);
       if (existing && existing.questions) {
         this.surveyTitle.set(existing.title || '수료 설문');
+        this.surveyId.set(existing.id);
+        this.surveyIsActive.set(existing.isActive ?? true);
         this.drawerQuestions = existing.questions.map((q) => ({
           _id: ++this._qIdSeq,
           text: q.text || '',
           type: q.type || 'text',
           editing: false,
+          required: q.required !== false,
         }));
       } else {
         this.surveyTitle.set('수료 설문');
+        this.surveyId.set(0);
+        this.surveyIsActive.set(false);
         this.drawerQuestions = [];
       }
     } catch {
       this.surveyTitle.set('수료 설문');
+      this.surveyId.set(0);
+      this.surveyIsActive.set(false);
       this.drawerQuestions = [];
     }
     this.surveyDrawerOpen.set(true);
@@ -511,7 +533,7 @@ export class ReviewsPage implements OnInit {
   }
 
   addDrawerQuestion(): void {
-    this.drawerQuestions = [...this.drawerQuestions, { _id: ++this._qIdSeq, text: '', type: 'select', editing: true }];
+    this.drawerQuestions = [...this.drawerQuestions, { _id: ++this._qIdSeq, text: '', type: 'select', editing: true, required: true }];
   }
 
   removeDrawerQuestion(index: number): void {
@@ -524,6 +546,11 @@ export class ReviewsPage implements OnInit {
 
   updateDrawerQuestionType(index: number, type: string): void {
     this.drawerQuestions[index].type = type;
+    this.drawerQuestions = [...this.drawerQuestions];
+  }
+
+  toggleDrawerQuestionRequired(index: number): void {
+    this.drawerQuestions[index].required = !this.drawerQuestions[index].required;
     this.drawerQuestions = [...this.drawerQuestions];
   }
 
@@ -544,7 +571,7 @@ export class ReviewsPage implements OnInit {
   async submitSurveyDrawer(): Promise<void> {
     const questions = this.drawerQuestions
       .filter(q => q.text.trim())
-      .map((q, i) => ({ id: `q_${i}_${Date.now()}`, text: q.text.trim(), type: q.type }));
+      .map((q, i) => ({ id: `q_${i}_${Date.now()}`, text: q.text.trim(), type: q.type, required: q.required }));
 
     try {
       await this.api.surveys.upsert(this.bootcampId, {
@@ -557,5 +584,19 @@ export class ReviewsPage implements OnInit {
       this.toast.error('저장 실패: ' + (err?.error?.message || err?.message || '알 수 없는 오류'));
     }
     this.surveyDrawerOpen.set(false);
+  }
+  async toggleSurveyActive(): Promise<void> {
+    const id = this.surveyId();
+    if (!id) {
+      this.toast.error('설문을 먼저 등록해주세요.');
+      return;
+    }
+    try {
+      const updated = await this.api.surveys.toggleActive(id);
+      this.surveyIsActive.set(updated.isActive);
+      this.toast.success(updated.isActive ? '설문이 활성화되었습니다.' : '설문이 비활성화되었습니다.');
+    } catch {
+      this.toast.error('설문 상태 변경에 실패했습니다.');
+    }
   }
 }

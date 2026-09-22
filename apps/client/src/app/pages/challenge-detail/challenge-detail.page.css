@@ -248,7 +248,7 @@
 .cd-submit-input::placeholder { color: #52525B; }
 
 .cd-submit-textarea {
-  width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #3F3F46;
+  width: 100%; padding: 12px 16px; min-height: 160px; border-radius: 10px; border: 1px solid #3F3F46;
   background: #09090B; color: #FFF; font-family: var(--font-family); font-size: 15px;
   outline: none; box-sizing: border-box; resize: vertical; transition: border-color 0.2s;
 }
@@ -525,6 +525,15 @@
   .winner-modal-meta { font-size: 11px; flex-wrap: wrap; }
 }
 
+/* 업로드 안내 문구 */
+.cd-submit-guide {
+  font-family: var(--font-family);
+  font-size: 13px;
+  color: #71717A;
+  margin: 0;
+  text-align: center;
+}
+
 /* ===== 출품작 뷰어 ===== */
 .cd-entry-viewer-overlay {
   position: fixed; inset: 0; z-index: 9999;
@@ -547,14 +556,15 @@
 .cd-entry-viewer-content {
   display: flex; flex-direction: column; gap: 0;
   background: #1C1B20; border-radius: 16px; padding: 24px;
-  max-height: 60vh; overflow: hidden;
+  max-height: 75vh; overflow: hidden;
 }
 .cd-entry-viewer-counter {
   font-family: var(--font-family); font-weight: 700; font-size: 18px;
   color: #FFF; padding-bottom: 16px;
 }
 .cd-entry-viewer-img-area {
-  overflow-y: auto; border-radius: 8px;
+  overflow: hidden; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
 }
 .cd-entry-viewer-img-area::-webkit-scrollbar { width: 9px; }
 .cd-entry-viewer-img-area::-webkit-scrollbar-track { background: rgba(217,217,217,0.12); border-radius: 999px; }
@@ -562,6 +572,7 @@
 .cd-entry-viewer-img {
   width: 100%; display: block; border-radius: 8px;
   object-fit: contain; background: #000;
+  max-height: calc(75vh - 80px);
 }
 
 /* 화살표 */
@@ -590,6 +601,87 @@
 .cd-entry-like-btn:hover { background: rgba(255,255,255,0.1); border-color: #EF4444; transform: scale(1.05); }
 .cd-entry-like-btn.liked { background: rgba(239,68,68,0.2); border-color: #EF4444; }
 
+/* 카드 하트 오버레이 */
+.cd-entry-like-overlay {
+  position: absolute; bottom: 10px; right: 10px;
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 12px; border-radius: 20px;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none; cursor: pointer;
+  font-family: var(--font-family); font-size: 13px; font-weight: 600;
+  color: #FFF; transition: background 0.2s, transform 0.15s;
+}
+.cd-entry-like-overlay:hover { background: rgba(0,0,0,0.7); transform: scale(1.05); }
+.cd-entry-like-overlay.liked { color: #EF4444; }
+.cd-entry-like-overlay.own { opacity: 0.5; cursor: default; }
+.cd-entry-like-overlay.own:hover { transform: none; }
+
+/* 모달 이미지 위 하트 */
+.cd-entry-viewer-img-wrap {
+  position: relative; display: inline-block; width: 100%;
+}
+.cd-entry-viewer-like {
+  position: absolute; bottom: 12px; right: 12px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 24px;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none; cursor: pointer;
+  font-family: var(--font-family); font-size: 14px; font-weight: 600;
+  color: #FFF; transition: background 0.2s, transform 0.15s;
+}
+.cd-entry-viewer-like:hover { background: rgba(0,0,0,0.7); transform: scale(1.05); }
+.cd-entry-viewer-like.liked { color: #EF4444; background: rgba(239,68,68,0.25); }
+
+/* 모달 작품 정보 */
+.cd-entry-viewer-info {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 16px 20px;
+  background: #1C1B20; border-radius: 12px;
+}
+.cd-entry-viewer-info-header {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cd-entry-viewer-info-user {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-family); font-size: 14px; font-weight: 600; color: #E4E4E7;
+}
+.cd-entry-viewer-info-avatar {
+  width: 28px; height: 28px; border-radius: 50%; object-fit: cover;
+}
+.cd-entry-viewer-info-avatar--default {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #3F3F46; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-family); font-size: 13px; font-weight: 700; color: #A1A1AA;
+}
+.cd-entry-viewer-info-title {
+  font-family: var(--font-family); font-size: 26px; font-weight: 700;
+  color: #FFFFFF; margin: 0; line-height: 1.5;
+}
+.cd-entry-viewer-info-desc {
+  font-family: var(--font-family); font-size: 20px; font-weight: 400;
+  color: #A1A1AA; margin: 0; line-height: 1.6; white-space: pre-wrap;
+  display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.cd-entry-viewer-info-desc.expanded {
+  -webkit-line-clamp: unset; line-clamp: unset;
+  display: block;
+  overflow-y: auto; max-height: 25vh;
+  padding-right: 8px;
+}
+.cd-entry-viewer-info-desc.expanded::-webkit-scrollbar { width: 6px; }
+.cd-entry-viewer-info-desc.expanded::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 999px; }
+.cd-entry-viewer-info-desc.expanded::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 999px; }
+.cd-entry-viewer-info-desc.expanded::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
+.cd-entry-viewer-info-toggle {
+  background: none; border: none; cursor: pointer; padding: 0;
+  font-family: var(--font-family); font-size: 15px; font-weight: 600;
+  color: #7C3AED; transition: opacity 0.15s; align-self: flex-start;
+}
+.cd-entry-viewer-info-toggle:hover { opacity: 0.7; }
+
 @media (max-width: 1100px) {
   .cd-entry-viewer-overlay { padding: 20px; }
   .cd-entry-viewer-arrow--left { left: 8px; }
@@ -601,8 +693,8 @@
   .cd-entry-viewer { max-height: 100vh; height: 100vh; gap: 0; }
   .cd-entry-viewer-close { position: absolute; top: 12px; right: 12px; z-index: 10; }
   .cd-entry-viewer-content { border-radius: 0; flex: 1; max-height: none; }
-  .cd-entry-like-overlay { bottom: 20px; right: 20px; }
-  .cd-entry-viewer-footer { padding: 10px 16px; }
+  .cd-entry-like-overlay { bottom: 8px; right: 8px; }
+  .cd-entry-viewer-info { padding: 12px 16px 0; }
 }
 /* ===== 작품 제출 모달 ===== */
 .cd-submit-overlay {
@@ -615,8 +707,8 @@
 @keyframes cd-fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 .cd-submit-modal {
-  display: flex; flex-direction: column; width: 520px; max-width: 92vw;
-  max-height: 85vh; background: #18181B; border-radius: 20px;
+  display: flex; flex-direction: column; width: 700px; max-width: 92vw;
+  max-height: 92vh; background: #18181B; border-radius: 20px;
   border: 1px solid #27272A; overflow: hidden;
   animation: cd-slide-up 0.25s ease;
 }
@@ -641,7 +733,7 @@
 }
 
 .cd-submit-images { display: flex; flex-wrap: wrap; gap: 12px; }
-.cd-submit-img-wrap { position: relative; width: 80px; height: 80px; border-radius: 12px; overflow: hidden; }
+.cd-submit-img-wrap { position: relative; width: 120px; height: 120px; border-radius: 12px; overflow: hidden; }
 .cd-submit-img { width: 100%; height: 100%; object-fit: cover; }
 .cd-submit-img-remove {
   position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
@@ -649,9 +741,9 @@
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 .cd-submit-img-add {
-  width: 80px; height: 80px; border-radius: 12px;
+  width: 120px; height: 120px; border-radius: 12px;
   border: 2px dashed #3F3F46; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  align-items: center; justify-content: center; gap: 6px; cursor: pointer;
   transition: border-color 0.2s;
 }
 .cd-submit-img-add span {
@@ -669,7 +761,7 @@
 .cd-submit-input:focus { border-color: #7C3AED; }
 
 .cd-submit-textarea {
-  width: 100%; padding: 12px 16px; min-height: 80px;
+  width: 100%; padding: 12px 16px; min-height: 160px;
   background: #09090B; border: 1px solid #27272A; border-radius: 12px;
   font-family: var(--font-family); font-size: 14px; color: #FFF;
   outline: none; box-sizing: border-box; resize: vertical; transition: border-color 0.2s;
@@ -750,3 +842,116 @@
   transition: background 0.15s;
 }
 .cd-del-btn-confirm:hover { background: #EF4444; }
+
+/* ===== 로그인 필요 모달 ===== */
+.cd-login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cd-login-modal {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  max-width: calc(100vw - 40px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.cd-login-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 32px 32px 0;
+  background: #18181B;
+}
+
+.cd-login-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.cd-login-close:hover { opacity: 0.7; }
+
+.cd-login-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  gap: 24px;
+  background: #18181B;
+  box-shadow: 2px 6px 31px rgba(0, 0, 0, 0.04);
+}
+
+.cd-login-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 32px 32px;
+  background: #18181B;
+  border-top: 1px solid #262626;
+}
+
+.cd-login-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.cd-login-btn-cancel {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 48px;
+  background: #3F3F46;
+  border: 1px solid rgba(228, 232, 232, 0.12);
+  border-radius: 12px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cd-login-btn-cancel:hover { background: #52525B; }
+
+.cd-login-btn-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 48px;
+  background: #7A48FF;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.cd-login-btn-login:hover { background: #956DFF; }

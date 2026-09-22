@@ -115,7 +115,7 @@ export class AdminLayoutComponent implements OnInit {
     ).subscribe(e => {
       this.syncFromUrl(e.urlAfterRedirects);
       // 라우트 변경 시 콘텐츠 영역 최상단으로 스크롤
-      const content = document.querySelector('.overflow-y-auto');
+      const content = document.getElementById('admin-content');
       content?.scrollTo({ top: 0 });
     });
   }

@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -64,6 +64,7 @@ export class ChallengeDetailPage implements OnInit {
   sortMode = signal<string>('latest');
   loading = signal(true);
   winnerModalOpen = signal(false);
+  isLoginRequiredModalOpen = signal(false);
 
   // 제출 폼
   showSubmitForm = signal(false);
@@ -164,6 +165,9 @@ export class ChallengeDetailPage implements OnInit {
   // ===== 이미지 모달 =====
   modalEntry = signal<ChallengeEntry | null>(null);
   modalImageIndex = signal(0);
+  descExpanded = signal(false);
+  descOverflows = signal(false);
+  @ViewChild('descEl') descEl?: ElementRef<HTMLParagraphElement>;
   entryViewerImages = computed<ViewerImage[]>(() => {
     const entry = this.modalEntry();
     if (!entry?.images) return [];
@@ -173,7 +177,17 @@ export class ChallengeDetailPage implements OnInit {
   openModal(entry: ChallengeEntry): void {
     this.modalEntry.set(entry);
     this.modalImageIndex.set(0);
+    this.descExpanded.set(false);
+    this.descOverflows.set(false);
     document.body.style.overflow = 'hidden';
+    setTimeout(() => this.checkDescOverflow(), 50);
+  }
+
+  private checkDescOverflow(): void {
+    const el = this.descEl?.nativeElement;
+    if (el) {
+      this.descOverflows.set(el.scrollHeight > el.clientHeight);
+    }
   }
 
   closeModal(): void {
@@ -225,6 +239,10 @@ export class ChallengeDetailPage implements OnInit {
   // ===== 제출 폼 =====
 
   openSubmitForm(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.isLoginRequiredModalOpen.set(true);
+      return;
+    }
     this.isEditMode.set(false);
     this.existingImages.set([]);
     this.showSubmitForm.set(true);
@@ -243,8 +261,23 @@ export class ChallengeDetailPage implements OnInit {
   onSubmitFileSelect(event: Event): void {
     const files = Array.from((event.target as HTMLInputElement).files || []);
     const remaining = 5 - this.submitPreviews().length;
-    const toAdd = files.slice(0, remaining);
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
 
+    const valid: File[] = [];
+    for (const file of files) {
+      if (!allowedTypes.includes(file.type)) {
+        alert(`'${file.name}'은(는) 지원하지 않는 형식입니다.\nJPG, PNG, WEBP만 업로드 가능합니다.`);
+        continue;
+      }
+      if (file.size > maxSize) {
+        alert(`'${file.name}'의 용량이 10MB를 초과합니다.\n(${(file.size / 1024 / 1024).toFixed(1)}MB)`);
+        continue;
+      }
+      valid.push(file);
+    }
+
+    const toAdd = valid.slice(0, remaining);
     for (const file of toAdd) {
       this.submitFiles.update(f => [...f, file]);
       const reader = new FileReader();

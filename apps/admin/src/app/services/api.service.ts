@@ -117,7 +117,8 @@ interface SurveyResponse {
   id: number;
   title?: string;
   bootcampId: number;
-  questions: { text: string; type: string; options?: string[] }[];
+  isActive: boolean;
+  questions: { text: string; type: string; options?: string[]; required?: boolean }[];
   createdAt?: string;
 }
 
@@ -520,6 +521,8 @@ export class ApiService {
   readonly surveys = {
     findActive: (bootcampId: number): Promise<SurveyResponse | null> =>
       this.get(`/surveys/bootcamp/${bootcampId}`),
+    findByBootcamp: (bootcampId: number): Promise<SurveyResponse | null> =>
+      this.get(`/surveys/bootcamp/${bootcampId}/admin`),
     upsert: (bootcampId: number, data: { title?: string; questions: { text: string; type: string; options?: string[] }[] }): Promise<{ id: number }> =>
       this.post(`/surveys/bootcamp/${bootcampId}`, data),
     delete: (id: number): Promise<void> =>
@@ -532,6 +535,8 @@ export class ApiService {
       this.del(`/surveys/${surveyId}/responses`),
     exportCsvUrl: (surveyId: number): string =>
       `${BASE}/surveys/${surveyId}/export`,
+    toggleActive: (surveyId: number): Promise<SurveyResponse> =>
+      this.post(`/surveys/${surveyId}/toggle-active`, {}),
   };
 
   // ===== Challenges (어드민) =====

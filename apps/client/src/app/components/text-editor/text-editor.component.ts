@@ -74,9 +74,20 @@ export class TextEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
     if (!node) return;
     const el = node instanceof HTMLElement ? node : node.parentElement;
     if (!el || !this.editorRef?.nativeElement?.contains(el)) return;
-    const computed = window.getComputedStyle(el);
-    const size = Math.round(parseFloat(computed.fontSize)) + 'px';
-    this.currentFontSize.set(size);
+
+    // 에디터 루트 자체이면 현재 값 유지 (빈 에디터 / 루트 커서)
+    if (el === this.editorRef.nativeElement) return;
+
+    // 커서 위치에서 에디터 루트까지 올라가며 명시적 fontSize를 찾는다
+    let current: HTMLElement | null = el;
+    while (current && current !== this.editorRef.nativeElement) {
+      if (current.style.fontSize) {
+        this.currentFontSize.set(current.style.fontSize);
+        return;
+      }
+      current = current.parentElement;
+    }
+    // 명시적 fontSize가 없으면 현재 값 유지 (기본 16px로 리셋 방지)
   }
 
   ngOnChanges(changes: SimpleChanges): void {

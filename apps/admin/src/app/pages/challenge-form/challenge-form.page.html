@@ -146,48 +146,6 @@
 
   </div>
 
-  <!-- 수상작 선정 (ENDED 상태 편집 시) -->
-  @if (showWinnerSection()) {
-    <div class="bg-white rounded-xl border border-zinc-200 p-6 flex flex-col gap-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-suit font-bold text-lg text-zinc-800 m-0">🏆 수상작 선정</h3>
-        <button class="px-4 py-2 bg-[#3C8EEE] text-white rounded-lg border-none cursor-pointer font-suit font-semibold text-sm hover:bg-blue-600 transition-colors"
-                (click)="saveWinners()">수상작 저장</button>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        @for (entry of entries(); track entry.id) {
-          <div class="flex items-center gap-4 p-3 rounded-lg border transition-colors cursor-pointer"
-               [ngClass]="isWinnerSelected(entry.id) ? 'border-[#3C8EEE] bg-blue-50' : 'border-zinc-200 hover:bg-zinc-50'"
-               tabindex="0"
-               (click)="toggleWinner(entry.id)"
-               (keydown.enter)="toggleWinner(entry.id)">
-            <!-- 순위 뱃지 -->
-            @if (isWinnerSelected(entry.id)) {
-              <div class="w-8 h-8 rounded-full bg-[#3C8EEE] flex items-center justify-center">
-                <span class="font-suit font-bold text-sm text-white">{{ getWinnerRank(entry.id) }}</span>
-              </div>
-            } @else {
-              <div class="w-8 h-8 rounded-full border-2 border-zinc-200"></div>
-            }
-            <!-- 작품 정보 -->
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              @if (entry.images && entry.images.length > 0) {
-                <img [src]="entry.images[0]" alt="" class="w-12 h-12 rounded-lg object-cover" />
-              }
-              <div class="flex flex-col min-w-0">
-                <span class="font-suit font-semibold text-sm text-zinc-800 truncate">{{ entry.title }}</span>
-                <span class="font-suit text-xs text-zinc-500">{{ entry.user?.nickname }} · ❤ {{ entry.likeCount }}</span>
-              </div>
-            </div>
-          </div>
-        }
-        @if (entries().length === 0) {
-          <p class="font-suit text-sm text-zinc-400 text-center py-8 m-0">출품작이 없습니다.</p>
-        }
-      </div>
-    </div>
-  }
 
   <!-- 하단 버튼 -->
   <div class="flex justify-end gap-3">

@@ -54,11 +54,26 @@
           >월별</button>
         </div>
       </div>
-      <div class="chart-body">
+      <div class="chart-body" style="position:relative;">
         @if (signupData().length === 0 && !isLoading()) {
           <div class="chart-empty">데이터가 없습니다</div>
         }
-        <canvas #signupChart class="chart-canvas"></canvas>
+        <canvas #signupChart class="chart-canvas"
+          (mousemove)="onSignupChartHover($event)"
+          (mouseleave)="hideSignupTooltip()"
+        ></canvas>
+        @if (signupTooltip().visible) {
+          <div class="chart-tooltip signup-tooltip"
+            [style.left.px]="signupTooltip().x"
+            [style.top.px]="signupTooltip().y"
+          >
+            <div class="tooltip-date">{{ signupTooltip().date }}</div>
+            <div class="tooltip-row">
+              <span class="tooltip-dot" style="background:#3B82F6"></span>
+              가입자: {{ signupTooltip().count }}명
+            </div>
+          </div>
+        }
       </div>
     </div>
 

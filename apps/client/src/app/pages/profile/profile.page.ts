@@ -137,6 +137,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.loadAlbums();
       this.loadCommentStats(user.id);
       this.loadFollowCounts(user.id);
+      this.loadDashboard();
     } catch (e) {
       console.error('프로필 로드 실패:', e);
     }
@@ -316,7 +317,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.router.navigate(['/change-password']);
   }
 
-  activeTab = signal<'all' | 'album' | 'dashboard'>('all');
+  activeTab = signal<'all' | 'album' | 'dashboard'>('dashboard');
 
   // 대시보드 데이터
   _dashboardData = signal<DashboardData | null>(null);
@@ -565,13 +566,13 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   /** 부트캠프 상태 라벨 */
   getBootcampStatusLabel(status: string): string {
-    const map: Record<string, string> = { OPERATING: '운영중', PREPARING: '준비중', RECRUITING: '모집중', ENDED: '종료', CLOSED: '마감' };
+    const map: Record<string, string> = { OPERATING: '수강중', PREPARING: '준비중', RECRUITING: '수강중', ENDED: '종료', CLOSED: '수강중' };
     return map[status] || status;
   }
 
   /** 부트캠프 상태 CSS 클래스 */
   getBootcampStatusClass(status: string): string {
-    const map: Record<string, string> = { OPERATING: 'db-bc-operating', PREPARING: 'db-bc-preparing', RECRUITING: 'db-bc-preparing', ENDED: 'db-bc-ended', CLOSED: 'db-bc-ended' };
+    const map: Record<string, string> = { OPERATING: 'db-bc-operating', PREPARING: 'db-bc-preparing', RECRUITING: 'db-bc-operating', ENDED: 'db-bc-ended', CLOSED: 'db-bc-operating' };
     return map[status] || 'db-bc-ended';
   }
 

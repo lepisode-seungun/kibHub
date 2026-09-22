@@ -104,7 +104,7 @@
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  height: 150px;
+  min-height: 150px;
   margin-top: 10px;
 }
 
@@ -250,13 +250,15 @@
   border: 1px solid #F4F4F5;
   border-radius: 12px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .sv-question-head {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
 }
 
 .sv-q-num {
@@ -332,7 +334,6 @@
   font-weight: 500;
   font-size: 13px;
   color: #3F3F46;
-  flex: 1;
 }
 
 .sv-legend-value {
@@ -352,15 +353,23 @@
 }
 
 /* 별점 */
-.sv-rating-layout {
+.sv-rating-wrapper {
   display: flex;
-  align-items: flex-start;
-  gap: 24px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sv-rating-wrapper .sv-rating-avg {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  align-self: flex-end;
 }
 
 .sv-rating-vbar {
   flex: 1;
-  height: 130px;
+  height: auto;
+  min-height: 130px;
   margin-top: 0;
 }
 

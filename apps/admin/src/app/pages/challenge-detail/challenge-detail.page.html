@@ -78,9 +78,6 @@
         <div class="drawer-section flex-1">
           <span class="drawer-label">작성자</span>
           <div class="flex items-center gap-2">
-            @if (entry.user?.profileImage) {
-              <img [src]="entry.user.profileImage" alt="" class="w-6 h-6 rounded-full object-cover" />
-            }
             <span class="drawer-value">{{ entry.user?.nickname || '-' }}</span>
           </div>
         </div>
@@ -93,7 +90,7 @@
       <div class="drawer-row">
         <div class="drawer-section flex-1">
           <span class="drawer-label">수상 여부</span>
-          <span class="drawer-value">{{ entry.isWinner ? entry.rank + '등 🏆' : '-' }}</span>
+          <span class="drawer-value">{{ entry.isWinner ? entry.rank + '등' : '-' }}</span>
         </div>
         <div class="drawer-section flex-1">
           <span class="drawer-label">제출일</span>

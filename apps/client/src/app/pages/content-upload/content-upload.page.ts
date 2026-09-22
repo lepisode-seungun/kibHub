@@ -926,6 +926,14 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       this.thumbError.set('썸네일을 등록해주세요.');
       hasError = true;
     }
+    // 웹툰/그림 타입은 콘텐츠 이미지 필수
+    if (this.selectedType() !== '글') {
+      const doneItems = this.contentItems().filter(item => item.status === 'done');
+      if (doneItems.length === 0) {
+        this.formError.set('콘텐츠 이미지를 최소 1장 이상 업로드해주세요.');
+        hasError = true;
+      }
+    }
     if (hasError) return;
 
     this.formError.set('');

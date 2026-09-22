@@ -26,10 +26,18 @@ interface SurveyAnswerDto {
 export class SurveysController {
   constructor(@Inject(SurveysService) private readonly surveysService: SurveysService) {}
 
-  /** 활성 설문 조회 */
+  /** 설문 조회 (관리자용 - isActive 무관) */
+  @Get('bootcamp/:id/admin')
+  async findByBootcamp(@Param('id', ParseIntPipe) id: number) {
+    const survey = await this.surveysService.findByBootcamp(id);
+    return survey ?? null;
+  }
+
+  /** 활성 설문 조회 (클라이언트용) */
   @Get('bootcamp/:id')
-  findActive(@Param('id', ParseIntPipe) id: number) {
-    return this.surveysService.findActive(id);
+  async findActive(@Param('id', ParseIntPipe) id: number) {
+    const survey = await this.surveysService.findActive(id);
+    return survey ?? null;
   }
 
   /** 설문 생성/수정 (관리자) */
@@ -102,5 +110,11 @@ export class SurveysController {
     @Param('userId', ParseIntPipe) userId: number,
   ) {
     return this.surveysService.findUserResponse(surveyId, userId);
+  }
+
+  /** 설문 활성 상태 토글 (관리자) */
+  @Post(':id/toggle-active')
+  toggleActive(@Param('id', ParseIntPipe) id: number) {
+    return this.surveysService.toggleActive(id);
   }
 }

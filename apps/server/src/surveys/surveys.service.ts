@@ -67,10 +67,17 @@ interface SurveyStatsResult {
 export class SurveysService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
-  /** 부트캠프의 활성 설문 조회 */
+  /** 부트캠프의 활성 설문 조회 (클라이언트용) */
   async findActive(bootcampId: number) {
     return this.prisma.survey.findFirst({
       where: { bootcampId, isActive: true },
+    });
+  }
+
+  /** 부트캠프의 설문 조회 (관리자용 - isActive 무관) */
+  async findByBootcamp(bootcampId: number) {
+    return this.prisma.survey.findFirst({
+      where: { bootcampId },
     });
   }
 
@@ -80,11 +87,11 @@ export class SurveysService {
     if (existing) {
       return this.prisma.survey.update({
         where: { id: existing.id },
-        data: { title, questions: questions as unknown as Prisma.InputJsonArray, isActive: true },
+        data: { title, questions: questions as unknown as Prisma.InputJsonArray },
       });
     }
     return this.prisma.survey.create({
-      data: { bootcampId, title, questions: questions as unknown as Prisma.InputJsonArray, isActive: true },
+      data: { bootcampId, title, questions: questions as unknown as Prisma.InputJsonArray, isActive: false },
     });
   }
 
@@ -304,5 +311,25 @@ export class SurveysService {
     ];
 
     return BOM + csvLines.join('\r\n');
+  }
+
+  /** 설문 활성 상태 토글 (OFF→ON 시 응답 초기화) */
+  async toggleActive(id: number) {
+    const survey = await this.prisma.survey.findUnique({ where: { id }, select: { isActive: true } });
+    if (!survey) throw new NotFoundException('설문을 찾을 수 없습니다.');
+    const newActive = !survey.isActive;
+
+    // OFF → ON 전환 시 기존 응답 초기화
+    if (newActive) {
+      const deleted = await this.prisma.surveyResponse.deleteMany({ where: { surveyId: id } });
+      if (deleted.count > 0) {
+        console.log(`[survey ${id}] 활성화: 기존 응답 ${deleted.count}건 초기화`);
+      }
+    }
+
+    return this.prisma.survey.update({
+      where: { id },
+      data: { isActive: newActive },
+    });
   }
 }

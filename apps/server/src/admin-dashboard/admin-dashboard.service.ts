@@ -12,7 +12,7 @@ export class AdminDashboardService {
         this.prisma.user.count({ where: { status: 'ACTIVE', role: 'STUDENT' } }),
         this.prisma.content.count({ where: { status: 'VISIBLE' } }),
         this.prisma.bootcamp.count({
-          where: { status: { in: ['RECRUITING', 'OPERATING'] } },
+          where: { status: { in: ['RECRUITING', 'OPERATING', 'CLOSED'] } },
         }),
         this.prisma.inquiry.count({ where: { status: 'PENDING' } }),
       ]);
@@ -31,7 +31,35 @@ export class AdminDashboardService {
       orderBy: { createdAt: 'asc' },
     });
 
+    // 전체 기간의 날짜 슬롯 생성 (빈 날도 count=0)
+    const allSlots: string[] = [];
+    const cursor = new Date(since);
+    const now = new Date();
+
+    if (period === 'daily') {
+      while (cursor <= now) {
+        allSlots.push(cursor.toISOString().substring(0, 10));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    } else if (period === 'weekly') {
+      // 시작일을 월요일로 맞춤
+      const day = cursor.getDay();
+      cursor.setDate(cursor.getDate() - day + (day === 0 ? -6 : 1));
+      while (cursor <= now) {
+        allSlots.push(cursor.toISOString().substring(0, 10));
+        cursor.setDate(cursor.getDate() + 7);
+      }
+    } else {
+      cursor.setDate(1);
+      while (cursor <= now) {
+        allSlots.push(cursor.toISOString().substring(0, 7));
+        cursor.setMonth(cursor.getMonth() + 1);
+      }
+    }
+
+    // 실제 데이터를 슬롯에 매핑
     const grouped = new Map<string, number>();
+    for (const slot of allSlots) grouped.set(slot, 0);
 
     for (const u of users) {
       const d = new Date(u.createdAt);
@@ -39,21 +67,20 @@ export class AdminDashboardService {
       if (period === 'daily') {
         key = d.toISOString().substring(0, 10);
       } else if (period === 'weekly') {
-        // ISO week start (Monday)
         const day = d.getDay();
         const diff = d.getDate() - day + (day === 0 ? -6 : 1);
         const monday = new Date(d);
         monday.setDate(diff);
         key = monday.toISOString().substring(0, 10);
       } else {
-        key = d.toISOString().substring(0, 7); // YYYY-MM
+        key = d.toISOString().substring(0, 7);
       }
       grouped.set(key, (grouped.get(key) || 0) + 1);
     }
 
-    return Array.from(grouped.entries()).map(([date, count]) => ({
+    return allSlots.map(date => ({
       date,
-      count,
+      count: grouped.get(date) || 0,
     }));
   }
 
@@ -93,7 +120,7 @@ export class AdminDashboardService {
 
     return allMonths.map(date => ({
       date,
-      ...grouped.get(date)!,
+      ...(grouped.get(date) ?? { WEBTOON: 0, ILLUSTRATION: 0, WRITING: 0 }),
     }));
   }
 
@@ -140,17 +167,20 @@ export class AdminDashboardService {
     return result;
   }
 
-  /** 최근 활동 */
+  /** 최근 활동 (최근 3개월) */
   async getRecentActivity() {
+    const since = new Date();
+    since.setMonth(since.getMonth() - 3);
+
     const [recentUsers, recentContents, recentInquiries] = await Promise.all([
       this.prisma.user.findMany({
-        where: { role: 'STUDENT' },
+        where: { role: 'STUDENT', createdAt: { gte: since } },
         select: { id: true, nickname: true, email: true, createdAt: true, profileImage: true },
         orderBy: { createdAt: 'desc' },
         take: 5,
       }),
       this.prisma.content.findMany({
-        where: { status: 'VISIBLE' },
+        where: { status: 'VISIBLE', createdAt: { gte: since } },
         select: {
           id: true,
           title: true,
@@ -163,6 +193,7 @@ export class AdminDashboardService {
         take: 5,
       }),
       this.prisma.inquiry.findMany({
+        where: { createdAt: { gte: since } },
         select: {
           id: true,
           title: true,

@@ -423,6 +423,10 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.signup-tooltip {
+  transform: translateX(-50%);
+}
+
 .tooltip-date {
   font-family: 'SUIT', sans-serif;
   font-weight: 600;

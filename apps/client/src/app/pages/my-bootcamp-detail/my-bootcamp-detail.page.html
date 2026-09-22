@@ -413,8 +413,8 @@
       }
     }
 
-    <!-- ===== 출석/진도 탭 ===== -->
-    @if (activeDetailTab() === '출석/진도') {
+    <!-- ===== 출석 탭 ===== -->
+    @if (activeDetailTab() === '출석') {
       <!-- 상태별 안내 배너 -->
       @if (attendanceStatus() === 'ended') {
         <div class="att-ended-banner">
@@ -571,7 +571,7 @@
             <span class="sv-modal-title">📋 {{ activeSurvey()!.title }}</span>
             @for (q of activeSurvey()!.questions; track $index; let qIdx = $index) {
               <div class="sv-question-modal">
-                <span class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text || q.title }}</span>
+                <span class="sv-q-label-sm">Q{{ qIdx + 1 }}. {{ q.text || q.title }} @if (q.required !== false) { <span style="color: #3B82F6; font-size: 12px; font-weight: 600">(필수)</span> }</span>
                 @if (q.type === 'rating' || q.type === 'RATING') {
                   <div class="sv-rating-stars">
                     @for (star of [1,2,3,4,5]; track star) {
@@ -608,7 +608,7 @@
                             rows="2"
                             placeholder="답변을 입력해주세요"
                             [value]="surveyAnswers()[qIdx] || ''"
-                            (input)="updateSurveyAnswer(qIdx, $any($event.target).value)"></textarea>
+                            (input)="updateSurveyAnswer(qIdx, $any($event.target).value, true)"></textarea>
                 }
               </div>
             }

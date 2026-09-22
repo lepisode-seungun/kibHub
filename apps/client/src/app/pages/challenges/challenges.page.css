@@ -13,7 +13,7 @@
 
 /* 필터 + 그리드 섹션 — 살짝 밝은 배경 */
 .challenges-body-section {
-  background: #151419;
+  background: #0C0B10;
   padding: 40px max(clamp(20px, 5.2vw, 40px), calc(50% - 880px)) 80px;
   box-sizing: border-box; width: 100%;
   display: flex; flex-direction: column; gap: 32px;

@@ -486,7 +486,7 @@ export class BootcampDashboardPage implements OnInit {
 
   // ===== 출석 현황 섹션 =====
   attendanceSectionOpen = signal(true);
-  attendanceDate = signal(new Date().toISOString().substring(0, 10));
+  attendanceDate = signal(new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' }));
   attendanceSummary = signal({ totalStudents: 0, todayAttended: 0 });
   attendanceRawData = signal<GridRow[]>([]);
   attendanceFilter = signal<'전체' | '출석' | '미출석'>('전체');

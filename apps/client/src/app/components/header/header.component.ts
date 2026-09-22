@@ -205,15 +205,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       await this.authService.logout();
       await this.router.navigate(['/']);
       this.isLogoutModalOpen.set(true);
+      document.body.style.overflow = 'hidden';
     }, 300);
   }
 
   closeLogoutModal(): void {
     this.isLogoutModalOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   goToLogin(): void {
     this.isLogoutModalOpen.set(false);
+    document.body.style.overflow = '';
     this.router.navigate(['/login']);
   }
 
