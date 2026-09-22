@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException, Inject } from '@nestjs/common';
+import { Prisma, ChallengeStatus } from '@prisma/generated';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -8,8 +9,8 @@ export class ChallengesService {
   // ===== 클라이언트 API =====
 
   /** 챌린지 목록 (클라이언트: isVisible=true만) */
-  async findAll(status?: string, includeHidden = false) {
-    const where: any = {};
+  async findAll(status?: ChallengeStatus, includeHidden = false) {
+    const where: Prisma.ChallengeWhereInput = {};
     if (!includeHidden) where.isVisible = true;
     if (status) where.status = status;
 
@@ -23,7 +24,7 @@ export class ChallengesService {
 
     return challenges.map(c => ({
       ...c,
-      entryCount: (c as any)._count.entries,
+      entryCount: c._count.entries,
       _count: undefined,
     }));
   }
@@ -40,13 +41,13 @@ export class ChallengesService {
 
     return {
       ...challenge,
-      entryCount: (challenge as any)._count.entries,
+      entryCount: challenge._count.entries,
       _count: undefined,
     };
   }
 
   /** 출품작 목록 */
-  async findEntries(challengeId: number, sort: string = 'latest', userId?: number) {
+  async findEntries(challengeId: number, sort = 'latest', userId?: number) {
     const orderBy = sort === 'likes' ? { likeCount: 'desc' as const } : { createdAt: 'desc' as const };
 
     const entries = await this.prisma.challengeEntry.findMany({
@@ -58,11 +59,14 @@ export class ChallengesService {
       orderBy,
     });
 
-    return entries.map(e => ({
-      ...e,
-      isLiked: userId ? (e as any).likes?.length > 0 : false,
-      likes: undefined,
-    }));
+    return entries.map(e => {
+      const likes = (e as typeof e & { likes?: { id: number }[] }).likes;
+      return {
+        ...e,
+        isLiked: userId ? (likes?.length ?? 0) > 0 : false,
+        likes: undefined,
+      };
+    });
   }
 
   /** 내 출품작 조회 */
@@ -218,13 +222,13 @@ export class ChallengesService {
   }
 
   /** 챌린지 수정 */
-  async update(id: number, data: any) {
+  async update(id: number, data: Prisma.ChallengeUpdateInput & { startDate?: string | Date; endDate?: string | Date }) {
     const challenge = await this.prisma.challenge.findUnique({ where: { id } });
     if (!challenge) throw new NotFoundException('챌린지를 찾을 수 없습니다.');
 
-    const updateData: any = { ...data };
-    if (data.startDate) updateData.startDate = new Date(data.startDate);
-    if (data.endDate) updateData.endDate = new Date(data.endDate);
+    const updateData: Prisma.ChallengeUpdateInput = { ...data };
+    if (data.startDate) updateData.startDate = new Date(data.startDate as string);
+    if (data.endDate) updateData.endDate = new Date(data.endDate as string);
 
     return this.prisma.challenge.update({ where: { id }, data: updateData });
   }
@@ -240,7 +244,7 @@ export class ChallengesService {
   }
 
   /** 상태 변경 */
-  async updateStatus(id: number, status: string) {
+  async updateStatus(id: number, status: ChallengeStatus) {
     // ENDED → ACTIVE 전환 시 출품작 + 좋아요 전부 초기화 (빈 상태)
     console.log(`[updateStatus] id=${id}, newStatus=${status}`);
     if (status === 'ACTIVE') {
@@ -268,7 +272,7 @@ export class ChallengesService {
 
     return this.prisma.challenge.update({
       where: { id },
-      data: { status: status as any },
+      data: { status },
     });
   }
 
@@ -318,7 +322,7 @@ export class ChallengesService {
     const totalLikes = challenge.entries.reduce((sum, e) => sum + e.likeCount, 0);
     return {
       ...challenge,
-      entryCount: (challenge as any)._count.entries,
+      entryCount: challenge._count.entries,
       totalLikes,
       _count: undefined,
     };

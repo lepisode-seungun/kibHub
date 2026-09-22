@@ -332,7 +332,7 @@
                   <div class="db-filter-row">
                     <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'all'" (click)="setAssignmentFilter('all')">전체</button>
                     <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'not_submitted'" (click)="setAssignmentFilter('not_submitted')">미제출</button>
-                    <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'in_progress'" (click)="setAssignmentFilter('in_progress')">진행중</button>
+
                     <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'submitted'" (click)="setAssignmentFilter('submitted')">제출완료</button>
                     <button class="db-filter-btn" [class.db-filter-active]="assignmentFilter() === 'overdue'" (click)="setAssignmentFilter('overdue')">마감</button>
                   </div>

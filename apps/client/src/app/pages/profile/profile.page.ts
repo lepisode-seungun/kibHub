@@ -359,18 +359,21 @@ export class ProfilePage implements OnInit, OnDestroy {
     return data.activityHeatmap.reduce((sum, d) => sum + d.count, 0);
   });
 
-  /** 과제 현황: 미제출 우선 정렬 */
+  /** 과제 현황: 기한 최신순 정렬 (마감일 가까운 순) */
   sortedAssignments = computed(() => {
     const data = this.dashboardData();
     if (!data?.assignmentStatus) return [];
-    const order: Record<string, number> = { NOT_SUBMITTED: 0, SUBMITTED: 1, FEEDBACK_DONE: 2 };
-    return [...data.assignmentStatus].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+    return [...data.assignmentStatus].sort((a, b) => {
+      const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+      const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+      return dateB - dateA;
+    });
   });
 
   /** 과제 필터 */
-  assignmentFilter = signal<'all' | 'not_submitted' | 'in_progress' | 'submitted' | 'overdue'>('all');
+  assignmentFilter = signal<'all' | 'not_submitted' | 'submitted' | 'overdue'>('all');
 
-  setAssignmentFilter(filter: 'all' | 'not_submitted' | 'in_progress' | 'submitted' | 'overdue'): void {
+  setAssignmentFilter(filter: 'all' | 'not_submitted' | 'submitted' | 'overdue'): void {
     this.assignmentFilter.set(filter);
   }
 
@@ -386,7 +389,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       const isOverdue = asn.dueDate ? new Date(asn.dueDate).getTime() < now : false;
       switch (filter) {
         case 'not_submitted': return asn.status === 'NOT_SUBMITTED';
-        case 'in_progress': return !isOverdue && asn.status === 'NOT_SUBMITTED';
+
         case 'submitted': return asn.status === 'SUBMITTED' || asn.status === 'FEEDBACK_DONE';
         case 'overdue': return isOverdue && asn.status === 'NOT_SUBMITTED';
         default: return true;

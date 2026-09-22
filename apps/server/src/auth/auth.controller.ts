@@ -95,7 +95,7 @@ export class AuthController {
     const user = await this.authService.findById(decoded.userId);
     if (!user) return res.status(HttpStatus.NOT_FOUND).json({ error: '유저를 찾을 수 없습니다.' });
 
-    return res.json({ user: { ...user, initial: ((user as any).nickname || (user as any).name || 'U').charAt(0).toUpperCase() } });
+    return res.json({ user: { ...user, initial: (user.nickname || user.name || 'U').charAt(0).toUpperCase() } });
   }
 
   @Post('logout')

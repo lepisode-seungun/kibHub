@@ -934,6 +934,12 @@ export class MyBootcampDetailPage implements OnInit {
   async doCheckIn(): Promise<void> {
     const id = Number(this.bootcampId);
     if (!id || this.todayCheckedIn()) return;
+    // 다른 달을 보고 있으면 오늘 달로 이동
+    const now = new Date();
+    const current = this.calendarMonth();
+    if (current.getFullYear() !== now.getFullYear() || current.getMonth() !== now.getMonth()) {
+      this.calendarMonth.set(new Date(now.getFullYear(), now.getMonth(), 1));
+    }
     this.attendanceLoading.set(true);
     try {
       await this.api.attendance.checkIn(id);

@@ -57,7 +57,7 @@ export class ContentsService {
       if (ids.length === 0) return contents;
       const counts = await this.prisma.comment.groupBy({
         by: ['contentId'],
-        where: { contentId: { in: ids }, markerNum: { not: null } },
+        where: { contentId: { in: ids }, markerNum: { not: null }, status: 'VISIBLE' },
         _count: true,
       });
       const countMap = new Map(counts.map(c => [c.contentId, c._count]));

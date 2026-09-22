@@ -416,7 +416,7 @@ export class UsersService {
       title: a.title,
       bootcampId: a.course.bootcampId,
       bootcampName: a.course.bootcamp.name,
-      dueDate: a.dueDate,
+      dueDate: a.dueDateEnd ?? a.dueDate,
       submissionId: submissionMap.get(a.id) || null,
       status: feedbackAssignmentIds.has(a.id) ? 'FEEDBACK_DONE'
         : submittedAssignmentIds.has(a.id) ? 'SUBMITTED'

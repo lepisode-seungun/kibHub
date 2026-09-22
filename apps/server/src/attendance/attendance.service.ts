@@ -101,7 +101,7 @@ export class AttendanceService {
       attendanceDays,
       totalDays,
       elapsedDays,
-      rate: elapsedDays > 0 ? Math.round((attendanceDays / elapsedDays) * 100) : 0,
+      rate: totalDays > 0 ? Math.round((attendanceDays / totalDays) * 100) : 0,
     };
   }
 

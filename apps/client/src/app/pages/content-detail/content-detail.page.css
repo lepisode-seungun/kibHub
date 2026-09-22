@@ -1128,12 +1128,27 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
-  transition: background 0.15s;
+  border-radius: 6px;
+  transition: background 0.15s, opacity 0.15s;
+  opacity: 0;
+}
+
+.comment-item:hover .comment-more-btn,
+.reply-body:hover .comment-more-btn,
+.comment-more-btn:focus {
+  opacity: 1;
 }
 
 .comment-more-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.comment-more-btn svg {
+  fill: #A1A1AA;
+}
+
+.comment-more-btn:hover svg {
+  fill: #E4E4E7;
 }
 
 .comment-dropdown-overlay {
@@ -1147,42 +1162,49 @@
 
 .comment-dropdown {
   position: absolute;
-  top: calc(100% + 2px);
+  top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
-  width: 64px;
-  background: #FFFFFF;
-  border: 1px solid #FAFAFA;
-  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border-radius: 6px;
-  padding: 2px;
+  min-width: 88px;
+  background: #27272A;
+  border: 1px solid #3F3F46;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
   z-index: 100;
+  animation: dropdownFadeIn 0.12s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 .dropdown-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
-  gap: 4px;
+  padding: 8px 14px;
+  gap: 6px;
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.8px;
-  color: #27272A;
+  letter-spacing: -0.04em;
+  color: #E4E4E7;
   background: none;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .dropdown-item:hover,
 .dropdown-item-active {
-  background: #FAFAFA;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .comment-item-body {
@@ -1224,13 +1246,12 @@
 
 /* comment-item-name -> TW inline */
 
-.comment-more-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
+/* Dropdown danger item (삭제/신고) */
+.dropdown-item-danger {
+  color: #F87171 !important;
+}
+.dropdown-item-danger:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
 }
 
 /* comment-item-text -> TW inline */

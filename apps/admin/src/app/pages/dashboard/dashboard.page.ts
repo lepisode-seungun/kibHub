@@ -522,10 +522,22 @@ export class DashboardPage implements OnInit {
     if (period === 'daily') {
       // Bar chart: hit-test by bar X range
       const tolerance = 4;
+      const my = event.clientY - rect.top;
       const hit = this.signupBarGeometry.find(
         b => mx >= b.x - tolerance && mx <= b.x + b.w + tolerance
       );
-      if (hit) nearest = hit.idx;
+      if (hit) {
+        const d = data[hit.idx];
+        if (d && d.count === 0) {
+          // 0명: 날짜 레이블 영역(하단)에서만 툴팁 표시
+          const labelAreaTop = rect.height - 30;
+          if (my >= labelAreaTop) {
+            nearest = hit.idx;
+          }
+        } else {
+          nearest = hit.idx;
+        }
+      }
     } else {
       // Line chart: nearest point by X
       let minDist = Infinity;

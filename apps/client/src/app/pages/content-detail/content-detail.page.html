@@ -603,7 +603,7 @@
                     <div class="comment-dropdown">
                       @if (comment.isMe) {
                         <button class="dropdown-item dropdown-item-active" (click)="startEdit(comment)">수정</button>
-                        <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
+                        <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); openDeleteModal(comment)">삭제</button>
                       }
                       <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal(comment.id)">신고</button>
                     </div>
@@ -705,7 +705,7 @@
                       <div class="comment-dropdown">
                         @if (reply.isMe) {
                           <button class="dropdown-item dropdown-item-active" (click)="startEdit(reply)">수정</button>
-                          <button class="dropdown-item" (click)="$event.stopPropagation(); openDeleteModal(reply)">삭제</button>
+                          <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); openDeleteModal(reply)">삭제</button>
                         }
                         <button class="dropdown-item dropdown-item-danger" (click)="$event.stopPropagation(); closeDropdown(); openCommentReportModal(reply.id)">신고</button>
                       </div>
