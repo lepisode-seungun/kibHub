@@ -52,6 +52,43 @@ interface SurveyItem {
   isActive: boolean;
 }
 
+interface ChallengeItem {
+  id: number;
+  title: string;
+  description?: string;
+  thumbnail?: string;
+  referenceImages?: string[];
+  category?: string;
+  difficulty?: string;
+  status: string;
+  isVisible?: boolean;
+  startDate: string;
+  endDate: string;
+  maxSubmissions?: number;
+  isBootcampOnly?: boolean;
+  bootcampId?: number;
+  prize?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  entryCount?: number;
+  _count?: { entries: number };
+}
+
+interface ChallengeEntryItem {
+  id: number;
+  challengeId: number;
+  userId: number;
+  title: string;
+  description: string;
+  images: string[];
+  likeCount: number;
+  rank?: number;
+  isWinner?: boolean;
+  isLiked?: boolean;
+  createdAt: string;
+  user?: { id: number; nickname: string; profileImage?: string };
+}
+
 interface Submission {
   id: number;
   title?: string;
@@ -447,29 +484,29 @@ export class ApiService {
 
   // ===== Challenges =====
   readonly challenges = {
-    findAll: (status?: string): Promise<any[]> =>
+    findAll: (status?: string): Promise<ChallengeItem[]> =>
       this.get(`/challenges${status ? '?status=' + status : ''}`),
-    findOne: (id: number): Promise<any> =>
+    findOne: (id: number): Promise<ChallengeItem> =>
       this.get(`/challenges/${id}`),
-    findEntries: (id: number, sort?: string): Promise<any[]> =>
+    findEntries: (id: number, sort?: string): Promise<ChallengeEntryItem[]> =>
       this.get(`/challenges/${id}/entries${sort ? '?sort=' + sort : ''}`),
-    findMyEntry: (id: number): Promise<any> =>
+    findMyEntry: (id: number): Promise<ChallengeEntryItem | null> =>
       this.get(`/challenges/${id}/my-entry`),
-    submitEntry: (id: number, data: { title: string; description?: string; images?: string[] }): Promise<any> =>
+    submitEntry: (id: number, data: { title: string; description?: string; images?: string[] }): Promise<ChallengeEntryItem> =>
       this.post(`/challenges/${id}/entries`, data),
     toggleLike: (entryId: number): Promise<{ liked: boolean }> =>
       this.post(`/challenges/entries/${entryId}/like`, {}),
     checkLike: (entryId: number): Promise<{ liked: boolean }> =>
       this.get(`/challenges/entries/${entryId}/like`),
-    updateEntry: (entryId: number, data: { title?: string; description?: string; images?: string[] }): Promise<any> =>
+    updateEntry: (entryId: number, data: { title?: string; description?: string; images?: string[] }): Promise<ChallengeEntryItem> =>
       this.patch(`/challenges/entries/${entryId}`, data),
-    deleteEntry: (entryId: number): Promise<any> =>
+    deleteEntry: (entryId: number): Promise<void> =>
       this.del(`/challenges/entries/${entryId}`),
   };
 
   // ===== Attendance (출석 체크) =====
   readonly attendance = {
-    checkIn: (bootcampId: number): Promise<any> =>
+    checkIn: (bootcampId: number): Promise<{ id: number; userId: number; bootcampId: number; date: string }> =>
       this.post(`/bootcamps/${bootcampId}/attendance/check-in`, {}),
     getMyAttendance: (bootcampId: number): Promise<{ date: string; checkedAt: string }[]> =>
       this.get(`/bootcamps/${bootcampId}/attendance/mine`),
@@ -481,9 +518,9 @@ export class ApiService {
 
   // ===== Progress (학습 진도) =====
   readonly progress = {
-    markComplete: (lectureId: number): Promise<any> =>
+    markComplete: (lectureId: number): Promise<{ completed: boolean }> =>
       this.post(`/lectures/${lectureId}/progress/complete`, {}),
-    unmarkComplete: (lectureId: number): Promise<any> =>
+    unmarkComplete: (lectureId: number): Promise<{ completed: boolean }> =>
       this.del(`/lectures/${lectureId}/progress/complete`),
     isComplete: (lectureId: number): Promise<{ completed: boolean }> =>
       this.get(`/lectures/${lectureId}/progress/status`),
@@ -494,7 +531,7 @@ export class ApiService {
       courses: { courseId: number; courseTitle: string; totalLectures: number; completedLectures: number; rate: number }[];
     }> =>
       this.get(`/bootcamps/${bootcampId}/progress/mine`),
-    getCourseProgress: (courseId: number): Promise<any> =>
+    getCourseProgress: (courseId: number): Promise<{ totalLectures: number; completedLectures: number; rate: number }> =>
       this.get(`/courses/${courseId}/progress/mine`),
   };
 }

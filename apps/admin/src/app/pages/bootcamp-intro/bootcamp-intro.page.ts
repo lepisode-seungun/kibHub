@@ -318,14 +318,14 @@ export class BootcampIntroPage implements OnInit {
       if (img?.file) {
         const uploaded = await this.api.upload.single(img.file, 'posters');
         if (isEdit) {
-          await this.api.posters.update(this.editingPosterId!, { imageUrl: uploaded.url, title });
+          await this.api.posters.update(isEdit as number, { imageUrl: uploaded.url, title });
           this.toast.success('포스터가 수정되었습니다.');
         } else {
           await this.api.posters.create({ imageUrl: uploaded.url, title });
           this.toast.success('포스터가 등록되었습니다.');
         }
       } else if (isEdit) {
-        await this.api.posters.update(this.editingPosterId!, { title });
+        await this.api.posters.update(isEdit as number, { title });
         this.toast.success('포스터가 수정되었습니다.');
       }
       this.showPosterDrawer.set(false);

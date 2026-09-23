@@ -35,11 +35,6 @@ interface ApplicantResponse {
   user?: { name: string; phone: string; email: string };
 }
 
-interface BootcampEditPayload {
-  name: string;
-  startDate?: string;
-  endDate?: string;
-}
 
 interface BootcampDetailResponse {
   startDate?: string;

@@ -17,19 +17,19 @@
     <div class="cs-form">
       <!-- 작품 제목 -->
       <div class="cs-field">
-        <label class="cs-label">작품 제목 <span class="cs-required">*</span></label>
-        <input type="text" class="cs-input" [(ngModel)]="title" placeholder="작품 제목을 입력하세요" />
+        <label class="cs-label" for="cs-title">작품 제목 <span class="cs-required">*</span></label>
+        <input type="text" id="cs-title" class="cs-input" [(ngModel)]="title" placeholder="작품 제목을 입력하세요" />
       </div>
 
       <!-- 작품 설명 -->
       <div class="cs-field">
-        <label class="cs-label">작품 설명</label>
-        <textarea class="cs-textarea" [(ngModel)]="description" rows="4" placeholder="작품에 대해 설명해주세요 (선택)"></textarea>
+        <label class="cs-label" for="cs-desc">작품 설명</label>
+        <textarea id="cs-desc" class="cs-textarea" [(ngModel)]="description" rows="4" placeholder="작품에 대해 설명해주세요 (선택)"></textarea>
       </div>
 
       <!-- 이미지 업로드 -->
       <div class="cs-field">
-        <label class="cs-label">작품 이미지 <span class="cs-required">*</span> <span class="cs-hint">(최대 5장)</span></label>
+        <span class="cs-label">작품 이미지 <span class="cs-required">*</span> <span class="cs-hint">(최대 5장)</span></span>
         <div class="cs-images">
           @for (preview of imagePreviews; track $index) {
             <div class="cs-img-wrap">

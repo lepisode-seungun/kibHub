@@ -17,7 +17,7 @@ export class ChallengeSubmitPage implements OnInit {
   private route = inject(ActivatedRoute);
 
   challengeId = 0;
-  challenge = signal<any>(null);
+  challenge = signal<{ id: number; title: string; status: string; endDate: string } | null>(null);
   loading = signal(false);
 
   title = '';
@@ -73,7 +73,7 @@ export class ChallengeSubmitPage implements OnInit {
     try {
       // 이미지 업로드
       const uploadResults = await this.api.upload.multiple(this.imageFiles, 'challenges');
-      const imageUrls = uploadResults.map((r: any) => r.url);
+      const imageUrls = uploadResults.map((r: { url: string }) => r.url);
 
       // 작품 제출
       await this.api.challenges.submitEntry(this.challengeId, {
@@ -84,8 +84,9 @@ export class ChallengeSubmitPage implements OnInit {
 
       alert('작품이 제출되었습니다! 🎉');
       this.router.navigate(['/challenges', this.challengeId]);
-    } catch (e: any) {
-      alert(e?.error?.message || '제출 실패');
+    } catch (e: unknown) {
+      const err = e as { error?: { message?: string } };
+      alert(err?.error?.message || '제출 실패');
     }
     this.loading.set(false);
   }

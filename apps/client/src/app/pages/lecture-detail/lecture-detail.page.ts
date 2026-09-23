@@ -218,13 +218,15 @@ export class LectureDetailPage implements OnInit, OnDestroy {
           ...assignments.map(a => ({ type: 'assignment' as const, id: a.id })),
         ];
       } else {
-        // 강의 탭 등: 부트캠프 전체 강의만
+        // 강의 탭 등: 부트캠프 전체 강의를 id 내림차순(최신순)으로 정렬
+        // → 강의 탭 목록 표시 순서와 일치시킴
         const courses = await this.api.courses.findByBootcamp(Number(this.bootcampId));
         const allItems: { type: 'lecture' | 'assignment'; id: number }[] = [];
         for (const course of courses) {
           const lectures = await this.api.lectures.findByCourse(course.id);
           lectures.forEach(l => allItems.push({ type: 'lecture', id: l.id }));
         }
+        allItems.sort((a, b) => b.id - a.id);
         this.navItems = allItems;
       }
     } catch { /* ignore */ }

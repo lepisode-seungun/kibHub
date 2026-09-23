@@ -2,7 +2,7 @@
   <!-- 요약 카드 -->
   <div class="summary-grid">
     @for (card of summaryCards(); track card.label; let i = $index) {
-      <div class="summary-card" (click)="navigateCard(card)">
+      <div class="summary-card" role="button" tabindex="0" (click)="navigateCard(card)" (keydown.enter)="navigateCard(card)">
         <div class="summary-card-accent" [style.background]="card.color"></div>
         <div class="summary-card-body">
           <div class="summary-top">
@@ -150,7 +150,7 @@
     @if (activeRecentTab() === 'users') {
       <div class="recent-list">
         @for (u of recentUsers(); track u.id) {
-          <div class="recent-item clickable" (click)="navigateToDetail('members', u.id)">
+          <div class="recent-item clickable" role="button" tabindex="0" (click)="navigateToDetail('members', u.id)" (keydown.enter)="navigateToDetail('members', u.id)">
             <div class="recent-avatar" [style.background]="u.profileImage ? 'transparent' : '#E4E4E7'">
               @if (u.profileImage) {
                 <img [src]="u.profileImage" alt="" class="avatar-img" />
@@ -175,7 +175,7 @@
     @if (activeRecentTab() === 'contents') {
       <div class="recent-list">
         @for (c of recentContents(); track c.id) {
-          <div class="recent-item clickable" (click)="navigateToDetail('content', c.id)">
+          <div class="recent-item clickable" role="button" tabindex="0" (click)="navigateToDetail('content', c.id)" (keydown.enter)="navigateToDetail('content', c.id)">
             <span class="type-badge" [ngClass]="{
               'type-webtoon': c.type === 'WEBTOON',
               'type-illustration': c.type === 'ILLUSTRATION',
@@ -198,7 +198,7 @@
     @if (activeRecentTab() === 'inquiries') {
       <div class="recent-list">
         @for (q of recentInquiries(); track q.id) {
-          <div class="recent-item clickable" (click)="navigateToInquiry(q.id)">
+          <div class="recent-item clickable" role="button" tabindex="0" (click)="navigateToInquiry(q.id)" (keydown.enter)="navigateToInquiry(q.id)">
             <span class="status-badge text-xs" [ngClass]="getInquiryStatusClass(q.status)">{{ getInquiryStatusLabel(q.status) }}</span>
             <div class="recent-info">
               <span class="recent-name">{{ q.title }}</span>

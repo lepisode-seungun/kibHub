@@ -2,7 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 
@@ -84,7 +84,7 @@ export class ChallengesPage implements OnInit {
   async loadChallenges(): Promise<void> {
     try {
       const data = await this.api.challenges.findAll();
-      const rows: ChallengeRow[] = data.map((c: any) => ({
+      const rows: ChallengeRow[] = data.map((c) => ({
         id: c.id,
         title: c.title,
         category: CATEGORY_LABELS[c.category] || c.category,
@@ -117,21 +117,21 @@ export class ChallengesPage implements OnInit {
     }
   }
 
-  onRowClick(row: any): void {
-    this.router.navigate(['/content/challenges', row.id]);
+  onRowClick(row: GridRow): void {
+    this.router.navigate(['/content/challenges', row['id']]);
   }
 
   goToNew(): void {
     this.router.navigate(['/content/challenges/new']);
   }
 
-  contextMenuItemsFn = (row: any): string[] => {
-    const visibilityAction = row.isVisible ? '숨김' : '노출';
-    const statusAction = row.status === 'ACTIVE' ? '종료' : '시작';
+  contextMenuItemsFn = (row: GridRow): string[] => {
+    const visibilityAction = row['isVisible'] ? '숨김' : '노출';
+    const statusAction = row['status'] === 'ACTIVE' ? '종료' : '시작';
     return ['수정', visibilityAction, statusAction, '삭제'];
   };
 
-  onContextMenuSelect(event: { action: string; row: any }): void {
+  onContextMenuSelect(event: { action: string; row: GridRow }): void {
     const row = event.row as ChallengeRow;
     switch (event.action) {
       case '수정':

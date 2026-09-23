@@ -1,7 +1,7 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DataGridComponent, GridColumn } from '../../components/data-grid/data-grid.component';
+import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { formatDate } from '../../shared/format-date';
@@ -127,12 +127,12 @@ export class ChallengeDetailPage implements OnInit {
   deleteModalOpen = signal(false);
   deleteTargetEntry = signal<{ id: number; title: string; nickname: string } | null>(null);
 
-  onEntryContextMenu(event: { action: string; row: any }): void {
+  onEntryContextMenu(event: { action: string; row: GridRow }): void {
     if (event.action === '삭제') {
       this.deleteTargetEntry.set({
-        id: event.row.id,
-        title: event.row.title,
-        nickname: event.row.nickname,
+        id: event.row['id'] as number,
+        title: event.row['title'] as string,
+        nickname: event.row['nickname'] as string,
       });
       this.deleteModalOpen.set(true);
     }

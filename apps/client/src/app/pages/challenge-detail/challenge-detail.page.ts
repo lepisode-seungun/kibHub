@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';

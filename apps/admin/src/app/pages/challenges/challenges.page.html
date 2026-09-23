@@ -41,7 +41,7 @@
 
 <!-- ===== 순위 결정 모달 ===== -->
 @if (rankModalOpen()) {
-  <div class="rank-overlay" (click)="closeRankModal()"></div>
+  <div class="rank-overlay" role="button" tabindex="0" (click)="closeRankModal()" (keydown.enter)="closeRankModal()"></div>
   <div class="rank-modal">
     <div class="rank-header">
       <h3 class="font-suit font-bold text-lg text-zinc-800 m-0">🏆 순위 결정</h3>
