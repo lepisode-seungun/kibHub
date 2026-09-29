@@ -17,7 +17,7 @@ interface ContentItem {
   fileName: string;
   size: string;
   thumbnailUrl: string;
-  status: 'uploading' | 'done' | 'error';
+  status: 'uploading' | 'check' | 'done' | 'error';
 }
 
 interface ThumbCandidate {
@@ -131,7 +131,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   // 업로드 상태 통계
   uploadingCount = computed(() => this.contentItems().filter(i => i.status === 'uploading').length);
-  doneCount = computed(() => this.contentItems().filter(i => i.status === 'done').length);
+  doneCount = computed(() => this.contentItems().filter(i => i.status === 'done' || i.status === 'check').length);
   errorCount = computed(() => this.contentItems().filter(i => i.status === 'error').length);
   totalCount = computed(() => this.contentItems().length);
   allUploaded = computed(() => this.totalCount() > 0 && this.uploadingCount() === 0);
@@ -154,6 +154,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   albums = signal<{ id: number; name: string; count: number; thumbnails: string[] }[]>([]);
   selectedAlbumId = signal<number | null>(null);
   selectedAlbumName = signal<string>('');
+  private originalAlbumId: number | null = null; // 수정 모드: 기존 앨범 ID 추적
 
   private cropper: Cropper | null = null;
 
@@ -190,7 +191,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   private async loadContentForEdit(contentId: number): Promise<void> {
     try {
-      const content = await this.api.contents.findOne(contentId);
+      const content = await this.api.contents.findOne(contentId) as any;
       // 기본 정보 채우기
       this.title = content.title || '';
       this.description = content.body || '';
@@ -213,13 +214,37 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
       // 이미지 목록
       if (content.images && content.images.length > 0) {
-        this.contentItems.set(content.images.map((url: string, i: number) => ({
-          id: Date.now() + i,
-          fileName: `image_${i + 1}`,
-          size: '-',
-          thumbnailUrl: url,
-          status: 'done' as const,
-        })));
+        this.contentItems.set(content.images.map((url: string, i: number) => {
+          // URL에서 파일명 추출
+          const urlPath = url.split('?')[0];
+          const rawName = decodeURIComponent(urlPath.split('/').pop() || `image_${i + 1}`);
+          return {
+            id: Date.now() + i,
+            fileName: rawName,
+            size: '',
+            thumbnailUrl: url,
+            status: 'done' as const,
+          };
+        }));
+
+        // 비동기로 각 이미지 파일 크기 가져오기
+        content.images.forEach(async (url: string, i: number) => {
+          try {
+            const resp = await fetch(url, { method: 'HEAD' });
+            const len = resp.headers.get('content-length');
+            if (len) {
+              const bytes = parseInt(len, 10);
+              const sizeStr = bytes >= 1048576
+                ? (bytes / 1048576).toFixed(1) + ' MB'
+                : (bytes / 1024).toFixed(0) + ' KB';
+              this.contentItems.update(items => {
+                const updated = [...items];
+                if (updated[i]) updated[i] = { ...updated[i], size: sizeStr };
+                return updated;
+              });
+            }
+          } catch { /* 크기 가져오기 실패 시 무시 */ }
+        });
       }
 
       // ===== 그림 전용 필드 복원 =====
@@ -298,6 +323,14 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       // 글 타입이면 body를 에디터 콘텐츠로 설정
       if (content.type === 'WRITING') {
         this.editorContent = content.body || '';
+      }
+
+      // 앨범 정보 복원
+      if (content.albumContents && content.albumContents.length > 0) {
+        const ac = content.albumContents[0];
+        this.selectedAlbumId.set(ac.albumId);
+        this.selectedAlbumName.set(ac.album?.name || '');
+        this.originalAlbumId = ac.albumId;
       }
 
     } catch (e) {
@@ -515,6 +548,10 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     this.customWebtoonTool = (event.target as HTMLInputElement).value;
   }
 
+  removeCustomWebtoonTool(tool: string): void {
+    this.selectedWebtoonTools.update(tools => tools.filter(t => t !== tool));
+  }
+
   onEpisodeNumberInput(event: Event): void {
     this.episodeNumber = (event.target as HTMLInputElement).value;
   }
@@ -583,6 +620,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       console.error('앨범 로드 실패:', e);
     }
     this.isAlbumModalOpen.set(true);
+    document.body.style.overflow = 'hidden';
   }
 
   async onContentFileSelect(): Promise<void> {
@@ -606,8 +644,14 @@ export class ContentUploadPage implements OnInit, OnDestroy {
         try {
           const result = await this.api.upload.single(file, 'contents');
           this.contentItems.update(items => items.map(item =>
-            item.id === id ? { ...item, status: 'done' as const, thumbnailUrl: result.url } : item
+            item.id === id ? { ...item, status: 'check' as const, thumbnailUrl: result.url } : item
           ));
+          // 1.2초 후 done으로 전환
+          setTimeout(() => {
+            this.contentItems.update(items => items.map(item =>
+              item.id === id && item.status === 'check' ? { ...item, status: 'done' as const } : item
+            ));
+          }, 1200);
         } catch {
           this.contentItems.update(items => items.map(item =>
             item.id === id ? { ...item, status: 'error' as const } : item
@@ -617,9 +661,108 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     };
     input.click();
   }
+  // ===== 파일 드래그앤드롭 업로드 =====
+  isContentDragOver = signal(false);
+
+  onContentDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isContentDragOver.set(true);
+  }
+
+  onContentDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isContentDragOver.set(false);
+  }
+
+  async onContentDrop(event: DragEvent): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isContentDragOver.set(false);
+
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      // 이미지 파일만 허용
+      if (!file.type.startsWith('image/')) continue;
+
+      const id = Date.now() + i;
+      const sizeKB = (file.size / 1024).toFixed(2);
+
+      this.contentItems.update(items => [...items, {
+        id, fileName: file.name, size: `${sizeKB}KB`, thumbnailUrl: '', status: 'uploading' as const,
+      }]);
+
+      try {
+        const result = await this.api.upload.single(file, 'contents');
+        this.contentItems.update(items => items.map(item =>
+          item.id === id ? { ...item, status: 'check' as const, thumbnailUrl: result.url } : item
+        ));
+        setTimeout(() => {
+          this.contentItems.update(items => items.map(item =>
+            item.id === id && item.status === 'check' ? { ...item, status: 'done' as const } : item
+          ));
+        }, 1200);
+      } catch {
+        this.contentItems.update(items => items.map(item =>
+          item.id === id ? { ...item, status: 'error' as const } : item
+        ));
+      }
+    }
+  }
 
   removeContentItem(id: number): void {
     this.contentItems.update(items => items.filter(i => i.id !== id));
+  }
+
+  // ===== 콘텐츠 아이템 드래그 앤 드롭 순서 변경 =====
+  dragIndex = signal<number | null>(null);
+  dragOverIndex = signal<number | null>(null);
+
+  onDragStart(index: number, event: DragEvent): void {
+    this.dragIndex.set(index);
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', String(index));
+    }
+  }
+
+  onDragOver(index: number, event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+    this.dragOverIndex.set(index);
+  }
+
+  onDragLeave(): void {
+    this.dragOverIndex.set(null);
+  }
+
+  onDrop(targetIndex: number, event: DragEvent): void {
+    event.preventDefault();
+    const fromIndex = this.dragIndex();
+    if (fromIndex === null || fromIndex === targetIndex) {
+      this.dragIndex.set(null);
+      this.dragOverIndex.set(null);
+      return;
+    }
+    this.contentItems.update(items => {
+      const updated = [...items];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(targetIndex, 0, moved);
+      return updated;
+    });
+    this.dragIndex.set(null);
+    this.dragOverIndex.set(null);
+  }
+
+  onDragEnd(): void {
+    this.dragIndex.set(null);
+    this.dragOverIndex.set(null);
   }
 
   // ===== 이미지 업로드 버튼 =====
@@ -813,6 +956,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
   // ===== 앨범 모달 =====
   closeAlbumModal(): void {
     this.isAlbumModalOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   selectAlbum(id: number): void {
@@ -837,6 +981,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       this.selectedAlbumName.set(selected.name);
     }
     this.isAlbumModalOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   /* 인라인 앨범 추가 */
@@ -928,7 +1073,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
     }
     // 웹툰/그림 타입은 콘텐츠 이미지 필수
     if (this.selectedType() !== '글') {
-      const doneItems = this.contentItems().filter(item => item.status === 'done');
+      const doneItems = this.contentItems().filter(item => item.status === 'done' || item.status === 'check');
       if (doneItems.length === 0) {
         this.formError.set('콘텐츠 이미지를 최소 1장 이상 업로드해주세요.');
         hasError = true;
@@ -962,7 +1107,7 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
       // 3. 콘텐츠 이미지 URL 수집
       const contentImageUrls = this.contentItems()
-        .filter(item => item.status === 'done' && item.thumbnailUrl)
+        .filter(item => (item.status === 'done' || item.status === 'check') && item.thumbnailUrl)
         .map(item => item.thumbnailUrl);
 
       // 3-1. 작업 과정 이미지 URL 수집 (그림 전용)
@@ -978,28 +1123,28 @@ export class ContentUploadPage implements OnInit, OnDestroy {
       // 그림 전용 필드
       const artFields = this.selectedType() === '그림' ? {
         artMedium: this.artMedium || undefined,
-        artTools: this.selectedTools().length > 0 ? this.selectedTools() : undefined,
+        artTools: this.selectedTools().length > 0 ? this.selectedTools() : (this.isEditMode ? [] : undefined),
         artistNote: this.artistNote.trim() || undefined,
         workDuration: this.workDuration.trim() || undefined,
         difficulty: this.selectedDifficulty() || undefined,
         resolution: this.imageResolution() || undefined,
-        processImages: processImageUrls.length > 0 ? processImageUrls : undefined,
+        processImages: processImageUrls.length > 0 ? processImageUrls : (this.isEditMode ? [] : undefined),
       } : {};
 
       // 웹툰 전용 필드
       const webtoonFields = this.selectedType() === '웹툰' ? {
         webtoonGenre: this.selectedGenre() || undefined,
         targetAudience: this.selectedAudience() || undefined,
-        webtoonTools: this.selectedWebtoonTools().length > 0 ? this.selectedWebtoonTools() : undefined,
+        webtoonTools: this.selectedWebtoonTools().length > 0 ? this.selectedWebtoonTools() : (this.isEditMode ? [] : undefined),
         episodeNumber: this.episodeNumber ? parseInt(this.episodeNumber, 10) : undefined,
-        storyboardImages: storyboardImageUrls.length > 0 ? storyboardImageUrls : undefined,
+        storyboardImages: storyboardImageUrls.length > 0 ? storyboardImageUrls : (this.isEditMode ? [] : undefined),
       } : {};
 
       // 글 전용 필드
       const writingFields = this.selectedType() === '글' ? {
         writingGenre: this.selectedWritingGenre() || undefined,
-        writingTools: this.selectedWritingTools().length > 0 ? this.selectedWritingTools() : undefined,
-        referenceUrls: this.referenceUrls().length > 0 ? this.referenceUrls() : undefined,
+        writingTools: this.selectedWritingTools().length > 0 ? this.selectedWritingTools() : (this.isEditMode ? [] : undefined),
+        referenceUrls: this.referenceUrls().length > 0 ? this.referenceUrls() : (this.isEditMode ? [] : undefined),
         wordCount: this.wordCount() || undefined,
         attachments: this.attachmentFiles().filter(f => f.status === 'done').map(f => ({ name: f.name, url: f.url, size: f.size, mimeType: f.mimeType })),
       } : {};
@@ -1021,6 +1166,23 @@ export class ContentUploadPage implements OnInit, OnDestroy {
           ...webtoonFields,
           ...writingFields,
         });
+
+        // 앨범 변경 처리
+        const newAlbumId = this.selectedAlbumId();
+        const oldAlbumId = this.originalAlbumId;
+        if (newAlbumId !== oldAlbumId) {
+          try {
+            if (oldAlbumId) {
+              await this.api.albums.removeContent(oldAlbumId, this.editContentId);
+            }
+            if (newAlbumId) {
+              await this.api.albums.addContent(newAlbumId, this.editContentId);
+            }
+          } catch (e) {
+            console.error('앨범 변경 실패:', e);
+          }
+        }
+
         // 수정 완료 → 상세 페이지로 이동
         this.router.navigate(['/content', this.editContentId]);
       } else {
@@ -1085,6 +1247,10 @@ export class ContentUploadPage implements OnInit, OnDestroy {
 
   onCustomWritingToolInput(event: Event): void {
     this.customWritingTool = (event.target as HTMLInputElement).value;
+  }
+
+  removeCustomWritingTool(tool: string): void {
+    this.selectedWritingTools.update(tools => tools.filter(t => t !== tool));
   }
 
   addReferenceUrl(): void {

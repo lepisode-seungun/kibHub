@@ -109,6 +109,10 @@ export class ContentsService {
           orderBy: { createdAt: 'desc' },
         },
         _count: { select: { comments: true } },
+        albumContents: {
+          where: { album: { type: 'ALBUM' } },
+          select: { albumId: true, album: { select: { id: true, name: true } } },
+        },
       },
     });
 
@@ -131,11 +135,20 @@ export class ContentsService {
     return this.withAuthorInitial({ ...content, bookmarkCount });
   }
 
-  create(data: CreateContentDto & { authorId: number }) {
+  async create(data: CreateContentDto & { authorId: number }) {
+    // categoryId 유효성 검사: 존재하지 않는 카테고리면 null 처리
+    if (data.categoryId) {
+      const cat = await this.prisma.contentCategory.findUnique({ where: { id: data.categoryId } });
+      if (!cat) data.categoryId = undefined;
+    }
     return this.prisma.content.create({ data: data as Prisma.ContentUncheckedCreateInput });
   }
 
-  update(id: number, data: Partial<CreateContentDto>) {
+  async update(id: number, data: Partial<CreateContentDto>) {
+    if (data.categoryId) {
+      const cat = await this.prisma.contentCategory.findUnique({ where: { id: data.categoryId } });
+      if (!cat) data.categoryId = undefined;
+    }
     return this.prisma.content.update({ where: { id }, data: data as Prisma.ContentUpdateInput });
   }
 

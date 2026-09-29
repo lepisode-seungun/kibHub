@@ -826,6 +826,14 @@ export class MyBootcampDetailPage implements OnInit {
     try {
       const survey = await this.api.surveys.findActive(id);
       console.log('[loadSurvey] findActive result:', survey);
+      // 질문이 없는 설문은 노출하지 않음
+      if (survey && (!survey.questions || survey.questions.length === 0)) {
+        console.log('[loadSurvey] Survey has no questions, treating as inactive');
+        this.activeSurvey.set(null);
+        this.hasResponded.set(false);
+        this.surveyLoading.set(false);
+        return;
+      }
       this.activeSurvey.set(survey);
       if (survey?.id) {
         try {

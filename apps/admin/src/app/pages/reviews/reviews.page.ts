@@ -2,6 +2,7 @@ import { formatDate } from '../../shared/format-date';
 import { Component, inject, signal, OnInit, ElementRef, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataGridComponent, GridColumn, GridRow } from '../../components/data-grid/data-grid.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ApiService } from '../../services/api.service';
 import { BootcampContextService } from '../../services/bootcamp-context.service';
@@ -32,7 +33,7 @@ interface SurveyStatsData {
 @Component({
   selector: 'adm-reviews',
   standalone: true,
-  imports: [CommonModule, DataGridComponent],
+  imports: [CommonModule, DataGridComponent, ConfirmDialogComponent],
   templateUrl: './reviews.page.html',
   styleUrl: './reviews.page.css',
 })
@@ -589,6 +590,12 @@ export class ReviewsPage implements OnInit {
     const id = this.surveyId();
     if (!id) {
       this.toast.error('설문을 먼저 등록해주세요.');
+      return;
+    }
+    // 질문이 없으면 활성화 불가
+    const hasQuestions = this.drawerQuestions.some(q => q.text.trim());
+    if (!hasQuestions && !this.surveyIsActive()) {
+      this.toast.error('질문을 1개 이상 등록한 후 활성화해주세요.');
       return;
     }
     try {

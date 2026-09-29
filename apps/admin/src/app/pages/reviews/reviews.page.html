@@ -281,13 +281,20 @@
     <div class="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
       <div class="flex flex-col gap-0.5">
         <span class="font-suit font-semibold text-sm text-gray-800">설문 활성화</span>
-        <span class="font-suit text-xs text-gray-400">{{ surveyIsActive() ? '수강생에게 설문이 노출됩니다' : '설문이 비공개 상태입니다' }}</span>
+        @if (drawerQuestions.length === 0) {
+          <span class="font-suit text-xs text-amber-500">질문을 1개 이상 등록해야 활성화할 수 있습니다</span>
+        } @else {
+          <span class="font-suit text-xs text-gray-400">{{ surveyIsActive() ? '수강생에게 설문이 노출됩니다' : '설문이 비공개 상태입니다' }}</span>
+        }
       </div>
-      <button class="relative w-11 h-6 rounded-full cursor-pointer border-none transition-colors duration-200"
-              [style.background]="surveyIsActive() ? '#3B82F6' : '#D4D4D8'"
+      <button class="relative w-11 h-6 rounded-full border-none transition-colors duration-200"
+              [style.background]="drawerQuestions.length === 0 ? '#E5E7EB' : (surveyIsActive() ? '#3B82F6' : '#D4D4D8')"
+              [style.cursor]="drawerQuestions.length === 0 ? 'not-allowed' : 'pointer'"
+              [style.opacity]="drawerQuestions.length === 0 ? '0.5' : '1'"
+              [disabled]="drawerQuestions.length === 0"
               (click)="toggleSurveyActive()">
         <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
-              [style.transform]="surveyIsActive() ? 'translateX(20px)' : 'translateX(0)'"></span>
+              [style.transform]="surveyIsActive() && drawerQuestions.length > 0 ? 'translateX(20px)' : 'translateX(0)'"></span>
       </button>
     </div>
 
@@ -394,34 +401,13 @@
 }
 
 <!-- ===== 삭제 확인 모달 ===== -->
-@if (deleteModalOpen) {
-  <div class="fixed inset-0 bg-black/40 z-[1000] flex items-center justify-center"
-       (click)="closeDeleteModal()" role="button" tabindex="0" aria-label="닫기"
-       (keydown.escape)="closeDeleteModal()">
-    <div class="bg-white rounded-2xl shadow-2xl w-[400px] overflow-hidden"
-         role="dialog" tabindex="-1" aria-label="삭제 확인"
-         (click)="$event.stopPropagation()" (keydown.escape)="closeDeleteModal()">
-      <!-- 헤더 -->
-      <div class="flex items-center gap-3 px-6 pt-6 pb-2">
-        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-red-50">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="font-suit font-bold text-lg text-gray-800">삭제 확인</span>
-      </div>
-      <!-- 본문 -->
-      <div class="px-6 py-4">
-        <p class="font-suit text-sm text-gray-600 leading-relaxed">{{ deleteModalMessage }}</p>
-        <p class="font-suit text-xs text-gray-400 mt-2">이 작업은 되돌릴 수 없습니다.</p>
-      </div>
-      <!-- 버튼 -->
-      <div class="flex gap-3 px-6 pb-6">
-        <button class="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 bg-white font-suit font-medium text-sm text-gray-600 cursor-pointer hover:bg-gray-50 transition-colors"
-                (click)="closeDeleteModal()">취소</button>
-        <button class="flex-1 px-4 py-2.5 rounded-lg border-none bg-red-500 font-suit font-medium text-sm text-white cursor-pointer hover:bg-red-600 transition-colors"
-                (click)="confirmDelete()">삭제</button>
-      </div>
-    </div>
-  </div>
-}
+<adm-confirm-dialog
+  [visible]="deleteModalOpen"
+  title="설문조사 삭제"
+  [message]="deleteModalMessage"
+  warning="삭제된 사용자에게 설문조사 팝업이 다시 표시될 수 있습니다."
+  cancelText="취소"
+  confirmText="삭제"
+  (cancel)="closeDeleteModal()"
+  (confirm)="confirmDelete()">
+</adm-confirm-dialog>

@@ -1463,4 +1463,21 @@ export class ContentDetailPage implements OnInit, OnDestroy {
       this.sidebarScrollHandler = null;
     }
   }
+  async downloadFile(url: string, fileName: string): Promise<void> {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = fileName || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      // fallback: 새 탭에서 열기
+      window.open(url, '_blank');
+    }
+  }
 }

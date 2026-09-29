@@ -26,6 +26,9 @@ export class ConfirmDialogComponent {
   /** 경고 메시지 */
   message = input<string>('');
 
+  /** 경고 안내 문구 (노란색 경고 박스로 표시) */
+  warning = input<string>('');
+
   /** 취소 버튼 텍스트 */
   cancelText = input<string>('취소');
 

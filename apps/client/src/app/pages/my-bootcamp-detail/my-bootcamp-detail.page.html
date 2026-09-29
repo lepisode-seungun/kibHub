@@ -541,7 +541,7 @@
 
 <!-- ===== 리뷰 작성 모달 ===== -->
 @if (isReviewModalOpen()) {
-  <div class="rv-modal-overlay" tabindex="-1" (click)="closeReviewModal()" (keydown.escape)="closeReviewModal()">
+  <div class="rv-modal-overlay" tabindex="-1" (keydown.escape)="closeReviewModal()">
     <div class="rv-modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown.escape)="closeReviewModal()">
       <div class="rv-modal-header">
         <h3 class="rv-modal-title">{{ myReview() ? '설문조사 수정' : '설문조사 작성' }}</h3>

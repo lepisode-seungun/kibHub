@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
@@ -52,7 +52,6 @@ interface UploadResult {
 export class ChallengeDetailPage implements OnInit {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   readonly authService = inject(AuthService);
   private location = inject(Location);
 
@@ -111,7 +110,7 @@ export class ChallengeDetailPage implements OnInit {
     const c = this.challenge();
     if (c?.status === 'ENDED') return;
     if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      this.isLoginRequiredModalOpen.set(true);
       return;
     }
     try {

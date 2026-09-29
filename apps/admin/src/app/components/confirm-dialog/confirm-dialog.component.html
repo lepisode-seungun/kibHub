@@ -38,6 +38,16 @@
         <span class="font-suit font-medium text-sm leading-[140%] tracking-[-0.8px] text-center text-gray-600">{{ message() }}</span>
       }
 
+      <!-- 경고 안내 (노란색 박스) -->
+      @if (warning()) {
+        <div class="flex items-start gap-2 px-3 py-2.5 w-full bg-amber-50 border border-amber-200 rounded-lg" style="box-sizing: border-box;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="shrink-0 mt-0.5">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V8h2v6z" fill="#F59E0B"/>
+          </svg>
+          <span class="font-suit font-medium text-xs leading-[160%] tracking-[-0.8px] text-amber-700">{{ warning() }}</span>
+        </div>
+      }
+
       <!-- 하단 버튼 -->
       <div class="flex justify-center items-center gap-3 w-full">
         <button class="flex-1 flex justify-center items-center px-4 py-2 h-10 border border-gray-200 rounded-xl bg-white cursor-pointer font-suit font-medium text-sm leading-[17px] tracking-[-0.04em] text-gray-800 hover:bg-gray-50 transition-colors"

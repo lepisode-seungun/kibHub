@@ -121,11 +121,7 @@
               @if (webtoonTools.length > 0) {
                 <div class="detail-art-item">
                   <span class="detail-art-label">도구</span>
-                  <div class="flex flex-wrap gap-1.5">
-                    @for (tool of webtoonTools; track tool) {
-                      <span class="detail-art-tool-tag">{{ tool }}</span>
-                    }
-                  </div>
+                  <span class="detail-art-value">{{ webtoonTools.join(', ') }}</span>
                 </div>
               }
               @if (episodeNumber) {
@@ -173,11 +169,7 @@
               @if (artTools.length > 0) {
                 <div class="detail-art-item">
                   <span class="detail-art-label">도구</span>
-                  <div class="flex flex-wrap gap-1.5">
-                    @for (tool of artTools; track tool) {
-                      <span class="detail-art-tool-tag">{{ tool }}</span>
-                    }
-                  </div>
+                  <span class="detail-art-value">{{ artTools.join(', ') }}</span>
                 </div>
               }
               @if (difficulty) {
@@ -261,11 +253,7 @@
               @if (writingTools.length > 0) {
                 <div class="detail-art-item">
                   <span class="detail-art-label">사용 도구</span>
-                  <div class="flex flex-wrap gap-1.5">
-                    @for (tool of writingTools; track tool) {
-                      <span class="detail-art-tag">{{ tool }}</span>
-                    }
-                  </div>
+                  <span class="detail-art-value">{{ writingTools.join(', ') }}</span>
                 </div>
               }
             </div>
@@ -299,11 +287,11 @@
             </div>
             <div class="flex flex-col gap-2">
               @for (file of attachments; track file.url) {
-                <a [href]="file.url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors" style="text-decoration: none;">
+                <button (click)="downloadFile(file.url, file.name)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 transition-colors cursor-pointer w-full border-none bg-transparent text-left">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#71717A"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                   <span class="font-suit font-medium text-sm text-zinc-300">{{ file.name }}</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="#52525B" class="ml-auto"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                </a>
+                </button>
               }
             </div>
           </div>
