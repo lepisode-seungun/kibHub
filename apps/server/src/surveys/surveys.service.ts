@@ -313,19 +313,11 @@ export class SurveysService {
     return BOM + csvLines.join('\r\n');
   }
 
-  /** 설문 활성 상태 토글 (OFF→ON 시 응답 초기화) */
+  /** 설문 활성 상태 토글 */
   async toggleActive(id: number) {
     const survey = await this.prisma.survey.findUnique({ where: { id }, select: { isActive: true } });
     if (!survey) throw new NotFoundException('설문을 찾을 수 없습니다.');
     const newActive = !survey.isActive;
-
-    // OFF → ON 전환 시 기존 응답 초기화
-    if (newActive) {
-      const deleted = await this.prisma.surveyResponse.deleteMany({ where: { surveyId: id } });
-      if (deleted.count > 0) {
-        console.log(`[survey ${id}] 활성화: 기존 응답 ${deleted.count}건 초기화`);
-      }
-    }
 
     return this.prisma.survey.update({
       where: { id },

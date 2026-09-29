@@ -552,4 +552,26 @@ export class BootcampDashboardPage implements OnInit {
       console.error('출석 현황 로드 실패:', e);
     }
   }
+
+  // ===== 출석 초기화 =====
+  showResetAttendanceModal = signal(false);
+
+  openResetAttendanceModal(): void {
+    this.showResetAttendanceModal.set(true);
+  }
+
+  cancelResetAttendance(): void {
+    this.showResetAttendanceModal.set(false);
+  }
+
+  async confirmResetAttendance(): Promise<void> {
+    try {
+      const result = await this.api.attendance.resetAttendance(this.bootcampId);
+      this.toast.success(`출석 기록 ${result.deleted}건이 초기화되었습니다.`);
+      this.showResetAttendanceModal.set(false);
+      await this.loadAttendance(this.bootcampId);
+    } catch {
+      this.toast.error('출석 초기화에 실패했습니다.');
+    }
+  }
 }

@@ -86,8 +86,17 @@ export class ChallengeFormPage implements OnInit {
   async onRefImageUpload(event: Event): Promise<void> {
     const files = Array.from((event.target as HTMLInputElement).files || []);
     if (!files.length) return;
+    const remaining = 4 - this.referenceImages().length;
+    if (remaining <= 0) {
+      this.toast.error('참고 이미지는 최대 4장까지 업로드할 수 있습니다.');
+      return;
+    }
+    const toUpload = files.slice(0, remaining);
+    if (files.length > remaining) {
+      this.toast.show(`${remaining}장만 추가됩니다. (최대 4장)`, 'warning');
+    }
     try {
-      const results = await this.api.uploadFiles(files, 'challenges');
+      const results = await this.api.uploadFiles(toUpload, 'challenges');
       this.referenceImages.set([...this.referenceImages(), ...results.map(r => r.url)]);
     } catch {
       this.toast.error('참고 이미지 업로드 실패');

@@ -110,13 +110,13 @@ export class ReviewsPage implements OnInit {
     console.log('[Survey] bootcampId:', this.bootcampId);
     if (!this.bootcampId) return;
     try {
-      const survey = await this.api.surveys.findActive(this.bootcampId);
-      console.log('[Survey] findActive result:', survey);
+      const survey = await this.api.surveys.findByBootcamp(this.bootcampId);
+      console.log('[Survey] findByBootcamp result:', survey);
       this.activeSurveyId.set(survey?.id || null);
       if (survey?.id) {
         const stats = await this.api.surveys.getStats(survey.id);
         console.log('[Survey] stats:', stats);
-      this.surveyStats.set(stats as SurveyStatsData);
+        this.surveyStats.set(stats as SurveyStatsData);
       }
     } catch (e) {
       console.error('설문 데이터 로드 실패:', e);

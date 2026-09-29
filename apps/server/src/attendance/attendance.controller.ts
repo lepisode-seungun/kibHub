@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, Req, ParseIntPipe, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Query, Req, ParseIntPipe, UseGuards, Inject } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Request } from 'express';
@@ -57,5 +57,13 @@ export class AttendanceController {
     @Query('date') date?: string,
   ) {
     return this.attendanceService.getBootcampAttendance(bootcampId, date);
+  }
+
+  /** 관리자용: 출석 기록 초기화 */
+  @Delete('reset')
+  resetAttendance(
+    @Param('bootcampId', ParseIntPipe) bootcampId: number,
+  ) {
+    return this.attendanceService.resetAttendance(bootcampId);
   }
 }

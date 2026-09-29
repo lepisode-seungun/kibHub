@@ -125,10 +125,27 @@
 
     <!-- 참고 이미지 -->
     <div class="flex flex-col gap-2">
-      <span class="font-suit font-semibold text-sm text-zinc-700">참고 이미지</span>
-      <div class="flex flex-wrap gap-3">
+      <div class="flex items-center gap-2">
+        <span class="font-suit font-semibold text-sm text-zinc-700">참고 이미지</span>
+        <span class="font-suit font-medium text-xs text-zinc-400">({{ referenceImages().length }}/4)</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- + 버튼 고정 -->
+        @if (referenceImages().length < 4) {
+          <label class="flex-shrink-0 w-20 h-20 rounded-lg border-2 border-dashed border-zinc-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#3C8EEE] transition-colors gap-1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="font-suit text-[10px] text-zinc-400">추가</span>
+            <input type="file" accept="image/*" multiple class="hidden" (change)="onRefImageUpload($event)" />
+          </label>
+        } @else {
+          <div class="flex-shrink-0 w-20 h-20 rounded-lg border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center gap-1 bg-zinc-50">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="font-suit text-[10px] text-zinc-400">최대</span>
+          </div>
+        }
+        <!-- 썸네일 오른쪽 나열 -->
         @for (img of referenceImages(); track $index) {
-          <div class="relative">
+          <div class="relative flex-shrink-0">
             <img [src]="img" alt="참고" class="w-20 h-20 rounded-lg object-cover border border-zinc-200" />
             <button class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full border-none cursor-pointer flex items-center justify-center"
                     (click)="removeRefImage($index)">
@@ -136,11 +153,6 @@
             </button>
           </div>
         }
-        <label class="w-20 h-20 rounded-lg border-2 border-dashed border-zinc-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#3C8EEE] transition-colors gap-1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="font-suit text-[10px] text-zinc-400">추가</span>
-          <input type="file" accept="image/*" multiple class="hidden" (change)="onRefImageUpload($event)" />
-        </label>
       </div>
     </div>
 

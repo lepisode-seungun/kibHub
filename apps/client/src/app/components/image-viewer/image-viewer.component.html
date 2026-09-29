@@ -15,13 +15,12 @@
       <div class="iv-body">
 
         <!-- 데스크톱 좌측 화살표 -->
-        @if (totalPages > 1 && currentPage() > 1) {
-          <button class="iv-arrow iv-arrow-desktop" (click)="prevPage()" aria-label="이전">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
-          </button>
-        } @else {
-          <div style="width:48px;min-width:48px;display:none;"></div>
-        }
+        <button class="iv-arrow iv-arrow-desktop"
+                [style.opacity]="totalPages > 1 && currentPage() > 1 ? '1' : '0'"
+                [style.pointer-events]="totalPages > 1 && currentPage() > 1 ? 'auto' : 'none'"
+                (click)="prevPage()" aria-label="이전">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M15.77 3.77L14 2L4 12l10 10 1.77-1.77L7.54 12z" fill="#D4D4D8"/></svg>
+        </button>
 
         <!-- 콘텐츠 영역 -->
         <div class="iv-content">
@@ -83,13 +82,12 @@
           </div>
         </div>
 
-        @if (totalPages > 1 && currentPage() < totalPages) {
-          <button class="iv-arrow iv-arrow-desktop" (click)="nextPage()" aria-label="다음">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
-          </button>
-        } @else {
-          <div style="width:48px;min-width:48px;display:none;"></div>
-        }
+        <button class="iv-arrow iv-arrow-desktop"
+                [style.opacity]="totalPages > 1 && currentPage() < totalPages ? '1' : '0'"
+                [style.pointer-events]="totalPages > 1 && currentPage() < totalPages ? 'auto' : 'none'"
+                (click)="nextPage()" aria-label="다음">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8.23 3.77L10 2l10 10-10 10-1.77-1.77L16.46 12z" fill="#D4D4D8"/></svg>
+        </button>
       </div>
     </div>
   </div>

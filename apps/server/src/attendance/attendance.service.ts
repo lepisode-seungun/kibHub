@@ -161,4 +161,12 @@ export class AttendanceService {
       students: result,
     };
   }
+
+  /** 관리자용: 부트캠프 출석 기록 전체 초기화 */
+  async resetAttendance(bootcampId: number) {
+    const result = await this.prisma.attendance.deleteMany({
+      where: { bootcampId },
+    });
+    return { deleted: result.count };
+  }
 }

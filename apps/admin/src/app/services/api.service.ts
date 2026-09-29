@@ -567,5 +567,7 @@ export class ApiService {
   readonly attendance = {
     getBootcampAttendance: (bootcampId: number, date?: string): Promise<unknown> =>
       this.get(`/bootcamps/${bootcampId}/attendance/all${date ? `?date=${date}` : ''}`),
+    resetAttendance: (bootcampId: number): Promise<{ deleted: number }> =>
+      this.del(`/bootcamps/${bootcampId}/attendance/reset`),
   };
 }

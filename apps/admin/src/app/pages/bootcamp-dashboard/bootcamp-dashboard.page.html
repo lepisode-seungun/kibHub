@@ -176,11 +176,18 @@
         </button>
       </div>
 
-      <!-- 날짜 선택 -->
-      <input type="date"
-             class="att-date-input"
-             [value]="attendanceDate()"
-             (change)="onAttendanceDateChange($event)" />
+      <!-- 날짜 선택 + 초기화 버튼 -->
+      <div class="flex items-center gap-2">
+        <input type="date"
+               class="att-date-input"
+               [value]="attendanceDate()"
+               (change)="onAttendanceDateChange($event)" />
+        <button class="flex items-center justify-center gap-1.5 px-3 py-2 h-9 bg-white border border-red-300 rounded-md cursor-pointer font-suit font-medium text-sm leading-[150%] tracking-[-0.04em] text-red-500 hover:bg-red-50 transition-colors whitespace-nowrap"
+                (click)="openResetAttendanceModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#EF4444"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          출석 초기화
+        </button>
+      </div>
     </div>
 
     @if (attendanceSectionOpen()) {
@@ -581,6 +588,37 @@
       <div class="dialog-actions">
         <button class="dialog-btn-cancel" (click)="cancelBootcampDelete()">취소</button>
         <button class="dialog-btn-confirm" (click)="confirmBootcampDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== 출석 초기화 확인 모달 ===== -->
+@if (showResetAttendanceModal()) {
+  <div class="dialog-overlay" tabindex="0" (click)="cancelResetAttendance()" (keydown.enter)="cancelResetAttendance()">
+    <div class="dialog-card" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#F59E0B"/>
+          <path d="M14 8v7" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="19" r="1.5" fill="white"/>
+        </svg>
+        <span class="dialog-title">출석 기록 초기화</span>
+      </div>
+      <div class="dialog-info">
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">부트캠프명</span>
+          <span class="dialog-info-value">{{ info().bootcampName }}</span>
+        </div>
+        <div class="dialog-info-row">
+          <span class="dialog-info-label">현재 수강생</span>
+          <span class="dialog-info-value">{{ attendanceSummary().totalStudents }}명</span>
+        </div>
+      </div>
+      <p class="dialog-warning">모든 출석 기록을 초기화하시겠습니까?<br>초기화된 출석 데이터는 복구할 수 없습니다.<br>수강생 목록은 유지됩니다.</p>
+      <div class="dialog-actions">
+        <button class="dialog-btn-cancel" (click)="cancelResetAttendance()">취소</button>
+        <button class="dialog-btn-confirm" (click)="confirmResetAttendance()">초기화</button>
       </div>
     </div>
   </div>
