@@ -538,29 +538,31 @@
 .cd-entry-viewer-overlay {
   position: fixed; inset: 0; z-index: 9999;
   display: flex; justify-content: center; align-items: center;
-  padding: 64px 100px;
+  padding: 40px;
   background: rgba(0,0,0,0.4); backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
   animation: cd-fade-in 0.2s ease;
 }
 .cd-entry-viewer {
   position: relative; display: flex; flex-direction: column;
-  max-width: 900px; width: 100%; max-height: 90vh; gap: 10px;
+  justify-content: center;
+  max-width: 900px; width: 100%; max-height: 90vh; gap: 0;
 }
 .cd-entry-viewer-close {
-  align-self: flex-end; background: none; border: none;
+  position: absolute; top: -44px; right: 0;
+  background: none; border: none;
   cursor: pointer; padding: 0; transition: opacity 0.15s;
 }
 .cd-entry-viewer-close:hover { opacity: 0.7; }
 
 .cd-entry-viewer-content {
   display: flex; flex-direction: column; gap: 0;
-  background: #1C1B20; border-radius: 16px; padding: 24px;
-  max-height: 75vh; overflow: hidden;
+  background: #1C1B20; border-radius: 16px; padding: 20px;
+  overflow: hidden;
 }
 .cd-entry-viewer-counter {
   font-family: var(--font-family); font-weight: 700; font-size: 18px;
-  color: #FFF; padding-bottom: 16px;
+  color: #FFF; padding-bottom: 12px;
 }
 .cd-entry-viewer-img-area {
   overflow: hidden; border-radius: 8px;
@@ -570,9 +572,8 @@
 .cd-entry-viewer-img-area::-webkit-scrollbar-track { background: rgba(217,217,217,0.12); border-radius: 999px; }
 .cd-entry-viewer-img-area::-webkit-scrollbar-thumb { background: #A3A3A3; border-radius: 999px; }
 .cd-entry-viewer-img {
-  width: 100%; display: block; border-radius: 8px;
+  width: 100%; max-height: 60vh; display: block; border-radius: 8px;
   object-fit: contain; background: #000;
-  max-height: calc(75vh - 80px);
 }
 
 /* 화살표 */
@@ -637,8 +638,7 @@
 /* 모달 작품 정보 */
 .cd-entry-viewer-info {
   display: flex; flex-direction: column; gap: 8px;
-  padding: 16px 20px;
-  background: #1C1B20; border-radius: 12px;
+  padding: 12px 0 0;
 }
 .cd-entry-viewer-info-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -689,12 +689,40 @@
   .cd-entry-viewer-arrow { background: rgba(0,0,0,0.5); width: 40px; height: 40px; }
 }
 @media (max-width: 560px) {
-  .cd-entry-viewer-overlay { padding: 0; }
-  .cd-entry-viewer { max-height: 100vh; height: 100vh; gap: 0; }
-  .cd-entry-viewer-close { position: absolute; top: 12px; right: 12px; z-index: 10; }
-  .cd-entry-viewer-content { border-radius: 0; flex: 1; max-height: none; }
+  .cd-entry-viewer-overlay { padding: 16px; }
+  .cd-entry-viewer {
+    max-height: 95vh; max-width: 100%; gap: 0;
+    border-radius: 16px;
+  }
+  .cd-entry-viewer-close {
+    position: absolute; top: -40px; right: 0; z-index: 10;
+    background: none; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cd-entry-viewer-content {
+    border-radius: 16px; max-height: none; padding: 16px;
+  }
+  .cd-entry-viewer-counter { font-size: 15px; padding-bottom: 12px; }
+  .cd-entry-viewer-img-area { max-height: calc(100vh - 240px); }
+  .cd-entry-viewer-img { max-height: calc(100vh - 240px); border-radius: 4px; }
+
+  /* 화살표: 이미지 위 오버레이 */
+  .cd-entry-viewer-arrow {
+    width: 36px; height: 36px;
+    background: rgba(0,0,0,0.45); border: none;
+    z-index: 5;
+  }
+  .cd-entry-viewer-arrow--left { left: 8px; }
+  .cd-entry-viewer-arrow--right { right: 8px; }
+
+  /* 좋아요 */
+  .cd-entry-viewer-like { padding: 6px 12px; font-size: 13px; }
   .cd-entry-like-overlay { bottom: 8px; right: 8px; }
-  .cd-entry-viewer-info { padding: 12px 16px 0; }
+
+  /* 작품 정보 */
+  .cd-entry-viewer-info { padding: 12px 4px 0; }
+  .cd-entry-viewer-info-title { font-size: 16px; }
+  .cd-entry-viewer-info-desc { font-size: 13px; }
 }
 /* ===== 작품 제출 모달 ===== */
 .cd-submit-overlay {

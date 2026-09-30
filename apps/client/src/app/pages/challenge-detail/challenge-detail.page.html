@@ -227,24 +227,24 @@
             </div>
           }
         </div>
-      </div>
 
-      <!-- 작품 정보 -->
-      <div class="cd-entry-viewer-info">
-        <h3 class="cd-entry-viewer-info-title">{{ me.title }}</h3>
-        @if (me.description) {
-          <p #descEl class="cd-entry-viewer-info-desc"
-             [style.display]="descExpanded() ? 'block' : ''"
-             [style.overflow-y]="descExpanded() ? 'auto' : 'hidden'"
-             [style.max-height]="descExpanded() ? '96px' : ''"
-             [style.-webkit-line-clamp]="descExpanded() ? 'unset' : '3'"
-             >{{ me.description }}</p>
-          @if (descOverflows() || descExpanded()) {
-            <button class="cd-entry-viewer-info-toggle" (click)="descExpanded.set(!descExpanded())">
-              {{ descExpanded() ? '접기' : '더보기' }}
-            </button>
+        <!-- 작품 정보 (이미지 바로 아래, 같은 카드 안) -->
+        <div class="cd-entry-viewer-info">
+          <h3 class="cd-entry-viewer-info-title">{{ me.title }}</h3>
+          @if (me.description) {
+            <p #descEl class="cd-entry-viewer-info-desc"
+               [style.display]="descExpanded() ? 'block' : ''"
+               [style.overflow-y]="descExpanded() ? 'auto' : 'hidden'"
+               [style.max-height]="descExpanded() ? '96px' : ''"
+               [style.-webkit-line-clamp]="descExpanded() ? 'unset' : '3'"
+               >{{ me.description }}</p>
+            @if (descOverflows() || descExpanded()) {
+              <button class="cd-entry-viewer-info-toggle" (click)="descExpanded.set(!descExpanded())">
+                {{ descExpanded() ? '접기' : '더보기' }}
+              </button>
+            }
           }
-        }
+        </div>
       </div>
 
       <!-- 좌우 화살표 -->

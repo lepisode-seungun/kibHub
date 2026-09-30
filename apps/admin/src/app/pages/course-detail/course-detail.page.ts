@@ -86,7 +86,7 @@ export class CourseDetailPage implements OnInit {
       const rows: LectureAssignmentRow[] = [];
       if (c.lectures) {
         c.lectures.forEach((l: Lecture) => {
-          rows.push({ id: l.id, type: '강의', thumbnail: this.getVideoThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
+          rows.push({ id: l.id, type: '강의', thumbnail: l.thumbnail || this.getVideoThumbnail(l.videoUrl || ''), name: l.title, createdAt: formatDate(l.createdAt) });
         });
       }
       if (c.assignments) {

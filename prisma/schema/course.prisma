@@ -28,6 +28,7 @@ model Lecture {
   category  String   @default("")
   videoUrl  String   @default("")
   content   String   @default("")
+  thumbnail String   @default("")
   sortOrder Int      @default(0)
   courseId   Int
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)

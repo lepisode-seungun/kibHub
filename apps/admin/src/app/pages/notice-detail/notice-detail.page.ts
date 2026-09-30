@@ -35,7 +35,7 @@ export class NoticeDetailPage implements OnInit {
 
   // 아코디언
   basicInfoOpen = signal(true);
-  contentOpen = signal(true);
+  contentOpen = signal(true); 
   attachmentOpen = signal(true);
 
   toggleBasicInfo(): void { this.basicInfoOpen.update(v => !v); }

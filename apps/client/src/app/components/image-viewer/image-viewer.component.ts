@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 
 export interface ViewerImage {
-  gradient: string;
+  gradient?: string;
   url?: string;
   markers?: { rank: number; top: number; left: number }[];
 }

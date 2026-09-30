@@ -44,6 +44,7 @@ export type LectureMinAggregateOutputType = {
   category: string | null
   videoUrl: string | null
   content: string | null
+  thumbnail: string | null
   sortOrder: number | null
   courseId: number | null
   createdAt: Date | null
@@ -56,6 +57,7 @@ export type LectureMaxAggregateOutputType = {
   category: string | null
   videoUrl: string | null
   content: string | null
+  thumbnail: string | null
   sortOrder: number | null
   courseId: number | null
   createdAt: Date | null
@@ -68,6 +70,7 @@ export type LectureCountAggregateOutputType = {
   category: number
   videoUrl: number
   content: number
+  thumbnail: number
   sortOrder: number
   courseId: number
   createdAt: number
@@ -94,6 +97,7 @@ export type LectureMinAggregateInputType = {
   category?: true
   videoUrl?: true
   content?: true
+  thumbnail?: true
   sortOrder?: true
   courseId?: true
   createdAt?: true
@@ -106,6 +110,7 @@ export type LectureMaxAggregateInputType = {
   category?: true
   videoUrl?: true
   content?: true
+  thumbnail?: true
   sortOrder?: true
   courseId?: true
   createdAt?: true
@@ -118,6 +123,7 @@ export type LectureCountAggregateInputType = {
   category?: true
   videoUrl?: true
   content?: true
+  thumbnail?: true
   sortOrder?: true
   courseId?: true
   createdAt?: true
@@ -217,6 +223,7 @@ export type LectureGroupByOutputType = {
   category: string
   videoUrl: string
   content: string
+  thumbnail: string
   sortOrder: number
   courseId: number
   createdAt: Date
@@ -252,6 +259,7 @@ export type LectureWhereInput = {
   category?: Prisma.StringFilter<"Lecture"> | string
   videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
+  thumbnail?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
   createdAt?: Prisma.DateTimeFilter<"Lecture"> | Date | string
@@ -266,6 +274,7 @@ export type LectureOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -283,6 +292,7 @@ export type LectureWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringFilter<"Lecture"> | string
   videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
+  thumbnail?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
   createdAt?: Prisma.DateTimeFilter<"Lecture"> | Date | string
@@ -297,6 +307,7 @@ export type LectureOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -317,6 +328,7 @@ export type LectureScalarWhereWithAggregatesInput = {
   category?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
   videoUrl?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
   content?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
+  thumbnail?: Prisma.StringWithAggregatesFilter<"Lecture"> | string
   sortOrder?: Prisma.IntWithAggregatesFilter<"Lecture"> | number
   courseId?: Prisma.IntWithAggregatesFilter<"Lecture"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Lecture"> | Date | string
@@ -328,6 +340,7 @@ export type LectureCreateInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -341,6 +354,7 @@ export type LectureUncheckedCreateInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   courseId: number
   createdAt?: Date | string
@@ -353,6 +367,7 @@ export type LectureUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -366,6 +381,7 @@ export type LectureUncheckedUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -379,6 +395,7 @@ export type LectureCreateManyInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   courseId: number
   createdAt?: Date | string
@@ -390,6 +407,7 @@ export type LectureUpdateManyMutationInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -401,6 +419,7 @@ export type LectureUncheckedUpdateManyInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -423,6 +442,7 @@ export type LectureCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -441,6 +461,7 @@ export type LectureMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -453,6 +474,7 @@ export type LectureMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   videoUrl?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  thumbnail?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -531,6 +553,7 @@ export type LectureCreateWithoutCourseInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -543,6 +566,7 @@ export type LectureUncheckedCreateWithoutCourseInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -584,6 +608,7 @@ export type LectureScalarWhereInput = {
   category?: Prisma.StringFilter<"Lecture"> | string
   videoUrl?: Prisma.StringFilter<"Lecture"> | string
   content?: Prisma.StringFilter<"Lecture"> | string
+  thumbnail?: Prisma.StringFilter<"Lecture"> | string
   sortOrder?: Prisma.IntFilter<"Lecture"> | number
   courseId?: Prisma.IntFilter<"Lecture"> | number
   createdAt?: Prisma.DateTimeFilter<"Lecture"> | Date | string
@@ -595,6 +620,7 @@ export type LectureCreateWithoutFilesInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -607,6 +633,7 @@ export type LectureUncheckedCreateWithoutFilesInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   courseId: number
   createdAt?: Date | string
@@ -634,6 +661,7 @@ export type LectureUpdateWithoutFilesInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -646,6 +674,7 @@ export type LectureUncheckedUpdateWithoutFilesInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   courseId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -658,6 +687,7 @@ export type LectureCreateManyCourseInput = {
   category?: string
   videoUrl?: string
   content?: string
+  thumbnail?: string
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -668,6 +698,7 @@ export type LectureUpdateWithoutCourseInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -680,6 +711,7 @@ export type LectureUncheckedUpdateWithoutCourseInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -692,6 +724,7 @@ export type LectureUncheckedUpdateManyWithoutCourseInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   videoUrl?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail?: Prisma.StringFieldUpdateOperationsInput | string
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +767,7 @@ export type LectureSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   category?: boolean
   videoUrl?: boolean
   content?: boolean
+  thumbnail?: boolean
   sortOrder?: boolean
   courseId?: boolean
   createdAt?: boolean
@@ -749,6 +783,7 @@ export type LectureSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   category?: boolean
   videoUrl?: boolean
   content?: boolean
+  thumbnail?: boolean
   sortOrder?: boolean
   courseId?: boolean
   createdAt?: boolean
@@ -762,6 +797,7 @@ export type LectureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   category?: boolean
   videoUrl?: boolean
   content?: boolean
+  thumbnail?: boolean
   sortOrder?: boolean
   courseId?: boolean
   createdAt?: boolean
@@ -775,13 +811,14 @@ export type LectureSelectScalar = {
   category?: boolean
   videoUrl?: boolean
   content?: boolean
+  thumbnail?: boolean
   sortOrder?: boolean
   courseId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LectureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "videoUrl" | "content" | "sortOrder" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["lecture"]>
+export type LectureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "videoUrl" | "content" | "thumbnail" | "sortOrder" | "courseId" | "createdAt" | "updatedAt", ExtArgs["result"]["lecture"]>
 export type LectureInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>
   files?: boolean | Prisma.Lecture$filesArgs<ExtArgs>
@@ -806,6 +843,7 @@ export type $LecturePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     category: string
     videoUrl: string
     content: string
+    thumbnail: string
     sortOrder: number
     courseId: number
     createdAt: Date
@@ -1240,6 +1278,7 @@ export interface LectureFieldRefs {
   readonly category: Prisma.FieldRef<"Lecture", 'String'>
   readonly videoUrl: Prisma.FieldRef<"Lecture", 'String'>
   readonly content: Prisma.FieldRef<"Lecture", 'String'>
+  readonly thumbnail: Prisma.FieldRef<"Lecture", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Lecture", 'Int'>
   readonly courseId: Prisma.FieldRef<"Lecture", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Lecture", 'DateTime'>

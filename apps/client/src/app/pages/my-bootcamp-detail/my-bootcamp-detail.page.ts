@@ -86,6 +86,7 @@ interface LectureResponse {
   category?: string;
   duration?: string;
   videoUrl?: string;
+  thumbnail?: string;
 }
 
 interface AssignmentResponse {
@@ -388,7 +389,7 @@ export class MyBootcampDetailPage implements OnInit {
         allLectures.push(...lectures.map((l: LectureResponse) => ({
           id: l.id, title: l.title || '', category: l.category || '',
           duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
-          thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+          thumbnail: l.thumbnail || this.getYoutubeThumbnail(l.videoUrl || ''),
           videoUrl: l.videoUrl || '',
         })));
         allAssignments.push(...assignments.map((a: AssignmentResponse) => ({
@@ -445,7 +446,7 @@ export class MyBootcampDetailPage implements OnInit {
       const cards: LectureCard[] = [
         ...lectures.map((l: LectureResponse) => ({
           id: l.id, type: '강의' as const, category: l.category || '', title: l.title || '',
-          duration: l.duration || '', thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+          duration: l.duration || '', thumbnail: l.thumbnail || this.getYoutubeThumbnail(l.videoUrl || ''),
           videoUrl: l.videoUrl || '',
         })),
         ...assignments.map((a: AssignmentResponse) => ({
@@ -458,7 +459,7 @@ export class MyBootcampDetailPage implements OnInit {
       this.lectureCards.set(lectures.map((l: LectureResponse) => ({
         id: l.id, title: l.title || '', category: l.category || '',
         duration: l.duration || '', status: 'progress', hasImage: !!l.videoUrl,
-        thumbnail: this.getYoutubeThumbnail(l.videoUrl || ''),
+        thumbnail: l.thumbnail || this.getYoutubeThumbnail(l.videoUrl || ''),
         videoUrl: l.videoUrl || '',
       })));
       this.assignmentCards.set(assignments.map((a: AssignmentResponse) => ({

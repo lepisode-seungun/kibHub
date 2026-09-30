@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
+import { Lecture } from '../../shared/types';
 
 @Component({
   selector: 'adm-lecture-register',
@@ -41,14 +42,34 @@ export class LectureRegisterPage {
 
   // 썸네일 파일
   thumbnailFile = signal<{ name: string; size: string; previewUrl: string } | null>(null);
+  thumbnailUploadedUrl = signal('');
+  isThumbnailUploading = signal(false);
 
-  onThumbnailSelect(event: Event): void {
+  async onThumbnailSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
+      if (!file.type.startsWith('image/')) {
+        this.toast.error('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
       const sizeKB = (file.size / 1024).toFixed(0) + 'KB';
       const previewUrl = URL.createObjectURL(file);
       this.thumbnailFile.set({ name: file.name, size: sizeKB, previewUrl });
+
+      // 실제 서버 업로드
+      try {
+        this.isThumbnailUploading.set(true);
+        const uploaded = await this.api.uploadFile(file, 'thumbnails');
+        this.thumbnailUploadedUrl.set(uploaded.url);
+      } catch {
+        this.toast.error('썸네일 업로드에 실패했습니다.');
+        this.thumbnailFile.set(null);
+        this.thumbnailUploadedUrl.set('');
+      } finally {
+        this.isThumbnailUploading.set(false);
+        input.value = '';
+      }
     }
   }
 
@@ -56,6 +77,7 @@ export class LectureRegisterPage {
     const current = this.thumbnailFile();
     if (current?.previewUrl) URL.revokeObjectURL(current.previewUrl);
     this.thumbnailFile.set(null);
+    this.thumbnailUploadedUrl.set('');
   }
 
   // 학습 자료 (다중)
@@ -91,8 +113,10 @@ export class LectureRegisterPage {
       await this.api.lectures.create(this.courseId, {
         title: this.lectureName(),
         category: this.category(),
+        videoUrl: this.videoUrl(),
         content: this.editorContent(),
-      } as Record<string, string>);
+        thumbnail: this.thumbnailUploadedUrl(),
+      } as Partial<Lecture>);
       this.toast.success('등록 완료 되었습니다.');
       this.location.back();
     } catch (err) {

@@ -88,6 +88,7 @@ export interface Lecture {
   category: string;
   videoUrl: string;
   content: string;
+  thumbnail: string;
   sortOrder: number;
   courseId: number;
   course?: Course;
@@ -135,6 +136,7 @@ export interface CreateLectureDto {
   category?: string;
   videoUrl?: string;
   content?: string;
+  thumbnail?: string;
   sortOrder?: number;
 }
 

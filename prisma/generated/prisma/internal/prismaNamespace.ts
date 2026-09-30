@@ -4030,6 +4030,7 @@ export const LectureScalarFieldEnum = {
   category: 'category',
   videoUrl: 'videoUrl',
   content: 'content',
+  thumbnail: 'thumbnail',
   sortOrder: 'sortOrder',
   courseId: 'courseId',
   createdAt: 'createdAt',

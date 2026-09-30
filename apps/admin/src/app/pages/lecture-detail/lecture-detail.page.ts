@@ -1,9 +1,11 @@
 import { formatDate } from '../../shared/format-date';
-import { Component, signal, inject, OnInit, HostListener } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../shared/toast/toast.service';
+import { Lecture } from '../../shared/types';
 
 interface CourseInfo {
   id: number;
@@ -20,6 +22,7 @@ interface LectureInfo {
   videoUrl: string;
   videoDuration: string;
   content: string;
+  thumbnail: string;
   materials: { id: number; name: string; url: string; size: number; mimeType: string }[];
 }
 
@@ -32,6 +35,7 @@ interface LectureResponse {
   duration?: string;
   content?: string;
   body?: string;
+  thumbnail?: string;
   files?: { id: number; name: string; url: string; size: number; mimeType: string }[];
   course?: { id: number; name?: string; title?: string; status?: string; createdAt?: string };
 }
@@ -48,6 +52,7 @@ export class LectureDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
   private api = inject(ApiService);
   private toast = inject(ToastService);
+  private sanitizer = inject(DomSanitizer);
 
   courseInfoOpen = signal(true);
   lectureInfoOpen = signal(true);
@@ -83,7 +88,7 @@ export class LectureDetailPage implements OnInit {
 
   // ===== 데이터 =====
   courseData = signal<CourseInfo>({ id: 0, name: '', status: '', createdAt: '' });
-  lectureData = signal<LectureInfo>({ id: 0, category: '', name: '', createdAt: '', videoUrl: '', videoDuration: '', content: '', materials: [] });
+  lectureData = signal<LectureInfo>({ id: 0, category: '', name: '', createdAt: '', videoUrl: '', videoDuration: '', content: '', thumbnail: '', materials: [] });
 
   ngOnInit(): void {
     const lectureId = this.route.snapshot.paramMap.get('lectureId')
@@ -98,7 +103,8 @@ export class LectureDetailPage implements OnInit {
         id: lecture.id, category: lecture.category || '',
         name: lecture.title || '', createdAt: lecture.createdAt ? formatDate(lecture.createdAt) : '',
         videoUrl: lecture.videoUrl || '', videoDuration: lecture.duration || '',
-        content: lecture.content || lecture.body || '', materials: lecture.files || [],
+        content: lecture.content || lecture.body || '', thumbnail: lecture.thumbnail || '',
+        materials: lecture.files || [],
       });
       if (lecture.course) {
         const SM: Record<string, string> = { PENDING: '노출', IN_PROGRESS: '진행중', COMPLETED: '완료', VISIBLE: '노출', HIDDEN: '숨김' };
@@ -142,26 +148,63 @@ export class LectureDetailPage implements OnInit {
   contentEditMode = signal(false);
   contentEditVideoUrl = signal('');
   contentEditContent = signal('');
+  contentEditThumbnail = signal('');
+  isThumbnailUploading = signal(false);
 
   toggleContentEditMode(): void {
     if (!this.contentEditMode()) {
       this.contentEditVideoUrl.set(this.lectureData().videoUrl || '');
       this.contentEditContent.set(this.lectureData().content || '');
+      this.contentEditThumbnail.set(this.lectureData().thumbnail || '');
     }
     this.contentEditMode.update(v => !v);
   }
 
-  getYoutubeThumbnail(url: string): string {
+  getYoutubeVideoId(url: string): string {
     if (!url) return '';
-    // youtube.com/watch?v=ID
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    if (match) return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
-    return '';
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/live\/|music\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : '';
   }
 
-  get currentThumbnail(): string {
+  getYoutubeEmbedUrl(url: string): string {
+    const videoId = this.getYoutubeVideoId(url);
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+  }
+
+  getYoutubeThumbnail(url: string): string {
+    const videoId = this.getYoutubeVideoId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+  }
+
+  currentThumbnail = computed(() => {
+    const adminThumb = this.contentEditMode() ? this.contentEditThumbnail() : (this.lectureData().thumbnail || '');
+    if (adminThumb) return adminThumb;
+    // 관리자 업로드 썸네일이 없으면 YouTube 임베딩 썸네일 사용
+    const videoUrl = this.contentEditMode() ? this.contentEditVideoUrl() : (this.lectureData().videoUrl || '');
+    return this.getYoutubeThumbnail(videoUrl);
+  });
+
+  currentEmbedUrl = computed((): SafeResourceUrl | null => {
     const url = this.contentEditMode() ? this.contentEditVideoUrl() : (this.lectureData().videoUrl || '');
-    return this.getYoutubeThumbnail(url);
+    const embedUrl = this.getYoutubeEmbedUrl(url);
+    return embedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl) : null;
+  });
+
+  async onThumbnailSelect(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { this.toast.error('이미지 파일만 업로드 가능합니다.'); return; }
+    try {
+      this.isThumbnailUploading.set(true);
+      const uploaded = await this.api.uploadFile(file, 'thumbnails');
+      this.contentEditThumbnail.set(uploaded.url);
+    } catch { this.toast.error('썸네일 업로드에 실패했습니다.'); }
+    finally { this.isThumbnailUploading.set(false); input.value = ''; }
+  }
+
+  removeThumbnail(): void {
+    this.contentEditThumbnail.set('');
   }
 
   async saveContentEdit(): Promise<void> {
@@ -169,11 +212,15 @@ export class LectureDetailPage implements OnInit {
       await this.api.lectures.update(this.lectureData().id, {
         videoUrl: this.contentEditVideoUrl(),
         content: this.contentEditContent(),
-      } as Record<string, string>);
+        thumbnail: this.contentEditThumbnail(),
+      } as Partial<Lecture>);
       this.toast.success('수정 완료 되었습니다.');
       this.contentEditMode.set(false);
       await this.loadLecture(this.lectureData().id);
-    } catch { this.toast.error('수정에 실패했습니다.'); }
+    } catch (err) {
+      console.error('강의 상세내용 저장 실패:', err);
+      this.toast.error('수정에 실패했습니다.');
+    }
   }
 
   cancelContentEdit(): void { this.contentEditMode.set(false); }

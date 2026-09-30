@@ -4,7 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { ImageViewerComponent } from '../../components/image-viewer/image-viewer.component';
+import { ImageViewerComponent, ViewerImage } from '../../components/image-viewer/image-viewer.component';
 import { ApiService } from '../../services/api.service';
 import { Comment, Attachment } from '@kibhub/shared';
 
@@ -202,10 +202,11 @@ export class ContentDetailPage implements OnInit, OnDestroy {
 
   /* 공유 모달 */
   isShareModalOpen = signal(false);
-  shareUrl = 'https://kiphub.lepisode.team/home';
+  shareUrl = '';
   isLinkCopied = signal(false);
 
   openShareModal(): void {
+    this.shareUrl = window.location.href;
     this.isShareModalOpen.set(true);
     this.isLinkCopied.set(false);
   }
@@ -875,9 +876,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   isProcessViewerOpen = signal(false);
   currentProcessPage = signal(1);
 
-  get processViewerImages(): { gradient: string; markers?: never[] }[] {
+  get processViewerImages(): ViewerImage[] {
     return this.processImages.map(url => ({
-      gradient: `url(${url}) center/cover no-repeat`,
+      url,
       markers: [],
     }));
   }
@@ -895,9 +896,9 @@ export class ContentDetailPage implements OnInit, OnDestroy {
   isStoryboardViewerOpen = signal(false);
   currentStoryboardPage = signal(1);
 
-  get storyboardViewerImages(): { gradient: string; markers?: never[] }[] {
+  get storyboardViewerImages(): ViewerImage[] {
     return this.storyboardImages.map(url => ({
-      gradient: `url(${url}) center/cover no-repeat`,
+      url,
       markers: [],
     }));
   }

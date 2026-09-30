@@ -127,21 +127,46 @@
     @if (lectureContentOpen()) {
       <div class="flex flex-col gap-6 w-full">
 
-        <!-- 상단: 썸네일 + (영상 & 학습자료) -->
+        <!-- 상단: 썸네일 + (영상 & 학습자료) — 기존 레이아웃 유지 -->
         <div class="flex items-start gap-6 w-full">
 
-          <!-- 썸네일 -->
+          <!-- 썸네일 (관리자 업로드) -->
           <div class="flex flex-col py-1.5 gap-2 flex-1">
             <span class="font-suit font-semibold text-sm leading-[150%] tracking-[-0.04em] text-gray-700">썸네일</span>
-            @if (currentThumbnail) {
-              <img [src]="currentThumbnail"
-                   alt="영상 썸네일"
-                   class="rounded-xl object-cover"
-                   style="width: 346px; height: 217px;" />
-            } @else {
-              <div class="flex items-center justify-center rounded-xl bg-gray-50" style="width: 346px; height: 217px;">
-                <span class="font-suit font-medium text-sm text-gray-400">유튜브 링크를 입력하면 썸네일이 표시됩니다</span>
+            @if (currentThumbnail()) {
+              <div class="relative" style="width: 346px; height: 217px;">
+                <img [src]="currentThumbnail()"
+                     alt="강의 썸네일"
+                     class="rounded-xl object-cover w-full h-full" />
+                @if (contentEditMode()) {
+                  <button class="absolute top-2 right-2 flex items-center justify-center bg-black/50 hover:bg-black/70 border-none rounded-full cursor-pointer transition-colors"
+                          style="width: 28px; height: 28px;"
+                          (click)="removeThumbnail()" title="썸네일 삭제">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                      <path d="M5 5L15 15M15 5L5 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                }
               </div>
+            } @else {
+              @if (contentEditMode()) {
+                <label class="flex flex-col items-center justify-center gap-2 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                       style="width: 346px; height: 217px; background-color: #F9FAFB;"
+                       [class.opacity-50]="isThumbnailUploading()"
+                       [class.pointer-events-none]="isThumbnailUploading()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span style="color: #9CA3AF; font-size: 14px;">
+                    {{ isThumbnailUploading() ? '업로드 중...' : '클릭하여 썸네일 업로드' }}
+                  </span>
+                  <input type="file" class="hidden" accept="image/*" (change)="onThumbnailSelect($event)" />
+                </label>
+              } @else {
+                <div style="width: 346px; height: 217px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background-color: #F9FAFB;">
+                  <span style="color: #9CA3AF; font-size: 14px;">썸네일 없음</span>
+                </div>
+              }
             }
           </div>
 
